@@ -1,71 +1,127 @@
 package com.zhonghaodi.goodfarming;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.text.style.URLSpan;
-import android.text.style.UnderlineSpan;
-import android.text.util.Linkify;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
-	
-	TextView tv=null;
+public class MainActivity extends Activity implements OnClickListener {
+	HomeFragment homeFragment;
+	MessageFragment messageFragment;
+	DiscoverFragment discoverFragment;
+	MeFragment meFragment;
+	ImageView homeIv;
+	ImageView messageIv;
+	ImageView discoverIv;
+	ImageView meIv;
+	TextView homeTv;
+	TextView messageTv;
+	TextView discoverTv;
+	TextView meTv;
+	View homeView;
+	View messageView;
+	View discoverView;
+	View meView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		tv=(TextView)findViewById(R.id.textview);
-		String html="<a href='http://www.baidu.com'>百度一下</a>谷歌超链接、高亮显示、高亮1、高亮2、斜体、下划线.";
-		//创建一个 SpannableString对象
-		SpannableString sp = new SpannableString("谷歌超链接、高亮显示、高亮1、高亮2、斜体、下划线.");
-		//设置超链接
-		sp.setSpan(new MySpan("http://www.baidu.com"), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//		//设置高亮样式一
-//		sp.setSpan(new BackgroundColorSpan(Color.RED), 11, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//		//设置高亮样式二
-//		sp.setSpan(new ForegroundColorSpan(Color.YELLOW), 15, 18, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-//		//设置斜体
-//		sp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD_ITALIC), 19, 21, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-//		//设置下划线
-//		sp.setSpan(new UnderlineSpan(), 22, 25, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//		tv.setMovementMethod(LinkMovementMethod.getInstance());
-		CharSequence charSequence = Html.fromHtml(html); 
-		tv.setAutoLinkMask(Linkify.WEB_URLS);
-		tv.setText(charSequence);
-
-
+		homeView=findViewById(R.id.home_layout);
+		messageView=findViewById(R.id.message_layout);
+		discoverView=findViewById(R.id.discover_layout);
+		meView=findViewById(R.id.me_layout);
+		homeIv=(ImageView)findViewById(R.id.home_image);
+		messageIv=(ImageView)findViewById(R.id.message_image);
+		discoverIv=(ImageView)findViewById(R.id.discover_image);
+		meIv=(ImageView)findViewById(R.id.me_image);
+		homeTv=(TextView)findViewById(R.id.home_text);
+		messageTv=(TextView)findViewById(R.id.message_text);
+		discoverTv=(TextView)findViewById(R.id.discover_text);
+		meTv=(TextView)findViewById(R.id.me_text);
+		
+		homeView.setOnClickListener(this);
+		messageView.setOnClickListener(this);
+		discoverView.setOnClickListener(this);
+		meView.setOnClickListener(this);
+		seletFragmentIndex(0);
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+	private void seletFragmentIndex(int i) {
+		FragmentTransaction transction= getFragmentManager().beginTransaction();
+		if (homeFragment==null) {
+			homeFragment=new HomeFragment();
+			transction.add(R.id.content, homeFragment);
 		}
-		return super.onOptionsItemSelected(item);
+		if (messageFragment==null) {
+			messageFragment=new MessageFragment();
+			transction.add(R.id.content, messageFragment);
+		}
+		if (discoverFragment==null) {
+			discoverFragment=new DiscoverFragment();
+			transction.add(R.id.content, discoverFragment);
+		}
+		if (meFragment==null) {
+			meFragment=new MeFragment();
+			transction.add(R.id.content, meFragment);
+		}
+		transction.hide(homeFragment);
+		transction.hide(messageFragment);
+		transction.hide(discoverFragment);
+		transction.hide(meFragment);
+		homeIv.setImageResource(R.drawable.home);
+		messageIv.setImageResource(R.drawable.message);
+		discoverIv.setImageResource(R.drawable.discover);
+		meIv.setImageResource(R.drawable.me);
+		homeTv.setTextColor(Color.rgb(128, 128, 128));
+		messageTv.setTextColor(Color.rgb(128, 128, 128));
+		discoverTv.setTextColor(Color.rgb(128, 128, 128));
+		meTv.setTextColor(Color.rgb(128, 128, 128));
+
+		switch (i) {
+		case 0:
+			transction.show(homeFragment);
+			homeIv.setImageResource(R.drawable.home_s);
+			homeTv.setTextColor(Color.rgb(12, 179, 136));
+			break;
+		case 1:
+			transction.show(messageFragment);
+			messageIv.setImageResource(R.drawable.message_s);
+			messageTv.setTextColor(Color.rgb(12, 179, 136));
+			break;
+		case 2:
+			transction.show(discoverFragment);
+			discoverIv.setImageResource(R.drawable.discover_s);
+			discoverTv.setTextColor(Color.rgb(12, 179, 136));
+			break;
+		case 3:
+			transction.show(meFragment);
+			meIv.setImageResource(R.drawable.me_s);
+			meTv.setTextColor(Color.rgb(12, 179, 136));	
+		break;
+		default:
+			break;
+		}
+		transction.commit();
 	}
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v==homeView) {
+			seletFragmentIndex(0);
+		}
+		if (v==messageView) {
+			seletFragmentIndex(1);
+		}
+		if (v==discoverView) {
+			seletFragmentIndex(2);
+		}
+		if (v==meView) {
+			seletFragmentIndex(3);
+		}
+	}
+
 }
