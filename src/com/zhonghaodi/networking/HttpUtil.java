@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -14,7 +15,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 
+
 public class HttpUtil {
+	private static final  String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
 	public static String executeHttpGet(String urlStirng) {
 		StringBuffer sb = new StringBuffer();
 		DefaultHttpClient client = new DefaultHttpClient();
@@ -79,6 +82,14 @@ public class HttpUtil {
 			throw new Exception("错误");
 		}
 	}
-
-	
+	public static String getQuestionsString() {
+		String jsonString = HttpUtil
+				.executeHttpGet(RootURL+"questions");
+		return jsonString;
+	}
+	public static String getQuestionsString(int qid) {
+		String jsonString = HttpUtil
+				.executeHttpGet(RootURL+"questions?fromid="+qid);
+		return jsonString;
+	}
 }

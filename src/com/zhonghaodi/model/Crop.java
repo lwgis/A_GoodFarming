@@ -1,8 +1,8 @@
 package com.zhonghaodi.model;
 
-public class NetImage {
+public class Crop {
 	private int id;
-	private String url;
+	private String name;
 
 	public int getId() {
 		return id;
@@ -12,11 +12,12 @@ public class NetImage {
 		this.id = id;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getName() {
+		return name;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setName(String name) {
+		this.name = name;
 	}
+
 }

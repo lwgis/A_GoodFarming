@@ -27,6 +27,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	View messageView;
 	View discoverView;
 	View meView;
+	int pageIndex;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,6 +50,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		discoverView.setOnClickListener(this);
 		meView.setOnClickListener(this);
 		seletFragmentIndex(0);
+		pageIndex=0;
 	}
 	private void seletFragmentIndex(int i) {
 		FragmentTransaction transction= getFragmentManager().beginTransaction();
@@ -106,20 +108,21 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		}
 		transction.commit();
+		pageIndex=i;
 	}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if (v==homeView) {
+		if (v==homeView&&pageIndex!=0) {
 			seletFragmentIndex(0);
 		}
-		if (v==messageView) {
+		if (v==messageView&&pageIndex!=1) {
 			seletFragmentIndex(1);
 		}
-		if (v==discoverView) {
+		if (v==discoverView&&pageIndex!=2) {
 			seletFragmentIndex(2);
 		}
-		if (v==meView) {
+		if (v==meView&&pageIndex!=3) {
 			seletFragmentIndex(3);
 		}
 	}
