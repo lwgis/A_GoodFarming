@@ -15,14 +15,17 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -64,6 +67,16 @@ public class HomeFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
+		Button questionButton=(Button)view.findViewById(R.id.question_button);
+		questionButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent it=new Intent();
+				it.setClass(getActivity(), CreateQuestionActivity.class);
+				getActivity().startActivity(it);
+			}
+		});
 		pullToRefreshListView = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
@@ -221,7 +234,7 @@ public class HomeFragment extends Fragment {
 				case 0:
 					convertView = LayoutInflater.from(
 							HomeFragment.this.getActivity()).inflate(
-							R.layout.cell_question, null);
+							R.layout.cell_question, parent,false);
 					holder1 = new Holder1(convertView);
 					ImageLoader.getInstance().displayImage(
 							"http://121.40.62.120/appimage/users/small/"
@@ -237,7 +250,7 @@ public class HomeFragment extends Fragment {
 				case 1:
 					convertView = LayoutInflater.from(
 							HomeFragment.this.getActivity()).inflate(
-							R.layout.cell_question_3_image, null);
+							R.layout.cell_question_3_image, parent,false);
 					holder2 = new Holder2(convertView);
 					ImageLoader.getInstance().displayImage(
 							"http://121.40.62.120/appimage/users/small/"
@@ -276,7 +289,7 @@ public class HomeFragment extends Fragment {
 				case 2:
 					convertView = LayoutInflater.from(
 							HomeFragment.this.getActivity()).inflate(
-							R.layout.cell_question_6_image, null);
+							R.layout.cell_question_6_image, parent,false);
 					holder3 = new Holder3(convertView);
 					ImageLoader.getInstance().displayImage(
 							"http://121.40.62.120/appimage/users/small/"

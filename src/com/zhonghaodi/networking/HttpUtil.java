@@ -92,4 +92,10 @@ public class HttpUtil {
 				.executeHttpGet(RootURL+"questions?fromid="+qid);
 		return jsonString;
 	}
+
+	public static String getAllCropsString() {
+		String jsonString = HttpUtil
+				.executeHttpGet(RootURL+"crops");
+		return jsonString;
+	}
 }

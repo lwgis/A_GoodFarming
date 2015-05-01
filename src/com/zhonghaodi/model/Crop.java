@@ -2,6 +2,7 @@ package com.zhonghaodi.model;
 
 public class Crop {
 	private int id;
+	private int category;
 	private String name;
 
 	public int getId() {
@@ -18,6 +19,14 @@ public class Crop {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getCategory() {
+		return category;
+	}
+
+	public void setCategory(int category) {
+		this.category = category;
 	}
 
 }
