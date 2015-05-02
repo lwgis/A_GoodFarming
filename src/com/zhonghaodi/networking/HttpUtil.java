@@ -14,6 +14,8 @@ import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.zhonghaodi.model.Question;
+
 
 
 public class HttpUtil {
@@ -97,5 +99,9 @@ public class HttpUtil {
 		String jsonString = HttpUtil
 				.executeHttpGet(RootURL+"crops");
 		return jsonString;
+	}
+	public static void sendQuestion(Question question)throws Throwable {
+		String jsonString=JsonUtil.convertObjectToJson(question,"yyyy-MM-dd HH:mm:ss","id");
+		HttpUtil.postRequest(RootURL+ "questions", jsonString);
 	}
 }

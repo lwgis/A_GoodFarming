@@ -10,6 +10,7 @@ public class Question {
 	private List<NetImage>attachments;
 	private String time;
 	private int responsecount;
+	private String inform;
 	public int getId() {
 		return id;
 	}
@@ -64,6 +65,14 @@ public class Question {
 
 	public void setResponsecount(int responsecount) {
 		this.responsecount = responsecount;
+	}
+
+	public String getInform() {
+		return inform;
+	}
+
+	public void setInform(String inform) {
+		this.inform = inform;
 	}
 
 }

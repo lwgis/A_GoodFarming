@@ -30,7 +30,6 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
  */
 public class UILApplication extends Application {
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
-	@SuppressWarnings("unused")
 	@Override
 	public void onCreate() {
 //		if (Config.DEVELOPER_MODE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {

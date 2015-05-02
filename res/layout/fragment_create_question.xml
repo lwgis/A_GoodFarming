@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:text="尽量按农作物近照,远照,局部,整体,正面,反面来上传图片"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <com.zhonghaodi.customui.GFImageButton
+                        android:id="@+id/jinzhao_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp" />
+
+                    <com.zhonghaodi.customui.GFImageButton
+                        android:id="@+id/jubu_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp" />
+
+                    <com.zhonghaodi.customui.GFImageButton
+                        android:id="@+id/zhengmian_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal" >
+
+                    <com.zhonghaodi.customui.GFImageButton
+                        android:id="@+id/yuanzhao_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp" />
+
+                    <com.zhonghaodi.customui.GFImageButton
+                        android:id="@+id/zhengti_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp" />
+
+                    <com.zhonghaodi.customui.GFImageButton
+                        android:id="@+id/fanmian_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp" />
+                </LinearLayout>
+
+                <com.zhonghaodi.customui.MyEditText
+                    android:id="@+id/content_edit"
+                    android:layout_width="fill_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#ffffff"
+                    android:gravity="top"
+                    android:hint="病虫害的详细描述..."
+                    android:padding="1dp"
+                    android:textColor="#715b4c" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

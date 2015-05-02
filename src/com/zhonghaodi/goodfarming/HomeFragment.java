@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,37 +35,12 @@ public class HomeFragment extends Fragment {
 	private PullToRefreshListView pullToRefreshListView;
 	private ArrayList<Question> allQuestions;
 	private QuestionAdpter adapter;
-	private Handler handler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			super.handleMessage(msg);
-			if (msg.obj != null) {
-				Gson gson = new Gson();
-				List<Question> questions = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<Question>>() {
-						}.getType());
-				if (msg.what == 0) {
-					allQuestions.clear();
-				}
-				for (Question question : questions) {
-					allQuestions.add(question);
-				}
-				adapter.notifyDataSetChanged();
-				pullToRefreshListView.onRefreshComplete();
-			} else {
-				Toast.makeText(HomeFragment.this.getActivity(),
-						"连接服务器失败,请稍候再试!", Toast.LENGTH_SHORT).show();
-			}
-		}
-
-	};
-
+	private GFHandler handler ;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		handler=new GFHandler(this);
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		Button questionButton=(Button)view.findViewById(R.id.question_button);
 		questionButton.setOnClickListener(new OnClickListener() {
@@ -137,7 +112,38 @@ public class HomeFragment extends Fragment {
 		}).start();
 	}
 
-	private class QuestionAdpter extends BaseAdapter {
+	static class GFHandler extends Handler{
+		WeakReference<HomeFragment> reference=null;
+		public GFHandler(HomeFragment fragment){
+			reference=new WeakReference<HomeFragment>(fragment);
+		}
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			final HomeFragment fragment=reference.get();
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Question> questions = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Question>>() {
+						}.getType());
+				if (msg.what == 0) {
+					fragment.allQuestions.clear();
+				}
+				for (Question question : questions) {
+					fragment.allQuestions.add(question);
+				}
+				fragment.adapter.notifyDataSetChanged();
+				fragment.pullToRefreshListView.onRefreshComplete();
+			} else {
+				Toast.makeText(fragment.getActivity(),
+						"连接服务器失败,请稍候再试!", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	
+	
+	 class QuestionAdpter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -183,48 +189,6 @@ public class HomeFragment extends Fragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			Question question = allQuestions.get(position);
-			// if (convertView == null) {
-			// if (question.getAttachments().size() == 0) {
-			// convertView = LayoutInflater.from(
-			// HomeFragment.this.getActivity()).inflate(
-			// R.layout.cell_question, null);
-			//
-			// }
-			// if (question.getAttachments().size() > 0
-			// && question.getAttachments().size() < 4) {
-			// convertView = LayoutInflater.from(
-			// HomeFragment.this.getActivity()).inflate(
-			// R.layout.cell_question_3_image, null);
-			// }
-			// if (question.getAttachments().size() > 3) {
-			// convertView = LayoutInflater.from(
-			// HomeFragment.this.getActivity()).inflate(
-			// R.layout.cell_question_6_image, null);
-			// }
-			// }
-			// ImageView headIv = (ImageView) convertView
-			// .findViewById(R.id.head_image);
-			// ImageLoader.getInstance().displayImage(
-			// "http://121.40.62.120/appimage/users/small/"
-			// + question.getWriter().getThumbnail(), headIv,
-			// ImageOptions.options);
-			// setAttachmentImage(convertView, question);
-			//
-			// TextView nameTv = (TextView) convertView
-			// .findViewById(R.id.name_text);
-			// nameTv.setText(question.getWriter().getAlias());
-			// TextView timeTv = (TextView) convertView
-			// .findViewById(R.id.time_text);
-			// timeTv.setText(question.getTime());
-			// TextView contentTv = (TextView) convertView
-			// .findViewById(R.id.content_text);
-			// contentTv.setText(question.getContent());
-			// TextView countTv = (TextView) convertView
-			// .findViewById(R.id.count_text);
-			// countTv.setText("已有" +
-			// String.valueOf(question.getResponsecount())
-			// + "个答案");
-
 			int type = getItemViewType(position);
 			Holder1 holder1 = null;
 			Holder2 holder2 = null;
@@ -467,68 +431,7 @@ public class HomeFragment extends Fragment {
 					break;
 				}
 			}
-
 			return convertView;
-		}
-
-		private void setAttachmentImage(View convertView, Question question) {
-			if (question.getAttachments() == null
-					|| question.getAttachments().size() == 0) {
-				return;
-			}
-			// try {
-			switch (question.getAttachments().size()) {
-			case 6:
-				ImageView imageView6 = (ImageView) convertView
-						.findViewById(R.id.image6);
-				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
-								+ question.getAttachments().get(5).getUrl(),
-						imageView6, ImageOptions.options);
-			case 5:
-				ImageView imageView5 = (ImageView) convertView
-						.findViewById(R.id.image5);
-				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
-								+ question.getAttachments().get(4).getUrl(),
-						imageView5, ImageOptions.options);
-			case 4:
-				ImageView imageView4 = (ImageView) convertView
-						.findViewById(R.id.image4);
-				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
-								+ question.getAttachments().get(3).getUrl(),
-						imageView4, ImageOptions.options);
-			case 3:
-				ImageView imageView3 = (ImageView) convertView
-						.findViewById(R.id.image3);
-				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
-								+ question.getAttachments().get(2).getUrl(),
-						imageView3, ImageOptions.options);
-			case 2:
-				ImageView imageView2 = (ImageView) convertView
-						.findViewById(R.id.image2);
-				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
-								+ question.getAttachments().get(1).getUrl(),
-						imageView2, ImageOptions.options);
-			case 1:
-				ImageView imageView1 = (ImageView) convertView
-						.findViewById(R.id.image1);
-				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
-								+ question.getAttachments().get(0).getUrl(),
-						imageView1, ImageOptions.options);
-			default:
-				break;
-			}
-			// } catch (Exception e) {
-			//
-			// Log.e("eeeeee", "----------------------"+e.getMessage());
-			// // TODO: handle exception
-			// }
-
 		}
 
 		class Holder1 {

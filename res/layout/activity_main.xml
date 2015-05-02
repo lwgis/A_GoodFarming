@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:baselineAligned="false"
-        android:background="#FFFFFF" >
+        android:background="@drawable/border" >
  
         <RelativeLayout 
             android:id="@+id/home_layout" 
