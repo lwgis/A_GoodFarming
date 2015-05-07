@@ -1,17 +1,17 @@
 package com.zhonghaodi.goodfarming;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,16 +22,17 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class SelectCropFragment extends Fragment {
+public class SelectCropFragment extends Fragment implements HandMessage {
 	private ListView cropListView = null;
 	private ArrayList<Crop> allCrops;
 	private ArrayList<Crop> rootCrops;
-	private GFHandle handler = null;
+	private GFHandler<SelectCropFragment> handler;
+;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		handler = new GFHandle(this);
+		handler = new GFHandler<SelectCropFragment>(this);
 		View view = inflater.inflate(R.layout.fragment_select_crop, container,
 				false);
 		cropListView = (ListView) view.findViewById(R.id.crop_list);
@@ -94,47 +95,38 @@ public class SelectCropFragment extends Fragment {
 
 	}
 
-	static class GFHandle extends Handler {
-		WeakReference<SelectCropFragment> reference;
-
-		public GFHandle(SelectCropFragment fragment) {
-			reference = new WeakReference<SelectCropFragment>(fragment);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			super.handleMessage(msg);
-			final SelectCropFragment fragment = reference.get();
-			if (msg.obj != null) {
-				Gson gson = new Gson();
-				fragment.allCrops = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<Crop>>() {
-						}.getType());
-				for (Crop crop : fragment.allCrops) {
-					if (crop.getCategory() == 0) {
-						fragment.rootCrops.add(crop);
-					}
+	@Override
+	public void handleMessage(Message msg,Object object) {
+		final SelectCropFragment fragment = (SelectCropFragment)object;
+		if (msg.obj != null) {
+			Gson gson = new Gson();
+			fragment.allCrops = gson.fromJson(msg.obj.toString(),
+					new TypeToken<List<Crop>>() {
+					}.getType());
+			for (Crop crop : fragment.allCrops) {
+				if (crop.getCategory() == 0) {
+					fragment.rootCrops.add(crop);
 				}
-				CropAdepter cropAdepter = fragment.new CropAdepter();
-				fragment.cropListView.setAdapter(cropAdepter);
-				fragment.cropListView
-						.setOnItemClickListener(new OnItemClickListener() {
-
-							@Override
-							public void onItemClick(AdapterView<?> parent,
-									View view, int position, long id) {
-								CreateQuestionActivity activity = (CreateQuestionActivity) fragment
-										.getActivity();
-								activity.setCropId(fragment.rootCrops.get(
-										position).getId());
-								activity.showFragment(1);
-								activity.setTitle(fragment.rootCrops.get(
-										position).getName()
-										+ "问题");
-							}
-						});
 			}
-		}
+			CropAdepter cropAdepter = fragment.new CropAdepter();
+			fragment.cropListView.setAdapter(cropAdepter);
+			fragment.cropListView
+					.setOnItemClickListener(new OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> parent,
+								View view, int position, long id) {
+							CreateQuestionActivity activity = (CreateQuestionActivity) fragment
+									.getActivity();
+							activity.setCropId(fragment.rootCrops.get(
+									position).getId());
+							activity.showFragment(1);
+							activity.setTitle(fragment.rootCrops.get(
+									position).getName()
+									+ "问题");
+						}
+					});
+		}		
 	}
+
 }

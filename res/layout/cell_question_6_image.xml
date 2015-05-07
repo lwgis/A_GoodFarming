@@ -48,7 +48,7 @@
                     android:layout_marginTop="2dp"
                     android:text="21:37:20"
                     android:textColor="#808080"
-                    android:textSize="11sp" />
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -66,7 +66,7 @@
             android:layout_marginRight="5dp"
             android:text="内容"
             android:textColor="#333333"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -77,14 +77,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" >
 
-                <ImageView
+                <com.zhonghaodi.customui.GFImageView
                     android:id="@+id/image1"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/placeholder" />
 
-                <ImageView
+                <com.zhonghaodi.customui.GFImageView
                     android:id="@+id/image2"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -93,7 +93,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/placeholder" />
 
-                <ImageView
+                <com.zhonghaodi.customui.GFImageView
                     android:id="@+id/image3"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -112,14 +112,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" >
 
-                <ImageView
+                <com.zhonghaodi.customui.GFImageView
                     android:id="@+id/image4"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/placeholder" />
 
-                <ImageView
+                <com.zhonghaodi.customui.GFImageView
                     android:id="@+id/image5"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -128,7 +128,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/placeholder" />
 
-                <ImageView
+                <com.zhonghaodi.customui.GFImageView
                     android:id="@+id/image6"
                     android:layout_width="100dp"
                     android:layout_height="100dp"

@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.Response;
 
 public class JsonUtil {
 	
@@ -40,6 +41,8 @@ public class JsonUtil {
 			public boolean shouldSkipField(FieldAttributes arg0) {
 	            if(fieldName.equals(arg0.getName())&&arg0.getDeclaringClass()==Question.class) return true;
 	            if(fieldName.equals(arg0.getName())&&arg0.getDeclaringClass()==NetImage.class) return true;
+	            if(fieldName.equals(arg0.getName())&&arg0.getDeclaringClass()==Response.class) return true;
+
 	            return false;
 			}
 			

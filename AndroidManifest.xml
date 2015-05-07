@@ -43,7 +43,29 @@
         </activity>
         <activity
             android:name=".CreateQuestionActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".PhotoViewActivity"
+            android:screenOrientation="portrait" >
+            >
+        </activity>
+           <activity
+            android:name=".QuestionActivity"
+            android:screenOrientation="portrait" >
+            >
+        </activity>
+           <activity
+            android:name=".CreateResponseActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible" >
+            >
+        </activity>
+          <activity
+            android:name=".DiseaseActivity"
+            android:screenOrientation="portrait" >
+            >
+
         </activity>
     </application>
 

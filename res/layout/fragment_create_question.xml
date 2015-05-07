@@ -82,7 +82,7 @@
                     android:gravity="top"
                     android:hint="病虫害的详细描述..."
                     android:padding="1dp"
-                    android:textColor="#715b4c" />
+                    android:textColor="#333333" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

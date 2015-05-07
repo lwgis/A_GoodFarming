@@ -9,23 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="#38be99" >
-      <com.zhonghaodi.customui.MyTextButton
+
+        <com.zhonghaodi.customui.MyTextButton
             android:id="@+id/cancel_button"
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:background="@null"
             android:paddingTop="8dp"
-            android:text="取消"
-            android:textSize="20sp"
-            android:textColor="#ffffff" />
+            android:text="&lt;返回"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
         <TextView
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="选择作物种类"
+            android:text="回答问题"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 
@@ -37,15 +39,21 @@
             android:background="@null"
             android:paddingTop="8dp"
             android:text="发送"
-            android:textColor="#eeeeee"
+            android:textColor="#ffffff"
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/content_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-    </LinearLayout>
+    <com.zhonghaodi.customui.MyEditText
+        android:id="@+id/content_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="160dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#ffffff"
+        android:gravity="top"
+        android:hint="编写答案.."
+        android:padding="1dp"
+        android:textColor="#333333" />
 
 </LinearLayout>

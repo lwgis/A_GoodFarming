@@ -15,6 +15,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.Response;
 
 
 
@@ -94,7 +95,12 @@ public class HttpUtil {
 				.executeHttpGet(RootURL+"questions?fromid="+qid);
 		return jsonString;
 	}
-
+  public static String getSingleQuestion(int qid) {
+	  String urlString=RootURL+"questions/"+String.valueOf(qid);
+	  String jsonString = HttpUtil
+				.executeHttpGet(urlString);
+		return jsonString;
+}
 	public static String getAllCropsString() {
 		String jsonString = HttpUtil
 				.executeHttpGet(RootURL+"crops");
@@ -103,5 +109,19 @@ public class HttpUtil {
 	public static void sendQuestion(Question question)throws Throwable {
 		String jsonString=JsonUtil.convertObjectToJson(question,"yyyy-MM-dd HH:mm:ss","id");
 		HttpUtil.postRequest(RootURL+ "questions", jsonString);
+	}
+	public static void sendResponse(Response response,int qid)throws Throwable {
+		  String urlString=RootURL+"questions/"+String.valueOf(qid)+"/reply";
+		String jsonString=JsonUtil.convertObjectToJson(response,"yyyy-MM-dd HH:mm:ss","id");
+		HttpUtil.postRequest(urlString, jsonString);
+	}
+
+
+
+	public static String getDisease(int diseaseId) {
+		  String urlString=RootURL+"diseases/"+String.valueOf(diseaseId);
+		  String jsonString = HttpUtil
+					.executeHttpGet(urlString);
+			return jsonString;
 	}
 }
