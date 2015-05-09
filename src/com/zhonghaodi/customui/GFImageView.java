@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 public class GFImageView extends ImageView {
-
 	private int index;
 	private Context mContext;
 	private ArrayList<Bitmap> bitmaps;
@@ -35,7 +34,6 @@ public class GFImageView extends ImageView {
 	public GFImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext=context;
-		
 	}
 
 	public int getIndex() {

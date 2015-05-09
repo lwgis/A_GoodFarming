@@ -17,7 +17,7 @@
             android:layout_alignParentLeft="true"
             android:background="@null"
             android:paddingTop="8dp"
-            android:text="&lt;返回"
+            android:text="取消"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -27,34 +27,27 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="回答问题"
+            android:text="登录"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 
         <com.zhonghaodi.customui.MyTextButton
-            android:id="@+id/send_button"
+            android:id="@+id/register_button"
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:background="@null"
             android:paddingTop="8dp"
-            android:text="发送"
+            android:text="注册"
             android:textColor="#ffffff"
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <com.zhonghaodi.customui.MyEditText
-        android:id="@+id/content_edit"
-        style="@style/my_edittext_style"
-        android:layout_width="fill_parent"
-        android:layout_height="160dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:background="#ffffff"
-        android:gravity="top"
-        android:hint="编写答案.."
-        android:padding="1dp"
-        android:textColor="#333333" />
+    <LinearLayout
+        android:id="@+id/content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:orientation="vertical">
+    </LinearLayout>
 
 </LinearLayout>

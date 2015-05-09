@@ -16,36 +16,39 @@ import android.util.AttributeSet;
 
 import android.widget.EditText;
 
-public class MyEditText extends EditText{
+public class MyEditText extends EditText {
+	Paint paint = new Paint();
+	RectF rectF = new RectF(2 + this.getScrollX(), 2 + this.getScrollY(),
+			this.getWidth() - 3 + this.getScrollX(), this.getHeight()
+					+ this.getScrollY() - 1);
 
-   public MyEditText(Context context, AttributeSet attrs) {
+	public MyEditText(Context context, AttributeSet attrs) {
 
-      super(context, attrs);
+		super(context, attrs);
 
-   }
+	}
 
- @Override
+	@Override
+	protected void onDraw(Canvas canvas) {
 
- protected void onDraw(Canvas canvas) {
+		paint.setStyle(Style.STROKE);
 
-    Paint paint = new Paint();
+		paint.setStrokeWidth(2);
 
-    paint.setStyle(Style.STROKE);
+		if (this.isFocused() == true)
 
-    paint.setStrokeWidth(2);
+			paint.setColor(Color.parseColor("#07cf98"));
 
-    if(this.isFocused() == true)
+		else
 
-        paint.setColor(Color.parseColor("#122e29"));
+			paint.setColor(Color.rgb(56, 190, 153));
+		rectF.set(2 + this.getScrollX(), 2 + this.getScrollY(), this.getWidth()
+				- 3 + this.getScrollX(), this.getHeight() + this.getScrollY()
+				- 1);
+		canvas.drawRoundRect(rectF, 3, 3, paint);
 
-  else
+		super.onDraw(canvas);
 
-       paint.setColor(Color.rgb(150,150,150));
-
-  canvas.drawRoundRect(new RectF(2+this.getScrollX(), 2+this.getScrollY(), this.getWidth()-3+this.getScrollX(), this.getHeight()+ this.getScrollY()-1), 3,3, paint);
-
-  super.onDraw(canvas);
-
-}
+	}
 
 }

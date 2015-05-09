@@ -75,6 +75,7 @@
 
                 <com.zhonghaodi.customui.MyEditText
                     android:id="@+id/content_edit"
+                    style="@style/my_edittext_style"
                     android:layout_width="fill_parent"
                     android:layout_height="160dp"
                     android:layout_marginTop="5dp"

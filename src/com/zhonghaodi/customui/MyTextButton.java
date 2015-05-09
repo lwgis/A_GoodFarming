@@ -20,7 +20,7 @@ public class MyTextButton extends Button {
 			this.setTextColor(0xFFFFFFFF);
 		}
 		else {
-			this.setTextColor(0xFFCCCCCC);
+			this.setTextColor(0xFFCACACA);
 		}
 		
 	}

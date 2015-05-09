@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.networking.ImageOptions;
 
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
@@ -42,24 +43,24 @@ public class PhotoViewActivity extends Activity {
 		
 		for (NetImage netImage  : images) {
 			PhotoView photoView = new PhotoView(this);
-			ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/small/"+netImage.getUrl(),photoView);
-//			ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/questions/big/"+netImage.getUrl(),photoView);
-//			photoView.setImageResource(R.drawable.add_image);
+			photoView.setTag(netImage.getUrl());
+			ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/small/"+photoView.getTag().toString(),photoView,ImageOptions.optionsNoPlaceholder);
+
 			photoViews.add(photoView);
 		}
 		new Handler().postDelayed(new Runnable() {
 			
 			@Override
 			public void run() {
-				int i=0;
+				// TODO Auto-generated method stub
 				for (PhotoView pView  : photoViews) {
-					ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/big/"+images.get(i).getUrl(),pView);
-					i++;
+					ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/big/"+pView.getTag().toString(),pView,ImageOptions.optionsNoPlaceholder);
 				}
 			}
 		}, 300);
-		index=getIntent().getIntExtra("index", 0);
+
 		viewPage.setAdapter(new GFPagerAdapter(this));
+		index=getIntent().getIntExtra("index", 0);
 		viewPage.setCurrentItem(index);
 		countTv.setText((index+1)+"/"+images.size());
 		viewPage.setOnPageChangeListener(new OnPageChangeListener() {

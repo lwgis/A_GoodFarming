@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
@@ -10,12 +11,14 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 public class CreateResponseActivity extends Activity implements HandMessage {
@@ -65,14 +68,20 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 			}
 		});
 		sendBtn = (MyTextButton) findViewById(R.id.send_button);
+		sendBtn.setEnabled(false);
 		sendBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				InputMethodManager im = (InputMethodManager) CreateResponseActivity.this
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				im.hideSoftInputFromWindow(
+						contentEt.getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
 				Response response=new Response();
 				response.setContent(contentEt.getText().toString());
 				User writer = new User();
-				writer.setId(13);
+				writer.setId(GFUserDictionary.getUserId());
 				response.setWriter(writer);
 				sendResponse(response,questionId);
 				sendBtn.setText("发送中...");
@@ -106,6 +115,7 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 	public void handleMessage(Message msg,Object object) {
 		CreateResponseActivity activity=(CreateResponseActivity)object;
 		if (msg.what==1) {
+			activity.setResult(2);
 			activity.finish();
 			Toast.makeText(activity, "发送成功", Toast.LENGTH_SHORT).show();;
 		}

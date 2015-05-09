@@ -14,6 +14,7 @@ import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
@@ -51,7 +52,12 @@ public class HomeFragment extends Fragment implements HandMessage {
 			@Override
 			public void onClick(View v) {
 				Intent it = new Intent();
-				it.setClass(getActivity(), CreateQuestionActivity.class);
+				if (GFUserDictionary.getUserId()==-1) {
+					it.setClass(getActivity(), LoginActivity.class);
+				}
+				else {
+					it.setClass(getActivity(), CreateQuestionActivity.class);
+				}
 				getActivity().startActivity(it);
 			}
 		});

@@ -86,7 +86,7 @@ public class ImageUtil {
 		        }
 		      }
 
-		      result = sb.toString();
+		      result = sb.toString().trim();
 		      dos.close();
 		      is.close();
 

@@ -43,5 +43,4 @@ public class Holder3  {
 		imageView5.setVisibility(View.INVISIBLE);
 		imageView6.setVisibility(View.INVISIBLE);
 	}
-
 }

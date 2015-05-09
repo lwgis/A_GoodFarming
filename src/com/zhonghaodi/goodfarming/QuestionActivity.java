@@ -1,6 +1,5 @@
 package com.zhonghaodi.goodfarming;
 
-
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -11,7 +10,9 @@ import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.customui.HolderResponse;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.Response;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -29,11 +30,13 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class QuestionActivity extends Activity implements UrlOnClick,HandMessage {
+public class QuestionActivity extends Activity implements UrlOnClick,
+		HandMessage {
 	private PullToRefreshListView pullToRefreshListView;
 	private Question question;
 	private int questionId;
-	private GFHandler<QuestionActivity> handler =new GFHandler<QuestionActivity>(this);
+	private GFHandler<QuestionActivity> handler = new GFHandler<QuestionActivity>(
+			this);
 	private ResponseAdapter adapter;
 
 	@Override
@@ -57,10 +60,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 				if (questionId == 0) {
 					return;
 				}
-				Intent it = new Intent(QuestionActivity.this,
-						CreateResponseActivity.class);
-				it.putExtra("questionId", questionId);
-				QuestionActivity.this.startActivityForResult(it, 2);
+				if (GFUserDictionary.getUserId() != -1) {
+					Intent it = new Intent(QuestionActivity.this,
+							CreateResponseActivity.class);
+					it.putExtra("questionId", questionId);
+					QuestionActivity.this.startActivityForResult(it, 2);
+				} else {
+					Intent it = new Intent(QuestionActivity.this,
+							LoginActivity.class);
+					QuestionActivity.this.startActivity(it);
+				}
 			}
 		});
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
@@ -83,7 +92,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == 2) {
+		if (requestCode == 2 && resultCode == 2) {
 			loadData();
 		}
 	}
@@ -217,7 +226,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 						holder2.imageView1, ImageOptions.options);
 				holder2.imageView1.setVisibility(View.VISIBLE);
 				holder2.imageView1.setIndex(0);
-				holder2.imageView1.setImages(question.getAttachments(),"questions");
+				holder2.imageView1.setImages(question.getAttachments(),
+						"questions");
 				if (question.getAttachments().size() > 1) {
 					ImageLoader.getInstance()
 							.displayImage(
@@ -227,7 +237,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 									holder2.imageView2, ImageOptions.options);
 					holder2.imageView2.setVisibility(View.VISIBLE);
 					holder2.imageView2.setIndex(1);
-					holder2.imageView2.setImages(question.getAttachments(),"questions");
+					holder2.imageView2.setImages(question.getAttachments(),
+							"questions");
 				}
 				if (question.getAttachments().size() > 2) {
 					ImageLoader.getInstance()
@@ -238,7 +249,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 									holder2.imageView3, ImageOptions.options);
 					holder2.imageView3.setVisibility(View.VISIBLE);
 					holder2.imageView3.setIndex(2);
-					holder2.imageView3.setImages(question.getAttachments(),"questions");
+					holder2.imageView3.setImages(question.getAttachments(),
+							"questions");
 				}
 				holder2.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
@@ -266,28 +278,32 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 						holder3.imageView1, ImageOptions.options);
 				holder3.imageView1.setVisibility(View.VISIBLE);
 				holder3.imageView1.setIndex(0);
-				holder3.imageView1.setImages(question.getAttachments(),"questions");
+				holder3.imageView1.setImages(question.getAttachments(),
+						"questions");
 				ImageLoader.getInstance().displayImage(
 						"http://121.40.62.120/appimage/questions/small/"
 								+ question.getAttachments().get(1).getUrl(),
 						holder3.imageView2, ImageOptions.options);
 				holder3.imageView2.setVisibility(View.VISIBLE);
 				holder3.imageView2.setIndex(1);
-				holder3.imageView2.setImages(question.getAttachments(),"questions");
+				holder3.imageView2.setImages(question.getAttachments(),
+						"questions");
 				ImageLoader.getInstance().displayImage(
 						"http://121.40.62.120/appimage/questions/small/"
 								+ question.getAttachments().get(2).getUrl(),
 						holder3.imageView3, ImageOptions.options);
 				holder3.imageView3.setVisibility(View.VISIBLE);
 				holder3.imageView3.setIndex(2);
-				holder3.imageView3.setImages(question.getAttachments(),"questions");
+				holder3.imageView3.setImages(question.getAttachments(),
+						"questions");
 				ImageLoader.getInstance().displayImage(
 						"http://121.40.62.120/appimage/questions/small/"
 								+ question.getAttachments().get(3).getUrl(),
 						holder3.imageView4, ImageOptions.options);
 				holder3.imageView4.setVisibility(View.VISIBLE);
 				holder3.imageView4.setIndex(3);
-				holder3.imageView4.setImages(question.getAttachments(),"questions");
+				holder3.imageView4.setImages(question.getAttachments(),
+						"questions");
 				if (question.getAttachments().size() > 4) {
 					ImageLoader.getInstance()
 							.displayImage(
@@ -297,7 +313,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 									holder3.imageView5, ImageOptions.options);
 					holder3.imageView5.setVisibility(View.VISIBLE);
 					holder3.imageView5.setIndex(4);
-					holder3.imageView5.setImages(question.getAttachments(),"questions");
+					holder3.imageView5.setImages(question.getAttachments(),
+							"questions");
 				}
 				if (question.getAttachments().size() > 5) {
 					ImageLoader.getInstance()
@@ -308,25 +325,69 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 									holder3.imageView6, ImageOptions.options);
 					holder3.imageView6.setVisibility(View.VISIBLE);
 					holder3.imageView6.setIndex(5);
-					holder3.imageView6.setImages(question.getAttachments(),"questions");
+					holder3.imageView6.setImages(question.getAttachments(),
+							"questions");
 				}
 				holder3.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				break;
 			case 3:
 				holderResponse = (HolderResponse) convertView.getTag();
+				final Response response = question.getResponses().get(
+						position - 1);
+				final HolderResponse holder=holderResponse;
 				ImageLoader.getInstance().displayImage(
 						"http://121.40.62.120/appimage/users/small/"
-								+ question.getResponses().get(position - 1)
-										.getWriter().getThumbnail(),
+								+ response.getWriter().getThumbnail(),
 						holderResponse.headIv, ImageOptions.options);
-				holderResponse.nameTv.setText(question.getResponses()
-						.get(position - 1).getWriter().getAlias());
-				holderResponse.timeTv.setText(question.getResponses()
-						.get(position - 1).getTime());
-				holderResponse.contentTv.setHtmlText(question.getResponses()
-						.get(position - 1).getContent());
+				holderResponse.nameTv.setText(response.getWriter().getAlias());
+				holderResponse.timeTv.setText(response.getTime());
+				holderResponse.contentTv.setHtmlText(response.getContent());
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
+				holderResponse.countTv
+						.setText(String.valueOf(response.getZan()));
+				if (response.getWriter().getId() == GFUserDictionary
+						.getUserId()) {
+					holderResponse.zanBtn.setEnabled(false);
+				} else {
+					final Button zanButton = holderResponse.zanBtn;
+					if (response.isHasUser(GFUserDictionary.getUserId())) {
+						zanButton.setSelected(true);
+					}
+					holderResponse.zanBtn
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									zanButton.setSelected(!zanButton
+											.isSelected());
+									if (zanButton.isSelected()) {
+										new Thread(new Runnable() {
+
+											@Override
+											public void run() {
+												HttpUtil.zanResponse(
+														question.getId(),
+														response.getId());
+											}
+										}).start();
+										response.zan(GFUserDictionary.getUserId());
+										holder.zan();
+									} else {
+										new Thread(new Runnable() {
+
+											@Override
+											public void run() {
+												HttpUtil.cancelZanResponse(
+														question.getId(),
+														response.getId());
+											}
+										}).start();
+										response.cancelZan(GFUserDictionary.getUserId());
+										holder.cancelZan();
+									}
+								}
+							});
+				}
 				break;
 			default:
 				break;
@@ -338,20 +399,19 @@ public class QuestionActivity extends Activity implements UrlOnClick,HandMessage
 
 	@Override
 	public void onClick(View view, String urlString) {
-		Intent it=new Intent(this, DiseaseActivity.class);
-		it.putExtra("diseaseId",Integer.parseInt(urlString));
+		Intent it = new Intent(this, DiseaseActivity.class);
+		it.putExtra("diseaseId", Integer.parseInt(urlString));
 		startActivity(it);
-//		Toast.makeText(this, urlString, Toast.LENGTH_SHORT).show();
+		// Toast.makeText(this, urlString, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
-		QuestionActivity activity=(QuestionActivity)object;
+		QuestionActivity activity = (QuestionActivity) object;
 		Gson gson = new Gson();
 		String jsonString = (String) msg.obj;
-		activity.question = gson
-				.fromJson(jsonString, Question.class);
+		activity.question = gson.fromJson(jsonString, Question.class);
 		activity.adapter.notifyDataSetChanged();
-		activity.pullToRefreshListView.onRefreshComplete();		
+		activity.pullToRefreshListView.onRefreshComplete();
 	}
 }

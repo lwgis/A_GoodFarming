@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.User;
@@ -14,6 +15,7 @@ import com.zhonghaodi.networking.ImageUtil;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,6 +25,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -69,6 +72,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		sendBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				InputMethodManager im = (InputMethodManager) CreateQuestionActivity.this
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				im.hideSoftInputFromWindow(
+						findViewById(R.id.content_view).getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
 				isSending = true;
 				sendBtn.setEnabled(false);
 				netImages = new ArrayList<NetImage>();
@@ -112,7 +120,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	}
 
 	public void showFragment(int index) {
-		FragmentTransaction transation = getFragmentManager()
+		FragmentTransaction transation = this.getFragmentManager()
 				.beginTransaction();
 		if (selectCropFragment == null) {
 			selectCropFragment = new SelectCropFragment();
@@ -122,15 +130,16 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			createQuestionFragment = new CreateQuestionFragment();
 			transation.add(R.id.content_view, createQuestionFragment);
 		}
-		transation.hide(selectCropFragment);
-		transation.hide(createQuestionFragment);
 		switch (index) {
 		case 0:
 			transation.show(selectCropFragment);
 			setTitle("选择农作物种类");
+			transation.hide(createQuestionFragment);
 			break;
 		case 1:
+			transation.setCustomAnimations(R.anim.fragment_rightin,R.anim.fragment_fadeout);
 			transation.show(createQuestionFragment);
+			transation.hide(selectCropFragment);
 		default:
 			break;
 		}
@@ -209,7 +218,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				question.setContent(activity.createQuestionFragment
 						.getContentString());
 				User writer = new User();
-				writer.setId(13);
+				writer.setId(GFUserDictionary.getUserId());
 				question.setWriter(writer);
 				Crop crop = new Crop();
 				crop.setId(activity.cropId);
@@ -240,7 +249,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			question.setContent(activity.createQuestionFragment
 					.getContentString());
 			User writer = new User();
-			writer.setId(13);
+			writer.setId(GFUserDictionary.getUserId());
 			question.setWriter(writer);
 			Crop crop = new Crop();
 			crop.setId(activity.cropId);
