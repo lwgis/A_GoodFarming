@@ -1,8 +1,11 @@
 package com.zhonghaodi.goodfarming;
 
 
+import com.zhonghaodi.model.GFUserDictionary;
+
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -123,8 +126,21 @@ public class MainActivity extends Activity implements OnClickListener {
 			seletFragmentIndex(2);
 		}
 		if (v==meView&&pageIndex!=3) {
+			if (GFUserDictionary.getUserId()==-1) {
+				Intent it=new Intent();
+				it.setClass(this, LoginActivity.class);
+				startActivityForResult(it, 0);
+				return;
+			}
 			seletFragmentIndex(3);
 		}
 	}
-
+ @Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	// TODO Auto-generated method stub
+	super.onActivityResult(requestCode, resultCode, data);
+	if (resultCode==4) {
+		seletFragmentIndex(3);
+	}
+}
 }

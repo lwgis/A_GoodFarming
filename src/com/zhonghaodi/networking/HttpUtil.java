@@ -18,11 +18,11 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.NameValuePair;
 
-import android.R.integer;
+
+
 
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
@@ -352,7 +352,7 @@ public class HttpUtil {
 	 * @param count 数量
 	 * @return 返回订单
 	 */
-	public String orderRecipe(int nzdid, int rid, final int uid, final int count) {
+	public static String orderRecipe(int nzdid, int rid, final int uid, final int count) {
 		String jsonString = null;
 		String urlString = RootURL + "users/" + String.valueOf(nzdid)
 				+ "/recipes/" + String.valueOf(rid) + "/order";
@@ -395,6 +395,20 @@ public class HttpUtil {
 			return null;
 		}
 		return jsonString;
+	}
+
+	public static String getRecipeQRCode(int nzdId, int recipeId, int userId,
+			String qrCode) {
+		String jsonString = null;
+		String urlString = RootURL + "users/" + String.valueOf(nzdId)
+				+ "/recipes/" + String.valueOf(recipeId) + "/order/"+"de2cc4eb-50ff-4897-bbbf-ff1894c43098"+"/QR";
+		jsonString=HttpUtil.executeHttpGetNoHead(urlString);
+		return jsonString;
+	}
+
+	public static String getUser(int userId) {
+		
+		return null;
 	}
 
 }

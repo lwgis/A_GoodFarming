@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -72,6 +73,11 @@ public class RecipeActivity extends Activity implements HandMessage {
 			public void onClick(View v) {
 				Intent it=new Intent();
 				it.setClass(RecipeActivity.this, RecipeOrderActivity.class);
+				it.putExtra("nzdId", recipe.getNzd().getId());
+				it.putExtra("recipeId", recipe.getId());
+				it.putExtra("userId", GFUserDictionary.getUserId());
+				it.putExtra("count", recipeCount);
+				it.putExtra("recipeName", recipe.getTitle());
 				RecipeActivity.this.startActivity(it);
 			}
 		});

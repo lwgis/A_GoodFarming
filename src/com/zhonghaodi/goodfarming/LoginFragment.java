@@ -94,6 +94,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 		LoginUser loginUser = (LoginUser) GsonUtil.fromJson(msg.obj.toString(), LoginUser.class);
 		if (loginUser.getCode()==1) {
 			GFUserDictionary.saveLoginInfo(loginUser.getUser().getId(), loginUser.getUser().getAlias());
+			loginFragment.getActivity().setResult(4);
 			loginFragment.getActivity().finish();
 			Toast.makeText(loginFragment.getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
 		}

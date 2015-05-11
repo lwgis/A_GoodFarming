@@ -10,7 +10,8 @@
         android:layout_height="45dp"
         android:background="#38be99" >
 
-        <Button
+        <!--
+             <Button
             android:id="@+id/cancel_button"
             android:layout_width="60dp"
             android:layout_height="match_parent" 
@@ -18,6 +19,8 @@
             android:textSize="18sp"
             android:text="取消"
             android:background="#00000000" />
+        -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,8 +31,9 @@
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/crop_list"
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pull_refresh_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -41,6 +45,10 @@
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
         android:listSelector="#00000000"
-        android:smoothScrollbar="true" />
+        android:smoothScrollbar="true"
+        ptr:ptrAnimationStyle="rotate"
+        ptr:ptrHeaderBackground="@null"
+        ptr:ptrHeaderSubTextColor="#00ffff"
+        ptr:ptrHeaderTextColor="#868686" />
 
 </LinearLayout>

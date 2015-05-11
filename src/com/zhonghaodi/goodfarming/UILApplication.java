@@ -45,7 +45,7 @@ public class UILApplication extends Application {
 		super.onCreate();
 		initImageLoader(getApplicationContext());
 		GFUserDictionary.context=getApplicationContext();
-//		GFUserDictionary.removeUserInfo();
+		GFUserDictionary.removeUserInfo();
 	}
 
 	public static void initImageLoader(Context context) {
