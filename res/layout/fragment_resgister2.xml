@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <com.zhonghaodi.customui.GFImageButton
+                android:id="@+id/head_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp" />
+        </RelativeLayout>
+
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/password_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="请输入密码"
+            android:inputType="textPassword"
+            android:textColor="#333333" />
+
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/password2_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="再次输入密码"
+            android:inputType="textPassword"
+            android:textColor="#333333" />
+
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/alias_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="输入昵称"
+            android:maxLength="10"
+            android:singleLine="true"
+            android:textColor="#333333" />
+
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/address_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="输入地址:例如 山东寿光"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textColor="#333333" />
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/register_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_shape"
+            android:text="注册"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</ScrollView>

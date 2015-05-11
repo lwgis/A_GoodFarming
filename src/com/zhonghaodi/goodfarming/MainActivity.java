@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.graphics.Color;

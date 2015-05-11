@@ -165,7 +165,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 			arrayList.add(zhengmianBtn.getBitmap());
 		}
 		if (zhengtiBtn.isHasImage()) {
-			arrayList.add(zhengmianBtn.getBitmap());
+			arrayList.add(zhengtiBtn.getBitmap());
 		}
 		if (fanmianBtn.isHasImage()) {
 			arrayList.add(fanmianBtn.getBitmap());

@@ -1,6 +1,12 @@
 package com.zhonghaodi.model;
 
-public class NetImage {
+import java.io.Serializable;
+
+public class NetImage implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6485062039899985467L;
 	private int id;
 	private String url;
 

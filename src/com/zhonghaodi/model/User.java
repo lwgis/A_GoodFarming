@@ -7,6 +7,7 @@ public class User {
 	private String thumbnail;
 	private String address ;
 	private Level level;
+	private String password;
 	public int getId() {
 		return id;
 	}
@@ -26,7 +27,7 @@ public class User {
 		this.alias = alias;
 	}
 	public String getThumbnail() {
-		return thumbnail;
+		return thumbnail.trim();
 	}
 	public void setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
@@ -42,6 +43,12 @@ public class User {
 	}
 	public void setLevel(Level level) {
 		this.level = level;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 }

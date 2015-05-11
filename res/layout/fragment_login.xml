@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.zhonghaodi.customui.MyEditText
+        android:id="@+id/phone_edit"
+        style="@style/my_edittext_style"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:hint="请输入你的手机号码"
+        android:inputType="numberSigned"
+        android:maxLength="11"
+        android:textColor="#333333" />
+
+    <com.zhonghaodi.customui.MyEditText
+        android:id="@+id/password_edit"
+        style="@style/my_edittext_style"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="请输入你的密码"
+        android:inputType="textPassword"
+        android:maxLength="20"
+        android:textColor="#333333" />
+
+    <com.zhonghaodi.customui.MyTextButton
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_shape"
+        android:text="登录"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
+
+</LinearLayout>
