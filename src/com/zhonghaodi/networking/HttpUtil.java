@@ -305,4 +305,10 @@ public class HttpUtil {
 		}
 	}
 
+	public static String getRecipe(int uid,int rid){
+		String urlString = RootURL +"users/"+String.valueOf(uid)+"/recipes/"+String.valueOf(rid);
+		String jsonString=HttpUtil.executeHttpGet(urlString);
+		return jsonString;
+	}
+	
 }

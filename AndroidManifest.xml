@@ -66,6 +66,15 @@
             android:name=".LoginActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".RecipeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" >
+        </activity>
+        <activity 
+            android:name=".RecipeOrderActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

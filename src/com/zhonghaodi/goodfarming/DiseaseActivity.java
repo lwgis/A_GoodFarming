@@ -7,6 +7,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.HolderDisease;
+import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.model.Disease;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -14,12 +15,15 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -63,6 +67,21 @@ public class DiseaseActivity extends Activity implements HandMessage {
 					}
 				});
 		loadData();
+		pullToRefreshListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if (position==1) {
+					return;
+				}
+				Intent it=new Intent();
+				it.setClass(DiseaseActivity.this, RecipeActivity.class);
+				it.putExtra("recipeId", disease.getRecipes().get(position-2).getId());
+				it.putExtra("userId", disease.getRecipes().get(position-2).getNzd().getId());
+				DiseaseActivity.this.startActivity(it);
+			}
+		});
 	}
 
 	protected void loadData() {
@@ -90,7 +109,14 @@ public class DiseaseActivity extends Activity implements HandMessage {
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return disease == null ? 0 : 1;
+			if (disease == null) {
+				return 0;
+			}
+			if (disease.getRecipes() == null
+					|| disease.getRecipes().size() == 0) {
+				return 1;
+			}
+			return disease.getRecipes().size() + 1;
 		}
 
 		@Override
@@ -108,18 +134,22 @@ public class DiseaseActivity extends Activity implements HandMessage {
 		@Override
 		public int getItemViewType(int position) {
 			// TODO Auto-generated method stub
-			return 0;
+			if (position == 0) {
+				return 0;
+			}
+			return 1;
 		}
 
 		@Override
 		public int getViewTypeCount() {
 			// TODO Auto-generated method stub
-			return 1;
+			return 2;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			HolderDisease holderDisease;
+			HolderRecipe holderRecipe;
 			if (convertView == null) {
 				switch (getItemViewType(position)) {
 				case 0:
@@ -128,7 +158,12 @@ public class DiseaseActivity extends Activity implements HandMessage {
 					holderDisease = new HolderDisease(convertView);
 					convertView.setTag(holderDisease);
 					break;
-
+				case 1:
+					convertView = LayoutInflater.from(DiseaseActivity.this)
+							.inflate(R.layout.cell_recipe, parent, false);
+					holderRecipe = new HolderRecipe(convertView);
+					convertView.setTag(holderRecipe);
+					break;
 				default:
 					break;
 				}
@@ -149,7 +184,14 @@ public class DiseaseActivity extends Activity implements HandMessage {
 				}
 				holderDisease.contentTv.setText(disease.getDescription());
 				break;
-
+			case 1:
+				holderRecipe=(HolderRecipe)convertView.getTag();
+				if (disease.getRecipes().get(position-1).getThumbnail()!=null) {
+					ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/recipes/small/"+disease.getRecipes().get(position-1).getThumbnail(), holderRecipe.recipeIv, ImageOptions.optionsNoPlaceholder);
+				}
+				holderRecipe.titleTv.setText(disease.getRecipes().get(position-1).getTitle());
+				holderRecipe.oldPriceTv.setText(String.valueOf(disease.getRecipes().get(position-1).getPrice()));
+				holderRecipe.newPriceTv.setText(String.valueOf(disease.getRecipes().get(position-1).getNewprice()));
 			default:
 				break;
 			}

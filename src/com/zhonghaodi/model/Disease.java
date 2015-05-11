@@ -8,6 +8,7 @@ public class Disease {
 	private String description;
 	private List<NetImage>attachments;
 	private String thumbnail;
+	private List<Recipe>recipes;
 	public int getId() {
 		return id;
 	}
@@ -37,5 +38,11 @@ public class Disease {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
 	}
 }
