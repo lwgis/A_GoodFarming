@@ -13,6 +13,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 public class MeFragment extends Fragment implements HandMessage{
 	private User user;
@@ -33,13 +34,55 @@ public class MeFragment extends Fragment implements HandMessage{
 			
 			@Override
 			public void run() {
-			 String json=HttpUtil.getUser(GFUserDictionary.getUserId());
+			 String jsonString=HttpUtil.getUser(GFUserDictionary.getUserId());
+			 Message msg=new Message();
+			 msg.obj=jsonString;
+			 msg.sendToTarget();
 			}
 		}).start();
 	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
+		MeFragment fragment=(MeFragment)object;
+		
+		
+	}
+	class MeAdapter extends BaseAdapter{
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		@Override
+		public int getViewTypeCount() {
+			// TODO Auto-generated method stub
+			return super.getViewTypeCount();
+		}
+		@Override
+		public int getItemViewType(int position) {
+			// TODO Auto-generated method stub
+			return super.getItemViewType(position);
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
 	}
 

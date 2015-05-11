@@ -407,8 +407,8 @@ public class HttpUtil {
 	}
 
 	public static String getUser(int userId) {
-		
-		return null;
+		String jsonString=HttpUtil.executeHttpGet(RootURL + "users/" +String.valueOf(userId));
+		return jsonString;
 	}
 
 }
