@@ -78,7 +78,7 @@ public class DiseaseActivity extends Activity implements HandMessage {
 				Intent it=new Intent();
 				it.setClass(DiseaseActivity.this, RecipeActivity.class);
 				it.putExtra("recipeId", disease.getRecipes().get(position-2).getId());
-				it.putExtra("userId", disease.getRecipes().get(position-2).getNzd().getId());
+				it.putExtra("nzdCode", disease.getRecipes().get(position-2).getNzd().getId());
 				DiseaseActivity.this.startActivity(it);
 			}
 		});

@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,14 @@ import org.apache.http.NameValuePair;
 
 
 
+
+
+
+
+
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
@@ -232,7 +243,27 @@ public class HttpUtil {
 		}
 		return null;
 	}
-
+	/**
+	 * 获取图片
+	 * @param urlStr
+	 * @return
+	 */
+	public static Bitmap getBitmap(String urlStr ) {		
+		try {
+			URL url = new URL(urlStr);
+			URLConnection connection = url.openConnection();
+			connection.setUseCaches(true);
+			InputStream iStream=connection.getInputStream();
+			Bitmap bmp=BitmapFactory.decodeStream(iStream);
+			iStream.close();
+			return bmp;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public static String getQuestionsString() {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "questions");
 		return jsonString;
@@ -339,8 +370,8 @@ public class HttpUtil {
 		}
 	}
 
-	public static String getRecipe(int uid, int rid) {
-		String urlString = RootURL + "users/" + String.valueOf(uid)
+	public static String getRecipe(String nzdCode, int rid) {
+		String urlString = RootURL + "users/" + nzdCode
 				+ "/recipes/" + String.valueOf(rid);
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
@@ -397,18 +428,22 @@ public class HttpUtil {
 		return jsonString;
 	}
 
-	public static String getRecipeQRCode(int nzdId, int recipeId, int userId,
+	public static Bitmap getRecipeQRCode(int nzdId, int recipeId, int userId,
 			String qrCode) {
-		String jsonString = null;
+		Bitmap bitmap = null;
 		String urlString = RootURL + "users/" + String.valueOf(nzdId)
 				+ "/recipes/" + String.valueOf(recipeId) + "/order/"+"de2cc4eb-50ff-4897-bbbf-ff1894c43098"+"/QR";
-		jsonString=HttpUtil.executeHttpGetNoHead(urlString);
-		return jsonString;
+		bitmap=HttpUtil.getBitmap(urlString);
+		return bitmap;
 	}
-
-	public static String getUser(int userId) {
-		
-		return null;
+	/**
+	 * 获取用户信息
+	 * @param userId
+	 * @return
+	 */
+	public static String getUser(String userId) {
+		String jsonString=HttpUtil.executeHttpGet(RootURL+"users/"+userId);
+		return jsonString;
 	}
 
 }

@@ -3,7 +3,7 @@ package com.zhonghaodi.model;
 public class Zan {
 	private int id;
 	private int rid;
-	private int uid;
+	private String uid;
 
 	public int getId() {
 		return id;
@@ -21,11 +21,11 @@ public class Zan {
 		this.rid = rid;
 	}
 
-	public int getUid() {
+	public String getUid() {
 		return uid;
 	}
 
-	public void setUid(int uid) {
+	public void setUid(String uid) {
 		this.uid = uid;
 	}
 }

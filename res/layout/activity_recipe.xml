@@ -85,7 +85,7 @@
                             android:layout_marginLeft="5dp"
                             android:gravity="right"
                             android:singleLine="true"
-                            android:text="原  价:"
+                            android:text="原    价:"
                             android:textColor="#444444"
                             android:textSize="15sp" />
 
@@ -192,7 +192,11 @@
                 android:text="药方描述"
                 android:textColor="#888888"
                 android:textSize="18sp" />
-
+<TextView
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:text="- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+                android:textColor="#cccccc" />
             <com.zhonghaodi.customui.MyTextButton
                 android:id="@+id/order_button"
                 android:layout_width="match_parent"

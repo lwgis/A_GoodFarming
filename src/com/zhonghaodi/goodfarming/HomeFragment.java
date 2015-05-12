@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment implements HandMessage {
 			@Override
 			public void onClick(View v) {
 				Intent it = new Intent();
-				if (GFUserDictionary.getUserId()==-1) {
+				if (GFUserDictionary.getUserId()==null) {
 					it.setClass(getActivity(), LoginActivity.class);
 				}
 				else {
@@ -360,10 +360,11 @@ public void handleMessage(Message msg,Object object) {
 				fragment.allQuestions.add(question);
 			}
 			fragment.adapter.notifyDataSetChanged();
-			fragment.pullToRefreshListView.onRefreshComplete();
 		} else {
 			Toast.makeText(fragment.getActivity(), "连接服务器失败,请稍候再试!",
 					Toast.LENGTH_SHORT).show();
 		}
+		fragment.pullToRefreshListView.onRefreshComplete();
+
 }
 }

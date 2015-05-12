@@ -34,7 +34,7 @@ public class RecipeActivity extends Activity implements HandMessage {
 	private MyTextButton addBtn;
 	private MyTextButton removeBtn;
 	private MyTextButton orderBtn;
-	private int userId;
+	private String nzdCode;
 	private int recipeId;
 	private Recipe recipe;
 	private int recipeCount=1;
@@ -46,7 +46,7 @@ public class RecipeActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_recipe);
-		userId = getIntent().getIntExtra("userId", 0);
+		nzdCode = getIntent().getStringExtra("nzdCode");
 		recipeId = getIntent().getIntExtra("recipeId", 0);
 		recipeIv = (ImageView) findViewById(R.id.recipe_image);
 		repiceTitleTv = (TextView) findViewById(R.id.recipetitle_text);
@@ -71,6 +71,13 @@ public class RecipeActivity extends Activity implements HandMessage {
 			
 			@Override
 			public void onClick(View v) {
+
+				if (GFUserDictionary.getUserId()==null) {
+					Intent it=new Intent();
+					it.setClass(RecipeActivity.this, LoginActivity.class);
+					startActivity(it);
+					return;
+				}
 				Intent it=new Intent();
 				it.setClass(RecipeActivity.this, RecipeOrderActivity.class);
 				it.putExtra("nzdId", recipe.getNzd().getId());
@@ -135,7 +142,7 @@ public class RecipeActivity extends Activity implements HandMessage {
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getRecipe(userId, recipeId);
+				String jsonString = HttpUtil.getRecipe(nzdCode, recipeId);
 				Message msg = handler.obtainMessage();
 				msg.obj = jsonString;
 				msg.sendToTarget();

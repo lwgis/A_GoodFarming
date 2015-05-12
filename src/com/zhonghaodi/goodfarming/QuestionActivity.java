@@ -60,7 +60,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				if (questionId == 0) {
 					return;
 				}
-				if (GFUserDictionary.getUserId() != -1) {
+				if (GFUserDictionary.getUserId() != null) {
 					Intent it = new Intent(QuestionActivity.this,
 							CreateResponseActivity.class);
 					it.putExtra("questionId", questionId);

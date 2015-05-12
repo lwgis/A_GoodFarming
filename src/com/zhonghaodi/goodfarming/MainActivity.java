@@ -103,6 +103,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			discoverTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 3:
+			meFragment.loadData();
 			transction.show(meFragment);
 			meIv.setImageResource(R.drawable.me_s);
 			meTv.setTextColor(Color.rgb(12, 179, 136));	
@@ -126,7 +127,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			seletFragmentIndex(2);
 		}
 		if (v==meView&&pageIndex!=3) {
-			if (GFUserDictionary.getUserId()==-1) {
+			if (GFUserDictionary.getUserId()==null) {
 				Intent it=new Intent();
 				it.setClass(this, LoginActivity.class);
 				startActivityForResult(it, 0);

@@ -11,6 +11,7 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
@@ -90,12 +91,7 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 			break;
 		case QRCODE:
 			if (msg.obj != null) {
-				byte[] data = msg.obj.toString().getBytes(); // 得到图片的输入流
-
-				// 二进制数据生成位图
-				Bitmap bit = BitmapFactory
-						.decodeByteArray(data, 0, data.length);
-				qrCodeIv.setImageBitmap(bit);
+				qrCodeIv.setImageBitmap((Bitmap)msg.obj);
 				titleTv.setText("订购成功");
 			} else {
 				Toast.makeText(activity, "订购失败", Toast.LENGTH_SHORT).show();
@@ -112,11 +108,11 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getRecipeQRCode(nzdId, recipeId,
+				Bitmap bitmap= HttpUtil.getRecipeQRCode(nzdId, recipeId,
 						userId, qrCode);
 				Message msg = handler.obtainMessage();
 				msg.what = QRCODE;
-				msg.obj = jsonString;
+				msg.obj = bitmap;
 				msg.sendToTarget();
 			}
 		}).start();

@@ -50,19 +50,19 @@ public class Response {
 	 * @param uid 用户id
 	 * @return
 	 */
-	public boolean isHasUser(int uid) {
+	public boolean isHasUser(String uid) {
 		if (items==null&&items.size()==0) {
 			return false;
 		}
 		for (Zan zan : items) {
-			if (zan.getUid()==uid) {
+			if (zan.getUid().equals(uid)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public void zan(int uid) {
+	public void zan(String uid) {
 		if (items==null) {	
 			items=new ArrayList<Zan>();
 		}
@@ -71,12 +71,12 @@ public class Response {
 		zan.setUid(uid);
 		items.add(zan);
 	}
-	public void cancelZan(int uid) {
+	public void cancelZan(String uid) {
 		if (items==null||items.size()==0) {
 			return;
 		}
 		for (Zan aZan : items) {
-			if (aZan.getUid()==uid) {
+			if (aZan.getUid().equals(uid)) {
 				items.remove(aZan);
 				return;
 			}
