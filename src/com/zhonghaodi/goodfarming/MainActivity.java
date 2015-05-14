@@ -1,6 +1,5 @@
 package com.zhonghaodi.goodfarming;
 
-
 import com.zhonghaodi.model.GFUserDictionary;
 
 import android.app.Activity;
@@ -8,12 +7,15 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
+	private long exitTime = 0;
 	HomeFragment homeFragment;
 	MessageFragment messageFragment;
 	DiscoverFragment discoverFragment;
@@ -31,46 +33,49 @@ public class MainActivity extends Activity implements OnClickListener {
 	View discoverView;
 	View meView;
 	int pageIndex;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		homeView=findViewById(R.id.home_layout);
-		messageView=findViewById(R.id.message_layout);
-		discoverView=findViewById(R.id.discover_layout);
-		meView=findViewById(R.id.me_layout);
-		homeIv=(ImageView)findViewById(R.id.home_image);
-		messageIv=(ImageView)findViewById(R.id.message_image);
-		discoverIv=(ImageView)findViewById(R.id.discover_image);
-		meIv=(ImageView)findViewById(R.id.me_image);
-		homeTv=(TextView)findViewById(R.id.home_text);
-		messageTv=(TextView)findViewById(R.id.message_text);
-		discoverTv=(TextView)findViewById(R.id.discover_text);
-		meTv=(TextView)findViewById(R.id.me_text);
-		
+		homeView = findViewById(R.id.home_layout);
+		messageView = findViewById(R.id.message_layout);
+		discoverView = findViewById(R.id.discover_layout);
+		meView = findViewById(R.id.me_layout);
+		homeIv = (ImageView) findViewById(R.id.home_image);
+		messageIv = (ImageView) findViewById(R.id.message_image);
+		discoverIv = (ImageView) findViewById(R.id.discover_image);
+		meIv = (ImageView) findViewById(R.id.me_image);
+		homeTv = (TextView) findViewById(R.id.home_text);
+		messageTv = (TextView) findViewById(R.id.message_text);
+		discoverTv = (TextView) findViewById(R.id.discover_text);
+		meTv = (TextView) findViewById(R.id.me_text);
+
 		homeView.setOnClickListener(this);
 		messageView.setOnClickListener(this);
 		discoverView.setOnClickListener(this);
 		meView.setOnClickListener(this);
 		seletFragmentIndex(0);
-		pageIndex=0;
+		pageIndex = 0;
 	}
+
 	private void seletFragmentIndex(int i) {
-		FragmentTransaction transction= getFragmentManager().beginTransaction();
-		if (homeFragment==null) {
-			homeFragment=new HomeFragment();
+		FragmentTransaction transction = getFragmentManager()
+				.beginTransaction();
+		if (homeFragment == null) {
+			homeFragment = new HomeFragment();
 			transction.add(R.id.content, homeFragment);
 		}
-		if (messageFragment==null) {
-			messageFragment=new MessageFragment();
+		if (messageFragment == null) {
+			messageFragment = new MessageFragment();
 			transction.add(R.id.content, messageFragment);
 		}
-		if (discoverFragment==null) {
-			discoverFragment=new DiscoverFragment();
+		if (discoverFragment == null) {
+			discoverFragment = new DiscoverFragment();
 			transction.add(R.id.content, discoverFragment);
 		}
-		if (meFragment==null) {
-			meFragment=new MeFragment();
+		if (meFragment == null) {
+			meFragment = new MeFragment();
 			transction.add(R.id.content, meFragment);
 		}
 		transction.hide(homeFragment);
@@ -103,32 +108,35 @@ public class MainActivity extends Activity implements OnClickListener {
 			discoverTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 3:
-			meFragment.loadData();
+			if (meFragment.getUser() == null) {
+				meFragment.loadData();
+			}
 			transction.show(meFragment);
 			meIv.setImageResource(R.drawable.me_s);
-			meTv.setTextColor(Color.rgb(12, 179, 136));	
-		break;
+			meTv.setTextColor(Color.rgb(12, 179, 136));
+			break;
 		default:
 			break;
 		}
 		transction.commit();
-		pageIndex=i;
+		pageIndex = i;
 	}
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if (v==homeView&&pageIndex!=0) {
+		if (v == homeView && pageIndex != 0) {
 			seletFragmentIndex(0);
 		}
-		if (v==messageView&&pageIndex!=1) {
+		if (v == messageView && pageIndex != 1) {
 			seletFragmentIndex(1);
 		}
-		if (v==discoverView&&pageIndex!=2) {
+		if (v == discoverView && pageIndex != 2) {
 			seletFragmentIndex(2);
 		}
-		if (v==meView&&pageIndex!=3) {
-			if (GFUserDictionary.getUserId()==null) {
-				Intent it=new Intent();
+		if (v == meView && pageIndex != 3) {
+			if (GFUserDictionary.getUserId() == null) {
+				Intent it = new Intent();
 				it.setClass(this, LoginActivity.class);
 				startActivityForResult(it, 0);
 				return;
@@ -136,12 +144,27 @@ public class MainActivity extends Activity implements OnClickListener {
 			seletFragmentIndex(3);
 		}
 	}
- @Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	// TODO Auto-generated method stub
-	super.onActivityResult(requestCode, resultCode, data);
-	if (resultCode==4) {
-		seletFragmentIndex(3);
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == 4) {
+			seletFragmentIndex(3);
+		}
 	}
-}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){   
+	        if((System.currentTimeMillis()-exitTime) > 2000){  
+	            Toast.makeText(getApplicationContext(), "再按一次退出种好地", Toast.LENGTH_SHORT).show();                                
+	            exitTime = System.currentTimeMillis();   
+	        } else {
+	            finish();
+	            System.exit(0);
+	        }
+	        return true;   
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 }

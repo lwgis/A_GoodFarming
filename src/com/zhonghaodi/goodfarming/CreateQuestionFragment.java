@@ -10,6 +10,7 @@ import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -20,11 +21,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
 public class CreateQuestionFragment extends Fragment implements OnClickListener {
+	private View view;
 	private GFImageButton jinzhaoBtn = null;
 	private GFImageButton yuanzhaoBtn = null;
 	private GFImageButton zhengtiBtn = null;
@@ -48,7 +51,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_create_question,
+		 view = inflater.inflate(R.layout.fragment_create_question,
 				container, false);
 		popView = inflater.inflate(R.layout.popupwindow_camera, container,
 				false);
@@ -150,6 +153,16 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 		}
 	}
 
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		InputMethodManager im = (InputMethodManager) this.getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		im.hideSoftInputFromWindow(view
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		super.onPause();
+	}
+	
 	public ArrayList<Bitmap> getImages() {
 		ArrayList<Bitmap> arrayList = new ArrayList<Bitmap>();
 		if (jinzhaoBtn.isHasImage()) {

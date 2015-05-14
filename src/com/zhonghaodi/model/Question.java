@@ -2,6 +2,8 @@ package com.zhonghaodi.model;
 
 import java.util.List;
 
+import com.zhonghaodi.networking.GFDate;
+
 public class Question {
 	private int id;
 	private String content;
@@ -61,7 +63,7 @@ public class Question {
 	}
 
 	public String getTime() {
-		return time;
+		return GFDate.getStandardDate(time);
 	}
 
 	public void setTime(String time) {

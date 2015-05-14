@@ -32,6 +32,9 @@ import org.apache.http.NameValuePair;
 
 
 
+
+
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -39,6 +42,7 @@ import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.UpdateUser;
 import com.zhonghaodi.model.User;
 
 /**
@@ -444,6 +448,20 @@ public class HttpUtil {
 	public static String getUser(String userId) {
 		String jsonString=HttpUtil.executeHttpGet(RootURL+"users/"+userId);
 		return jsonString;
+	}
+
+	public static boolean updateUser(UpdateUser updateUser) {
+		String urlString = RootURL + "users/update";
+		String jsonString = JsonUtil.convertObjectToJson(updateUser,
+				"yyyy-MM-dd HH:mm:ss",new String[]{NetImage.class.toString()}) ;
+		 try {
+			HttpUtil.executeHttpPost(urlString, jsonString);
+			return true;
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}		
 	}
 
 }

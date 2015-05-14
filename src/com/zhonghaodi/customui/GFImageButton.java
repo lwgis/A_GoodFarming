@@ -26,9 +26,23 @@ public class GFImageButton extends LinearLayout {
 	private GFHandler handler;
 	private boolean isHasImage=false;
 	private Bitmap bitmap;
+	private ImageChangedListener imageChangedListener;
 	public boolean isHasImage() {
 		return isHasImage;
 	}
+
+
+
+	public ImageChangedListener getImageChangedListener() {
+		return imageChangedListener;
+	}
+
+
+
+	public void setImageChangedListener(ImageChangedListener imageChangedListener) {
+		this.imageChangedListener = imageChangedListener;
+	}
+
 
 
 	public void setHasImage(boolean isHasImage) {
@@ -54,6 +68,10 @@ public class GFImageButton extends LinearLayout {
 					deleteIv.setVisibility(View.INVISIBLE);
 					titleTv.setVisibility(View.VISIBLE);
 					setHasImage(false);
+					if (GFImageButton.this.imageChangedListener!=null) {
+						GFImageButton.this.imageChangedListener.imageChanged(GFImageButton.this, GFImageButton.this.isHasImage);
+					}
+					
 			}
 		});
 	}
@@ -145,9 +163,15 @@ public class GFImageButton extends LinearLayout {
 				imageButton.contentIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
 				imageButton.titleTv.setVisibility(View.INVISIBLE);
 				imageButton.setHasImage(true);
+				if (imageButton.imageChangedListener!=null) {
+					imageButton.imageChangedListener.imageChanged(imageButton, imageButton.isHasImage);
+				}
 			}
     	}
     	
     }
+	public interface ImageChangedListener{
+		void imageChanged(View v,boolean isHasImage);
+	}
 }
 

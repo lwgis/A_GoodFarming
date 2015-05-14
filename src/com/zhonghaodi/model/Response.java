@@ -2,6 +2,8 @@ package com.zhonghaodi.model;
 
 import java.util.ArrayList;
 
+import com.zhonghaodi.networking.GFDate;
+
 public class Response {
 	private int id;
 	private User writer;
@@ -34,7 +36,7 @@ public class Response {
 		this.zan = zan;
 	}
 	public String getTime() {
-		return time;
+		return GFDate.getStandardDate(time);
 	}
 	public void setTime(String time) {
 		this.time = time;

@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -38,7 +39,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	private TextView titleTv = null;
 	private MyTextButton sendBtn;
 	private ArrayList<NetImage> netImages;
-	private GFHandler<CreateQuestionActivity> handler=new GFHandler<CreateQuestionActivity>(this) ;
+	private GFHandler<CreateQuestionActivity> handler = new GFHandler<CreateQuestionActivity>(
+			this);
 	private int imageCount;
 	private boolean isSending;
 
@@ -72,11 +74,6 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		sendBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InputMethodManager im = (InputMethodManager) CreateQuestionActivity.this
-						.getSystemService(Context.INPUT_METHOD_SERVICE);
-				im.hideSoftInputFromWindow(
-						findViewById(R.id.content_view).getWindowToken(),
-						InputMethodManager.HIDE_NOT_ALWAYS);
 				isSending = true;
 				sendBtn.setEnabled(false);
 				netImages = new ArrayList<NetImage>();
@@ -103,7 +100,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 								} catch (Throwable e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
-									isSending=false;
+									isSending = false;
+									GFToast.show("发送失败");
 								}
 							}
 						}).start();
@@ -113,6 +111,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					msg.what = TypeNoImage;
 					msg.sendToTarget();
 				}
+				finish();
 			}
 		});
 		sendBtn.setEnabled(false);
@@ -137,7 +136,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			transation.hide(createQuestionFragment);
 			break;
 		case 1:
-			transation.setCustomAnimations(R.anim.fragment_rightin,R.anim.fragment_fadeout);
+			transation.setCustomAnimations(R.anim.fragment_rightin,
+					R.anim.fragment_fadeout);
 			transation.show(createQuestionFragment);
 			transation.hide(selectCropFragment);
 		default:
@@ -195,8 +195,6 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		return super.dispatchTouchEvent(ev);
 	}
 
-
-
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && isSending) {
@@ -207,8 +205,17 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	}
 
 	@Override
-	public void handleMessage(Message msg,Object object) {
-		final CreateQuestionActivity activity =(CreateQuestionActivity)object;
+	public void finish() {
+		InputMethodManager im = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		super.finish();
+	}
+
+	@Override
+	public void handleMessage(Message msg, Object object) {
+		final CreateQuestionActivity activity = (CreateQuestionActivity) object;
 		switch (msg.what) {
 		case TypeImage:
 			activity.imageCount++;
@@ -238,7 +245,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 						} catch (Throwable e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							activity.isSending=false;
+							activity.isSending = false;
 						}
 					}
 				}).start();
@@ -268,17 +275,19 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						GFToast.show("发送失败");
 					}
 				}
 			}).start();
 			break;
 		case TypeQuestion:
 			activity.isSending = false;
-			activity.finish();
+			GFToast.show("发送成功");
+//			activity.finish();
 			break;
 		default:
 			break;
-		}		
+		}
 	}
 
 }

@@ -14,6 +14,7 @@ import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GFString;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -21,6 +22,7 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,7 +95,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 2 && resultCode == 2) {
-			loadData();
+			new Handler().postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					loadData();
+				}
+			}, 1000);
 		}
 	}
 
@@ -335,7 +343,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse = (HolderResponse) convertView.getTag();
 				final Response response = question.getResponses().get(
 						position - 1);
-				final HolderResponse holder=holderResponse;
+				final HolderResponse holder = holderResponse;
 				ImageLoader.getInstance().displayImage(
 						"http://121.40.62.120/appimage/users/small/"
 								+ response.getWriter().getThumbnail(),
@@ -346,44 +354,55 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
 				holderResponse.countTv
 						.setText(String.valueOf(response.getZan()));
-				if (response.getWriter().getId() == GFUserDictionary
-						.getUserId()) {
+				if (response.getWriter().getId()
+						.equals(GFUserDictionary.getUserId())) {
 					holderResponse.zanBtn.setEnabled(false);
 				} else {
 					final Button zanButton = holderResponse.zanBtn;
 					if (response.isHasUser(GFUserDictionary.getUserId())) {
 						zanButton.setSelected(true);
+					} else {
+						zanButton.setSelected(false);
 					}
 					holderResponse.zanBtn
 							.setOnClickListener(new OnClickListener() {
 								@Override
 								public void onClick(View v) {
-									zanButton.setSelected(!zanButton
-											.isSelected());
-									if (zanButton.isSelected()) {
-										new Thread(new Runnable() {
-
-											@Override
-											public void run() {
-												HttpUtil.zanResponse(
-														question.getId(),
-														response.getId());
-											}
-										}).start();
-										response.zan(GFUserDictionary.getUserId());
-										holder.zan();
+									if (GFUserDictionary.getUserId() == null) {
+										Intent it = new Intent(
+												QuestionActivity.this,
+												LoginActivity.class);
+										QuestionActivity.this.startActivity(it);
 									} else {
-										new Thread(new Runnable() {
+										zanButton.setSelected(!zanButton
+												.isSelected());
+										if (zanButton.isSelected()) {
+											new Thread(new Runnable() {
 
-											@Override
-											public void run() {
-												HttpUtil.cancelZanResponse(
-														question.getId(),
-														response.getId());
-											}
-										}).start();
-										response.cancelZan(GFUserDictionary.getUserId());
-										holder.cancelZan();
+												@Override
+												public void run() {
+													HttpUtil.zanResponse(
+															question.getId(),
+															response.getId());
+												}
+											}).start();
+											response.zan(GFUserDictionary
+													.getUserId());
+											holder.zan();
+										} else {
+											new Thread(new Runnable() {
+
+												@Override
+												public void run() {
+													HttpUtil.cancelZanResponse(
+															question.getId(),
+															response.getId());
+												}
+											}).start();
+											response.cancelZan(GFUserDictionary
+													.getUserId());
+											holder.cancelZan();
+										}
 									}
 								}
 							});
@@ -399,6 +418,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 
 	@Override
 	public void onClick(View view, String urlString) {
+		if (!GFString.isNumeric(urlString)) {
+			return;
+		}
 		Intent it = new Intent(this, DiseaseActivity.class);
 		it.putExtra("diseaseId", Integer.parseInt(urlString));
 		startActivity(it);

@@ -16,14 +16,14 @@
 
             <com.zhonghaodi.customui.MyTextButton
                 android:id="@+id/cancel_button"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:background="@null"
-                android:paddingTop="8dp"
                 android:text="&lt;返回"
                 android:textColor="#ffffff"
-                android:textSize="20sp" />
+                android:textSize="20sp" 
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:id="@+id/title_text"

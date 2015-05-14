@@ -1,6 +1,5 @@
 package com.zhonghaodi.goodfarming;
 
-
 import com.zhonghaodi.customui.MyTextButton;
 
 import android.app.Activity;
@@ -25,24 +24,25 @@ public class LoginActivity extends Activity {
 	private MyTextButton resgisterBtn;
 	private TextView titleTv;
 	private String phone;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_login);
-		titleTv=(TextView)findViewById(R.id.title_text);
-		cancelBtn=(MyTextButton)findViewById(R.id.cancel_button);
+		titleTv = (TextView) findViewById(R.id.title_text);
+		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				LoginActivity.this.setResult(0);
 				finish();
 			}
 		});
-		resgisterBtn=(MyTextButton)findViewById(R.id.register_button);
+		resgisterBtn = (MyTextButton) findViewById(R.id.register_button);
 		resgisterBtn.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				selectFragment(1);
@@ -50,20 +50,22 @@ public class LoginActivity extends Activity {
 		});
 		selectFragment(0);
 	}
+
 	public void selectFragment(int index) {
-		FragmentTransaction transaction=getFragmentManager().beginTransaction();
+		FragmentTransaction transaction = getFragmentManager()
+				.beginTransaction();
 		InputMethodManager im = (InputMethodManager) this
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		if (loginFragment==null) {
-			loginFragment=new LoginFragment();
+		if (loginFragment == null) {
+			loginFragment = new LoginFragment();
 			transaction.add(R.id.content_view, loginFragment);
 		}
-		if (resgiterFragment1==null) {
-			resgiterFragment1=new RegisterFragment1();
+		if (resgiterFragment1 == null) {
+			resgiterFragment1 = new RegisterFragment1();
 			transaction.add(R.id.content_view, resgiterFragment1);
 		}
-		if (resgiterFragment2==null) {
-			resgiterFragment2=new RegisterFragment2();
+		if (resgiterFragment2 == null) {
+			resgiterFragment2 = new RegisterFragment2();
 			transaction.add(R.id.content_view, resgiterFragment2);
 		}
 		switch (index) {
@@ -73,21 +75,21 @@ public class LoginActivity extends Activity {
 			transaction.hide(resgiterFragment2);
 			break;
 		case 1:
-			im.hideSoftInputFromWindow(
-					findViewById(R.id.content_view).getWindowToken(),
-					InputMethodManager.HIDE_NOT_ALWAYS);
+			im.hideSoftInputFromWindow(findViewById(R.id.content_view)
+					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			resgisterBtn.setVisibility(View.INVISIBLE);
 			titleTv.setText("注册");
-			transaction.setCustomAnimations(R.anim.fragment_rightin,R.anim.fragment_fadeout);
+			transaction.setCustomAnimations(R.anim.fragment_rightin,
+					R.anim.fragment_fadeout);
 			transaction.show(resgiterFragment1);
 			transaction.hide(loginFragment);
 			transaction.hide(resgiterFragment2);
 			break;
 		case 2:
-			im.hideSoftInputFromWindow(
-					findViewById(R.id.content_view).getWindowToken(),
-					InputMethodManager.HIDE_NOT_ALWAYS);
-			transaction.setCustomAnimations(R.anim.fragment_rightin,R.anim.fragment_fadeout);
+			im.hideSoftInputFromWindow(findViewById(R.id.content_view)
+					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+			transaction.setCustomAnimations(R.anim.fragment_rightin,
+					R.anim.fragment_fadeout);
 			transaction.show(resgiterFragment2);
 			transaction.hide(loginFragment);
 			transaction.hide(resgiterFragment1);
@@ -97,7 +99,7 @@ public class LoginActivity extends Activity {
 		}
 		transaction.commit();
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
@@ -110,20 +112,19 @@ public class LoginActivity extends Activity {
 						null, null, null);
 				cursor.moveToFirst();
 				String imgPath = cursor.getString(1);
-				resgiterFragment2.getHeadGfImageButton()
-						.setImageFilePath(imgPath);
+				resgiterFragment2.getHeadGfImageButton().setImageFilePath(
+						imgPath);
 				cursor.close();
 			}
 			// 相机
 			if (requestCode == 3) {
-				String imgPath = resgiterFragment2.getCurrentfile()
-						.getPath();
-				resgiterFragment2.getHeadGfImageButton()
-						.setImageFilePath(imgPath);
+				String imgPath = resgiterFragment2.getCurrentfile().getPath();
+				resgiterFragment2.getHeadGfImageButton().setImageFilePath(
+						imgPath);
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && resgiterFragment2.isSending()) {
@@ -132,6 +133,7 @@ public class LoginActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 
 	}
+
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
@@ -142,10 +144,21 @@ public class LoginActivity extends Activity {
 		}
 		return super.dispatchTouchEvent(ev);
 	}
+
 	public String getPhone() {
 		return phone;
 	}
+
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	@Override
+	public void finish() {
+		InputMethodManager im = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		super.finish();
 	}
 }

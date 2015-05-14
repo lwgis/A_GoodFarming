@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="#38be99" >
+
+            <com.zhonghaodi.customui.MyTextButton
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:background="@null"
+                android:text="取消"
+                android:textColor="#ffffff"
+                android:textSize="20sp" 
+                android:layout_marginLeft="5dp"/>
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="升级为农艺师"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <com.zhonghaodi.customui.MyTextButton
+                android:id="@+id/send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                android:text="提交审核"
+                android:textColor="#ffffff"
+                android:textSize="20sp" 
+                android:layout_marginRight="5dp"/>
+        </RelativeLayout>
+
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/description_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="自我介绍"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textColor="#333333" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <com.zhonghaodi.customui.GFImageButton
+                android:id="@+id/zhengmian_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="50dp" />
+
+            <com.zhonghaodi.customui.GFImageButton
+                android:id="@+id/fanmian_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+        </LinearLayout>
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/crop_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_shape"
+            android:text="设置擅长农作物"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/select_crop_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="擅长作物"
+            android:textColor="#808080"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -10,8 +10,6 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;

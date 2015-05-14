@@ -7,10 +7,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.zhonghaodi.model.NetImage;
-import com.zhonghaodi.model.Question;
-import com.zhonghaodi.model.Response;
-import com.zhonghaodi.model.User;
+
 
 public class JsonUtil {
 	

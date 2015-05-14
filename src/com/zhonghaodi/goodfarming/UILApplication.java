@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemor
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 
 /**
@@ -44,6 +45,7 @@ public class UILApplication extends Application {
 
 		super.onCreate();
 		initImageLoader(getApplicationContext());
+		GFToast.GFContext=getApplicationContext();
 		GFUserDictionary.context=getApplicationContext();
 		GFUserDictionary.removeUserInfo();
 	}

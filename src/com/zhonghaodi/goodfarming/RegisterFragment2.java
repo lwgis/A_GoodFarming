@@ -126,7 +126,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					return;
 				}
 				registerBtn.setEnabled(false);
-				registerBtn.setText("注册中...");
+//				registerBtn.setText("注册中...");
 				new Thread(new Runnable() {
 
 					@Override
