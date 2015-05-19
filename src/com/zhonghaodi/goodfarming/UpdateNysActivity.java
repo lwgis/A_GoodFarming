@@ -13,6 +13,7 @@ import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Level;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.model.UpdateCrop;
 import com.zhonghaodi.model.UpdateUser;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
@@ -188,12 +189,21 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 			// 相册
 			if (requestCode == 2) {
 				Uri uri = data.getData();
-				Cursor cursor = this.getContentResolver().query(uri, null,
-						null, null, null);
-				cursor.moveToFirst();
-				String imgPath = cursor.getString(1);
-				currentGFimageButton.setImageFilePath(imgPath);
-				cursor.close();
+				String[] proj = { MediaStore.Images.Media.DATA };
+				if (!uri.toString().contains("file://")) {
+					Cursor cursor = this.getContentResolver().query(uri, proj,
+							null, null, null);
+					int column_index = cursor
+							.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+					cursor.moveToFirst();
+					String imgPath = cursor.getString(column_index);
+					currentGFimageButton.setImageFilePath(
+							imgPath);
+					cursor.close();
+				} else {
+					currentGFimageButton.setImageFilePath(
+							uri.getPath());
+				}
 			}
 			// 相机
 			if (requestCode == 3) {
@@ -283,7 +293,13 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 				arrayList.add(netImage);
 			}
 			updateUser.setAttachments(arrayList);
-			updateUser.setCrops(selectCrops);
+			ArrayList<UpdateCrop> updateCrops=new ArrayList<UpdateCrop>();
+			for (Crop crop : selectCrops) {
+				UpdateCrop updateCrop=new UpdateCrop();
+				updateCrop.setCrop(crop);
+				updateCrops.add(updateCrop);
+			}
+			updateUser.setCrops(updateCrops);
 			new Thread(new Runnable() {
 				
 				@Override

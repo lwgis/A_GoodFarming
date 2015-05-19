@@ -53,7 +53,7 @@ public class Response {
 	 * @return
 	 */
 	public boolean isHasUser(String uid) {
-		if (items==null&&items.size()==0) {
+		if (items==null||items.size()==0) {
 			return false;
 		}
 		for (Zan zan : items) {

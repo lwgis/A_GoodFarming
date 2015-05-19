@@ -4,13 +4,29 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapPoi;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
+import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
+import com.baidu.mapapi.model.LatLng;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.GFImageButton.ImageChangedListener;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
-import com.zhonghaodi.location.Common;
-import com.zhonghaodi.location.LocationSvc;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Level;
 import com.zhonghaodi.model.NetImage;
@@ -23,10 +39,7 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.ImageUtil;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,8 +53,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ZoomControls;
 
 public class UpdateNzdActivity extends Activity implements OnClickListener,
 		HandMessage, TextWatcher, ImageChangedListener {
@@ -52,20 +65,26 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 	private GFImageButton yyzzBtn;
 	private GFImageButton zhengmianBtn;
 	private GFImageButton fanmianBtn;
-	private MyTextButton locationBtn;
-	private TextView xTv;
-	private TextView yTv;
 	private PopupWindow popupWindow;
 	private View popView;
 	private File currentfile;
 	private MyTextButton sendBtn;
 	private GFImageButton currentGFimageButton;
 	private ArrayList<String> images;
-	private double x;
-	private double y;
+	private double x=0.0;
+	private double y=0.0;
+	private MapView mapView;
+	private BaiduMap map;
+	// 定位相关
+	LocationClient mLocClient;
+	public MyLocationListenner myListener = new MyLocationListenner();
+	private LocationMode mCurrentMode;
+	BitmapDescriptor mCurrentMarker;
 	private GFHandler<UpdateNzdActivity> handler = new GFHandler<UpdateNzdActivity>(
 			this);
-	private LocationBroadcastReceiver locationBroadcastReceiver=new LocationBroadcastReceiver();
+    private Marker marker;
+	BitmapDescriptor bdA = BitmapDescriptorFactory
+			.fromResource(R.drawable.icon_marka);
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -76,9 +95,9 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 		yyzzBtn = (GFImageButton) findViewById(R.id.yyzz_image);
 		zhengmianBtn = (GFImageButton) findViewById(R.id.zhengmian_image);
 		fanmianBtn = (GFImageButton) findViewById(R.id.fanmian_image);
-		locationBtn = (MyTextButton) findViewById(R.id.location_button);
-		xTv = (TextView) findViewById(R.id.x_text);
-		yTv = (TextView) findViewById(R.id.y_text);
+		mapView=(MapView)findViewById(R.id.mapView);
+		map=mapView.getMap();
+		hideZoomControl();
 		yyzzBtn.setTitle("营业执照");
 		zhengmianBtn.setTitle("身份证正面");
 		fanmianBtn.setTitle("身份证反面");
@@ -122,13 +141,6 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 					}
 				}).start();
 				finish();
-			}
-		});
-		locationBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				location();
 			}
 		});
 		nameEv.addTextChangedListener(this);
@@ -180,20 +192,63 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 				popupWindow.dismiss();
 			}
 		});
+		map.setOnMapClickListener(new OnMapClickListener() {
+			
+			@Override
+			public boolean onMapPoiClick(MapPoi arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void onMapClick(LatLng arg0) {
+				marker.setPosition(arg0);
+				x=arg0.longitude;
+				y=arg0.latitude;
+			}
+		});
 		location();
 	}
 
 	private void location() {
-		// 定位
-		// 注册广播
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Common.LOCATION_ACTION);
-		this.registerReceiver(locationBroadcastReceiver, filter);
+		mCurrentMode = LocationMode.FOLLOWING;
+		mapView.getMap().setMyLocationConfigeration(
+				new MyLocationConfiguration(mCurrentMode, true, null));
+		// 开启定位图层
+		mapView.getMap().setMyLocationEnabled(true);
+		// 定位初始化
+		mLocClient = new LocationClient(getApplicationContext());
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(5000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+	}
+	/**
+	 * 隐藏缩放按钮
+	 */
+	private void hideZoomControl() {
+		int childCount = mapView.getChildCount();
 
-		// 启动服务
-		Intent intent = new Intent();
-		intent.setClass(this, LocationSvc.class);
-		this.startService(intent);
+		View zoom = null;
+
+		for (int i = 0; i < childCount; i++) {
+
+			View child = mapView.getChildAt(i);
+
+			if (child instanceof ZoomControls) {
+
+				zoom = child;
+
+				break;
+
+			}
+
+		}
+
+		zoom.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -215,12 +270,19 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 			// 相册
 			if (requestCode == 2) {
 				Uri uri = data.getData();
-				Cursor cursor = this.getContentResolver().query(uri, null,
-						null, null, null);
-				cursor.moveToFirst();
-				String imgPath = cursor.getString(1);
-				currentGFimageButton.setImageFilePath(imgPath);
-				cursor.close();
+				String[] proj = { MediaStore.Images.Media.DATA };
+				if (!uri.toString().contains("file://")) {
+					Cursor cursor = this.getContentResolver().query(uri, proj,
+							null, null, null);
+					int column_index = cursor
+							.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+					cursor.moveToFirst();
+					String imgPath = cursor.getString(column_index);
+					currentGFimageButton.setImageFilePath(imgPath);
+					cursor.close();
+				} else {
+					currentGFimageButton.setImageFilePath(uri.getPath());
+				}
 			}
 			// 相机
 			if (requestCode == 3) {
@@ -230,17 +292,16 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 			checkUi();
 		}
 	}
+
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
-		if (popupWindow!= null
-				&& popupWindow.isShowing()) {
+		if (popupWindow != null && popupWindow.isShowing()) {
 			popupWindow.dismiss();
 			return true;
 		}
 		return super.dispatchTouchEvent(ev);
 	}
-
 
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count,
@@ -263,7 +324,7 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 	private void checkUi() {
 		if (nameEv.getText().length() > 0
 				&& descriptionEv.getText().length() > 0 && yyzzBtn.isHasImage()
-				&& zhengmianBtn.isHasImage() && fanmianBtn.isHasImage()) {
+				&& zhengmianBtn.isHasImage() && fanmianBtn.isHasImage()&&x>0&&y>0) {
 			sendBtn.setEnabled(true);
 		} else {
 			sendBtn.setEnabled(false);
@@ -275,6 +336,38 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 		checkUi();
 	}
 
+	/**
+	 * 定位SDK监听函数
+	 */
+	public class MyLocationListenner implements BDLocationListener {
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			// map view 销毁后不在处理新接收的位置
+			if (location == null || mapView == null)
+				return;
+//			MyLocationData locData = new MyLocationData.Builder()
+//					.accuracy(location.getRadius())
+//					// 此处设置开发者获取到的方向信息，顺时针0-360
+//					.direction(0).latitude(location.getLatitude())
+//					.longitude(location.getLongitude()).build();
+//			mapView.getMap().setMyLocationData(locData);
+			LatLng ll = new LatLng(location.getLatitude(),
+					location.getLongitude());
+			OverlayOptions overlayOptions=new MarkerOptions().position(ll).icon(bdA).draggable(true);
+			marker=(Marker)map.addOverlay(overlayOptions);
+			x=location.getLongitude();
+			y=location.getLatitude();
+			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+			map.animateMapStatus(u);
+			mLocClient.stop();
+		}
+
+		public void onReceivePoi(BDLocation poiLocation) {
+		}
+	}
+
+	
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		UpdateNzdActivity activity = (UpdateNzdActivity) object;
@@ -296,15 +389,15 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 			updateUser.setLevel(level);
 			updateUser.setX(x);
 			updateUser.setY(y);
-			ArrayList<NetImage> arrayList=new ArrayList<NetImage>();
+			ArrayList<NetImage> arrayList = new ArrayList<NetImage>();
 			for (String imageNameString : images) {
-				NetImage netImage=new NetImage();
+				NetImage netImage = new NetImage();
 				netImage.setUrl(imageNameString);
 				arrayList.add(netImage);
 			}
 			updateUser.setAttachments(arrayList);
 			new Thread(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					Message msgUpdate = handler.obtainMessage();
@@ -316,11 +409,11 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 					msgUpdate.sendToTarget();
 				}
 			}).start();
-			
+
 			break;
 		case TypeUpdate:
 			Toast.makeText(activity, "成功提交申请", Toast.LENGTH_SHORT).show();
-//			activity.finish();
+			// activity.finish();
 			break;
 		default:
 			break;
@@ -328,24 +421,26 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 	}
 
 	@Override
-	public void finish() {
-		unregisterReceiver(locationBroadcastReceiver);
-		super.finish();
+	protected void onPause() {
+		// MapView的生命周期与Activity同步，当activity挂起时需调用MapView.onPause()
+		mapView.onPause();
+		super.onPause();
 	}
-	private class LocationBroadcastReceiver extends BroadcastReceiver {
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (!intent.getAction().equals(Common.LOCATION_ACTION))
-				return;
-			x = intent.getExtras().getDouble(Common.X);
-			y = intent.getExtras().getDouble(Common.Y);
-			xTv.setText(String.valueOf(x));
-			yTv.setText(String.valueOf(y));
-			Toast.makeText(UpdateNzdActivity.this, "成功获取地理位置",
-					Toast.LENGTH_LONG).show();
-			;
-		}
+	@Override
+	protected void onResume() {
+		// MapView的生命周期与Activity同步，当activity恢复时需调用MapView.onResume()
+		mapView.onResume();
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		// MapView的生命周期与Activity同步，当activity销毁时需调用MapView.destroy()
+		map.setMyLocationEnabled(false);
+		mapView.onDestroy();
+		bdA.recycle();
+		super.onDestroy();
 	}
 
 }

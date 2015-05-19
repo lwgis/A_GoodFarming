@@ -15,11 +15,17 @@
  *******************************************************************************/
 package com.zhonghaodi.goodfarming;
 
+import java.util.List;
+
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 
+import com.baidu.mapapi.SDKInitializer;
+import com.easemob.chat.EMChat;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -32,6 +38,7 @@ import com.zhonghaodi.model.GFUserDictionary;
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  */
 public class UILApplication extends Application {
+	public static Context applicationContext;
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {
@@ -42,12 +49,15 @@ public class UILApplication extends Application {
 		// StrictMode.setVmPolicy(new
 		// StrictMode.VmPolicy.Builder().detectAll().penaltyDeath().build());
 		// }
-
+		applicationContext=this;
 		super.onCreate();
 		initImageLoader(getApplicationContext());
 		GFToast.GFContext=getApplicationContext();
 		GFUserDictionary.context=getApplicationContext();
-		GFUserDictionary.removeUserInfo();
+//		GFUserDictionary.removeUserInfo();
+		SDKInitializer.initialize(getApplicationContext());		
+		EMChat.getInstance().init(getApplicationContext());
+		EMChat.getInstance().setDebugMode(true);
 	}
 
 	public static void initImageLoader(Context context) {
@@ -69,5 +79,19 @@ public class UILApplication extends Application {
 				.build();
 		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(config);
+	}
+	public static boolean isBackground(Context context) {
+	    ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+	    List<RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+	    for (RunningAppProcessInfo appProcess : appProcesses) {
+	         if (appProcess.processName.equals(context.getPackageName())) {
+	                if (appProcess.importance == RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
+	                          return true;
+	                }else{
+	                          return false;
+	                }
+	           }
+	    }
+	    return false;
 	}
 }

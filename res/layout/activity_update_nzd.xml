@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#eaeaea" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -19,11 +16,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
+                android:layout_marginLeft="5dp"
                 android:background="@null"
                 android:text="取消"
                 android:textColor="#ffffff"
-                android:textSize="20sp" 
-                android:layout_marginLeft="5dp"/>
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/title_text"
@@ -40,11 +37,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
                 android:background="@null"
                 android:text="提交审核"
                 android:textColor="#ffffff"
-                android:textSize="20sp" 
-                android:layout_marginRight="5dp"/>
+                android:textSize="20sp" />
         </RelativeLayout>
 
         <com.zhonghaodi.customui.MyEditText
@@ -97,62 +94,17 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
         </LinearLayout>
-
-        <TextView
+		<TextView 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:textColor="#444444"
+		    android:textSize="12sp"
+		    android:text="点击地图调整地理位置"
+		    android:gravity="center_horizontal"/>
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="经度"
-            android:textColor="#808080"
-            android:textSize="20sp" />
+            android:layout_height="match_parent"
+            android:clickable="true" />
 
-        <TextView
-            android:id="@+id/x_text"
-            style="@style/my_edittext_style"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="0"
-            android:textColor="#808080"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="纬度"
-            android:textColor="#808080"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/y_text"
-            style="@style/my_edittext_style"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:maxLength="20"
-            android:singleLine="true"
-            android:text="0"
-            android:textColor="#808080" />
-
-        <com.zhonghaodi.customui.MyTextButton
-            android:id="@+id/location_button"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_shape"
-            android:text="获取当前地理位置"
-            android:textColor="#ffffff"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

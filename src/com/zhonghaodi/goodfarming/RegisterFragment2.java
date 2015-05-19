@@ -274,8 +274,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			LoginUser loginUser = (LoginUser) GsonUtil.fromJson(
 					msg.obj.toString(), LoginUser.class);
 			if (loginUser.getCode() == 1) {
-				GFUserDictionary.saveLoginInfo(loginUser.getUser().getId(),
-						loginUser.getUser().getAlias());
+				GFUserDictionary.saveLoginInfo(loginUser.getUser(),registerFragment2.passwordEt.getText().toString(),registerFragment2.getActivity());
 				registerFragment2.getActivity().setResult(4);
 				registerFragment2.getActivity().finish();
 				 Toast.makeText(registerFragment2.getActivity(), "注册成功",

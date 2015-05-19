@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/tilte_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/nav_view" />
+
+    <LinearLayout
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/voice_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/chatting_setmode_voice_btn"
+                android:onClick="setModeVoice"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/keyboard_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/chatting_setmode_keyboard_btn"
+                android:onClick="setModeKeyboard"
+                android:visibility="gone" />
+
+            <com.zhonghaodi.customui.MyEditText
+                android:id="@+id/chat_edit"
+                style="@style/my_edittext_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:maxLines="3"
+                android:minHeight="40dp"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp" 
+                android:paddingLeft="5dp"
+                android:onClick="editClick"/>
+
+            <LinearLayout
+                android:id="@+id/speak_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/chat_press_speak_btn"
+                android:gravity="center"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="按住说话"
+                    android:textColor="#666666"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/more_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/type_select_btn"
+                android:onClick="more" />
+
+            <com.zhonghaodi.customui.MyTextButton
+                android:id="@+id/send_meassage_button"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:background="@null"
+                android:text="发送"
+                android:textColor="#444444"
+                android:textSize="22sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/more_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/btn_take_picture"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/chat_takepic_selector"
+                    android:clickable="true"
+                    android:onClick="onClick"
+                    android:scaleType="fitCenter" />
+
+                <ImageView
+                    android:id="@+id/btn_picture"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/chat_image_selector"
+                    android:clickable="true"
+                    android:onClick="onClick"
+                    android:scaleType="fitCenter" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pull_refresh_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_view"
+        android:layout_below="@id/tilte_view"
+        android:cacheColorHint="#000000"
+        android:divider="#eaeaea"
+        android:dividerHeight="8dp"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:listSelector="#00000000"
+        android:smoothScrollbar="true"
+        ptr:ptrAnimationStyle="rotate"
+        ptr:ptrHeaderBackground="@null"
+        ptr:ptrHeaderSubTextColor="#00ffff"
+        ptr:ptrHeaderTextColor="#868686" />
+
+</RelativeLayout>

@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -166,13 +167,21 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			// 相册
 			if (requestCode == 2) {
 				Uri uri = data.getData();
-				Cursor cursor = this.getContentResolver().query(uri, null,
-						null, null, null);
-				cursor.moveToFirst();
-				String imgPath = cursor.getString(1);
-				createQuestionFragment.getCurrentGFimageButton()
-						.setImageFilePath(imgPath);
-				cursor.close();
+				 String[] proj = {MediaStore.Images.Media.DATA};
+				 if (!uri.toString().contains("file://")) {
+						Cursor cursor = this.getContentResolver().query(uri, proj,
+								null, null, null);
+						int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+						cursor.moveToFirst();
+						String imgPath = cursor.getString(column_index);
+						createQuestionFragment.getCurrentGFimageButton()
+								.setImageFilePath(imgPath);
+						cursor.close();
+				}
+				 else {
+					 createQuestionFragment.getCurrentGFimageButton()
+						.setImageFilePath(uri.getPath());
+				}
 			}
 			// 相机
 			if (requestCode == 3) {

@@ -31,7 +31,7 @@ public class GFDate {
 		// 判断是否是同一天
 		String curDate = dateFormater2.get().format(cal.getTime());
 		String paramDate = dateFormater2.get().format(time);
-		if (curDate.equals(paramDate)) {
+		if (curDate.subSequence(0, curDate.indexOf(" ")).equals(paramDate.subSequence(0, paramDate.indexOf(" ")))) {
 			if ((cal.getTimeInMillis()- time.getTime())/60000<1) {
 				return "刚刚";
 			}

@@ -10,7 +10,7 @@ public class UpdateUser {
 	private double y;
 	private String name;
 	private List<NetImage> attachments;
-	private List<Crop> crops;
+	private List<UpdateCrop> crops;
 	public User getUser() {
 		return user;
 	}
@@ -67,11 +67,11 @@ public class UpdateUser {
 		this.attachments = attachments;
 	}
 
-	public List<Crop> getCrops() {
+	public List<UpdateCrop> getCrops() {
 		return crops;
 	}
 
-	public void setCrops(List<Crop> crops) {
+	public void setCrops(List<UpdateCrop> crops) {
 		this.crops = crops;
 	}
 }

@@ -1,12 +1,34 @@
 package com.zhonghaodi.goodfarming;
 
+import com.easemob.EMCallBack;
+import com.easemob.EMConnectionListener;
+import com.easemob.EMError;
+import com.easemob.EMEventListener;
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMChat;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
+import com.easemob.chat.EMGroupManager;
+import com.easemob.chat.EMMessage;
+import com.easemob.chat.EMMessage.ChatType;
+import com.easemob.chat.TextMessageBody;
+import com.easemob.util.NetUtils;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +36,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener,
+		EMEventListener {
 	private long exitTime = 0;
 	HomeFragment homeFragment;
 	MessageFragment messageFragment;
@@ -57,6 +80,42 @@ public class MainActivity extends Activity implements OnClickListener {
 		meView.setOnClickListener(this);
 		seletFragmentIndex(0);
 		pageIndex = 0;
+		if (GFUserDictionary.getUserId() != null)
+			loginEm();
+		EMChatManager.getInstance().addConnectionListener(
+				new MyConnectionListener());
+		EMChatManager
+				.getInstance()
+				.registerEventListener(
+						this,
+						new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
+		EMChat.getInstance().setAppInited();
+	}
+
+	private void loginEm() {
+		EMChatManager.getInstance().login(GFUserDictionary.getPhone(),
+				GFUserDictionary.getPassword(), new EMCallBack() {
+
+					@Override
+					public void onSuccess() {
+						EMGroupManager.getInstance().loadAllGroups();
+						EMChatManager.getInstance().loadAllConversations();
+						EMChatManager.getInstance().updateCurrentUserNick(
+								GFUserDictionary.getAlias());
+					}
+
+					@Override
+					public void onProgress(int arg0, String arg1) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onError(int arg0, String arg1) {
+						// TODO Auto-generated method stub
+
+					}
+				});
 	}
 
 	private void seletFragmentIndex(int i) {
@@ -146,6 +205,16 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
@@ -153,18 +222,138 @@ public class MainActivity extends Activity implements OnClickListener {
 			seletFragmentIndex(3);
 		}
 	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	    if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){   
-	        if((System.currentTimeMillis()-exitTime) > 2000){  
-	            Toast.makeText(getApplicationContext(), "再按一次退出种好地", Toast.LENGTH_SHORT).show();                                
-	            exitTime = System.currentTimeMillis();   
-	        } else {
-	            finish();
-	            System.exit(0);
-	        }
-	        return true;   
-	    }
-	    return super.onKeyDown(keyCode, event);
+		// if (keyCode == KeyEvent.KEYCODE_BACK
+		// && event.getAction() == KeyEvent.ACTION_DOWN) {
+		// if ((System.currentTimeMillis() - exitTime) > 2000) {
+		// Toast.makeText(getApplicationContext(), "再按一次退出种好地",
+		// Toast.LENGTH_SHORT).show();
+		// exitTime = System.currentTimeMillis();
+		// } else {
+		// finish();
+		// System.exit(0);
+		// }
+		// return true;
+		// }
+		return super.onKeyDown(keyCode, event);
 	}
+
+	public void loginOut(View view) {
+		GFUserDictionary.removeUserInfo();
+	}
+
+	/**
+	 * 监听事件
+	 */
+	@Override
+	public void onEvent(EMNotifierEvent event) {
+		switch (event.getEvent()) {
+		case EventNewMessage: // 普通消息
+		{
+			EMMessage message = (EMMessage) event.getData();
+			final TextMessageBody textMessageBody = (TextMessageBody) message
+					.getBody();
+			if (UILApplication.isBackground(getApplicationContext())) {
+				notificationTextMessage(message, textMessageBody);
+			} else {
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						GFToast.show(textMessageBody.getMessage());
+
+					}
+				});
+			}
+			// 提示新消息
+
+			// refreshUI();
+			break;
+		}
+
+		case EventOfflineMessage: {
+			// refreshUI();
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 文本消息通知
+	 * 
+	 * @param message
+	 * @param textMessageBody
+	 */
+	private void notificationTextMessage(EMMessage message,
+			final TextMessageBody textMessageBody) {
+		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		Intent intent = new Intent(this, MainActivity.class);
+		Notification notification = new NotificationCompat.Builder(this)
+				.setSmallIcon(R.drawable.appicon)
+				.setContentTitle(message.getFrom())
+				.setContentText(textMessageBody.getMessage())
+				.setAutoCancel(true)
+				.setDefaults(Notification.DEFAULT_ALL)
+				.setContentIntent(
+						PendingIntent.getActivity(MainActivity.this, 0, intent,
+								0)).build();
+		// 发出通知
+		manager.notify(0, notification);
+	}
+
+	/**
+	 * 连接监听listener
+	 * 
+	 */
+	private class MyConnectionListener implements EMConnectionListener {
+
+		@Override
+		public void onConnected() {
+			runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					// chatHistoryFragment.errorItem.setVisibility(View.GONE);
+				}
+
+			});
+		}
+
+		@Override
+		public void onDisconnected(final int error) {
+			final String st1 = getResources().getString(
+					R.string.Less_than_chat_server_connection);
+			final String st2 = getResources().getString(
+					R.string.the_current_network);
+			runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					if (error == EMError.USER_REMOVED) {
+						// 显示帐号已经被移除
+						// showAccountRemovedDialog();
+					} else if (error == EMError.CONNECTION_CONFLICT) {
+						// 显示帐号在其他设备登陆dialog
+						// showConflictDialog();
+					} else {
+						// chatHistoryFragment.errorItem.setVisibility(View.VISIBLE);
+						if (NetUtils.hasNetwork(MainActivity.this))
+							// chatHistoryFragment.errorText.setText(st1);
+							;
+						else
+							// chatHistoryFragment.errorText.setText(st2);
+							;
+
+					}
+				}
+
+			});
+		}
+	}
+
 }

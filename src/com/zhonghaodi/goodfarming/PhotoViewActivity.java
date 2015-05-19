@@ -42,11 +42,12 @@ public class PhotoViewActivity extends Activity {
 		photoViews=new ArrayList<PhotoView>();
 		
 		for (NetImage netImage  : images) {
-			PhotoView photoView = new PhotoView(this);
-			photoView.setTag(netImage.getUrl());
-			ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/small/"+photoView.getTag().toString(),photoView,ImageOptions.optionsNoPlaceholder);
-
-			photoViews.add(photoView);
+			if (netImage.getUrl()!=null) {
+				PhotoView photoView = new PhotoView(this);
+				photoView.setTag(netImage.getUrl());
+				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/small/"+photoView.getTag().toString(),photoView,ImageOptions.optionsNoPlaceholder);
+				photoViews.add(photoView);
+			}
 		}
 		new Handler().postDelayed(new Runnable() {
 			

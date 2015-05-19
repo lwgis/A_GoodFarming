@@ -352,8 +352,8 @@ public class HttpUtil {
 	public static void zanResponse(int qid, int rid) {
 		String urlString = RootURL + "questions/" + String.valueOf(qid)
 				+ "/responses/" + String.valueOf(rid) + "/zan";
-		String jsonString = "{\"id\":"
-				+ String.valueOf(GFUserDictionary.getUserId()) + "}";
+		String jsonString = "{\"id\":\""
+				+ String.valueOf(GFUserDictionary.getUserId()) + "\"}";
 		try {
 			HttpUtil.executeHttpPut(urlString, jsonString);
 		} catch (Throwable e) {
