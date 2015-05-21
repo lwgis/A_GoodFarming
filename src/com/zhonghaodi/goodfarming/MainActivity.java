@@ -7,10 +7,12 @@ import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMChat;
 import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMChatOptions;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
+import com.easemob.chat.EMMessage.Type;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.util.NetUtils;
 import com.zhonghaodi.customui.GFToast;
@@ -80,19 +82,15 @@ public class MainActivity extends Activity implements OnClickListener,
 		meView.setOnClickListener(this);
 		seletFragmentIndex(0);
 		pageIndex = 0;
-		if (GFUserDictionary.getUserId() != null)
-			loginEm();
-		EMChatManager.getInstance().addConnectionListener(
-				new MyConnectionListener());
-		EMChatManager
-				.getInstance()
-				.registerEventListener(
-						this,
-						new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
-		EMChat.getInstance().setAppInited();
+		initEm();
 	}
 
-	private void loginEm() {
+	/**
+	 * 初始化环信
+	 */
+	public void initEm() {
+		if (GFUserDictionary.getUserId() == null)
+			return;
 		EMChatManager.getInstance().login(GFUserDictionary.getPhone(),
 				GFUserDictionary.getPassword(), new EMCallBack() {
 
@@ -102,6 +100,17 @@ public class MainActivity extends Activity implements OnClickListener,
 						EMChatManager.getInstance().loadAllConversations();
 						EMChatManager.getInstance().updateCurrentUserNick(
 								GFUserDictionary.getAlias());
+						EMChatManager.getInstance().addConnectionListener(
+								new MyConnectionListener());
+						EMChatManager
+								.getInstance()
+								.registerEventListener(
+										MainActivity.this,
+										new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
+						EMChat.getInstance().setAppInited();
+						EMChatOptions options = EMChatManager.getInstance()
+								.getChatOptions();
+						options.setNoticedByVibrate(false);
 					}
 
 					@Override
@@ -116,6 +125,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 					}
 				});
+
 	}
 
 	private void seletFragmentIndex(int i) {
@@ -189,8 +199,13 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 		if (v == messageView && pageIndex != 1) {
 			seletFragmentIndex(1);
+			if (GFUserDictionary.getUserId() == null) {
+				return;
+			}
+			messageFragment.loadData();
 		}
 		if (v == discoverView && pageIndex != 2) {
+
 			seletFragmentIndex(2);
 		}
 		if (v == meView && pageIndex != 3) {
@@ -220,6 +235,10 @@ public class MainActivity extends Activity implements OnClickListener,
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == 4) {
 			seletFragmentIndex(3);
+			initEm();
+		}
+		if (resultCode == 2) {
+			messageFragment.loadData();
 		}
 	}
 
@@ -242,6 +261,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	public void loginOut(View view) {
 		GFUserDictionary.removeUserInfo();
+		EMChatManager.getInstance().logout();
 	}
 
 	/**
@@ -253,26 +273,24 @@ public class MainActivity extends Activity implements OnClickListener,
 		case EventNewMessage: // 普通消息
 		{
 			EMMessage message = (EMMessage) event.getData();
-			final TextMessageBody textMessageBody = (TextMessageBody) message
-					.getBody();
 			if (UILApplication.isBackground(getApplicationContext())) {
-				notificationTextMessage(message, textMessageBody);
+				notificationTextMessage(message);
 			} else {
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						GFToast.show(textMessageBody.getMessage());
-
-					}
-				});
+				messageFragment.loadData();
+				// runOnUiThread(new Runnable() {
+				//
+				// @Override
+				// public void run() {
+				// GFToast.show(textMessageBody.getMessage());
+				//
+				// }
+				// });
 			}
 			// 提示新消息
 
 			// refreshUI();
 			break;
 		}
-
 		case EventOfflineMessage: {
 			// refreshUI();
 			break;
@@ -284,19 +302,27 @@ public class MainActivity extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * 文本消息通知
-	 * 
+	 * 消息通知
 	 * @param message
-	 * @param textMessageBody
 	 */
-	private void notificationTextMessage(EMMessage message,
-			final TextMessageBody textMessageBody) {
+	private void notificationTextMessage(EMMessage message) {
 		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		String content = "";
+		if (message.getType() == Type.TXT) {
+			TextMessageBody body = (TextMessageBody) message.getBody();
+			content = body.getMessage();
+		}
+		if (message.getType() == Type.VOICE) {
+			content = "[语音]";
+		}
+		if (message.getType() == Type.IMAGE) {
+			content = "[图片]";
+		}
 		Intent intent = new Intent(this, MainActivity.class);
 		Notification notification = new NotificationCompat.Builder(this)
 				.setSmallIcon(R.drawable.appicon)
 				.setContentTitle(message.getFrom())
-				.setContentText(textMessageBody.getMessage())
+				.setContentText(content)
 				.setAutoCancel(true)
 				.setDefaults(Notification.DEFAULT_ALL)
 				.setContentIntent(

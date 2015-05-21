@@ -32,6 +32,8 @@ public class GFUserDictionary {
 		editor.putString("userid", user.getId());
 		editor.putString("password", password);
 		editor.putString("phone", user.getPhone());
+		editor.putString("thumbnail", user.getThumbnail());
+
 
 		// 提交
 		editor.commit();
@@ -100,5 +102,10 @@ public class GFUserDictionary {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("phone", null);
+	}
+	public static String getThumbnail() {
+		SharedPreferences sharedPre = context.getSharedPreferences("config",
+				Context.MODE_PRIVATE);
+		return sharedPre.getString("thumbnail", null);
 	}
 }

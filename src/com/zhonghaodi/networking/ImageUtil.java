@@ -9,6 +9,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.easemob.util.EMLog;
+import com.easemob.util.PathUtil;
+
 import android.graphics.Bitmap;
 
 public class ImageUtil {
@@ -96,4 +99,23 @@ public class ImageUtil {
 		    }
 		return result;
 	}
+	
+	
+	public static String getImagePath(String remoteUrl)
+	{
+		String imageName= remoteUrl.substring(remoteUrl.lastIndexOf("/") + 1, remoteUrl.length());
+		String path =PathUtil.getInstance().getImagePath()+"/"+ imageName;
+        EMLog.d("msg", "image path:" + path);
+        return path;
+		
+	}
+	
+	
+	public static String getThumbnailImagePath(String thumbRemoteUrl) {
+		String thumbImageName= thumbRemoteUrl.substring(thumbRemoteUrl.lastIndexOf("/") + 1, thumbRemoteUrl.length());
+		String path =PathUtil.getInstance().getImagePath()+"/"+ "th"+thumbImageName;
+        EMLog.d("msg", "thum image path:" + path);
+        return path;
+    }
+	
 }

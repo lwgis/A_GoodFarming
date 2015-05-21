@@ -35,9 +35,14 @@ import org.apache.http.NameValuePair;
 
 
 
+
+
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.easemob.chat.EMMessage;
+import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.Question;
@@ -464,4 +469,22 @@ public class HttpUtil {
 		}		
 	}
 
+	public static String getUsers(List<GFMessage> messages) {
+		String jsonString="[ ";
+		for (GFMessage emMessage : messages) {
+			if (!emMessage.getTitle().equals("种好地")&&!emMessage.getTitle().equals("admin")) {
+				jsonString=jsonString+"\""+emMessage.getTitle()+"\",";
+			}
+		}
+		jsonString=jsonString.substring(0, jsonString.length()-1);
+		jsonString=jsonString+" ]";
+		
+		try {
+			return HttpUtil.executeHttpPost(RootURL+"users/inphones", jsonString);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

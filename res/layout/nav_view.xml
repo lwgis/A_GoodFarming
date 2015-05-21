@@ -41,7 +41,8 @@
             android:gravity="center"
             android:text="发送"
             android:textColor="#eeeeee"
-            android:textSize="20sp" />
+            android:textSize="20sp" 
+            android:visibility="invisible"/>
     </RelativeLayout>
 
 </LinearLayout>

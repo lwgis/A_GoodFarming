@@ -25,14 +25,15 @@
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder" />
 
-        <TextView
-            android:id="@+id/content_text"
+        <ImageView
+            android:id="@+id/photo_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/head_image"
             android:background="@drawable/chatto_bg_normal"
-            android:gravity="left|center"
             android:maxWidth="225dp"
+            android:paddingRight="20dp"
+            android:scaleType="fitXY"
             android:textColor="#444444"
             android:textSize="18sp" />
     </RelativeLayout>

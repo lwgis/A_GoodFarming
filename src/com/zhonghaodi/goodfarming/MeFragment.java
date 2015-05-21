@@ -36,7 +36,6 @@ public class MeFragment extends Fragment implements HandMessage {
 	private PullToRefreshListView pullToRefreshList;
 	private MeAdapter adapter;
 	private GFHandler<MeFragment> handler = new GFHandler<MeFragment>(this);
-
 	public User getUser() {
 		return user;
 	}
@@ -55,29 +54,26 @@ public class MeFragment extends Fragment implements HandMessage {
 		adapter = new MeAdapter();
 		functions = new ArrayList<Function>();
 		pullToRefreshList.setAdapter(adapter);
-		pullToRefreshList
-				.setOnRefreshListener(new OnRefreshListener<ListView>() {
+       pullToRefreshList.setOnRefreshListener(new OnRefreshListener<ListView>() {
 
-					@Override
-					public void onRefresh(
-							PullToRefreshBase<ListView> refreshView) {
-						loadData();
-					}
-				});
-		pullToRefreshList.setOnItemClickListener(new OnItemClickListener() {
+		@Override
+		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+			loadData();
+		}
+	});
+       pullToRefreshList.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				if (position < 2) {
-					return;
-				}
-				Intent it = new Intent();
-				it.setClass(getActivity(), functions.get(position - 2)
-						.getActivityClass());
-				getActivity().startActivity(it);
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			if (position<2) {
+				return;
 			}
-		});
+			Intent it=new Intent();
+			it.setClass(getActivity(), functions.get(position-2).getActivityClass());
+			getActivity().startActivity(it);
+		}
+	});
 		return view;
 	}
 
@@ -95,6 +91,8 @@ public class MeFragment extends Fragment implements HandMessage {
 		}).start();
 	}
 
+
+	
 	class MeAdapter extends BaseAdapter {
 
 		@Override
@@ -146,10 +144,8 @@ public class MeFragment extends Fragment implements HandMessage {
 					convertView.setTag(holderMeInfo);
 					break;
 				case 1:
-					convertView = LayoutInflater.from(
-							MeFragment.this.getActivity()).inflate(
-							R.layout.cell_function, parent, false);
-					holdFunction = new HoldFunction(convertView);
+					convertView=LayoutInflater.from(MeFragment.this.getActivity()).inflate(R.layout.cell_function, parent, false);
+					holdFunction=new HoldFunction(convertView);
 					convertView.setTag(holdFunction);
 				default:
 					break;
@@ -167,44 +163,14 @@ public class MeFragment extends Fragment implements HandMessage {
 				holderMeInfo.jifenTv.setText(String.valueOf(user.getPoint()));
 				break;
 			case 1:
-				holdFunction = (HoldFunction) convertView.getTag();
-				holdFunction.leftIv.setImageResource(functions
-						.get(position - 1).getImageId());
-				holdFunction.titileTv.setText(functions.get(position - 1)
-						.getName());
+				holdFunction=(HoldFunction)convertView.getTag();
+				holdFunction.leftIv.setImageResource(functions.get(position-1).getImageId());
+				holdFunction.titileTv.setText(functions.get(position-1).getName());
 				break;
 			default:
 				break;
 			}
 			return convertView;
-		}
-
-	}
-
-	class MeAdatper extends BaseAdapter {
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 
 	}
@@ -221,16 +187,13 @@ public class MeFragment extends Fragment implements HandMessage {
 				.fromJson(msg.obj.toString(), User.class);
 		switch (user.getLevel().getId()) {
 		case 1:
-			Function nysfuFunction = new Function("升级为农艺师",
-					UpdateNysActivity.class, R.drawable.nys);
+			Function nysfuFunction = new Function("升级为农艺师", UpdateNysActivity.class,R.drawable.nys);
 			fragment.functions.add(nysfuFunction);
 		case 2:
-			Function nzdFunction = new Function("升级为农资店",
-					UpdateNzdActivity.class, R.drawable.nzd);
+			Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzd);
 			fragment.functions.add(nzdFunction);
 		case 3:
-			Function zjFunction = new Function("升级为专家", UpdateZjActivity.class,
-					R.drawable.zj);
+			Function zjFunction = new Function("升级为专家", UpdateZjActivity.class,R.drawable.zj);
 			fragment.functions.add(zjFunction);
 		default:
 			break;

@@ -25,16 +25,40 @@
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder" />
 
-        <TextView
-            android:id="@+id/content_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/play_image"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
             android:layout_toLeftOf="@id/head_image"
             android:background="@drawable/chatto_bg_normal"
-            android:gravity="left|center"
             android:maxWidth="225dp"
+            android:paddingRight="20dp"
+            android:scaleType="fitEnd"
+            android:src="@drawable/chatto_voice_playing"
             android:textColor="#444444"
             android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/length_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/play_image"
+            android:layout_marginBottom="5dp"
+            android:layout_toLeftOf="@id/play_image"
+            android:text="12&quot;"
+            android:textColor="#808080"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/readed_text"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_toLeftOf="@id/length_text"
+            android:background="@drawable/design_red_point"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>
