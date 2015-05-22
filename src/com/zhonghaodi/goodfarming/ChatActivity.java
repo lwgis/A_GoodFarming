@@ -1,14 +1,15 @@
 package com.zhonghaodi.goodfarming;
 
 import java.io.File;
+import java.util.List;
 
-import com.baidu.platform.comapi.map.o;
 import com.easemob.EMCallBack;
 import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
+import com.easemob.chat.FileMessageBody;
 import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.chat.EMMessage.Direct;
@@ -18,20 +19,23 @@ import com.easemob.chat.EMMessage.Type;
 import com.easemob.util.EMLog;
 import com.easemob.util.PathUtil;
 import com.easemob.util.VoiceRecorder;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldChatPhoto;
 import com.zhonghaodi.customui.HoldChatTextMessage;
 import com.zhonghaodi.customui.HoldChatVoice;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.easemob.ShowBigImage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.ImageCache;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.ImageUtil;
+import com.zhonghaodi.networking.LoadImageTask;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -39,7 +43,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -60,13 +63,11 @@ import android.view.MotionEvent;
 import android.view.View.OnTouchListener;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +75,8 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 		EMEventListener, OnClickListener {
 	public static final int REQUEST_CODE_CAMERA = 18;
 	public static final int REQUEST_CODE_LOCAL = 19;
+	public static final int LOAD_MORE = 18;
+	public static final String IMAGE_DIR = "chat/image/";
 	private TextView titleTv;
 	private View moreView;
 	private MyEditText chatEv;
@@ -87,7 +90,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 	private String userName;
 	private String thumbnail;
 	private EMConversation emConversation;
-	private ChatAdapter adapter = new ChatAdapter();
+	public ChatAdapter adapter = new ChatAdapter();
 	private VoiceRecorder voiceRecorder;
 	private MediaPlayer mediaPlayer = null;
 	private boolean isPlaying = false;
@@ -100,6 +103,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 	private File cameraFile;
 	private GFHandler<ChatActivity> micImageHandler = new GFHandler<ChatActivity>(
 			this);
+	private GFHandler<ChatActivity> handler = new GFHandler<ChatActivity>(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -205,6 +209,29 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 			}
 		});
 
+		pullToRefreshList
+				.setOnRefreshListener(new OnRefreshListener<ListView>() {
+
+					@Override
+					public void onRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+						final List<EMMessage> msgs = emConversation
+								.getAllMessages();
+						int msgCount = msgs != null ? msgs.size() : 0;
+						if (msgCount < emConversation.getAllMsgCount()
+								&& msgCount < 20) {
+							String msgId = null;
+							if (msgs != null && msgs.size() > 0) {
+								msgId = msgs.get(0).getMsgId();
+							}
+							emConversation.loadMoreMsgFromDB(msgId, 20);
+						}
+						Message msg = handler.obtainMessage();
+						msg.what = LOAD_MORE;
+						msg.sendToTarget();
+					}
+				});
+
 		pullToRefreshList.getRefreshableView().setOnTouchListener(
 				new OnTouchListener() {
 
@@ -222,7 +249,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 						new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
 	}
 
-	private void refreshListView() {
+	public void refreshListView() {
 		if (emConversation == null || emConversation.getAllMsgCount() == 0) {
 			return;
 		}
@@ -355,7 +382,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 		super.finish();
 	}
 
-	class ChatAdapter extends BaseAdapter {
+	public class ChatAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -516,24 +543,24 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 					holdLeftVoice.readedTv.setVisibility(View.VISIBLE);
 				}
 				break;
-				//图片
+			// 图片
 			case 4:
 				holdRightPhoto = (HoldChatPhoto) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
 						"http://121.40.62.120/appimage/users/small/"
-								+ thumbnail, holdRightPhoto.headIv,
+								+ GFUserDictionary.getThumbnail(),
+						holdRightPhoto.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				ImageMessageBody riBody = (ImageMessageBody) message.getBody();
-				File fileR = new File(riBody.getLocalUrl());
-				if (fileR.exists() && fileR.isFile()) {
-					holdRightPhoto.photoIv
-							.setImageBitmap(com.zhonghaodi.networking.ImageCache
-									.getInstance().get(riBody.getLocalUrl()));
+				String filePathR = riBody.getLocalUrl();
+				if (filePathR != null && new File(filePathR).exists()) {
+					showImageView(ImageUtil.getThumbnailImagePath(filePathR),
+							holdRightPhoto.photoIv, filePathR, null, message);
+				} else {
+					showImageView(ImageUtil.getThumbnailImagePath(filePathR),
+							holdRightPhoto.photoIv, filePathR, IMAGE_DIR,
+							message);
 				}
-				String thumbnailPath = ImageUtil.getThumbnailImagePath(riBody.getLocalUrl());
-//
-				holdRightPhoto.photoIv.setImageBitmap(BitmapFactory.decodeFile(thumbnailPath));
-//				GFToast.show(riBody.getThumbnailUrl());
 
 				break;
 			case 5:
@@ -542,11 +569,23 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 						"http://121.40.62.120/appimage/users/small/"
 								+ thumbnail, holdLeftPhoto.headIv,
 						ImageOptions.optionsNoPlaceholder);
-				ImageMessageBody liBody = (ImageMessageBody) message.getBody();
-				File fileL = new File(liBody.getThumbnailUrl());
-				if (fileL.exists() && fileL.isFile()) {
-					holdLeftPhoto.photoIv.setImageBitmap(ImageCache
-							.getInstance().get(liBody.getThumbnailUrl()));
+				if (message.status == EMMessage.Status.INPROGRESS) {
+					holdLeftPhoto.photoIv.setImageResource(R.drawable.placeholder_chat);
+					showDownloadImageProgress(message, holdLeftPhoto.photoIv);
+				} else {
+					ImageMessageBody liBody = (ImageMessageBody) message
+							.getBody();
+					// holdLeftPhoto.photoIv.setImageResource(R.drawable.placeholder);
+					if (liBody.getLocalUrl() != null) {
+						// String filePath = imgBody.getLocalUrl();
+						String remotePath = liBody.getRemoteUrl();
+						String filePathL = ImageUtil.getImagePath(remotePath);
+						String thumbRemoteUrl = liBody.getThumbnailUrl();
+						String thumbnailPath = ImageUtil
+								.getThumbnailImagePath(thumbRemoteUrl);
+						showImageView(thumbnailPath, holdLeftPhoto.photoIv,
+								filePathL, liBody.getRemoteUrl(), message);
+					}
 				}
 				break;
 			default:
@@ -762,44 +801,82 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				@Override
 				public void onClick(View v) {
 					// System.err.println("image view on click");
-					// Intent intent = new Intent(activity, ShowBigImage.class);
-					// File file = new File(localFullSizePath);
-					// if (file.exists()) {
-					// Uri uri = Uri.fromFile(file);
-					// intent.putExtra("uri", uri);
-					// System.err.println("here need to check why download everytime");
-					// } else {
-					// // The local full size pic does not exist yet.
-					// // ShowBigImage needs to download it from the server
-					// // first
-					// // intent.putExtra("", message.get);
-					// ImageMessageBody body = (ImageMessageBody)
-					// message.getBody();
-					// intent.putExtra("secret", body.getSecret());
-					// intent.putExtra("remotepath", remote);
-					// }
-					// if (message != null && message.direct ==
-					// EMMessage.Direct.RECEIVE && !message.isAcked
-					// && message.getChatType() != ChatType.GroupChat) {
-					// try {
-					// EMChatManager.getInstance().ackMessageRead(message.getFrom(),
-					// message.getMsgId());
-					// message.isAcked = true;
-					// } catch (Exception e) {
-					// e.printStackTrace();
-					// }
-					// }
-					// activity.startActivity(intent);
+					Intent intent = new Intent(ChatActivity.this,
+							ShowBigImage.class);
+					File file = new File(localFullSizePath);
+					if (file.exists()) {
+						Uri uri = Uri.fromFile(file);
+						intent.putExtra("uri", uri);
+						System.err
+								.println("here need to check why download everytime");
+					} else {
+						// The local full size pic does not exist yet.
+						// ShowBigImage needs to download it from the server
+						// first
+						// intent.putExtra("", message.get);
+						ImageMessageBody body = (ImageMessageBody) message
+								.getBody();
+						intent.putExtra("secret", body.getSecret());
+						intent.putExtra("remotepath", remote);
+					}
+					if (message != null
+							&& message.direct == EMMessage.Direct.RECEIVE
+							&& !message.isAcked
+							&& message.getChatType() != ChatType.GroupChat) {
+						try {
+							EMChatManager.getInstance().ackMessageRead(
+									message.getFrom(), message.getMsgId());
+							message.isAcked = true;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					startActivity(intent);
+					overridePendingTransition(R.anim.zoomin, 0);
 				}
 			});
 			return true;
 		} else {
-
-			// new LoadImageTask().execute(thumbernailPath, localFullSizePath,
-			// remote, message.getChatType(), iv, activity, message);
+			new LoadImageTask().execute(thumbernailPath, localFullSizePath,
+					remote, message.getChatType(), iv, this, message);
 			return true;
 		}
 
+	}
+
+	private void showDownloadImageProgress(final EMMessage message,
+			ImageView imageView) {
+		System.err.println("!!! show download image progress");
+		// final ImageMessageBody msgbody = (ImageMessageBody)
+		// message.getBody();
+		final FileMessageBody msgbody = (FileMessageBody) message.getBody();
+
+		msgbody.setDownloadCallback(new EMCallBack() {
+
+			@Override
+			public void onSuccess() {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+
+						adapter.notifyDataSetChanged();
+					}
+				});
+			}
+
+			@Override
+			public void onError(int code, String message) {
+
+			}
+
+			@Override
+			public void onProgress(final int progress, String status) {
+				if (message.getType() == EMMessage.Type.IMAGE) {
+
+				}
+			}
+
+		});
 	}
 
 	@Override
@@ -906,6 +983,11 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		ChatActivity activity = (ChatActivity) object;
+		if (msg.what == LOAD_MORE) {
+			adapter.notifyDataSetChanged();
+			pullToRefreshList.onRefreshComplete();
+			return;
+		}
 		activity.micImage.setImageDrawable(micImages[msg.what]);
 
 	}
