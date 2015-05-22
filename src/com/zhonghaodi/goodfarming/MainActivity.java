@@ -18,8 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
-import com.zhonghaodi.networking.GFHandler;
-import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 
 import android.app.Activity;
@@ -31,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.view.KeyEvent;
@@ -40,8 +39,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener,
-		EMEventListener,HandMessage {
-//	private long exitTime = 0;
+		EMEventListener {
+	// private long exitTime = 0;
 	HomeFragment homeFragment;
 	MessageFragment messageFragment;
 	DiscoverFragment discoverFragment;
@@ -60,9 +59,10 @@ public class MainActivity extends Activity implements OnClickListener,
 	View meView;
 	int pageIndex;
 	private TextView countTv;
-	private boolean isLogin=false;
-	private GFHandler<MainActivity> handler=new GFHandler<MainActivity>(this);
+	private boolean isLogin = false;
+	private MainHandler handler = new MainHandler(this);
 	private EMMessage currenEmMsg;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,14 +79,14 @@ public class MainActivity extends Activity implements OnClickListener,
 		messageTv = (TextView) findViewById(R.id.message_text);
 		discoverTv = (TextView) findViewById(R.id.discover_text);
 		meTv = (TextView) findViewById(R.id.me_text);
-		countTv=(TextView)findViewById(R.id.count_text);
+		countTv = (TextView) findViewById(R.id.count_text);
 		homeView.setOnClickListener(this);
 		messageView.setOnClickListener(this);
 		discoverView.setOnClickListener(this);
 		meView.setOnClickListener(this);
 		seletFragmentIndex(0);
 		pageIndex = 0;
-//		initEm();
+		// initEm();
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class MainActivity extends Activity implements OnClickListener,
 										new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
 						EMChat.getInstance().setAppInited();
 						messageFragment.loadData();
-						isLogin=true;
+						isLogin = true;
 					}
 
 					@Override
@@ -226,9 +226,9 @@ public class MainActivity extends Activity implements OnClickListener,
 	protected void onResume() {
 		super.onResume();
 		if (!isLogin) {
-	        initEm();
-		}else {
-	        messageFragment.loadData();
+			initEm();
+		} else {
+			messageFragment.loadData();
 		}
 	}
 
@@ -281,15 +281,16 @@ public class MainActivity extends Activity implements OnClickListener,
 		case EventNewMessage: // 普通消息
 		{
 			final EMMessage message = (EMMessage) event.getData();
-			currenEmMsg=message;
+			currenEmMsg = message;
 			if (UILApplication.isBackground(getApplicationContext())) {
 				new Thread(new Runnable() {
-					
+
 					@Override
 					public void run() {
-						String jsonString=HttpUtil.getUserByPhone(message.getFrom());
-						Message msg=handler.obtainMessage();
-						msg.obj=jsonString;
+						String jsonString = HttpUtil.getUserByPhone(message
+								.getFrom());
+						Message msg = handler.obtainMessage();
+						msg.obj = jsonString;
 						msg.sendToTarget();
 					}
 				}).start();
@@ -313,9 +314,10 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	/**
 	 * 消息通知
+	 * 
 	 * @param message
 	 */
-	private void notificationTextMessage(EMMessage message,String nick) {
+	private void notificationTextMessage(EMMessage message, String nick) {
 		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		String content = "";
 		if (message.getType() == Type.TXT) {
@@ -362,7 +364,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 		@Override
 		public void onDisconnected(final int error) {
-			isLogin=false;
+			isLogin = false;
 			runOnUiThread(new Runnable() {
 
 				@Override
@@ -388,25 +390,39 @@ public class MainActivity extends Activity implements OnClickListener,
 			});
 		}
 	}
-	public void setUnreadMessageCount(int count){
-		if (count==0) {
+
+	public void setUnreadMessageCount(int count) {
+		if (count == 0) {
 			countTv.setVisibility(View.GONE);
-		}else{
+		} else {
 			countTv.setVisibility(View.VISIBLE);
 			countTv.setText(String.valueOf(count));
 		}
 	}
 
-	@Override
-	public void handleMessage(Message msg, Object object) {
-		if (msg.obj!=null) {
-			Gson gson = new Gson();
-			List<User> users = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<User>>() {
-					}.getType());
-			if (users!=null) {
-				notificationTextMessage(currenEmMsg, users.get(0).getAlias());
+	static class MainHandler extends Handler {
+		MainActivity activity;
+
+		public MainHandler(MainActivity may) {
+			activity = may;
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<User> users = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<User>>() {
+						}.getType());
+				if (users != null) {
+					activity.notificationTextMessage(activity.currenEmMsg,
+							users.get(0).getAlias());
+				}
 			}
 		}
 	}
+
+
 }

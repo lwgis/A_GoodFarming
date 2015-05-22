@@ -19,14 +19,13 @@ import com.zhonghaodi.customui.HoldMessage;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFDate;
-import com.zhonghaodi.networking.GFHandler;
-import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -36,12 +35,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 
-public class MessageFragment extends Fragment implements HandMessage {
+public class MessageFragment extends Fragment {
 	private PullToRefreshListView pullToRefreshList;
 	private ArrayList<GFMessage> messages;
 	private MessageAdapter adapter = new MessageAdapter();
-	private GFHandler<MessageFragment> handler = new GFHandler<MessageFragment>(
-			this);
+	private MessageHandle handler = new MessageHandle(this);
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -228,35 +226,6 @@ public class MessageFragment extends Fragment implements HandMessage {
 
 	}
 
-	@Override
-	public void handleMessage(Message msg, Object object) {
-		//不用fragment=object是因为如果在聊天窗口fragment时间长了会被释放
-		if (msg.obj != null) {
-			Gson gson = new Gson();
-			List<User> users = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<User>>() {
-					}.getType());
-			if (users==null) {
-				GFToast.show("获取消息失败");
-				return;
-			}
-			for (GFMessage message : messages) {
-				User user = findUser(users, message.getTitle());
-				if (user != null) {
-					message.setUser(user);
-				}				
-			}
-			int count=0;
-			for (GFMessage gfMessage : messages) {
-				count+=gfMessage.getCount();
-			}
-			 ((MainActivity)getActivity()).setUnreadMessageCount(count);
-			 adapter.notifyDataSetChanged();
-		} else {
-			GFToast.show("获取消息失败");
-		}
-	}
-
 	private User findUser(List<User> users, String phone) {
 		for (User user : users) {
 			if (user.getPhone().equals(phone)) {
@@ -264,5 +233,41 @@ public class MessageFragment extends Fragment implements HandMessage {
 			}
 		}
 		return null;
+	}
+	
+	 static class MessageHandle extends Handler{
+		 MessageFragment fragment;
+		 public MessageHandle(MessageFragment fm){
+			 fragment=fm;
+		 }
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<User> users = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<User>>() {
+						}.getType());
+				if (users==null) {
+					GFToast.show("获取消息失败");
+					return;
+				}
+				for (GFMessage message : fragment.messages) {
+					User user = fragment.findUser(users, message.getTitle());
+					if (user != null) {
+						message.setUser(user);
+					}				
+				}
+				int count=0;
+				for (GFMessage gfMessage : fragment.messages) {
+					count+=gfMessage.getCount();
+				}
+				 ((MainActivity)fragment.getActivity()).setUnreadMessageCount(count);
+				 fragment.adapter.notifyDataSetChanged();
+			} else {
+				GFToast.show("获取消息失败");
+			}
+		}
 	}
 }
