@@ -14,11 +14,6 @@
 package com.zhonghaodi.networking;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.easemob.chat.EMMessage;
-import com.easemob.chat.TextMessageBody;
 
 
 import android.app.ActivityManager;

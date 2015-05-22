@@ -41,7 +41,6 @@ import org.apache.http.NameValuePair;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.easemob.chat.EMMessage;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
@@ -479,6 +478,16 @@ public class HttpUtil {
 		jsonString=jsonString.substring(0, jsonString.length()-1);
 		jsonString=jsonString+" ]";
 		
+		try {
+			return HttpUtil.executeHttpPost(RootURL+"users/inphones", jsonString);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static String getUserByPhone(String phone) {
+		String jsonString="[ \""+phone+"\" ]";
 		try {
 			return HttpUtil.executeHttpPost(RootURL+"users/inphones", jsonString);
 		} catch (Throwable e) {

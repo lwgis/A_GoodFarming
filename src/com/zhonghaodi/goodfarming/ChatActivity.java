@@ -551,6 +551,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 								+ GFUserDictionary.getThumbnail(),
 						holdRightPhoto.headIv,
 						ImageOptions.optionsNoPlaceholder);
+				holdRightPhoto.photoIv.setImageResource(R.drawable.placeholder_chat);
 				ImageMessageBody riBody = (ImageMessageBody) message.getBody();
 				String filePathR = riBody.getLocalUrl();
 				if (filePathR != null && new File(filePathR).exists()) {
@@ -569,8 +570,8 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 						"http://121.40.62.120/appimage/users/small/"
 								+ thumbnail, holdLeftPhoto.headIv,
 						ImageOptions.optionsNoPlaceholder);
+				holdLeftPhoto.photoIv.setImageResource(R.drawable.placeholder_chat);
 				if (message.status == EMMessage.Status.INPROGRESS) {
-					holdLeftPhoto.photoIv.setImageResource(R.drawable.placeholder_chat);
 					showDownloadImageProgress(message, holdLeftPhoto.photoIv);
 				} else {
 					ImageMessageBody liBody = (ImageMessageBody) message
@@ -925,9 +926,9 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 			String path = currentPlayIv.getTag().toString();
 			AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 			audioManager.setMode(AudioManager.MODE_NORMAL);
-			audioManager.setSpeakerphoneOn(true);
+//			audioManager.setSpeakerphoneOn(true);
 			mediaPlayer = new MediaPlayer();
-			mediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			try {
 				File file = new File(path);
 				if (file.exists() && file.isFile()) {

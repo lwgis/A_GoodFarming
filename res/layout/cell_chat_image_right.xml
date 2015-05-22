@@ -28,14 +28,11 @@
         <ImageView
             android:id="@+id/photo_image"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_toLeftOf="@id/head_image"
+            android:adjustViewBounds="true"
             android:background="@drawable/chatto_bg_normal"
-            android:maxWidth="200dp"
-            android:maxHeight="200dp"
-            android:scaleType="fitXY"
-            android:textColor="#444444"
-            android:textSize="18sp" />
+            android:scaleType="fitXY"/>
     </RelativeLayout>
 
 </LinearLayout>

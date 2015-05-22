@@ -3,16 +3,13 @@ package com.zhonghaodi.goodfarming;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
-import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.Type;
 import com.easemob.chat.TextMessageBody;
-import com.easemob.util.DateUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -20,7 +17,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldMessage;
 import com.zhonghaodi.model.GFMessage;
-import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.GFHandler;
@@ -219,7 +215,7 @@ public class MessageFragment extends Fragment implements HandMessage {
 			}
 			if (message.getUser() != null) {
 				holdMessage.titleTv.setText(message.getUser().getAlias());
-				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/users/small/"+message.getUser().getThumbnail(), holdMessage.headIv, ImageOptions.optionsNoPlaceholder);
+				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/users/small/"+message.getUser().getThumbnail(), holdMessage.headIv, ImageOptions.options);
 			} else {
 				holdMessage.titleTv.setText(message.getTitle());
 			}
@@ -234,19 +230,28 @@ public class MessageFragment extends Fragment implements HandMessage {
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
-		MessageFragment fragment = (MessageFragment) object;
+		//不用fragment=object是因为如果在聊天窗口fragment时间长了会被释放
 		if (msg.obj != null) {
 			Gson gson = new Gson();
 			List<User> users = gson.fromJson(msg.obj.toString(),
 					new TypeToken<List<User>>() {
 					}.getType());
+			if (users==null) {
+				GFToast.show("获取消息失败");
+				return;
+			}
 			for (GFMessage message : messages) {
 				User user = findUser(users, message.getTitle());
 				if (user != null) {
 					message.setUser(user);
-				}
+				}				
 			}
-			fragment.adapter.notifyDataSetChanged();
+			int count=0;
+			for (GFMessage gfMessage : messages) {
+				count+=gfMessage.getCount();
+			}
+			 ((MainActivity)getActivity()).setUnreadMessageCount(count);
+			 adapter.notifyDataSetChanged();
 		} else {
 			GFToast.show("获取消息失败");
 		}

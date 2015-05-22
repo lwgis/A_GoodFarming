@@ -27,6 +27,7 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.util.ImageUtils;
+import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.easemob.ShowBigImage;
 import com.zhonghaodi.goodfarming.R;
 
@@ -38,7 +39,7 @@ public class LoadImageTask extends AsyncTask<Object, Void, Bitmap> {
 	EMMessage message = null;
 	ChatType chatType;
 	Activity activity;
-
+	int imageSize=120;
 	@Override
 	protected Bitmap doInBackground(Object... args) {
 		thumbnailPath = (String) args[0];
@@ -52,10 +53,10 @@ public class LoadImageTask extends AsyncTask<Object, Void, Bitmap> {
 		message = (EMMessage) args[6];
 		File file = new File(thumbnailPath);
 		if (file.exists()) {
-			return ImageUtils.decodeScaleImage(thumbnailPath, 160, 160);
+			return ImageUtils.decodeScaleImage(thumbnailPath, DpTransform.dip2px(activity, imageSize), DpTransform.dip2px(activity, imageSize));
 		} else {
 			if (message.direct == EMMessage.Direct.SEND) {
-				return ImageUtils.decodeScaleImage(localFullSizePath, 160, 160);
+				return ImageUtils.decodeScaleImage(localFullSizePath, DpTransform.dip2px(activity, imageSize), DpTransform.dip2px(activity, imageSize));
 			} else {
 				return null;
 			}
