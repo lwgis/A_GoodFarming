@@ -6,6 +6,7 @@ public class GFMessage {
 	private long time;
 	private User user;
 	private int count;
+	private Integer exid;
 	public String getTitle() {
 		return title;
 	}
@@ -35,6 +36,12 @@ public class GFMessage {
 	}
 	public void setCount(int count) {
 		this.count = count;
+	}
+	public Integer getExid() {
+		return exid;
+	}
+	public void setExid(Integer exid) {
+		this.exid = exid;
 	}
 	
 

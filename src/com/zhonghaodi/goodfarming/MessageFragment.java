@@ -10,6 +10,7 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage.Type;
 import com.easemob.chat.TextMessageBody;
+import com.easemob.exceptions.EaseMobException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -57,12 +58,22 @@ public class MessageFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				GFMessage message = messages.get(position - 1);
-				Intent it = new Intent();
-				it.setClass(getActivity(), ChatActivity.class);
-				it.putExtra("userName", message.getUser()==null?message.getTitle():message.getTitle());
-				it.putExtra("title", message.getUser()==null?message.getTitle():message.getUser().getAlias());
-				it.putExtra("thumbnail", message.getUser()==null?"":message.getUser().getThumbnail());
-				getActivity().startActivityForResult(it, 2);
+				if(message.getExid()==null){
+					Intent it = new Intent();
+					it.setClass(getActivity(), ChatActivity.class);
+					it.putExtra("userName", message.getUser()==null?message.getTitle():message.getTitle());
+					it.putExtra("title", message.getUser()==null?message.getTitle():message.getUser().getAlias());
+					it.putExtra("thumbnail", message.getUser()==null?"":message.getUser().getThumbnail());
+					getActivity().startActivityForResult(it, 2);
+				}
+				else{
+					Intent intent = new Intent(getActivity(), QuestionActivity.class);
+					intent.putExtra("questionId", message.getExid());
+					getActivity().startActivityForResult(intent, 2);
+					EMConversation emConversation = EMChatManager.getInstance().getConversation("种好地");
+					emConversation.resetUnreadMsgCount();
+				}
+				
 			}
 		});
 //		loadData();
@@ -82,6 +93,17 @@ public class MessageFragment extends Fragment {
 				TextMessageBody body = (TextMessageBody) emConversation
 						.getLastMessage().getBody();
 				message.setContent(body.getMessage());
+				int qid;
+				
+				try {
+					 qid = emConversation.getLastMessage().getIntAttribute("qid");
+					 
+					 message.setExid(qid);
+					 
+				} catch (EaseMobException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			if (emConversation.getLastMessage().getType()==Type.VOICE) {
 				message.setContent("[语音]");

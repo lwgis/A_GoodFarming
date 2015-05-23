@@ -426,6 +426,14 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		startActivity(it);
 		// Toast.makeText(this, urlString, Toast.LENGTH_SHORT).show();
 	}
+	
+
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		this.setResult(2);
+		super.finish();
+	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {

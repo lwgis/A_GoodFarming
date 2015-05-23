@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.easemob.EMCallBack;
@@ -287,8 +288,20 @@ public class MainActivity extends Activity implements OnClickListener,
 
 					@Override
 					public void run() {
-						String jsonString = HttpUtil.getUserByPhone(message
-								.getFrom());
+						String jsonString;
+						if(message.getFrom().equals("种好地")){
+							User user = new User();
+							user.setAlias(message.getFrom());
+							List<User> users = new ArrayList<User>();
+							users.add(user);
+							Gson sGson=new Gson();
+							jsonString=sGson.toJson(users);
+						}
+						else{
+							jsonString= HttpUtil.getUserByPhone(message
+									.getFrom());
+						}
+						
 						Message msg = handler.obtainMessage();
 						msg.obj = jsonString;
 						msg.sendToTarget();
