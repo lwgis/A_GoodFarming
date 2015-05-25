@@ -17,6 +17,7 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.zhonghaodi.customui.GFToast;
@@ -41,6 +42,7 @@ public class NearNzdMapActivity extends Activity {
 	private MapView mapView;
     private BaiduMap map;
     private Marker marker;
+    private double x,y;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -53,28 +55,28 @@ public class NearNzdMapActivity extends Activity {
 		sendBtn = (MyTextButton) findViewById(R.id.send_button);
 		mapView = (MapView) findViewById(R.id.mapView);
 		map=mapView.getMap();
-		map.setOnMapClickListener(new OnMapClickListener() {
-			
-			@Override
-			public boolean onMapPoiClick(MapPoi arg0) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public void onMapClick(LatLng arg0) {
-				marker.setPosition(arg0);
-			}
-		});
-		
-		map.setOnMarkerClickListener(new OnMarkerClickListener() {
-			
-			@Override
-			public boolean onMarkerClick(Marker arg0) {
-				GFToast.show(arg0.toString());
-				return true;
-			}
-		});
+//		map.setOnMapClickListener(new OnMapClickListener() {
+//			
+//			@Override
+//			public boolean onMapPoiClick(MapPoi arg0) {
+//				// TODO Auto-generated method stub
+//				return false;
+//			}
+//			
+//			@Override
+//			public void onMapClick(LatLng arg0) {
+//				marker.setPosition(arg0);
+//			}
+//		});
+//		
+//		map.setOnMarkerClickListener(new OnMarkerClickListener() {
+//			
+//			@Override
+//			public boolean onMarkerClick(Marker arg0) {
+//				GFToast.show(arg0.toString());
+//				return true;
+//			}
+//		});
 		
 		sendBtn.setText("确定");
 		cancelBtn.setOnClickListener(new OnClickListener() {
@@ -92,7 +94,10 @@ public class NearNzdMapActivity extends Activity {
 			}
 		});
 		hideZoomControl();
+		x = getIntent().getDoubleExtra("x", 0);
+		y = getIntent().getDoubleExtra("y", 0);
 		location();
+		
 	}
 
 	/**
@@ -137,6 +142,23 @@ public class NearNzdMapActivity extends Activity {
 		mLocClient.start();
 
 	}
+	
+	/**
+	 * 定位到农资店
+	 * @param x
+	 * @param y
+	 */
+	private void zoomtoNzd(double x,double y){
+	
+		
+		LatLng ll = new LatLng(y,x);
+		OverlayOptions overlayOptions=new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_mark_dian)).draggable(true);
+		marker=(Marker)mapView.getMap().addOverlay(overlayOptions);
+		tilteTv.setText(String.valueOf(y)+"-"+String.valueOf(x));
+		MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+		mapView.getMap().animateMapStatus(u);
+		
+	}
 
 	/**
 	 * 定位SDK监听函数
@@ -156,12 +178,16 @@ public class NearNzdMapActivity extends Activity {
 //			mapView.getMap().setMyLocationData(locData);
 			LatLng ll = new LatLng(location.getLatitude(),
 					location.getLongitude());
-			OverlayOptions overlayOptions=new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marka)).draggable(true);
+			OverlayOptions overlayOptions=new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_mark_me)).draggable(true);
 			marker=(Marker)mapView.getMap().addOverlay(overlayOptions);
 			tilteTv.setText(String.valueOf(location.getLatitude())+"-"+String.valueOf(location.getLongitude()));
 			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
 			mapView.getMap().animateMapStatus(u);
 			mLocClient.stop();
+			if(x!=0 && y!=0){
+				zoomtoNzd(x, y);
+			}
+			
 		}
 
 		public void onReceivePoi(BDLocation poiLocation) {

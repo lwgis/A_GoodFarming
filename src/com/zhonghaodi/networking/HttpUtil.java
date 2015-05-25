@@ -496,4 +496,13 @@ public class HttpUtil {
 			return null;
 		}
 	}
+	
+	public static String getStoresString(double x,double y,double distance) {
+		if(distance>80001){
+			return "80001";
+		}
+		String url = RootURL + "users/around?x="+x+"&y="+y+"&distance="+distance;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
 }
