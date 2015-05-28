@@ -27,25 +27,35 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="农资店"
+            android:text="订单扫描"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/pull_refresh_list"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:cacheColorHint="#000000"
-        android:divider="#eaeaea"
-        android:dividerHeight="8dp"
-        android:fadingEdge="none"
-        android:fastScrollEnabled="false"
-        android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
-        android:listSelector="#00000000"
-        android:smoothScrollbar="true"
-        />
+    <FrameLayout 
+	   android:layout_width="match_parent"
+	   android:layout_height="match_parent">
+	
+	  <SurfaceView android:id="@+id/preview_view"
+	               android:layout_width="match_parent"
+	               android:layout_gravity="center"
+	               android:layout_height="match_parent"
+	               />
+	
+	  <com.zhonghaodi.view.ViewfinderView
+	      android:id="@+id/viewfinder_view"
+	      android:layout_width="match_parent"
+	      android:layout_height="match_parent"
+	      android:background="#00000000"
+	      />
+	
+	
+	
+	  <TextView android:id="@+id/txtResult"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"          
+	            android:textSize="14sp"/>
+	
+	</FrameLayout>
 
 </LinearLayout>

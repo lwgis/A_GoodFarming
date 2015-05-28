@@ -1,6 +1,12 @@
 package com.zhonghaodi.model;
 
-public class Recipe {
+import java.io.Serializable;
+
+public class Recipe implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String title;
 	private String description;
@@ -8,6 +14,11 @@ public class Recipe {
 	private String thumbnail;
 	private double price;
 	private double newprice;
+	
+	public Recipe() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -49,6 +60,12 @@ public class Recipe {
 	}
 	public void setNewprice(double newprice) {
 		this.newprice = newprice;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 	
 }

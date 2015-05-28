@@ -38,12 +38,15 @@ import org.apache.http.NameValuePair;
 
 
 
+import android.R.integer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.google.gson.Gson;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.UpdateUser;
@@ -145,6 +148,16 @@ public class HttpUtil {
 				return sb.toString();
 			} else {
 				// TODO 返回错误信息
+				InputStream inputStream = response.getEntity().getContent();
+				BufferedReader buffer = new BufferedReader(
+						new InputStreamReader(inputStream,
+								Charset.forName("utf-8")));
+				String line = null;
+				while ((line = buffer.readLine()) != null) {
+					sb.append(line);
+				}
+				inputStream.close();
+				return sb.toString();
 			}
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -391,9 +404,9 @@ public class HttpUtil {
 	 * @param count 数量
 	 * @return 返回订单
 	 */
-	public static String orderRecipe(int nzdid, int rid, final int uid, final int count) {
+	public static String orderRecipe(String nzdid, int rid, final String uid, final int count) {
 		String jsonString = null;
-		String urlString = RootURL + "users/" + String.valueOf(nzdid)
+		String urlString = RootURL + "users/" + nzdid
 				+ "/recipes/" + String.valueOf(rid) + "/order";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		NameValuePair nameValuePair1 = new NameValuePair() {
@@ -401,7 +414,7 @@ public class HttpUtil {
 			@Override
 			public String getValue() {
 				// TODO Auto-generated method stub
-				return String.valueOf(uid);
+				return uid;
 			}
 
 			@Override
@@ -436,11 +449,11 @@ public class HttpUtil {
 		return jsonString;
 	}
 
-	public static Bitmap getRecipeQRCode(int nzdId, int recipeId, int userId,
+	public static Bitmap getRecipeQRCode(String nzdId, int recipeId, String userId,
 			String qrCode) {
 		Bitmap bitmap = null;
-		String urlString = RootURL + "users/" + String.valueOf(nzdId)
-				+ "/recipes/" + String.valueOf(recipeId) + "/order/"+"de2cc4eb-50ff-4897-bbbf-ff1894c43098"+"/QR";
+		String urlString = RootURL + "users/" + nzdId
+				+ "/recipes/" + String.valueOf(recipeId) + "/order/"+qrCode+"/QR";
 		bitmap=HttpUtil.getBitmap(urlString);
 		return bitmap;
 	}
@@ -471,9 +484,7 @@ public class HttpUtil {
 	public static String getUsers(List<GFMessage> messages) {
 		String jsonString="[ ";
 		for (GFMessage emMessage : messages) {
-			if (!emMessage.getTitle().equals("种好地")&&!emMessage.getTitle().equals("admin")) {
-				jsonString=jsonString+"\""+emMessage.getTitle()+"\",";
-			}
+			jsonString=jsonString+"\""+emMessage.getTitle()+"\",";
 		}
 		jsonString=jsonString.substring(0, jsonString.length()-1);
 		jsonString=jsonString+" ]";
@@ -504,5 +515,73 @@ public class HttpUtil {
 		String url = RootURL + "users/around?x="+x+"&y="+y+"&distance="+distance;
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
+	}
+	
+	public static String getRecipesByUid(String uid){
+		String url = RootURL + "users/"+uid+"/recipes/checked";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getMyOrders(String uid){
+		String url = RootURL + "users/"+uid+"/myorders";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getOrderByCode(String uid,String code){
+		String url = RootURL + "users/"+uid+"/order/"+code;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String deleteOrder (String nzdId, int recipeId, int orderid) {
+		String urlString = RootURL + "users/" + nzdId
+				+ "/recipes/" + String.valueOf(recipeId) + "/order/"+String.valueOf(orderid)+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String getNyss(){
+		
+		String urlString = RootURL + "users/nys";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	public static String getFollows(String uid){
+		
+		String urlString = RootURL + "users/"+uid+"/follows";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	public static String follow(String uid,Nys nys){
+		String urlString = RootURL + "users/"+uid+"/follow";
+		Gson sGson=new Gson();
+		String jsonString=sGson.toJson(nys);
+		try {
+			return HttpUtil.executeHttpPost(urlString, jsonString);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static String cancelfollow(String uid,Nys nys){
+		String urlString = RootURL + "users/"+uid+"/cancelfollow?tid="+nys.getId();
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String getAgrotechnical(){
+		
+		String urlString = RootURL + "agrotechnicals";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
 	}
 }

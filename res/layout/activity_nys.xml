@@ -10,29 +10,28 @@
         android:layout_height="45dp"
         android:background="#38be99" >
 
-        <com.zhonghaodi.customui.MyTextButton
+             <Button
             android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:background="@null"
+            android:layout_width="60dp"
+            android:layout_height="match_parent" 
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
             android:text="&lt;返回"
-            android:textColor="#ffffff"
-            android:textSize="20sp" 
-            android:layout_marginLeft="5dp"/>
+            android:background="#00000000" 
+            android:onClick="loginOut"/>
 
         <TextView
-            android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="农资店"
+            android:text="农艺师"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
     </RelativeLayout>
 
-    <ListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pull_refresh_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
@@ -46,6 +45,9 @@
         android:headerDividersEnabled="false"
         android:listSelector="#00000000"
         android:smoothScrollbar="true"
-        />
+        ptr:ptrAnimationStyle="rotate"
+        ptr:ptrHeaderBackground="@null"
+        ptr:ptrHeaderSubTextColor="#00ffff"
+        ptr:ptrHeaderTextColor="#868686" />
 
 </LinearLayout>

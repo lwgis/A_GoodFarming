@@ -198,6 +198,12 @@ public class MeFragment extends Fragment implements HandMessage {
 		default:
 			break;
 		}
+		Function cartFunction = new Function("购物车", ShoppingCartActivity.class,R.drawable.inzd);
+		fragment.functions.add(cartFunction);
+		if(user.getLevel().getId()==3){
+			Function orderFunction = new Function("订单扫描", OrderScanActivity.class,R.drawable.inzd);
+			fragment.functions.add(orderFunction);
+		}
 		fragment.pullToRefreshList.onRefreshComplete();
 		adapter.notifyDataSetChanged();
 	}

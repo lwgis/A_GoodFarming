@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="农资店"
+            android:text="购物车"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
     </RelativeLayout>

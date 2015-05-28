@@ -1,6 +1,8 @@
 package com.zhonghaodi.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 	private String id;
 	private String phone;
 	private String alias;
@@ -9,6 +11,10 @@ public class User {
 	private Level level;
 	private String password;
 	private int point;
+	
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public int getPoint() {
 		return point;
@@ -72,6 +78,12 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 
 }

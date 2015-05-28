@@ -41,8 +41,12 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 			startActivity(intent);
 			break;
 		case R.id.layout2:
+			Intent intent1 = new Intent(getActivity(), NyssActivity.class);
+			startActivity(intent1);
 			break;
 		case R.id.layout3:
+//			Intent intent2 = new Intent(getActivity(), AgrotechnicalActivity.class);
+//			startActivity(intent2);
 			break;
 		case R.id.layout4:
 			break;

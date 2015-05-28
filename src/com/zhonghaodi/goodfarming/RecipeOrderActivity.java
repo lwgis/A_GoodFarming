@@ -2,6 +2,8 @@ package com.zhonghaodi.goodfarming;
 
 
 
+import org.jivesoftware.smack.util.StringUtils;
+
 import com.zhonghaodi.model.RecipeOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
@@ -22,9 +24,9 @@ import android.widget.Toast;
 public class RecipeOrderActivity extends Activity implements HandMessage {
 	private static final int ORDER = 0;
 	private static final int QRCODE = 1;
-	private int nzdId;
+	private String nzdId;
 	private int recipeId;
-	private int userId;
+	private String userId;
 	private int count;
 	private String recipeName;
 	private TextView titleTv;
@@ -49,14 +51,21 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 		titleTv = (TextView) findViewById(R.id.title_text);
 		orderContentTv = (TextView) findViewById(R.id.ordercontent_text);
 		qrCodeIv = (ImageView) findViewById(R.id.qrcode_image);
-		nzdId = getIntent().getIntExtra("nzdId", 0);
+		nzdId = getIntent().getStringExtra("nzdId");
 		recipeId = getIntent().getIntExtra("recipeId", 0);
-		userId = getIntent().getIntExtra("userId", 0);
+		userId = getIntent().getStringExtra("userId"); 
 		count = getIntent().getIntExtra("count", 0);
 		recipeName = getIntent().getStringExtra("recipeName");
 		orderContentTv
 				.setText(recipeName + "---" + String.valueOf(count) + "份");
-		orderRecipe();
+		String code = getIntent().getStringExtra("qrcode");
+		if(code!=null&&!code.isEmpty()){
+			loadQR(code);
+		}
+		else{
+			orderRecipe();
+		}
+		
 	}
 
 	private void orderRecipe() {

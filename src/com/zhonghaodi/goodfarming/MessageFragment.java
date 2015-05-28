@@ -257,7 +257,7 @@ public class MessageFragment extends Fragment {
 		return null;
 	}
 	
-	 static class MessageHandle extends Handler{
+	  class MessageHandle extends Handler{
 		 MessageFragment fragment;
 		 public MessageHandle(MessageFragment fm){
 			 fragment=fm;
@@ -275,18 +275,24 @@ public class MessageFragment extends Fragment {
 					GFToast.show("获取消息失败");
 					return;
 				}
-				for (GFMessage message : fragment.messages) {
+				for (GFMessage message :messages) {
 					User user = fragment.findUser(users, message.getTitle());
 					if (user != null) {
 						message.setUser(user);
 					}				
 				}
 				int count=0;
-				for (GFMessage gfMessage : fragment.messages) {
+				for (GFMessage gfMessage : messages) {
 					count+=gfMessage.getCount();
 				}
-				 ((MainActivity)fragment.getActivity()).setUnreadMessageCount(count);
-				 fragment.adapter.notifyDataSetChanged();
+				if(getActivity()!=null){
+					((MainActivity)getActivity()).setUnreadMessageCount(count);
+					 adapter.notifyDataSetChanged();
+				}
+				else{
+//					GFToast.show("空");
+				}
+				
 			} else {
 				GFToast.show("获取消息失败");
 			}
