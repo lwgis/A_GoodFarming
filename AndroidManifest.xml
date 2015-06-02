@@ -175,11 +175,27 @@
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateHidden" >
         </activity>
+        <activity
+            android:name=".AgroActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name=".QuanActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name=".NyqActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
                 <!-- 显示下载大图页面 -->
         <activity
             android:name="com.zhonghaodi.easemob.ShowBigImage"
             android:screenOrientation="portrait">
         </activity>
+        
         <service
              android:name="com.baidu.location.f"
              android:enabled="true"

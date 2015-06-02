@@ -1,28 +1,26 @@
 package com.zhonghaodi.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import com.zhonghaodi.networking.GFDate;
 
 
-public class Agrotechnical implements Serializable {
-
+public class Quan implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private String title;
 	private String content;
-	private String time;
+	private User writer;
 	private Integer status;
 	private List<NetImage> attachments;
-	private String thumbnail;
+	private String time;
+	private List<Comment> comments;
 	
-	public Agrotechnical() {
-		// TODO Auto-generated constructor stub
+	public Quan(){
+		
 	}
 
 	public Integer getId() {
@@ -33,14 +31,6 @@ public class Agrotechnical implements Serializable {
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 	public String getContent() {
 		return content;
 	}
@@ -49,12 +39,12 @@ public class Agrotechnical implements Serializable {
 		this.content = content;
 	}
 
-	public String getTime() {
-		return GFDate.getStandardDate(time);
+	public User getWriter() {
+		return writer;
 	}
 
-	public void setTime(String time) {
-		this.time = time;
+	public void setWriter(User writer) {
+		this.writer = writer;
 	}
 
 	public Integer getStatus() {
@@ -65,6 +55,14 @@ public class Agrotechnical implements Serializable {
 		this.status = status;
 	}
 
+	public String getTime() {
+		return GFDate.getStandardDate(time);
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
 	public List<NetImage> getAttachments() {
 		return attachments;
 	}
@@ -73,20 +71,19 @@ public class Agrotechnical implements Serializable {
 		this.attachments = attachments;
 	}
 
-	public String getThumbnail() {
-		return thumbnail;
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public void setThumbnail(String thumbnail) {
-		this.thumbnail = thumbnail;
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	@Override
 	public String toString() {
-		return "Agrotechnical [id=" + id + ", title=" + title + ", content="
-				+ content + ", time=" + time + ", status=" + status
-				+ ", attachments=" + attachments + ", thumbnail=" + thumbnail
-				+ "]";
+		return "Quan [id=" + id + ", content=" + content + ", writer=" + writer
+				+ ", status=" + status + ", attachments=" + attachments
+				+ ", time=" + time + ", comments=" + comments + "]";
 	}
 	
 }

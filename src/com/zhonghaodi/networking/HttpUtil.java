@@ -47,6 +47,7 @@ import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.Nys;
+import com.zhonghaodi.model.Quan;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.UpdateUser;
@@ -583,5 +584,31 @@ public class HttpUtil {
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
+	}
+	
+	public static String getAgrotechnicalById(int id){
+		
+		String urlString = RootURL + "agrotechnicals/"+String.valueOf(id);
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	public static String getQuansString(String uid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid + "/quans");
+		return jsonString;
+	}
+
+	public static String getQuansString(String uid,int qid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid
+				+ "/quans?fromid=" + qid);
+		return jsonString;
+	}
+	
+	public static void sendQuan(String uid,Quan quan) throws Throwable {
+		String jsonString = JsonUtil.convertObjectToJson(quan,
+				"yyyy-MM-dd HH:mm:ss", new String[] {
+						Quan.class.toString(), NetImage.class.toString() });
+		HttpUtil.executeHttpPost(RootURL + "users/"+uid+"/quans", jsonString);
 	}
 }

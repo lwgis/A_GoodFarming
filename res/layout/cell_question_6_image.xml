@@ -23,8 +23,10 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/placeholder" />
+                android:padding="2dip"
+                android:scaleType="fitXY"
+                android:src="@drawable/placeholder" 
+                android:background="@drawable/head_img_back"/>
 
             <LinearLayout
                 android:layout_width="0dp"

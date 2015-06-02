@@ -5,18 +5,29 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.model.Agrotechnical;
+import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -24,7 +35,7 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 
 	private ListView pullToRefreshListView;
 	private List<Agrotechnical> agrotechnicals;
-//	private RecipeAdapter adapter;
+	private AgroAdapter adapter;
 	private GFHandler<AgrotechnicalActivity> handler = new GFHandler<AgrotechnicalActivity>(this);
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +58,16 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				
+				Agrotechnical agrotechnical = agrotechnicals.get(position);
+				Intent intent = new Intent(AgrotechnicalActivity.this, AgroActivity.class);
+				intent.putExtra("aid", agrotechnical.getId());
+				AgrotechnicalActivity.this.startActivity(intent);
 			}
 		});
 		
 		agrotechnicals = new ArrayList<Agrotechnical>();
-//		adapter = new RecipeAdapter();
-//		pullToRefreshListView.setAdapter(adapter);	
+		adapter = new AgroAdapter();
+		pullToRefreshListView.setAdapter(adapter);	
 		loadData();
 	}
 	
@@ -72,6 +86,60 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 		}).start();
 		
 	}	
+	
+	class AgroHolder{
+		public ImageView agroIv;
+		public TextView titleTv;
+		public TextView timeTv;
+		 public AgroHolder(View view){
+			 agroIv=(ImageView)view.findViewById(R.id.head_image);
+			 titleTv=(TextView)view.findViewById(R.id.title_text);
+			 timeTv=(TextView)view.findViewById(R.id.time_text);
+		 }
+	}
+	
+	class AgroAdapter extends BaseAdapter{
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return agrotechnicals.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return agrotechnicals.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			AgroHolder agroholder;;
+			if(convertView==null){
+				convertView = LayoutInflater.from(AgrotechnicalActivity.this)
+						.inflate(R.layout.cell_agrotechnical, parent, false);
+				agroholder = new AgroHolder(convertView);
+				convertView.setTag(agroholder);
+			}
+			
+			agroholder=(AgroHolder)convertView.getTag();
+			Agrotechnical agrotechnical = agrotechnicals.get(position);
+			if (agrotechnical.getThumbnail()!=null) {
+				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/agrotechnicals/small/"+agrotechnical.getThumbnail(), agroholder.agroIv, ImageOptions.optionsNoPlaceholder);
+			}
+			agroholder.titleTv.setText(agrotechnical.getTitle());
+			agroholder.timeTv.setText(agrotechnical.getTime());
+			return convertView;
+		}
+		
+	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
@@ -88,7 +156,7 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 			for (Agrotechnical agrotechnical: agrs) {
 				agrotechnicalactivity.agrotechnicals.add(agrotechnical);
 			}
-//			agrotechnicalactivity.adapter.notifyDataSetChanged();
+			agrotechnicalactivity.adapter.notifyDataSetChanged();
 			
 		} else {
 			Toast.makeText(this, "连接服务器失败,请稍候再试!",
