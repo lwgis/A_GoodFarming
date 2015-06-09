@@ -154,7 +154,7 @@ public class NearNzdMapActivity extends Activity {
 		LatLng ll = new LatLng(y,x);
 		OverlayOptions overlayOptions=new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_mark_dian)).draggable(true);
 		marker=(Marker)mapView.getMap().addOverlay(overlayOptions);
-		tilteTv.setText(String.valueOf(y)+"-"+String.valueOf(x));
+//		tilteTv.setText(String.valueOf(y)+"-"+String.valueOf(x));
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
 		mapView.getMap().animateMapStatus(u);
 		
@@ -180,7 +180,7 @@ public class NearNzdMapActivity extends Activity {
 					location.getLongitude());
 			OverlayOptions overlayOptions=new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_mark_me)).draggable(true);
 			marker=(Marker)mapView.getMap().addOverlay(overlayOptions);
-			tilteTv.setText(String.valueOf(location.getLatitude())+"-"+String.valueOf(location.getLongitude()));
+//			tilteTv.setText(String.valueOf(location.getLatitude())+"-"+String.valueOf(location.getLongitude()));
 			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
 			mapView.getMap().animateMapStatus(u);
 			mLocClient.stop();

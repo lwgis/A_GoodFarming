@@ -69,6 +69,20 @@
             android:maxLength="20"
             android:singleLine="true"
             android:textColor="#333333" />
+        
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/tjphone_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="推荐人手机（选填）"
+            android:singleLine="true"
+            android:inputType="numberSigned"
+        	android:maxLength="11"
+            android:textColor="#333333" />
 
         <com.zhonghaodi.customui.MyTextButton
             android:id="@+id/register_button"

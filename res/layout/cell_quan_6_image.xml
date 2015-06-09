@@ -98,6 +98,45 @@
                android:scaleType="centerCrop"
                android:src="@drawable/placeholder" />
        </LinearLayout>
+       
+       <RelativeLayout 
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           >
+           <TextView 
+            android:id="@+id/time_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dip"
+            android:textColor="#a7a7a7"
+            android:textSize="12sp"
+            android:text="3小时"
+            />
+           <ImageView 
+            android:id="@+id/pinglun_img"
+            android:layout_width="24dip"
+            android:layout_height="19dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="14dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:scaleType="fitXY"
+            android:src="@drawable/pinglun"
+            />
+           <ImageView 
+            android:id="@+id/zan_img"
+            android:layout_width="20dip"
+            android:layout_height="19dip"
+            android:layout_toLeftOf="@+id/pinglun_img"
+            android:layout_marginTop="10dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="20dip"
+            android:scaleType="fitXY"
+            android:src="@drawable/button_zan"
+            />
+       </RelativeLayout>
        <TextView 
            android:id="@+id/comment_txt"
            android:layout_width="match_parent"
@@ -111,45 +150,6 @@
            android:visibility="gone"
            />
        
-       <RelativeLayout 
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           >
-           <TextView 
-            android:id="@+id/time_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="10dip"
-            android:textColor="#d7d7d7"
-            android:textSize="12sp"
-            android:text="3小时"
-            />
-           <ImageView 
-            android:id="@+id/pinglun_img"
-            android:layout_width="24dip"
-            android:layout_height="19dip"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="14dip"
-            android:layout_marginLeft="10dip"
-            android:layout_marginRight="10dip"
-            android:layout_marginBottom="10dip"
-            android:scaleType="fitXY"
-            android:src="@drawable/pinglun"
-            />
-           <ImageView 
-            android:id="@+id/zan_img"
-            android:layout_width="20dip"
-            android:layout_height="19dip"
-            android:layout_toLeftOf="@+id/pinglun_img"
-            android:layout_marginTop="10dip"
-            android:layout_marginLeft="10dip"
-            android:layout_marginRight="20dip"
-            android:layout_marginBottom="10dip"
-            android:scaleType="fitXY"
-            android:src="@drawable/button_zan"
-            />
-       </RelativeLayout>
       </LinearLayout>
 
 </LinearLayout>

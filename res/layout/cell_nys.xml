@@ -49,7 +49,7 @@
 	            android:layout_width="80dip"
 	            android:layout_height="30dip"
 	            android:layout_marginTop="10dip"
-	            android:background="@drawable/bg_green_btn"
+	            android:background="@drawable/button_shape"
 	            android:textColor="#ffffff"
 	            android:text="关注"
 	            android:focusable="false"

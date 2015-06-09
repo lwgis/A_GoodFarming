@@ -15,6 +15,10 @@ package com.zhonghaodi.networking;
 
 import java.util.List;
 
+import com.easemob.chat.EMMessage;
+import com.easemob.chat.TextMessageBody;
+import com.zhonghaodi.goodfarming.R;
+
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -54,7 +58,7 @@ public class CommonUtils {
 			return false;
 	}
 	
-//
+
 //	/**
 //     * 根据消息内容和消息类型获取消息内容提示
 //     * 
@@ -105,7 +109,7 @@ public class CommonUtils {
 //
 //        return digest;
 //    }
-//    
+    
     static String getString(Context context, int resId){
         return context.getResources().getString(resId);
     }

@@ -14,6 +14,7 @@ import com.zhonghaodi.decoding.OrderScanActivityHandler;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.RecipeOrder;
+import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -191,7 +192,14 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 		
 		String codeString=obj.getText();
 		String uid = GFUserDictionary.getUserId();
-		RequestOrder(uid,codeString);
+		if(codeString.contains("order:")){
+			
+			RequestOrder(uid,codeString.split(":")[1]);
+		}
+		else if(codeString.contains("pay:")){
+			income(uid, codeString.split(":")[1]);
+		}
+		
 	}
 	private void RequestOrder(final String uid,final String text) {
 		// TODO Auto-generated method stub
@@ -204,6 +212,32 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 				msg.what = 0;
 				msg.obj = jsonString;
 				msg.sendToTarget();
+				
+			}
+		}).start();
+	}
+	
+	private void income(final String uid,final String code){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString;
+				try {
+					jsonString = HttpUtil.incomeCurrency(code, uid);
+					Message msg = handler1.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Message msg = handler1.obtainMessage();
+					msg.what = -1;
+					msg.obj = "错误";
+					msg.sendToTarget();
+				}
+				
 				
 			}
 		}).start();
@@ -258,21 +292,47 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		if (msg.obj != null) {
-			Gson gson = new Gson();
-			RecipeOrder recipeOrder = gson.fromJson(msg.obj.toString(),
-					new TypeToken<RecipeOrder>() {
-					}.getType());
-			Intent intent = new Intent(OrderScanActivity.this, OrderConfirmActivity.class);
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("order", recipeOrder);
-			intent.putExtras(bundle);
-			OrderScanActivity.this.startActivityForResult(intent, 2);
-			
-		} else {
-			Toast.makeText(this, "订单不存在或者已经完成交易。",
+		switch (msg.what) {
+		case 0:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				RecipeOrder recipeOrder = gson.fromJson(msg.obj.toString(),
+						new TypeToken<RecipeOrder>() {
+						}.getType());
+				Intent intent = new Intent(OrderScanActivity.this, OrderConfirmActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putSerializable("order", recipeOrder);
+				intent.putExtras(bundle);
+				OrderScanActivity.this.startActivityForResult(intent, 2);
+				
+			} else {
+				Toast.makeText(this, "订单不存在或者已经完成交易。",
+						Toast.LENGTH_SHORT).show();
+			}
+			break;
+		case 1:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				User user = gson.fromJson(msg.obj.toString(),
+						new TypeToken<User>() {
+						}.getType());
+				if(user!=null){
+					this.finish();
+				}
+				
+			} else {
+				Toast.makeText(this, "错误",
+						Toast.LENGTH_SHORT).show();
+			}
+			break;
+		case -1:
+			Toast.makeText(this, "错误",
 					Toast.LENGTH_SHORT).show();
+			break;
+		default:
+			break;
 		}
+		
 	}
 
 }

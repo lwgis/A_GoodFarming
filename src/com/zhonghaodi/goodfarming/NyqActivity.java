@@ -58,7 +58,6 @@ public class NyqActivity extends Activity implements HandMessage {
 	private List<NetImage> imgs;
 	private ArrayList<ProjectImage> projectImages;
 	private PopupWindow mPopupWindow;
-	private ProgressDialog progressDialog;
 	private View popView;
 	private File currentfile;
 	private GFHandler<NyqActivity> handler = new GFHandler<NyqActivity>(this);
@@ -83,15 +82,21 @@ public class NyqActivity extends Activity implements HandMessage {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (NyqActivity.this.reportAdapter.getItem(position)==null) {
-					if (mPopupWindow==null) {
-						mPopupWindow=new PopupWindow(popView,DpTransform.dip2px(NyqActivity.this, 180),DpTransform.dip2px(NyqActivity.this, 100));
+					if(projectImages.size()<9){
+						if (mPopupWindow==null) {
+							mPopupWindow=new PopupWindow(popView,DpTransform.dip2px(NyqActivity.this, 180),DpTransform.dip2px(NyqActivity.this, 100));
+						}
+						if (mPopupWindow.isShowing()) {
+							mPopupWindow.dismiss();
+						}
+						else {
+							mPopupWindow.showAsDropDown(view,-DpTransform.dip2px(NyqActivity.this, 0),DpTransform.dip2px(NyqActivity.this, 0));
+						}
 					}
-					if (mPopupWindow.isShowing()) {
-						mPopupWindow.dismiss();
+					else{
+						GFToast.show("最多添加9张图片！");
 					}
-					else {
-						mPopupWindow.showAsDropDown(view,-DpTransform.dip2px(NyqActivity.this, 0),DpTransform.dip2px(NyqActivity.this, 0));
-					}
+					
 				}
 				
 			}
@@ -161,8 +166,6 @@ public class NyqActivity extends Activity implements HandMessage {
 		
 		nyqSend.setEnabled(false);
 		
-		progressDialog = ProgressDialog.show(this, "提示", "处理中，请稍后");
-		
 		new Thread(new Runnable() {
 			
 			@Override
@@ -201,7 +204,7 @@ public class NyqActivity extends Activity implements HandMessage {
 				
 			}
 		}).start(); 
-		
+		this.finish();
 	}
 	
 	@Override
@@ -269,12 +272,27 @@ public class NyqActivity extends Activity implements HandMessage {
 				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		super.finish();
 	}
+	
+	/**
+	 * 发送刷新广播
+	 */
+	public void SendRefreshBroadcase()
+    {
+    	Intent in = new Intent();
+        in.setAction("refresh");
+        in.addCategory(Intent.CATEGORY_DEFAULT);
+        this.sendBroadcast(in);
+    }
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		final NyqActivity activity = (NyqActivity) object;
 		switch (msg.what) {
+		case 0:
+			nyqSend.setEnabled(true);
+			GFToast.show("发送失败");
+			break;
 		case TypeImage:
 			final Quan quan = new Quan();
 			quan.setContent(activity.nyqEditText.getText().toString());
@@ -297,9 +315,8 @@ public class NyqActivity extends Activity implements HandMessage {
 			break;
 		
 		case TypeQuan:
-			progressDialog.dismiss();
 			GFToast.show("发送成功");
-			finish();
+			SendRefreshBroadcase();
 			break;
 		default:
 			break;

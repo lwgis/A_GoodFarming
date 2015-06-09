@@ -2,6 +2,8 @@ package com.zhonghaodi.goodfarming;
 
 import java.io.File;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
@@ -39,6 +41,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 	private MyEditText passwordEt2;
 	private MyEditText aliasEt;
 	private MyEditText addressEt;
+	private MyEditText tjphoneEt;
 	private MyTextButton registerBtn;
 	private PopupWindow popupWindow;
 	private View popView;
@@ -103,6 +106,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 		passwordEt2 = (MyEditText) view.findViewById(R.id.password2_edit);
 		aliasEt = (MyEditText) view.findViewById(R.id.alias_edit);
 		addressEt = (MyEditText) view.findViewById(R.id.address_edit);
+		tjphoneEt = (MyEditText)view.findViewById(R.id.tjphone_edit);
 		registerBtn = (MyTextButton) view.findViewById(R.id.register_button);
 		headGfImageButton = (GFImageButton) view.findViewById(R.id.head_image);
 		passwordEt.addTextChangedListener(this);
@@ -226,6 +230,18 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			registerBtn.setEnabled(false);
 		}
 	}
+	
+	public boolean isMobileNO(String mobiles) {
+
+		Pattern p = Pattern
+				.compile("^((13[0-9])|(17[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+
+		Matcher m = p.matcher(mobiles);
+
+		System.out.println(m.matches() + "---");
+
+		return m.matches();
+	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
@@ -252,6 +268,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					user.setPhone(activity.getPhone());
 					user.setAddress(addressEt.getText().toString());
 					user.setAlias(aliasEt.getText().toString());
+					user.setTjPhone(tjphoneEt.getText().toString());
 					user.setThumbnail(registerFragment2.headImageName.trim());
 					try {
 						Message msgUser = handler.obtainMessage();

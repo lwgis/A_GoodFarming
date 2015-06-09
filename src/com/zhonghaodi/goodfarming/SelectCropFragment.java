@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -15,10 +16,15 @@ import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,7 +33,6 @@ public class SelectCropFragment extends Fragment implements HandMessage {
 	private ArrayList<Crop> allCrops;
 	private ArrayList<Crop> rootCrops;
 	private GFHandler<SelectCropFragment> handler;
-;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +57,7 @@ public class SelectCropFragment extends Fragment implements HandMessage {
 		return view;
 	}
 
-	public class CropAdepter extends BaseAdapter {
+	class CropAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -69,27 +74,47 @@ public class SelectCropFragment extends Fragment implements HandMessage {
 		@Override
 		public long getItemId(int position) {
 			// TODO Auto-generated method stub
-			return rootCrops.get(position).getId();
+			return position;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				convertView = LayoutInflater.from(getActivity()).inflate(
-						R.layout.cell_crop, parent, false);
-			}
-			TextView tiltleTv = (TextView) convertView
-					.findViewById(R.id.title_text);
-			tiltleTv.setText(rootCrops.get(position).getName());
-			TextView discriptionTv = (TextView) convertView
-					.findViewById(R.id.discription_text);
-			String discription = "";
-			for (Crop crop : allCrops) {
-				if (crop.getCategory() == rootCrops.get(position).getId()) {
-					discription = discription + crop.getName() + " ";
+			convertView = SelectCropFragment.this.getActivity().getLayoutInflater().inflate(
+					R.layout.cell_select_crop, parent, false);
+			Crop crop = rootCrops.get(position);
+			TextView cropTv = (TextView) convertView
+					.findViewById(R.id.crop_text);
+			cropTv.setText(crop.getName());
+			LinearLayout childContentView = (LinearLayout) convertView
+					.findViewById(R.id.content_view);
+			for (Crop childCrop : allCrops) {
+				if (childCrop.getCategory() == crop.getId()) {
+					View childView = SelectCropFragment.this.getActivity()
+							.getLayoutInflater().inflate(
+									R.layout.cell_singleselect_crop, parent,
+									false);
+					TextView nameView = (TextView)childView.findViewById(R.id.cropname_txt);
+					nameView.setText(childCrop.getName());
+					nameView.setTag(childCrop);
+					nameView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							Crop crop = (Crop)v.getTag();
+							CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
+									.getActivity();
+							activity.setCropId(crop.getId());
+							activity.showFragment(1);
+							activity.setTitle(crop.getName()
+									+ "问题");
+						}
+					});
+					childContentView.addView(childView);
+
 				}
 			}
-			discriptionTv.setText(discription);
+
 			return convertView;
 		}
 
@@ -108,24 +133,9 @@ public class SelectCropFragment extends Fragment implements HandMessage {
 					fragment.rootCrops.add(crop);
 				}
 			}
-			CropAdepter cropAdepter = fragment.new CropAdepter();
+			CropAdapter cropAdepter = fragment.new CropAdapter();
 			fragment.cropListView.setAdapter(cropAdepter);
-			fragment.cropListView
-					.setOnItemClickListener(new OnItemClickListener() {
-
-						@Override
-						public void onItemClick(AdapterView<?> parent,
-								View view, int position, long id) {
-							CreateQuestionActivity activity = (CreateQuestionActivity) fragment
-									.getActivity();
-							activity.setCropId(fragment.rootCrops.get(
-									position).getId());
-							activity.showFragment(1);
-							activity.setTitle(fragment.rootCrops.get(
-									position).getName()
-									+ "问题");
-						}
-					});
+			
 		}		
 	}
 

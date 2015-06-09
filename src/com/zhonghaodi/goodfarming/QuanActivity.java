@@ -1,8 +1,10 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.baidu.a.a.a.b;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -10,9 +12,12 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.CustomRelativeLayout;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
+import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.QuanHolder;
 import com.zhonghaodi.customui.QuanHolder3;
 import com.zhonghaodi.customui.QuanHolder6;
@@ -20,6 +25,7 @@ import com.zhonghaodi.customui.QuanHolder9;
 import com.zhonghaodi.goodfarming.HomeFragment.QuestionAdpter;
 import com.zhonghaodi.model.Comment;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.OnSizeChangedListener;
 import com.zhonghaodi.model.Quan;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.networking.GFHandler;
@@ -28,30 +34,48 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class QuanActivity extends Activity implements HandMessage,OnClickListener {
+public class QuanActivity extends Activity implements HandMessage,OnClickListener,OnSizeChangedListener {
 
 	private PullToRefreshListView pullToRefreshListView;
 	private ArrayList<Quan> allQuans;
 	private QuanAdapter adapter;
 	private GFHandler<QuanActivity> handler = new GFHandler<QuanActivity>(this);
 	private Button cancelBtn;
-	private Button quanButton;
+	private ImageView quanButton;
+	private CustomRelativeLayout bottomView;
+	private EditText pinglunEditText;
+	private MyTextButton sendBtn;
+	private Quan selectQuan;
+	BroadcastReceiver receiver;	
+	IntentFilter filter;
+	private String uid;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -59,8 +83,21 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		setContentView(R.layout.activity_quan);
 		cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
-		quanButton = (Button)findViewById(R.id.quan_button);
+		quanButton = (ImageView)findViewById(R.id.quan_button);
 		quanButton.setOnClickListener(this);
+		pinglunEditText = (EditText)findViewById(R.id.pinglun_edit);
+		sendBtn = (MyTextButton)findViewById(R.id.send_pinglun_button);
+		sendBtn.setOnClickListener(this);
+		bottomView = (CustomRelativeLayout)findViewById(R.id.bottom_view);
+		bottomView.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				return hideInput();
+			}
+		});
+		bottomView.setOnSizeChangedListener(this);
 		pullToRefreshListView = (PullToRefreshListView)findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView
@@ -88,24 +125,41 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		adapter = new QuanAdapter();
 		pullToRefreshListView.getRefreshableView()
 				.setAdapter(adapter);
-		
-		
+		//注册一个广播接收器，启动餐桌抖动动画  
+        receiver = new BroadcastReceiver() {
+	    	@Override
+	        public void onReceive(Context ctx, Intent intent) {
+	    		if (intent.getAction().equals("refresh")) {
+	    			loadNewDate();
+	 	    		}
+	    	}
+	    };
+	    filter = new IntentFilter();
+	    filter.addAction("refresh");
+	    filter.addCategory(Intent.CATEGORY_DEFAULT);
+	    uid = GFUserDictionary.getUserId();
 	}
 	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		registerReceiver(receiver, filter);
 		loadNewDate();
 	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		unregisterReceiver(receiver);
+	}
 
 	private void loadNewDate() {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				String uid = GFUserDictionary.getUserId();
 				String jsonString = HttpUtil.getQuansString(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -119,10 +173,9 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 
 			@Override
 			public void run() {
-				String uid = GFUserDictionary.getUserId();
 				String jsonString = HttpUtil.getQuansString(uid, qid);
 				Message msg = handler.obtainMessage();
-				msg.what = 1;
+				msg.what = 2;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 			}
@@ -180,6 +233,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
 			Quan quan = allQuans.get(position);
+			boolean bzan = false;
 			int type = getItemViewType(position);
 			QuanHolder holder1 = null;
 			QuanHolder3 holder2 = null;
@@ -230,11 +284,31 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder1.contentTv.setText(quan.getContent());
 				if(quan.getComments()!=null && quan.getComments().size()>0){
 					String commentStr = "";
+					String zanString = "♡";
 					for (int i = 0;i<quan.getComments().size();i++) {
-						commentStr+=quan.getComments().get(i).getWriter().getAlias()+
-								":"+quan.getComments().get(i).getContent()+"\n\r";
+						Comment comment = quan.getComments().get(i);
+						if(comment.getStatus()!=null&&comment.getStatus()==1){
+							if(comment.getWriter().getId().equals(uid)){
+								bzan = true;
+							}
+							zanString+=comment.getWriter().getAlias()+"、";
+						}
+						else{
+							commentStr+=comment.getWriter().getAlias()+
+									":"+comment.getContent()+"\n";
+						}
+						
 					}
-					commentStr = commentStr.substring(0, commentStr.length()-4);
+					zanString = zanString.substring(0, zanString.length()-1);
+					if(zanString.length()>1 && commentStr.length()>1){
+						commentStr =zanString+"\n"+ commentStr.substring(0, commentStr.length()-1);
+					}
+					else if(zanString.length()>1 && commentStr.length()<1){
+						commentStr =zanString;
+					}
+					else{
+						commentStr = commentStr.substring(0, commentStr.length()-1);
+					}
 					holder1.commentTv.setText(commentStr);
 					holder1.commentTv.setVisibility(View.VISIBLE);
 				}
@@ -243,7 +317,15 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				}
 				
 				holder1.pinlunImg.setOnClickListener(QuanActivity.this);
-				holder1.zanImg.setOnClickListener(QuanActivity.this);
+				holder1.pinlunImg.setTag(quan);
+				if(bzan){
+					holder1.zanImg.setVisibility(View.GONE);
+				}
+				else{
+					holder1.zanImg.setVisibility(View.VISIBLE);
+					holder1.zanImg.setOnClickListener(QuanActivity.this);
+					holder1.zanImg.setTag(quan);
+				}
 				break;
 			case 1:
 				holder2 = (QuanHolder3) convertView.getTag();
@@ -256,11 +338,31 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder2.contentTv.setText(quan.getContent());
 				if(quan.getComments()!=null && quan.getComments().size()>0){
 					String commentStr = "";
+					String zanString = "♡";
 					for (int i = 0;i<quan.getComments().size();i++) {
-						commentStr+=quan.getComments().get(i).getWriter().getAlias()+
-								":"+quan.getComments().get(i).getContent()+"\n\r";
+						Comment comment = quan.getComments().get(i);
+						if(comment.getStatus()!=null&&comment.getStatus()==1){
+							if(comment.getWriter().getId().equals(uid)){
+								bzan = true;
+							}
+							zanString+=comment.getWriter().getAlias()+"、";
+						}
+						else{
+							commentStr+=comment.getWriter().getAlias()+
+									":"+comment.getContent()+"\n";
+						}
+						
 					}
-					commentStr = commentStr.substring(0, commentStr.length()-4);
+					zanString = zanString.substring(0, zanString.length()-1);
+					if(zanString.length()>1 && commentStr.length()>1){
+						commentStr =zanString+"\n"+ commentStr.substring(0, commentStr.length()-1);
+					}
+					else if(zanString.length()>1 && commentStr.length()<1){
+						commentStr =zanString;
+					}
+					else{
+						commentStr = commentStr.substring(0, commentStr.length()-1);
+					}
 					holder2.commentTv.setText(commentStr);
 					holder2.commentTv.setVisibility(View.VISIBLE);
 				}
@@ -298,7 +400,15 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 					holder2.imageView3.setImages(quan.getAttachments(),"quans");
 				}
 				holder2.pinlunImg.setOnClickListener(QuanActivity.this);
-				holder2.zanImg.setOnClickListener(QuanActivity.this);
+				holder2.pinlunImg.setTag(quan);
+				if(bzan){
+					holder2.zanImg.setVisibility(View.GONE);
+				}
+				else{
+					holder2.zanImg.setVisibility(View.VISIBLE);
+					holder2.zanImg.setOnClickListener(QuanActivity.this);
+					holder2.zanImg.setTag(quan);
+				}
 				break;
 			case 2:
 				holder3 = (QuanHolder6) convertView.getTag();
@@ -312,11 +422,30 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder3.contentTv.setText(quan.getContent());
 				if(quan.getComments()!=null && quan.getComments().size()>0){
 					String commentStr = "";
+					String zanString = "♡";
 					for (int i = 0;i<quan.getComments().size();i++) {
-						commentStr+=quan.getComments().get(i).getWriter().getAlias()+
-								":"+quan.getComments().get(i).getContent()+"\n\r";
+						Comment comment = quan.getComments().get(i);
+						if(comment.getStatus()!=null&&comment.getStatus()==1){
+							if(comment.getWriter().getId().equals(uid)){
+								bzan = true;
+							}
+							zanString+=comment.getWriter().getAlias()+"、";
+						}
+						else{
+							commentStr+=comment.getWriter().getAlias()+
+									":"+comment.getContent()+"\n";
+						}
 					}
-					commentStr = commentStr.substring(0, commentStr.length()-4);
+					zanString = zanString.substring(0, zanString.length()-1);
+					if(zanString.length()>1 && commentStr.length()>1){
+						commentStr =zanString+"\n"+ commentStr.substring(0, commentStr.length()-1);
+					}
+					else if(zanString.length()>1 && commentStr.length()<1){
+						commentStr =zanString;
+					}
+					else{
+						commentStr = commentStr.substring(0, commentStr.length()-1);
+					}
 					holder3.commentTv.setText(commentStr);
 					holder3.commentTv.setVisibility(View.VISIBLE);
 				}
@@ -374,7 +503,15 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 					holder3.imageView6.setImages(quan.getAttachments(),"quans");
 				}
 				holder3.pinlunImg.setOnClickListener(QuanActivity.this);
-				holder3.zanImg.setOnClickListener(QuanActivity.this);
+				holder3.pinlunImg.setTag(quan);
+				if(bzan){
+					holder3.zanImg.setVisibility(View.GONE);
+				}
+				else{
+					holder3.zanImg.setVisibility(View.VISIBLE);
+					holder3.zanImg.setOnClickListener(QuanActivity.this);
+					holder3.zanImg.setTag(quan);
+				}
 				break;
 			case 3:
 				holder4 = (QuanHolder9) convertView.getTag();
@@ -388,11 +525,30 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder4.contentTv.setText(quan.getContent());
 				if(quan.getComments()!=null && quan.getComments().size()>0){
 					String commentStr = "";
+					String zanString = "♡";
 					for (int i = 0;i<quan.getComments().size();i++) {
-						commentStr+=quan.getComments().get(i).getWriter().getAlias()+
-								":"+quan.getComments().get(i).getContent()+"\n\r";
+						Comment comment = quan.getComments().get(i);
+						if(comment.getStatus()!=null&&comment.getStatus()==1){
+							if(comment.getWriter().getId().equals(uid)){
+								bzan = true;
+							}
+							zanString+=comment.getWriter().getAlias()+"、";
+						}
+						else{
+							commentStr+=comment.getWriter().getAlias()+
+									":"+comment.getContent()+"\n";
+						}
 					}
-					commentStr = commentStr.substring(0, commentStr.length()-4);
+					zanString = zanString.substring(0, zanString.length()-1);
+					if(zanString.length()>1 && commentStr.length()>1){
+						commentStr =zanString+"\n"+ commentStr.substring(0, commentStr.length()-1);
+					}
+					else if(zanString.length()>1 && commentStr.length()<1){
+						commentStr =zanString;
+					}
+					else{
+						commentStr = commentStr.substring(0, commentStr.length()-1);
+					}
 					holder4.commentTv.setText(commentStr);
 					holder4.commentTv.setVisibility(View.VISIBLE);
 				}
@@ -477,7 +633,15 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 					holder4.imageView9.setImages(quan.getAttachments(),"quans");
 				}
 				holder4.pinlunImg.setOnClickListener(QuanActivity.this);
-				holder4.zanImg.setOnClickListener(QuanActivity.this);
+				holder4.pinlunImg.setTag(quan);
+				if(bzan){
+					holder4.zanImg.setVisibility(View.GONE);
+				}
+				else{
+					holder4.zanImg.setVisibility(View.VISIBLE);
+					holder4.zanImg.setOnClickListener(QuanActivity.this);
+					holder4.zanImg.setTag(quan);
+				}
 				break;
 			default:
 				break;
@@ -496,7 +660,15 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			finish();
 			break;
 		case R.id.pinglun_img:
-						
+			selectQuan = (Quan)v.getTag();
+			displayInput();		
+			break;
+		case R.id.zan_img:
+			Quan quan = (Quan)v.getTag();
+			zan(quan);
+			break;
+		case R.id.send_pinglun_button:
+			pinglun(selectQuan);
 			break;
 		case R.id.quan_button:
 			Intent intent = new Intent(this,NyqActivity.class);
@@ -507,27 +679,117 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		}
 	}
 	
+	private void displayInput(){
+		bottomView.setVisibility(View.VISIBLE);
+		pinglunEditText.requestFocus();
+		InputMethodManager imm = (InputMethodManager)pinglunEditText.getContext().
+				getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+	}
+	
+	private boolean hideInput(){
+		InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);  
+	    boolean b = imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+	    
+	    return b;
+	}
+	
+	public void zan(Quan quan){
+		Comment comment = new Comment();
+		comment.setStatus(1);
+		sendpinlun(comment, quan.getId());
+	}
+	
+	public void pinglun(Quan quan){
+		hideInput();
+		String content = pinglunEditText.getText().toString();
+		if(content==null || content==""){
+			return;
+		}
+		Comment comment = new Comment();
+		comment.setContent(content);
+		comment.setStatus(0);
+		sendpinlun(comment, quan.getId());
+	}
+	
+	public void sendpinlun(final Comment comment,final int qid){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					HttpUtil.pinlunQuan(uid, qid, comment);
+					Message msg = QuanActivity.this.handler.obtainMessage();
+					msg.what = 1;
+					msg.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Message msg=new Message();
+					msg.what=-1;
+					handler.sendMessage(msg);
+				}
+			}
+		}).start();
+	}
+	
+	@Override
+	public void onSizeChanged(int w, int h, int oldw, int oldh) {
+		// TODO Auto-generated method stub
+		if(oldh!=0&&oldh<h){
+			bottomView.setVisibility(View.GONE);
+		}
+	}
+
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		final QuanActivity quanActivity =(QuanActivity)object;
-		if (msg.obj != null) {
-			Gson gson = new Gson();
-			List<Quan> quans = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<Quan>>() {
-					}.getType());
-			if (msg.what == 0) {
+		switch (msg.what) {
+		case -1:
+			GFToast.show("连接服务器失败,请稍候再试!");
+			break;
+			
+		case 0:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Quan> quans = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Quan>>() {
+						}.getType());
 				quanActivity.allQuans.clear();
+				for (Quan quan : quans) {
+					quanActivity.allQuans.add(quan);
+				}
+				quanActivity.adapter.notifyDataSetChanged();
+			} else {
+				Toast.makeText(this, "连接服务器失败,请稍候再试!",
+						Toast.LENGTH_SHORT).show();
 			}
-			for (Quan quan : quans) {
-				quanActivity.allQuans.add(quan);
+			quanActivity.pullToRefreshListView.onRefreshComplete();
+			break;
+		case 1:
+			loadNewDate();
+			break;
+		case 2:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Quan> quans = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Quan>>() {
+						}.getType());
+				for (Quan quan : quans) {
+					quanActivity.allQuans.add(quan);
+				}
+				quanActivity.adapter.notifyDataSetChanged();
+			} else {
+				Toast.makeText(this, "连接服务器失败,请稍候再试!",
+						Toast.LENGTH_SHORT).show();
 			}
-			quanActivity.adapter.notifyDataSetChanged();
-		} else {
-			Toast.makeText(this, "连接服务器失败,请稍候再试!",
-					Toast.LENGTH_SHORT).show();
+			quanActivity.pullToRefreshListView.onRefreshComplete();
+			break;
+
+		default:
+			break;
 		}
-		quanActivity.pullToRefreshListView.onRefreshComplete();
+		
 	}
 
 }

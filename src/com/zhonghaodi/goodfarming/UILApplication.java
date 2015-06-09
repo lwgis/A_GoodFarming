@@ -72,12 +72,11 @@ public class UILApplication extends Application {
 				.memoryCache(new UsingFreqLimitedMemoryCache(10 * 1024 * 1024))
 				.memoryCacheSize(10 * 1024 * 1024)
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
-				.diskCacheSize(200 * 1024 * 1024)				// 200 Mb
+				.diskCacheSize(200 * 1024 * 1024)				
 				.diskCacheFileCount(300)
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				.writeDebugLogs() // Remove for release app
 				.build();
-		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(config);
 	}
 	public static boolean isBackground(Context context) {

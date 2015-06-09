@@ -11,11 +11,12 @@
         android:background="#38be99" >
 
         <TextView
+            android:id="@+id/title_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="种好地"
+            android:text="所有提问"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 

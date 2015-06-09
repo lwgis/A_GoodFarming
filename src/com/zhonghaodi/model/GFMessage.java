@@ -6,7 +6,8 @@ public class GFMessage {
 	private long time;
 	private User user;
 	private int count;
-	private Integer exid;
+	private String type;
+	private String excontent;
 	public String getTitle() {
 		return title;
 	}
@@ -37,11 +38,18 @@ public class GFMessage {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public Integer getExid() {
-		return exid;
+	
+	public String getType() {
+		return type;
 	}
-	public void setExid(Integer exid) {
-		this.exid = exid;
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getExcontent() {
+		return excontent;
+	}
+	public void setExcontent(String excontent) {
+		this.excontent = excontent;
 	}
 	
 

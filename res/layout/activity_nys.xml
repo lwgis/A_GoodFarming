@@ -30,24 +30,73 @@
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/pull_refresh_list"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
+   <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
         android:layout_weight="1"
-        android:cacheColorHint="#000000"
-        android:divider="#eaeaea"
-        android:dividerHeight="8dp"
-        android:fadingEdge="none"
-        android:fastScrollEnabled="false"
-        android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
-        android:listSelector="#00000000"
-        android:smoothScrollbar="true"
-        ptr:ptrAnimationStyle="rotate"
-        ptr:ptrHeaderBackground="@null"
-        ptr:ptrHeaderSubTextColor="#00ffff"
-        ptr:ptrHeaderTextColor="#868686" />
+        >
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+	        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+	        android:id="@+id/pull_refresh_list"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_marginLeft="5dip"
+	        android:layout_marginRight="5dip"
+	        android:listSelector="#00000000"
+	        android:cacheColorHint="#000000"
+	        android:divider="#eaeaea"
+	        android:dividerHeight="8dp"
+	        android:fadingEdge="none"
+	        android:fastScrollEnabled="false"
+	        android:footerDividersEnabled="false"
+	        android:headerDividersEnabled="false"
+	        android:smoothScrollbar="true"
+	        ptr:ptrAnimationStyle="rotate"
+	        ptr:ptrHeaderBackground="@null"
+	        ptr:ptrHeaderSubTextColor="#00ffff"
+	        ptr:ptrHeaderTextColor="#868686"
+	         />
+        <com.zhonghaodi.customui.CustomRelativeLayout
+            android:id="@+id/bottom_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            >
+            <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentBottom="true"
+		        android:background="#ffffff"
+		        android:orientation="horizontal" 	        
+		        >
+		
+		        <com.zhonghaodi.customui.MyEditText
+	                android:id="@+id/pinglun_edit"
+	                style="@style/my_edittext_style"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="5dip"
+	                android:layout_weight="1"
+	                android:background="@null"
+	                android:maxLines="3"
+	                android:minHeight="40dp"
+	                android:paddingLeft="5dp"
+	                android:textSize="18sp" />
+	
+	            <com.zhonghaodi.customui.MyTextButton
+	                android:id="@+id/send_pinglun_button"
+	                android:layout_width="wrap_content"
+	                android:layout_height="32dp"
+	                android:layout_margin="5dip"
+	                android:background="@null"
+	                android:gravity="center"
+	                android:text="发送"
+	                android:textColor="#444444"
+	                android:textSize="20sp"
+	                 />
+		    </LinearLayout>
+        </com.zhonghaodi.customui.CustomRelativeLayout>
+        
+    </RelativeLayout>
 
 </LinearLayout>

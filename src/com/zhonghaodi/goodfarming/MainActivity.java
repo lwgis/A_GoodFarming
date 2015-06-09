@@ -271,6 +271,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	public void loginOut(View view) {
 		GFUserDictionary.removeUserInfo();
 		EMChatManager.getInstance().logout();
+		
 	}
 
 	/**

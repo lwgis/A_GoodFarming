@@ -58,7 +58,7 @@ public class MessageFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				GFMessage message = messages.get(position - 1);
-				if(message.getExid()==null){
+				if(message.getType()==null || message.getType()==""){
 					Intent it = new Intent();
 					it.setClass(getActivity(), ChatActivity.class);
 					it.putExtra("userName", message.getUser()==null?message.getTitle():message.getTitle());
@@ -67,11 +67,15 @@ public class MessageFragment extends Fragment {
 					getActivity().startActivityForResult(it, 2);
 				}
 				else{
-					Intent intent = new Intent(getActivity(), QuestionActivity.class);
-					intent.putExtra("questionId", message.getExid());
-					getActivity().startActivityForResult(intent, 2);
-					EMConversation emConversation = EMChatManager.getInstance().getConversation("种好地");
-					emConversation.resetUnreadMsgCount();
+					if(message.getType().equals("question")){
+						Intent intent = new Intent(getActivity(), QuestionActivity.class);
+						String qidstr = message.getExcontent();
+						intent.putExtra("questionId", Integer.parseInt(qidstr));
+						getActivity().startActivityForResult(intent, 2);
+						EMConversation emConversation = EMChatManager.getInstance().getConversation("种好地");
+						emConversation.resetUnreadMsgCount();
+					}
+					
 				}
 				
 			}
@@ -93,12 +97,13 @@ public class MessageFragment extends Fragment {
 				TextMessageBody body = (TextMessageBody) emConversation
 						.getLastMessage().getBody();
 				message.setContent(body.getMessage());
-				int qid;
-				
+				String type="";
+				String content = "";
 				try {
-					 qid = emConversation.getLastMessage().getIntAttribute("qid");
-					 
-					 message.setExid(qid);
+					 type = emConversation.getLastMessage().getStringAttribute("type");
+					 content = emConversation.getLastMessage().getStringAttribute("content");
+					 message.setType(type);
+					 message.setExcontent(content);
 					 
 				} catch (EaseMobException e) {
 					// TODO Auto-generated catch block

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+		<com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            android:text="&lt;返回"
+            android:textColor="#ffffff"
+            android:textSize="20sp" 
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="当面付"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </RelativeLayout>
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:padding="5dip"
+        >
+        <LinearLayout 
+            android:id="@+id/pay_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dip"
+            android:orientation="vertical"
+            >
+            <com.zhonghaodi.customui.MyEditText
+		        android:id="@+id/count_ext"
+		        style="@style/my_edittext_style"
+		        android:layout_width="match_parent"
+		        android:layout_height="45dp"
+		        android:layout_marginBottom="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_marginTop="10dp"
+		        android:hint="请输入支付金额"
+		        android:inputType="numberSigned"
+		        android:maxLength="11"
+		        android:textColor="#333333" />
+		
+		    <com.zhonghaodi.customui.MyEditText
+		        android:id="@+id/password_edit"
+		        style="@style/my_edittext_style"
+		        android:layout_width="match_parent"
+		        android:layout_height="45dp"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginRight="10dp"
+		        android:hint="请输入你的密码"
+		        android:inputType="textPassword"
+		        android:maxLength="20"
+		        android:textColor="#333333" />
+		
+		    <com.zhonghaodi.customui.MyTextButton
+		        android:id="@+id/confirm_button"
+		        android:layout_width="match_parent"
+		        android:layout_height="40dp"
+		        android:layout_margin="10dp"
+		        android:background="@drawable/button_shape"
+		        android:text="确  定"
+		        android:textColor="#ffffff"
+		        android:textSize="18sp" />
+        </LinearLayout>
+        
+        <LinearLayout 
+            android:id="@+id/qrcode_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dip"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:id="@+id/qrcode_image"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp" />
+            <LinearLayout 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <com.zhonghaodi.customui.MyTextButton
+			        android:id="@+id/cancel_button"
+			        android:layout_width="0dip"
+			        android:layout_height="40dp"
+			        android:layout_weight="1"
+			        android:layout_margin="10dp"
+			        android:background="@drawable/button_shape"
+			        android:text="取消支付"
+			        android:textColor="#ffffff"
+			        android:textSize="18sp" />
+                <com.zhonghaodi.customui.MyTextButton
+			        android:id="@+id/ok_button"
+			        android:layout_width="0dip"
+			        android:layout_height="40dp"
+			        android:layout_weight="1"
+			        android:layout_margin="10dp"
+			        android:background="@drawable/button_shape"
+			        android:text="支付完成"
+			        android:textColor="#ffffff"
+			        android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+        
+    </RelativeLayout>
+
+    
+
+</LinearLayout>

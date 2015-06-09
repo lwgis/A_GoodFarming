@@ -10,6 +10,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
@@ -20,6 +21,7 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 
+import android.R.integer;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,34 +35,34 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
-public class HomeFragment extends Fragment implements HandMessage {
+public class HomeFragment extends Fragment implements HandMessage,OnClickListener {
 	private PullToRefreshListView pullToRefreshListView;
 	private ArrayList<Question> allQuestions;
 	private QuestionAdpter adapter;
+	private TextView titleView;
 	private GFHandler<HomeFragment> handler = new GFHandler<HomeFragment>(this);
+	private boolean bAll = true;
+	private View popView;
+	private PopupWindow mPopupWindow;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
+		popView = LayoutInflater.from(getActivity()).inflate(R.layout.popupwindow_question,null);
+		Button btnall = (Button)popView.findViewById(R.id.btnAll);
+		btnall.setOnClickListener(this);
+		Button btnmy = (Button)popView.findViewById(R.id.btnMy);
+		btnmy.setOnClickListener(this);
+		titleView = (TextView)view.findViewById(R.id.title_txt);
+		titleView.setOnClickListener(this);
 		Button questionButton = (Button) view
 				.findViewById(R.id.question_button);
-		questionButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent it = new Intent();
-				if (GFUserDictionary.getUserId()==null) {
-					it.setClass(getActivity(), LoginActivity.class);
-				}
-				else {
-					it.setClass(getActivity(), CreateQuestionActivity.class);
-				}
-				getActivity().startActivity(it);
-			}
-		});
+		questionButton.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
@@ -70,7 +72,11 @@ public class HomeFragment extends Fragment implements HandMessage {
 					@Override
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-						loadNewDate();
+						if(bAll)
+							loadNewDate();
+						else {
+							loadNewMyDate();
+						}
 					}
 
 					@Override
@@ -81,7 +87,11 @@ public class HomeFragment extends Fragment implements HandMessage {
 						}
 						Question question = allQuestions.get(allQuestions
 								.size() - 1);
-						loadMoreData(question.getId());
+						if(bAll)
+							loadMoreData(question.getId());
+						else {
+							loadMoreMyData(question.getId());
+						}
 					}
 
 				});
@@ -127,6 +137,36 @@ public class HomeFragment extends Fragment implements HandMessage {
 			@Override
 			public void run() {
 				String jsonString = HttpUtil.getQuestionsString(qid);
+				Message msg = handler.obtainMessage();
+				msg.what = 1;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
+	private void loadNewMyDate() {
+		final String  uid= GFUserDictionary.getUserId();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getMyQuestionsString(uid);
+				Message msg = handler.obtainMessage();
+				msg.what = 0;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+
+	private void loadMoreMyData(final int qid) {
+		final String  uid= GFUserDictionary.getUserId();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getMyQuestionsString(uid,qid);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -344,27 +384,74 @@ public class HomeFragment extends Fragment implements HandMessage {
 			return convertView;
 		}
 	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.question_button:
+			Intent it = new Intent();
+			if (GFUserDictionary.getUserId()==null) {
+				it.setClass(getActivity(), LoginActivity.class);
+			}
+			else {
+				it.setClass(getActivity(), CreateQuestionActivity.class);
+			}
+			getActivity().startActivity(it);
+			break;
+		case R.id.title_txt:
+			if (mPopupWindow==null) {
+				mPopupWindow=new PopupWindow(popView,DpTransform.dip2px(getActivity(), 180),DpTransform.dip2px(getActivity(), 100));
+			}
+			if (mPopupWindow.isShowing()) {
+				mPopupWindow.dismiss();
+			}
+			else {
+				
+				mPopupWindow.showAsDropDown(v,-DpTransform.dip2px(getActivity(), 55),DpTransform.dip2px(getActivity(), 10));
+			}
+			break;
+			
+		case R.id.btnAll:
+			titleView.setText("所有提问");
+			loadNewDate();
+			mPopupWindow.dismiss();
+			bAll = true;
+			break;
+		case R.id.btnMy:
+			titleView.setText("我的提问");
+			loadNewMyDate();
+			mPopupWindow.dismiss();
+			bAll = false;
+			break;
 
-@Override
-public void handleMessage(Message msg,Object object) {
-		final HomeFragment fragment =(HomeFragment)object;
-		if (msg.obj != null) {
-			Gson gson = new Gson();
-			List<Question> questions = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<Question>>() {
-					}.getType());
-			if (msg.what == 0) {
-				fragment.allQuestions.clear();
-			}
-			for (Question question : questions) {
-				fragment.allQuestions.add(question);
-			}
-			fragment.adapter.notifyDataSetChanged();
-		} else {
-			Toast.makeText(fragment.getActivity(), "连接服务器失败,请稍候再试!",
-					Toast.LENGTH_SHORT).show();
+		default:
+			break;
 		}
-		fragment.pullToRefreshListView.onRefreshComplete();
+	}
 
-}
+	@Override
+	public void handleMessage(Message msg,Object object) {
+			final HomeFragment fragment =(HomeFragment)object;
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Question> questions = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Question>>() {
+						}.getType());
+				if (msg.what == 0) {
+					fragment.allQuestions.clear();
+				}
+				for (Question question : questions) {
+					fragment.allQuestions.add(question);
+				}
+				fragment.adapter.notifyDataSetChanged();
+			} else {
+				Toast.makeText(fragment.getActivity(), "连接服务器失败,请稍候再试!",
+						Toast.LENGTH_SHORT).show();
+			}
+			fragment.pullToRefreshListView.onRefreshComplete();
+	
+	}
+
+
 }

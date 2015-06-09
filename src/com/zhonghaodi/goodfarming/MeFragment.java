@@ -2,10 +2,12 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 
+import com.baidu.platform.comapi.map.u;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
 import com.zhonghaodi.model.Function;
@@ -54,31 +56,38 @@ public class MeFragment extends Fragment implements HandMessage {
 		adapter = new MeAdapter();
 		functions = new ArrayList<Function>();
 		pullToRefreshList.setAdapter(adapter);
-       pullToRefreshList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+		pullToRefreshList.setOnRefreshListener(new OnRefreshListener<ListView>() {
 
-		@Override
-		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-			loadData();
-		}
-	});
-       pullToRefreshList.setOnItemClickListener(new OnItemClickListener() {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			if (position<2) {
-				return;
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				loadData();
 			}
-			Intent it=new Intent();
-			it.setClass(getActivity(), functions.get(position-2).getActivityClass());
-			getActivity().startActivity(it);
-		}
-	});
+		});
+		pullToRefreshList.setOnItemClickListener(new OnItemClickListener() {
+	
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				if (position<2) {
+					return;
+				}
+				Intent it=new Intent();
+				Function function = functions.get(position-2);
+				it.setClass(getActivity(), function.getActivityClass());
+				if(function.getName().equals("当面付")){
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("user", user);
+					it.putExtras(bundle);
+				}
+				getActivity().startActivity(it);
+			}
+		});
 		return view;
 	}
 
 	public void loadData() {
 		functions.clear();
+		
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -161,6 +170,9 @@ public class MeFragment extends Fragment implements HandMessage {
 						ImageOptions.optionsNoPlaceholder);
 				holderMeInfo.titleTv.setText(user.getAlias());
 				holderMeInfo.jifenTv.setText(String.valueOf(user.getPoint()));
+				holderMeInfo.youhuibiTv.setText(String.valueOf(user.getCurrency()));
+				holderMeInfo.fensiTv.setText(String.valueOf(user.getFanscount()));
+				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				break;
 			case 1:
 				holdFunction=(HoldFunction)convertView.getTag();
@@ -200,8 +212,10 @@ public class MeFragment extends Fragment implements HandMessage {
 		}
 		Function cartFunction = new Function("购物车", ShoppingCartActivity.class,R.drawable.inzd);
 		fragment.functions.add(cartFunction);
+		Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
+		fragment.functions.add(payFunction);
 		if(user.getLevel().getId()==3){
-			Function orderFunction = new Function("订单扫描", OrderScanActivity.class,R.drawable.inzd);
+			Function orderFunction = new Function("扫一扫", OrderScanActivity.class,R.drawable.inzd);
 			fragment.functions.add(orderFunction);
 		}
 		fragment.pullToRefreshList.onRefreshComplete();

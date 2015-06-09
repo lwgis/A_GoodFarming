@@ -2,6 +2,8 @@ package com.zhonghaodi.model;
 
 import java.io.Serializable;
 
+import android.R.integer;
+
 public class User implements Serializable {
 	private String id;
 	private String phone;
@@ -11,6 +13,11 @@ public class User implements Serializable {
 	private Level level;
 	private String password;
 	private int point;
+	private int currency;
+	private int followcount;
+	private int fanscount;
+	private String description;
+	private String tjPhone;
 	
 	public User() {
 		// TODO Auto-generated constructor stub
@@ -80,10 +87,50 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+	public int getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(int currency) {
+		this.currency = currency;
+	}
+
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		return super.toString();
+	}
+
+	public int getFollowcount() {
+		return followcount;
+	}
+
+	public void setFollowcount(int followcount) {
+		this.followcount = followcount;
+	}
+
+	public int getFanscount() {
+		return fanscount;
+	}
+
+	public void setFanscount(int fanscount) {
+		this.fanscount = fanscount;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getTjPhone() {
+		return tjPhone;
+	}
+
+	public void setTjPhone(String tjPhone) {
+		this.tjPhone = tjPhone;
 	}
 
 }

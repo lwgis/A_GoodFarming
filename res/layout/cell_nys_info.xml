@@ -7,8 +7,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:background="@drawable/item_background_default" 
         android:orientation="vertical">
 
@@ -54,15 +52,6 @@
                     android:layout_marginTop="0dp"
                     android:orientation="horizontal" >
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="right"
-                        android:singleLine="true"
-                        android:text="积    分:"
-                        android:textColor="#808080"
-                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/jifen_text"
@@ -71,7 +60,7 @@
                         android:layout_marginTop="5dp"
                         android:singleLine="true"
                         android:text="0"
-                        android:textColor="#444444"
+                        android:textColor="#808080"
                         android:textSize="15sp" />
                 </LinearLayout>
 
@@ -129,7 +118,7 @@
 		            android:layout_width="80dip"
 		            android:layout_height="30dip"
 		            android:layout_margin="2dip"
-		            android:background="@drawable/bg_green_btn"
+		            android:background="@drawable/button_shape"
 		            android:textColor="#ffffff"
 		            android:text="关注"
 		            />
@@ -148,7 +137,7 @@
 		            android:layout_width="80dip"
 		            android:layout_height="30dip"
 		            android:layout_margin="2dip"
-		            android:background="@drawable/bg_green_btn"
+		            android:background="@drawable/button_shape"
 		            android:textColor="#ffffff"
 		            android:text="咨询"
 		            />

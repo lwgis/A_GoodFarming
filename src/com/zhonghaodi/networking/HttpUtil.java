@@ -43,6 +43,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.google.gson.Gson;
+import com.zhonghaodi.model.Comment;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
@@ -265,6 +266,44 @@ public class HttpUtil {
 		}
 		return null;
 	}
+	
+	public static String executeHttpPut(String urlString, List<NameValuePair> paramList)
+			throws Throwable {
+		StringBuffer sb = new StringBuffer();
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpPut put = new HttpPut(urlString);
+		put.addHeader("Content-Type", "application/x-www-form-urlencoded");
+		put.addHeader("Accept-Charset", "utf-8");
+		put.setEntity(new UrlEncodedFormEntity(paramList, HTTP.UTF_8));
+		try {
+			HttpResponse response = client.execute(put);
+
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == 200) {
+				InputStream inputStream = response.getEntity().getContent();
+				BufferedReader buffer = new BufferedReader(
+						new InputStreamReader(inputStream,
+								Charset.forName("utf-8")));
+				String line = null;
+				while ((line = buffer.readLine()) != null) {
+					sb.append(line);
+				}
+				inputStream.close();
+				return sb.toString();
+			} else {
+				// TODO 返回错误信息
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			throw e;
+			// TODO 返回协议错误信息
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw e;
+			// TODO 返回网络错误
+		}
+		return null;
+	}
 	/**
 	 * 获取图片
 	 * @param urlStr
@@ -294,6 +333,17 @@ public class HttpUtil {
 	public static String getQuestionsString(int qid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL
 				+ "questions?fromid=" + qid);
+		return jsonString;
+	}
+	
+	public static String getMyQuestionsString(String uid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/questions");
+		return jsonString;
+	}
+
+	public static String getMyQuestionsString(String uid,int qid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL
+				+ "users/"+uid+"/questions?fromid=" + qid);
 		return jsonString;
 	}
 
@@ -543,9 +593,9 @@ public class HttpUtil {
 		return result;
 	}
 	
-	public static String getNyss(){
+	public static String getNyss(String uid){
 		
-		String urlString = RootURL + "users/nys";
+		String urlString = RootURL + "users/nys?exid="+uid;
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
@@ -610,5 +660,65 @@ public class HttpUtil {
 				"yyyy-MM-dd HH:mm:ss", new String[] {
 						Quan.class.toString(), NetImage.class.toString() });
 		HttpUtil.executeHttpPost(RootURL + "users/"+uid+"/quans", jsonString);
+	}
+	
+	public static void pinlunQuan(String uid,int qid,Comment comment) throws Throwable {
+		String jsonString = JsonUtil.convertObjectToJson(comment,
+				"yyyy-MM-dd HH:mm:ss", new String[] {
+						Comment.class.toString(), NetImage.class.toString() });
+		HttpUtil.executeHttpPost(RootURL + "users/"+uid+"/quans/"+qid+"/comment", jsonString);
+	}
+	
+	public static Bitmap getPayQRCode(String uid,int currency) {
+		Bitmap bitmap = null;
+		String urlString = RootURL + "users/" + uid
+				+ "/pay?currency="+currency;
+		bitmap=HttpUtil.getBitmap(urlString);
+		return bitmap;
+	}
+	
+	public static String cancelPay(String uid){
+		String urlString = RootURL + "users/"+uid+"/paycancel";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String checkPay(String uid){
+		String urlString = RootURL + "users/"+uid+"/paycheck";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+	}
+	
+	public static String incomeCurrency(final String code,String uid) throws Throwable {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return code;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "code";
+			}
+		};
+		nameValuePairs.add(nameValuePair);
+		String resultString = HttpUtil.executeHttpPut(RootURL + "users/"+uid+"/income",
+				nameValuePairs);
+		return resultString;
+	}
+	
+	public static String getNysQuansString(String uid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid + "/quans/my");
+		return jsonString;
+	}
+
+	public static String getNysQuansString(String uid,int qid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid
+				+ "/quans/my?fromid=" + qid);
+		return jsonString;
 	}
 }

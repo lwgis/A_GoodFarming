@@ -99,11 +99,13 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	 */
 	private void loadNyss(){
 		
+		final String uid = GFUserDictionary.getUserId();
+		
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getNyss();
+				String jsonString = HttpUtil.getNyss(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -184,7 +186,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 							+ nys.getThumbnail(),
 							nysHolder.imageView, ImageOptions.options);
 			nysHolder.nameTextView.setText(nys.getAlias());
-			nysHolder.pointTextView.setText("积分："+String.valueOf(nys.getPoint()));
+			nysHolder.pointTextView.setText(nys.getDescription());
 			if(fuids.contains(nys.getId())){
 				nysHolder.followButton.setVisibility(View.GONE);
 			}
