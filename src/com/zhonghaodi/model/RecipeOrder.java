@@ -2,6 +2,8 @@ package com.zhonghaodi.model;
 
 import java.io.Serializable;
 
+import android.R.integer;
+
 
 public class RecipeOrder implements Serializable {
 	/**
@@ -14,6 +16,8 @@ public class RecipeOrder implements Serializable {
 	private Recipe recipe;
 	private double price;
 	private int count;
+	private String time;
+	private int status;
 	
 	public RecipeOrder() {
 		// TODO Auto-generated constructor stub
@@ -60,6 +64,22 @@ public class RecipeOrder implements Serializable {
 	public String toString() {
 		// TODO Auto-generated method stub
 		return super.toString();
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	
 

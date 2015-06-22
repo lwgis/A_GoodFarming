@@ -1,0 +1,141 @@
+package com.zhonghaodi.goodfarming;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.HoldMessage;
+import com.zhonghaodi.model.GFMessage;
+import com.zhonghaodi.networking.GFDate;
+import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.networking.ImageOptions;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+import com.zhonghaodi.goodfarming.R;
+
+public class SysMessageActivity extends Activity {
+	private PullToRefreshListView pullToRefreshList;
+	private List<GFMessage> messages;
+	private MessageAdapter adapter = new MessageAdapter();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_sysmessage);
+		messages = (List<GFMessage>)getIntent().getSerializableExtra("messages");
+		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
+		cancelBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		pullToRefreshList = (PullToRefreshListView)findViewById(R.id.pull_refresh_list);
+		pullToRefreshList.setAdapter(adapter);
+		pullToRefreshList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				GFMessage message = messages.get(position - 1);
+				Intent intent = new Intent(SysMessageActivity.this, QuestionActivity.class);
+				String qidstr = message.getExcontent();
+				if(!qidstr.isEmpty()){
+					
+					intent.putExtra("questionId", Integer.parseInt(qidstr));
+					SysMessageActivity.this.startActivityForResult(intent, 2);
+					
+				}
+				
+			}
+		});
+	}
+
+	class MessageAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return messages.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return messages.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			HoldMessage holdMessage;
+			if (convertView == null) {
+				convertView = SysMessageActivity.this.getLayoutInflater().inflate(
+						R.layout.cell_message, parent, false);
+				holdMessage = new HoldMessage(convertView);
+				convertView.setTag(holdMessage);
+			} else {
+				holdMessage = (HoldMessage) convertView.getTag();
+			}
+			GFMessage message = messages.get(position);
+			if (message.getCount() == 0) {
+				holdMessage.countTv.setVisibility(View.INVISIBLE);
+			} else {
+				holdMessage.countTv.setVisibility(View.VISIBLE);
+			}
+			if (message.getUser() != null) {
+				holdMessage.titleTv.setText(message.getUser().getAlias());
+				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"users/small/"+message.getUser().getThumbnail(), holdMessage.headIv, ImageOptions.options);
+			} else {
+				holdMessage.titleTv.setText(message.getTitle());
+			}
+			holdMessage.headIv.setImageDrawable(SysMessageActivity.this.getResources().getDrawable(R.drawable.appicon));
+			holdMessage.titleTv.setText(message.getTitle());
+			holdMessage.contentTv.setText(message.getContent());
+			holdMessage.timeTv
+					.setText(GFDate.getStandardDate(message.getTime()));
+			return convertView;
+		}
+
+	}
+	
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		this.setResult(2);
+		super.finish();
+	}
+	
+	/***
+	 * 监听返回按键
+	 */
+    @Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+    	if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) { 
+	        if (event.getAction() == KeyEvent.ACTION_DOWN) { 
+	        	this.finish();
+	        	return true;
+	        } 
+	    } 
+		return super.dispatchKeyEvent(event);
+
+	}
+	
+}

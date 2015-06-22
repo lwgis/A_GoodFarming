@@ -22,6 +22,7 @@ import com.zhonghaodi.networking.ImageUtil;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -183,10 +184,19 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 
 			@Override
 			public void onClick(View v) {
-				Intent it = new Intent(
-						Intent.ACTION_PICK,
-						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-				getActivity().startActivityForResult(it, 2);
+				
+				Intent intent;
+				if (Build.VERSION.SDK_INT < 19) {
+					intent = new Intent(Intent.ACTION_GET_CONTENT);
+					intent.setType("image/*");
+
+				} else {
+					intent = new Intent(
+							Intent.ACTION_PICK,
+							android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				}
+				getActivity().startActivityForResult(intent, 2);
+				
 				popupWindow.dismiss();
 			}
 		});

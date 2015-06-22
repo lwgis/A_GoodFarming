@@ -1,13 +1,16 @@
 package com.zhonghaodi.goodfarming;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
+import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.Type;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
@@ -18,6 +21,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldMessage;
 import com.zhonghaodi.model.GFMessage;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.HttpUtil;
@@ -32,15 +36,18 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 
-public class MessageFragment extends Fragment {
+public class MessageFragment extends Fragment implements OnClickListener {
 	private PullToRefreshListView pullToRefreshList;
 	private ArrayList<GFMessage> messages;
 	private MessageAdapter adapter = new MessageAdapter();
 	private MessageHandle handler = new MessageHandle(this);
+	private List<EMConversation> list;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +58,8 @@ public class MessageFragment extends Fragment {
 		pullToRefreshList = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
 		messages = new ArrayList<GFMessage>();
+		Button contactsBtn = (Button)view.findViewById(R.id.contacts_button);
+		contactsBtn.setOnClickListener(this);
 		pullToRefreshList.setAdapter(adapter);
 		pullToRefreshList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -68,12 +77,44 @@ public class MessageFragment extends Fragment {
 				}
 				else{
 					if(message.getType().equals("question")){
-						Intent intent = new Intent(getActivity(), QuestionActivity.class);
-						String qidstr = message.getExcontent();
-						intent.putExtra("questionId", Integer.parseInt(qidstr));
+
+						EMConversation emConversation = list.get(position-1);
+						List<GFMessage> gfMessages = new ArrayList<GFMessage>();
+						List<EMMessage> emMessages = emConversation.getAllMessages();
+						for (int i=emMessages.size()-1;i>=0;i--) {
+							EMMessage emMessage = emMessages.get(i);
+							GFMessage gfMessage = new GFMessage();
+							gfMessage.setTitle(emConversation.getUserName());
+							TextMessageBody body = (TextMessageBody) emMessage.getBody();
+							gfMessage.setContent(body.getMessage());
+							String type="";
+							String content="";
+							try {
+								type = emMessage.getStringAttribute("type");
+								content = emMessage
+										.getStringAttribute("content");
+							} catch (Exception e) {
+								// TODO: handle exception
+							}
+							gfMessage.setType(type);
+							gfMessage.setExcontent(content);
+							gfMessage.setTime(emMessage.getMsgTime());
+							gfMessages.add(gfMessage);
+							
+						}
+						EMConversation emConversation1 = EMChatManager.getInstance().getConversation("种好地");
+						emConversation1.resetUnreadMsgCount();
+						((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
+						Intent intent = new Intent(getActivity(), SysMessageActivity.class);
+						intent.putExtra("messages", (Serializable)gfMessages);
 						getActivity().startActivityForResult(intent, 2);
-						EMConversation emConversation = EMChatManager.getInstance().getConversation("种好地");
-						emConversation.resetUnreadMsgCount();
+						
+					}
+					else if(message.getType().equals("user")){
+						((MainActivity)getActivity()).seletFragmentIndex(3);
+						EMConversation emConversation1 = EMChatManager.getInstance().getConversation("种好地");
+						emConversation1.resetUnreadMsgCount();
+						((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
 					}
 					
 				}
@@ -83,9 +124,24 @@ public class MessageFragment extends Fragment {
 //		loadData();
 		return view;
 	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		String uid = GFUserDictionary.getUserId();
+		if(uid==null){
+			Intent intent = new Intent(getActivity(), LoginActivity.class);
+			getActivity().startActivity(intent);
+		}
+		else{
+			Intent intent = new Intent(getActivity(), MyFollowsActivity.class);
+			getActivity().startActivity(intent);
+		}
+		
+	}
 
 	public void loadData() {
-		List<EMConversation> list = loadConversationsWithRecentChat();
+		list = loadConversationsWithRecentChat();
 		if (list.size()==0) {
 			return;
 		}
@@ -240,7 +296,7 @@ public class MessageFragment extends Fragment {
 			}
 			if (message.getUser() != null) {
 				holdMessage.titleTv.setText(message.getUser().getAlias());
-				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/users/small/"+message.getUser().getThumbnail(), holdMessage.headIv, ImageOptions.options);
+				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"users/small/"+message.getUser().getThumbnail(), holdMessage.headIv, ImageOptions.options);
 			} else {
 				holdMessage.titleTv.setText(message.getTitle());
 			}
@@ -303,4 +359,6 @@ public class MessageFragment extends Fragment {
 			}
 		}
 	}
+
+	
 }

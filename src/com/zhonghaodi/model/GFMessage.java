@@ -1,6 +1,12 @@
 package com.zhonghaodi.model;
 
-public class GFMessage {
+import java.io.Serializable;
+
+public class GFMessage implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String title;
 	private String content;
 	private long time;
@@ -50,6 +56,11 @@ public class GFMessage {
 	}
 	public void setExcontent(String excontent) {
 		this.excontent = excontent;
+	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 	
 

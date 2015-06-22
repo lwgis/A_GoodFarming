@@ -108,18 +108,20 @@ public class ShoppingCartActivity extends Activity implements HandMessage {
 	}
 	
 	class MyOrderHolder{
-		public ImageView recipeImageView;
-		public TextView recipeTitleView;
-		public TextView priceTextView;
-		public TextView countTextView;
-		public TextView sumTextView;
-		public MyOrderHolder(View view){
-			recipeImageView = (ImageView)view.findViewById(R.id.recipe_image);
-			recipeTitleView = (TextView)view.findViewById(R.id.title_text);
-			priceTextView = (TextView)view.findViewById(R.id.price_text);
-			countTextView = (TextView)view.findViewById(R.id.count_text);
-			sumTextView = (TextView)view.findViewById(R.id.pricesum_text);
-		}
+		public ImageView secondIv;
+		public TextView titleTv;
+		public TextView countPriceTv;
+		public TextView sumPriceTv;
+		public TextView statusTv;
+		public TextView timeTv;
+		 public MyOrderHolder(View view){
+			 secondIv=(ImageView)view.findViewById(R.id.second_image);
+			 titleTv=(TextView)view.findViewById(R.id.title_text);
+			 countPriceTv=(TextView)view.findViewById(R.id.countprice_text);
+			 sumPriceTv=(TextView)view.findViewById(R.id.sumprice_text);
+			 statusTv = (TextView)view.findViewById(R.id.status_text);
+			 timeTv = (TextView)view.findViewById(R.id.time_text);
+		 }
 	}
 	
 	class MyOrderAdapter extends BaseAdapter{
@@ -148,7 +150,7 @@ public class ShoppingCartActivity extends Activity implements HandMessage {
 			MyOrderHolder orderHolder;;
 			if(convertView==null){
 				convertView = LayoutInflater.from(ShoppingCartActivity.this)
-						.inflate(R.layout.cell_recipeorder, parent, false);
+						.inflate(R.layout.cell_order, parent, false);
 				orderHolder = new MyOrderHolder(convertView);
 				convertView.setTag(orderHolder);
 			}
@@ -156,12 +158,18 @@ public class ShoppingCartActivity extends Activity implements HandMessage {
 			orderHolder=(MyOrderHolder)convertView.getTag();
 			RecipeOrder recipeOrder = recipeOrders.get(position);
 			if (recipeOrder.getRecipe().getThumbnail()!=null) {
-				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/recipes/small/"+recipeOrder.getRecipe().getThumbnail(), orderHolder.recipeImageView, ImageOptions.optionsNoPlaceholder);
+				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"recipes/small/"+recipeOrder.getRecipe().getThumbnail(), orderHolder.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
-			orderHolder.recipeTitleView.setText(recipeOrder.getRecipe().getTitle());
-			orderHolder.priceTextView.setText(recipeOrder.getRecipe().getNewprice()+"");
-			orderHolder.countTextView.setText(recipeOrder.getCount()+"");
-			orderHolder.sumTextView.setText(recipeOrder.getPrice()+"");
+			orderHolder.titleTv.setText(recipeOrder.getRecipe().getTitle());
+			orderHolder.countPriceTv.setText("￥"+recipeOrder.getRecipe().getNewprice()+" X "+recipeOrder.getCount()+"份");
+			orderHolder.sumPriceTv.setText("共￥"+recipeOrder.getPrice());
+			orderHolder.timeTv.setText("时间："+recipeOrder.getTime());
+			if(recipeOrder.getStatus()==1){
+				orderHolder.statusTv.setText("交易完成");
+			}
+			else{
+				orderHolder.statusTv.setText("交易未完成");
+			}
 			return convertView;
 		}
 		

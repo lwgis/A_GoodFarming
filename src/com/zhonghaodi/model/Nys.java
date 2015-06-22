@@ -9,16 +9,6 @@ public class Nys extends User implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<UserCrop> crops;
-	
-	public List<UserCrop> getCrops() {
-		return crops;
-	}
-
-
-	public void setCrops(List<UserCrop> crops) {
-		this.crops = crops;
-	}
 
 
 	public Nys() {
@@ -28,7 +18,7 @@ public class Nys extends User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Nys [crops=" + crops + "]";
+		return "Nys [crops=" + super.getCrops() + "]";
 	}
 	
 }

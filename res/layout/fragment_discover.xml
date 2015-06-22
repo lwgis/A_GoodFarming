@@ -30,8 +30,8 @@
           android:orientation="vertical"
           android:background="#e6e7eb"
           >
-          <RelativeLayout 
-            android:id="@+id/layout1"
+	    <RelativeLayout 
+            android:id="@+id/layout3"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="10dip"
@@ -40,26 +40,25 @@
 	        android:clickable="true"
 	        >
 	        <ImageView 
-	            android:id="@+id/avimg1"
+	            android:id="@+id/avimg3"
 	            android:layout_width="40dip"
 	            android:layout_height="40dip"
 	            android:scaleType="fitXY"
-	            android:src="@drawable/inzd"
+	            android:src="@drawable/quan"
 	            />
 	        <TextView 
-	            android:id="@+id/avname1"
+	            android:id="@+id/avname3"
 	            android:layout_width="wrap_content"
 	            android:layout_height="40dip"
 	            android:gravity="center_vertical"
-	            android:layout_toRightOf="@+id/avimg1"
+	            android:layout_toRightOf="@+id/avimg3"
 	            android:paddingLeft="10dip"
 	            android:textColor="#a5a5a5"
 	            android:textSize="16sp"
-	            android:text="附近农资店"
+	            android:text="农艺圈"
 	            />
 	        
 	    </RelativeLayout>
-	    
 	    <RelativeLayout 
             android:id="@+id/layout2"
 	        android:layout_width="match_parent"
@@ -74,7 +73,7 @@
 	            android:layout_width="40dip"
 	            android:layout_height="40dip"
 	            android:scaleType="fitXY"
-	            android:src="@drawable/inys"
+	            android:src="@drawable/nys"
 	            />
 	        <TextView 
 	            android:id="@+id/avname2"
@@ -90,7 +89,7 @@
 	        
 	    </RelativeLayout>
 	    <RelativeLayout 
-            android:id="@+id/layout3"
+            android:id="@+id/layout1"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="10dip"
@@ -99,22 +98,22 @@
 	        android:clickable="true"
 	        >
 	        <ImageView 
-	            android:id="@+id/avimg3"
+	            android:id="@+id/avimg1"
 	            android:layout_width="40dip"
 	            android:layout_height="40dip"
 	            android:scaleType="fitXY"
-	            android:src="@drawable/inyq"
+	            android:src="@drawable/store"
 	            />
 	        <TextView 
-	            android:id="@+id/avname3"
+	            android:id="@+id/avname1"
 	            android:layout_width="wrap_content"
 	            android:layout_height="40dip"
 	            android:gravity="center_vertical"
-	            android:layout_toRightOf="@+id/avimg3"
+	            android:layout_toRightOf="@+id/avimg1"
 	            android:paddingLeft="10dip"
 	            android:textColor="#a5a5a5"
 	            android:textSize="16sp"
-	            android:text="农艺圈"
+	            android:text="附近农资店"
 	            />
 	        
 	    </RelativeLayout>
@@ -132,7 +131,7 @@
 	            android:layout_width="40dip"
 	            android:layout_height="40dip"
 	            android:scaleType="fitXY"
-	            android:src="@drawable/inyzs"
+	            android:src="@drawable/book"
 	            />
 	        <TextView 
 	            android:id="@+id/avname4"
@@ -144,6 +143,36 @@
 	            android:textColor="#a5a5a5"
 	            android:textSize="16sp"
 	            android:text="农业技术知识"
+	            />
+	        
+	    </RelativeLayout>
+	    
+	    <RelativeLayout 
+            android:id="@+id/layout5"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:background="@drawable/background_with_shadow"
+	        android:padding="5dip"
+	        android:clickable="true"
+	        >
+	        <ImageView 
+	            android:id="@+id/avimg5"
+	            android:layout_width="40dip"
+	            android:layout_height="40dip"
+	            android:scaleType="fitXY"
+	            android:src="@drawable/second"
+	            />
+	        <TextView 
+	            android:id="@+id/avname5"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dip"
+	            android:gravity="center_vertical"
+	            android:layout_toRightOf="@+id/avimg5"
+	            android:paddingLeft="10dip"
+	            android:textColor="#a5a5a5"
+	            android:textSize="16sp"
+	            android:text="秒杀"
 	            />
 	        
 	    </RelativeLayout>

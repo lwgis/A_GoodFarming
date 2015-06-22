@@ -5,11 +5,44 @@
     android:background="#eaeaea"
     android:orientation="vertical" >
 
-    <include
+    <RelativeLayout
         android:id="@+id/tilte_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        layout="@layout/nav_view" />
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:background="@null"
+            android:text="取消"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="标题"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <ImageView 
+            android:id="@+id/clear_button"
+            android:layout_width="22dip"
+            android:layout_height="25dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
+            android:scaleType="fitXY"
+            android:src="@drawable/clear"
+            />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/bottom_view"

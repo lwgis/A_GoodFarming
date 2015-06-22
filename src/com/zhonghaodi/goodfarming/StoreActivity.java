@@ -11,6 +11,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.HolderRecipe;
+import com.zhonghaodi.model.Quan;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Store;
 import com.zhonghaodi.networking.GFHandler;
@@ -35,11 +36,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class StoreActivity extends Activity implements HandMessage {
+public class StoreActivity extends Activity implements HandMessage,OnClickListener {
 
 	private TextView titleView;
 	private String id;
 	private String name;
+	private Store store;
 	private ListView pullToRefreshListView;
 	private List<Recipe> recipes;
 	private RecipeAdapter adapter;
@@ -50,8 +52,9 @@ public class StoreActivity extends Activity implements HandMessage {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_store);
 		titleView = (TextView)findViewById(R.id.title_text);
-		id = getIntent().getStringExtra("id");
-		name = getIntent().getStringExtra("name");
+		store = (Store)getIntent().getSerializableExtra("store");
+		id = store.getId();
+		name = store.getAlias();
 		if(name!=null && name!=""){
 			titleView.setText(name);
 		}
@@ -73,8 +76,8 @@ public class StoreActivity extends Activity implements HandMessage {
 				// TODO Auto-generated method stub
 				Intent it=new Intent();
 				it.setClass(StoreActivity.this, RecipeActivity.class);
-				it.putExtra("recipeId", recipes.get(position).getId());
-				it.putExtra("nzdCode", recipes.get(position).getNzd().getId());
+				it.putExtra("recipeId", recipes.get(position-1).getId());
+				it.putExtra("nzdCode", recipes.get(position-1).getNzd().getId());
 				StoreActivity.this.startActivity(it);
 				
 			}
@@ -103,50 +106,128 @@ public class StoreActivity extends Activity implements HandMessage {
 		
 	}
 	
-	
+	class NzdInfoHolder{
+		public ImageView headIv;
+		public TextView titleTv;
+		public TextView desTv;
+		public Button chatButton;
+		public NzdInfoHolder(View view){
+			headIv=(ImageView)view.findViewById(R.id.head_image);
+			titleTv=(TextView)view.findViewById(R.id.nzdname);
+			desTv=(TextView)view.findViewById(R.id.nzddes);
+			chatButton = (Button)view.findViewById(R.id.chat_btn);
+		}
+	}
 	
 	class RecipeAdapter extends BaseAdapter{
 
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return recipes.size();
+			if(store==null){
+				return 0;
+			}
+			return recipes.size()+1;
 		}
 
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
-			return recipes.get(position);
+			return recipes.get(position-1);
 		}
 
 		@Override
 		public long getItemId(int position) {
 			// TODO Auto-generated method stub
-			return position;
+			return 0;
+		}
+		
+		@Override
+		public int getViewTypeCount() {
+			// TODO Auto-generated method stub
+			return 2;
+		}
+		
+		@Override
+		public int getItemViewType(int position) {
+			if (position == 0) {
+				return 1;
+			}
+			else{
+				return 0;
+			}
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub 
-			HolderRecipe holderRecipe;;
+			NzdInfoHolder nzdInfoHolder;
+			HolderRecipe holderRecipe;
+			int cellType = getItemViewType(position);
+			Recipe recipe = null;
+			if(position>0){
+				recipe = recipes.get(position-1);
+			}
 			if(convertView==null){
-				convertView = LayoutInflater.from(StoreActivity.this)
-						.inflate(R.layout.cell_recipe, parent, false);
-				holderRecipe = new HolderRecipe(convertView);
-				convertView.setTag(holderRecipe);
+				switch (cellType) {
+				case 0:
+					convertView = LayoutInflater.from(StoreActivity.this)
+							.inflate(R.layout.cell_recipe, parent, false);
+					holderRecipe = new HolderRecipe(convertView);
+					convertView.setTag(holderRecipe);
+					break;
+				case 1:
+					convertView = LayoutInflater.from(StoreActivity.this)
+						.inflate(R.layout.cell_nzd_info, parent,false);
+					nzdInfoHolder = new NzdInfoHolder(convertView);
+					convertView.setTag(nzdInfoHolder);
+					break;
+
+				default:
+					break;
+				}
+				
 			}
 			
-			holderRecipe=(HolderRecipe)convertView.getTag();
-			Recipe recipe = recipes.get(position);
-			if (recipe.getThumbnail()!=null) {
-				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/recipes/small/"+recipe.getThumbnail(), holderRecipe.recipeIv, ImageOptions.optionsNoPlaceholder);
+			switch (cellType) {
+			case 0:
+				holderRecipe=(HolderRecipe)convertView.getTag();
+				if (recipe.getThumbnail()!=null) {
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"recipes/small/"+recipe.getThumbnail(), holderRecipe.recipeIv, ImageOptions.optionsNoPlaceholder);
+				}
+				holderRecipe.titleTv.setText(recipe.getTitle());
+				holderRecipe.oldPriceTv.setText(String.valueOf(recipe.getPrice()));
+				holderRecipe.newPriceTv.setText(String.valueOf(recipe.getNewprice()));
+				break;
+			case 1:
+				nzdInfoHolder = (NzdInfoHolder)convertView.getTag();
+				if(store.getThumbnail()!=null){
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"users/small/"+store.getThumbnail(), nzdInfoHolder.headIv, ImageOptions.optionsNoPlaceholder);
+				}
+				nzdInfoHolder.titleTv.setText(store.getAlias());
+				nzdInfoHolder.desTv.setText(store.getDescription());
+				nzdInfoHolder.chatButton.setOnClickListener(StoreActivity.this);
+				break;
+
+			default:
+				break;
 			}
-			holderRecipe.titleTv.setText(recipe.getTitle());
-			holderRecipe.oldPriceTv.setText(String.valueOf(recipe.getPrice()));
-			holderRecipe.newPriceTv.setText(String.valueOf(recipe.getNewprice()));
+			
+			
 			return convertView;
 		}
 		
+	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Intent it = new Intent();
+		it.setClass(this, ChatActivity.class);
+		it.putExtra("userName", store.getPhone());
+		it.putExtra("title", store.getAlias());
+		it.putExtra("thumbnail", store.getThumbnail());
+		startActivity(it);
 	}
 	
 	@Override
@@ -171,5 +252,7 @@ public class StoreActivity extends Activity implements HandMessage {
 					Toast.LENGTH_SHORT).show();
 		}
 	}
+
+	
 
 }

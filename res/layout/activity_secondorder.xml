@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            android:text="&lt;返回"
+            android:textColor="#ffffff"
+            android:textSize="20sp" 
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="订单信息"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </RelativeLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+	    android:layout_height="match_parent" 
+	    android:orientation="vertical"
+        >
+        <ScrollView 
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent" 
+		    android:layout_weight="1"
+		    android:clickable="true"
+		    >
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp"
+	        android:background="@drawable/item_background_default"
+	        android:orientation="vertical" >
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+	            android:layout_margin="10dip"
+	            >
+	            <TextView
+	                android:id="@+id/title_text"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginTop="2dp"
+	                android:text="用户名"
+	                android:textColor="#444444"
+	                android:textSize="20sp" />
+	        </LinearLayout>
+	
+	        <ImageView
+	               android:id="@+id/head_image"
+	               android:layout_width="match_parent"
+	               android:layout_height="200dip" 
+	               android:layout_margin="5dip"
+	               android:scaleType="centerCrop"/>
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="horizontal"
+	            >
+	            <TextView
+	                android:id="@+id/countprice_text"
+	                android:layout_width="180dip"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="5dp"
+	                android:singleLine="true"
+	                android:text="￥12 X 1份"
+	                android:textColor="#444444"
+	                android:textSize="15sp" />
+	            
+	            <TextView
+	                android:id="@+id/sumprice_text"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_margin="5dp"
+	                android:singleLine="true"
+	                android:text="共￥100.00"
+	                android:textColor="#ffff0000"
+	                android:textSize="15sp" />
+	        </LinearLayout>
+	        <TextView
+	            android:id="@+id/time_text"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_margin="5dp"
+	            android:singleLine="true"
+	            android:text="2015-06-03 12:00:00"
+	            android:textColor="#444444"
+	            android:textSize="15sp" />
+	        <TextView
+	            android:id="@+id/content_text"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="5dip"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="5dp"
+	            android:layout_marginBottom="10dip"
+	            android:text="内容"
+	            android:textColor="#333333"
+	            android:textSize="16sp" />
+	    </LinearLayout>
+		</ScrollView>
+		<com.zhonghaodi.customui.MyTextButton
+	        android:id="@+id/buy_button"
+	        android:layout_width="match_parent"
+	        android:layout_height="40dp"
+	        android:layout_margin="5dp"
+	        android:background="@drawable/button_shape"
+	        android:text="确定"
+	        android:textColor="#ffffff"
+	        android:textSize="18sp" 
+	        />
+    </LinearLayout>
+</LinearLayout>

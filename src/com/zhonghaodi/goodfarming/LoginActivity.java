@@ -1,5 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
+import java.io.File;
+
 import com.zhonghaodi.customui.MyTextButton;
 
 import android.app.Activity;
@@ -10,12 +12,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 	private LoginFragment loginFragment;
@@ -100,6 +104,14 @@ public class LoginActivity extends Activity {
 		}
 		transaction.commit();
 	}
+	
+	
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -108,21 +120,43 @@ public class LoginActivity extends Activity {
 		if (resultCode == Activity.RESULT_OK) {
 			// 相册
 			if (requestCode == 2) {
-				Uri uri = data.getData();
-				String[] proj = { MediaStore.Images.Media.DATA };
-				if (!uri.toString().contains("file://")) {
-					Cursor cursor = this.getContentResolver().query(uri, proj,
-							null, null, null);
-					int column_index = cursor
-							.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-					cursor.moveToFirst();
-					String imgPath = cursor.getString(column_index);
-					resgiterFragment2.getHeadGfImageButton().setImageFilePath(
-							imgPath);
-					cursor.close();
-				} else {
-					resgiterFragment2.getHeadGfImageButton().setImageFilePath(
-							uri.getPath());
+
+				if (data != null) {
+					Uri selectedImage = data.getData();
+					if (selectedImage != null) {
+						String picturePath="";
+						Cursor cursor = getContentResolver().query(selectedImage, null, null,
+								null, null);
+						String st8 = getResources().getString(R.string.cant_find_pictures);
+						if (cursor != null) {
+							cursor.moveToFirst();
+							int columnIndex = cursor.getColumnIndex("_data");
+							picturePath = cursor.getString(columnIndex);
+							cursor.close();
+							cursor = null;
+
+							if (picturePath == null || picturePath.equals("null")) {
+								Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
+								toast.setGravity(Gravity.CENTER, 0, 0);
+								toast.show();
+								return;
+							}
+							resgiterFragment2.getHeadGfImageButton().setImageFilePath(
+							picturePath);
+						} else {
+							File file = new File(selectedImage.getPath());
+							if (!file.exists()) {
+								Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
+								toast.setGravity(Gravity.CENTER, 0, 0);
+								toast.show();
+								return;
+
+							}
+							picturePath=file.getAbsolutePath();
+							resgiterFragment2.getHeadGfImageButton().setImageFilePath(
+							picturePath);
+						}
+					}
 				}
 			}
 			// 相机

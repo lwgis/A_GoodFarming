@@ -44,12 +44,12 @@
            
            <ImageView
                android:id="@+id/map_image"
-               android:layout_width="20dp"
+               android:layout_width="30dp"
                android:layout_height="31dp"
                android:layout_marginTop="10dip"
                android:layout_marginRight="5dip"
                android:scaleType="centerCrop"
-               android:src="@drawable/icon_marka" />
+               android:src="@drawable/location" />
 		
        </LinearLayout>
 

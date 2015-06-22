@@ -38,8 +38,6 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 	private LinearLayout payLayout;
 	private LinearLayout codeLayout;
 	private ImageView codeImageView;
-	private MyTextButton cancelBtn;
-	private MyTextButton okBtn;
 	private GFHandler<PayActivity> handler = new GFHandler<PayActivity>(this);
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +54,6 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 		backBtn.setOnClickListener(this);
 		confirmBtn = (MyTextButton)findViewById(R.id.confirm_button);
 		confirmBtn.setOnClickListener(this);
-		cancelBtn = (MyTextButton)findViewById(R.id.cancel_button);
-		cancelBtn.setOnClickListener(this);
-		okBtn = (MyTextButton)findViewById(R.id.ok_button);
-		okBtn.setOnClickListener(this);
 	}
 
 	@Override
@@ -75,13 +69,7 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 			}
 			break;
 		case R.id.confirm_button:
-			sendPay();
-			break;
-		case R.id.cancel_button:
-			cancelPay();
-			break;
-		case R.id.ok_button:
-			okpay();
+			confirmBtn.setEnabled(false);
 			break;
 
 		default:
@@ -123,43 +111,25 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 				msg.sendToTarget();
 			}
 		}).start();
+		confirmBtn.setEnabled(false);
 		
 	}
 	
 	private void cancelPay(){
 		
-		new AlertDialog.Builder(this)
-		.setTitle("提示")
-		.setMessage("确定取消支付吗？")
-		.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+		final String mid = GFUserDictionary.getUserId();
+		new Thread(new Runnable() {
 			
-			public void onClick(DialogInterface dialog, int which) {
-				//确定按钮事件
-				setResult(RESULT_OK);
-				dialog.dismiss();
-				final String mid = GFUserDictionary.getUserId();
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						String jsonString = HttpUtil.cancelPay(mid);
-						Message msg = handler.obtainMessage();
-						msg.what = CANCELCODE;
-						msg.obj = jsonString;
-						msg.sendToTarget();
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.cancelPay(mid);
+				Message msg = handler.obtainMessage();
+				msg.what = CANCELCODE;
+				msg.obj = jsonString;
+				msg.sendToTarget();
 
-					}
-				}).start();
 			}
-		})
-		.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-			
-			public void onClick(DialogInterface dialog, int which) {
-				//取消按钮事件
-				dialog.dismiss();
-			}
-		})
-		.show();
+		}).start();
 		
 	}
 	
@@ -206,6 +176,7 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 		// TODO Auto-generated method stub
 		switch (msg.what) {
 		case QRCODE:
+			confirmBtn.setEnabled(true);
 			if (msg.obj != null) {
 				codeLayout.setVisibility(View.VISIBLE);
 				payLayout.setVisibility(View.GONE);
@@ -220,17 +191,16 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 			if (msg.obj != null) {
 				String jsString = msg.obj.toString();
 				if(jsString!=""){
-					GFToast.show("取消支付出错！");
+					GFToast.show("操作错误！");
 				}
 				else{
-					GFToast.show("支付已取消");
 					codeLayout.setVisibility(View.GONE);
 					payLayout.setVisibility(View.VISIBLE);
 				}
 				
 			} else {
 				
-				GFToast.show("取消支付出错！");
+				GFToast.show("操作错误！");
 			}
 			break;
 		case CHECKPAY:

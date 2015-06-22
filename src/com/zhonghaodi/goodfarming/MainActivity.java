@@ -17,11 +17,16 @@ import com.easemob.chat.TextMessageBody;
 import com.easemob.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
+import com.zhonghaodi.model.UserCrop;
+import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -34,8 +39,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -132,7 +139,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	}
 
-	private void seletFragmentIndex(int i) {
+	public void seletFragmentIndex(int i) {
 		FragmentTransaction transction = getFragmentManager()
 				.beginTransaction();
 		if (homeFragment == null) {
@@ -151,6 +158,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			meFragment = new MeFragment();
 			transction.add(R.id.content, meFragment);
 		}
+//		homeFragment.hidePopueWindow();
 		transction.hide(homeFragment);
 		transction.hide(messageFragment);
 		transction.hide(discoverFragment);
@@ -249,6 +257,22 @@ public class MainActivity extends Activity implements OnClickListener,
 		if (resultCode == 2) {
 			messageFragment.loadData();
 		}
+		if(resultCode == RESULT_OK && requestCode == 100){
+			ArrayList<Crop> selectCrops = data.getParcelableArrayListExtra("crops");
+			meFragment.getUser().setCrops(null);
+			if (selectCrops!=null&&selectCrops.size()>0) {
+				String cropString = "";
+				List<UserCrop> userCrops = new ArrayList<UserCrop>();
+				for (Crop c : selectCrops) {
+					cropString = cropString + c.getName() + "  ";
+					UserCrop userCrop = new UserCrop();
+					userCrop.setCrop(c);
+					userCrops.add(userCrop);
+				}
+				meFragment.getUser().setCrops(userCrops);
+			}
+			updateCrops(meFragment.getUser());
+		}
 	}
 
 	@Override
@@ -268,10 +292,70 @@ public class MainActivity extends Activity implements OnClickListener,
 		return super.onKeyDown(keyCode, event);
 	}
 
+	/**
+	 * 注销用户
+	 * @param view
+	 */
 	public void loginOut(View view) {
-		GFUserDictionary.removeUserInfo();
-		EMChatManager.getInstance().logout();
 		
+		final Dialog dialog = new Dialog(this, R.style.MyDialog);
+        //设置它的ContentView
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog, null);
+        dialog.setContentView(layout);
+        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+        okBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				GFUserDictionary.removeUserInfo();
+				EMChatManager.getInstance().logout();
+				seletFragmentIndex(0);
+			}
+		});
+        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+        cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+        titleView.setText("注销提示");
+        contentView.setText("确定要注销吗？");
+        dialog.show();
+		
+	}
+	
+	/**
+	 * 更新我的作物
+	 * @param user
+	 */
+	private void updateCrops(final User user){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				try {
+					Message msgUser = handler.obtainMessage();
+					msgUser.what = 2;
+					msgUser.obj = HttpUtil.modifyUser(user);
+					msgUser.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Message msgUser = handler.obtainMessage();
+					msgUser.what = 0;
+					msgUser.sendToTarget();
+				}
+			}
+		}).start();
 	}
 
 	/**
@@ -304,6 +388,7 @@ public class MainActivity extends Activity implements OnClickListener,
 						}
 						
 						Message msg = handler.obtainMessage();
+						msg.what =1;
 						msg.obj = jsonString;
 						msg.sendToTarget();
 					}
@@ -425,16 +510,40 @@ public class MainActivity extends Activity implements OnClickListener,
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
-			if (msg.obj != null) {
-				Gson gson = new Gson();
-				List<User> users = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<User>>() {
-						}.getType());
-				if (users != null) {
-					activity.notificationTextMessage(activity.currenEmMsg,
-							users.get(0).getAlias());
+			switch (msg.what) {
+			case 1:
+				if (msg.obj != null) {
+					Gson gson = new Gson();
+					List<User> users = gson.fromJson(msg.obj.toString(),
+							new TypeToken<List<User>>() {
+							}.getType());
+					if (users != null) {
+						activity.notificationTextMessage(activity.currenEmMsg,
+								users.get(0).getAlias());
+					}
 				}
+				break;
+			case 2:
+				try {
+					User user1 = (User) GsonUtil.fromJson(msg.obj.toString(),
+							User.class);
+					if(user1!=null){
+						GFToast.show("更新成功");
+						GFUserDictionary.saveLoginInfo(user1, GFUserDictionary.getPassword(), activity);
+					}
+					else{
+						GFToast.show("更新失败");
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					GFToast.show("更新失败");
+				}
+				break;
+
+			default:
+				break;
 			}
+			
 		}
 	}
 

@@ -159,7 +159,7 @@ public class RecipeActivity extends Activity implements HandMessage {
 			if (recipeActivity.recipe != null) {
 				if (recipeActivity.recipe.getThumbnail() != null) {
 					ImageLoader.getInstance().displayImage(
-							"http://121.40.62.120/appimage/recipes/small/"
+							HttpUtil.ImageUrl+"recipes/small/"
 									+ recipeActivity.recipe.getThumbnail(),
 							recipeActivity.recipeIv,
 							ImageOptions.optionsNoPlaceholder);

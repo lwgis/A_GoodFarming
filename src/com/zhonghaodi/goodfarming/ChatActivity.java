@@ -31,6 +31,7 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.easemob.ShowBigImage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageCache;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -86,6 +87,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 	private InputMethodManager manager;
 	private Button voiceBtn;
 	private Button keyboardBtn;
+	private ImageView clearBtn;
 	private View speakView;
 	private String userName;
 	private String thumbnail;
@@ -117,6 +119,16 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 			@Override
 			public void onClick(View v) {
 				finish();
+			}
+		});
+		clearBtn = (ImageView)findViewById(R.id.clear_button);
+		clearBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				emConversation.clear();
+				adapter.notifyDataSetChanged();
 			}
 		});
 		// 动画资源文件,用于录制语音时
@@ -495,7 +507,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				holdRightText.contentTv.setText(rightBody.getMessage());
 				ImageLoader.getInstance()
 						.displayImage(
-								"http://121.40.62.120/appimage/users/small/"
+								HttpUtil.ImageUrl+"users/small/"
 										+ GFUserDictionary.getThumbnail(),
 								holdRightText.headIv,
 								ImageOptions.optionsNoPlaceholder);
@@ -505,7 +517,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				TextMessageBody leftBody = (TextMessageBody) message.getBody();
 				holdLeftText.contentTv.setText(leftBody.getMessage());
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ thumbnail, holdLeftText.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				break;
@@ -519,7 +531,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				holdRightVoice.playIv.setOnClickListener(new PlayVoiceListener(
 						holdRightVoice.readedTv, message));
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ GFUserDictionary.getThumbnail(),
 						holdRightVoice.headIv,
 						ImageOptions.optionsNoPlaceholder);
@@ -534,7 +546,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				holdLeftVoice.playIv.setOnClickListener(new PlayVoiceListener(
 						holdLeftVoice.readedTv, message));
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ thumbnail, holdLeftVoice.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				if (message.isListened()) {
@@ -547,7 +559,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 			case 4:
 				holdRightPhoto = (HoldChatPhoto) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ GFUserDictionary.getThumbnail(),
 						holdRightPhoto.headIv,
 						ImageOptions.optionsNoPlaceholder);
@@ -567,7 +579,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 			case 5:
 				holdLeftPhoto = (HoldChatPhoto) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ thumbnail, holdLeftPhoto.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				holdLeftPhoto.photoIv.setImageResource(R.drawable.placeholder_chat);

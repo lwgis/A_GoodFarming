@@ -20,5 +20,27 @@
     <style name="my_edittext_style" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/selector_edittext_bg</item>
     </style>
+    <style name="Widget" parent="@android:style/Widget"/>
+	<!-- Layout样式 -->
+	<style name="Widget.Layout" parent="@style/Widget"/>
+	<style name="Widget.VLayout" parent="@style/Widget.Layout">
+	    <item name="android:orientation">vertical</item>
+	</style>
+	<style name="Widget.HLayout" parent="@style/Widget.Layout">
+	    <item name="android:orientation">horizontal</item>
+	</style>
+    <style name="Widget.Layout.Dialog" parent="@style/Widget.VLayout">
+	    <item name="android:padding">5dip</item>
+	    <item name="android:background">@drawable/alert_back</item>
+	    <item name="android:gravity">center_vertical|center_horizontal</item>
+	</style>
+    
+    <style name="MyDialog" parent="@android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item> 
+        <item name="android:windowBackground">@drawable/transparentitem</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 
 </resources>

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 
 import uk.co.senab.photoview.PhotoView;
@@ -45,7 +46,7 @@ public class PhotoViewActivity extends Activity {
 			if (netImage.getUrl()!=null) {
 				PhotoView photoView = new PhotoView(this);
 				photoView.setTag(netImage.getUrl());
-				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/small/"+photoView.getTag().toString(),photoView,ImageOptions.optionsNoPlaceholder);
+				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+folder+"/small/"+photoView.getTag().toString(),photoView,ImageOptions.optionsNoPlaceholder);
 				photoViews.add(photoView);
 			}
 		}
@@ -55,7 +56,7 @@ public class PhotoViewActivity extends Activity {
 			public void run() {
 				// TODO Auto-generated method stub
 				for (PhotoView pView  : photoViews) {
-					ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/"+folder+"/big/"+pView.getTag().toString(),pView,ImageOptions.optionsNoPlaceholder);
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+folder+"/big/"+pView.getTag().toString(),pView,ImageOptions.optionsNoPlaceholder);
 				}
 			}
 		}, 300);

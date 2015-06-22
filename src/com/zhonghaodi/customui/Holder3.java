@@ -12,6 +12,7 @@ public class Holder3  {
 	public	TextView timeTv;
 	public	TextView contentTv;
 	public	TextView countTv;
+	public  TextView cropTv;
 	public	ImageView headIv;
 	public	GFImageView imageView1;
 	public	GFImageView imageView2;
@@ -32,6 +33,7 @@ public class Holder3  {
 		imageView4 = (GFImageView) view.findViewById(R.id.image4);
 		imageView5 = (GFImageView) view.findViewById(R.id.image5);
 		imageView6 = (GFImageView) view.findViewById(R.id.image6);
+		cropTv = (TextView)view.findViewById(R.id.crop_text);
 		reSetImageViews();
 	}
 

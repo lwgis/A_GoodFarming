@@ -209,7 +209,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			case 0:
 				holder1 = (Holder1) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ question.getWriter().getThumbnail(),
 						holder1.headIv, ImageOptions.options);
 				holder1.nameTv.setText(question.getWriter().getAlias());
@@ -217,19 +217,20 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder1.contentTv.setText(question.getContent());
 				holder1.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
+				holder1.cropTv.setText(question.getCrop().getName());
 				break;
 			case 1:
 				holder2 = (Holder2) convertView.getTag();
 				holder2.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ question.getWriter().getThumbnail(),
 						holder2.headIv, ImageOptions.options);
 				holder2.nameTv.setText(question.getWriter().getAlias());
 				holder2.contentTv.setText(question.getContent());
 				holder2.timeTv.setText(question.getTime());
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
+						HttpUtil.ImageUrl+"questions/small/"
 								+ question.getAttachments().get(0).getUrl(),
 						holder2.imageView1, ImageOptions.options);
 				holder2.imageView1.setVisibility(View.VISIBLE);
@@ -239,7 +240,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				if (question.getAttachments().size() > 1) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/questions/small/"
+									HttpUtil.ImageUrl+"questions/small/"
 											+ question.getAttachments().get(1)
 													.getUrl(),
 									holder2.imageView2, ImageOptions.options);
@@ -251,7 +252,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				if (question.getAttachments().size() > 2) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/questions/small/"
+									HttpUtil.ImageUrl+"questions/small/"
 											+ question.getAttachments().get(2)
 													.getUrl(),
 									holder2.imageView3, ImageOptions.options);
@@ -262,26 +263,27 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}
 				holder2.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
+				holder2.cropTv.setText(question.getCrop().getName());
 				break;
 			case 2:
 				holder3 = (Holder3) convertView.getTag();
 				holder3.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ question.getWriter().getThumbnail(),
 						holder3.headIv, ImageOptions.options);
 				holder3.nameTv.setText(question.getWriter().getAlias());
 				holder3.timeTv.setText(question.getTime());
 				holder3.contentTv.setText(question.getContent());
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ question.getWriter().getThumbnail(),
 						holder3.headIv, ImageOptions.options);
 				holder3.nameTv.setText(question.getWriter().getAlias());
 				holder3.timeTv.setText(question.getTime());
 				holder3.contentTv.setText(question.getContent());
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
+						HttpUtil.ImageUrl+"questions/small/"
 								+ question.getAttachments().get(0).getUrl(),
 						holder3.imageView1, ImageOptions.options);
 				holder3.imageView1.setVisibility(View.VISIBLE);
@@ -289,7 +291,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder3.imageView1.setImages(question.getAttachments(),
 						"questions");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
+						HttpUtil.ImageUrl+"questions/small/"
 								+ question.getAttachments().get(1).getUrl(),
 						holder3.imageView2, ImageOptions.options);
 				holder3.imageView2.setVisibility(View.VISIBLE);
@@ -297,7 +299,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder3.imageView2.setImages(question.getAttachments(),
 						"questions");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
+						HttpUtil.ImageUrl+"questions/small/"
 								+ question.getAttachments().get(2).getUrl(),
 						holder3.imageView3, ImageOptions.options);
 				holder3.imageView3.setVisibility(View.VISIBLE);
@@ -305,7 +307,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder3.imageView3.setImages(question.getAttachments(),
 						"questions");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/questions/small/"
+						HttpUtil.ImageUrl+"questions/small/"
 								+ question.getAttachments().get(3).getUrl(),
 						holder3.imageView4, ImageOptions.options);
 				holder3.imageView4.setVisibility(View.VISIBLE);
@@ -315,7 +317,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				if (question.getAttachments().size() > 4) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/questions/small/"
+									HttpUtil.ImageUrl+"questions/small/"
 											+ question.getAttachments().get(4)
 													.getUrl(),
 									holder3.imageView5, ImageOptions.options);
@@ -327,7 +329,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				if (question.getAttachments().size() > 5) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/questions/small/"
+									HttpUtil.ImageUrl+"questions/small/"
 											+ question.getAttachments().get(5)
 													.getUrl(),
 									holder3.imageView6, ImageOptions.options);
@@ -338,6 +340,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}
 				holder3.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
+				holder3.cropTv.setText(question.getCrop().getName());
 				break;
 			case 3:
 				holderResponse = (HolderResponse) convertView.getTag();
@@ -345,7 +348,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						position - 1);
 				final HolderResponse holder = holderResponse;
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ response.getWriter().getThumbnail(),
 						holderResponse.headIv, ImageOptions.options);
 				holderResponse.nameTv.setText(response.getWriter().getAlias());

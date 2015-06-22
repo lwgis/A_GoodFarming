@@ -44,6 +44,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		checkNumBtn = (MyTextButton) view.findViewById(R.id.checknum_button);
 		nextBtn = (MyTextButton) view.findViewById(R.id.next_button);
 		nextBtn.setEnabled(false);
+//		nextBtn.setEnabled(true);
 		checkNumBtn.setEnabled(false);
 		phoneEt.addTextChangedListener(this);
 		checkNumEt.addTextChangedListener(this);
@@ -92,6 +93,9 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 				Toast.makeText(getActivity(), "验证码错误", Toast.LENGTH_SHORT)
 						.show();
 			}
+//			LoginActivity activity = (LoginActivity) getActivity();
+//			activity.setPhone(phoneEt.getText().toString());
+//			activity.selectFragment(2);
 			break;
 		default:
 			break;
@@ -122,19 +126,21 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 			nextBtn.setEnabled(true);
 		} else {
 			nextBtn.setEnabled(false);
+//			nextBtn.setEnabled(true);
 		}
 	}
 
 	public boolean isMobileNO(String mobiles) {
 
 		Pattern p = Pattern
-				.compile("^((13[0-9])|(17[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+				.compile("^((13[0-9])|(17[0-9])|(15[^4,\\D])|(18[0-9]))\\d{8}$");
 
 		Matcher m = p.matcher(mobiles);
 
 		System.out.println(m.matches() + "---");
 
 		return m.matches();
+//		return true;
 	}
 
 

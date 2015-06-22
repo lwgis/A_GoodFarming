@@ -1,9 +1,15 @@
 package com.zhonghaodi.model;
 
+import java.io.Serializable;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Crop implements Parcelable {
+public class Crop implements Parcelable,Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private int category;
 	private String name;
@@ -63,6 +69,12 @@ public class Crop implements Parcelable {
 		dest.writeInt(id);
 		dest.writeString(name);
 		dest.writeInt(category);
+	}
+
+	@Override
+	public String toString() {
+		return "Crop [id=" + id + ", category=" + category + ", name=" + name
+				+ "]";
 	}
 
 

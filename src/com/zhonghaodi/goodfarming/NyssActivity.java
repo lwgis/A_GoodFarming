@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import u.aly.v;
@@ -14,6 +15,7 @@ import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Store;
+import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -45,6 +47,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	private GFHandler<NyssActivity> handler = new GFHandler<NyssActivity>(this);
 	private String uid;
 	private List<String> fuids;
+	private View clickview;
 	
 
 	@Override
@@ -84,13 +87,15 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		fuids = new ArrayList<String>();
 		adapter = new NysAdapter();
 		gridView.setAdapter(adapter);
-		uid = GFUserDictionary.getUserId();
+		
 	}
 	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		uid = GFUserDictionary.getUserId();
+		
 		loadNyss();
 	}
 	
@@ -99,7 +104,6 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	 */
 	private void loadNyss(){
 		
-		final String uid = GFUserDictionary.getUserId();
 		
 		new Thread(new Runnable() {
 			
@@ -111,7 +115,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 				msg.obj = jsonString;
 				msg.sendToTarget();
 				
-				String jsString = HttpUtil.getFollows(uid);
+				String jsString = HttpUtil.getFollowids(uid);
 				Message msg1 = handler.obtainMessage();
 				msg1.what = 1;
 				msg1.obj = jsString;
@@ -182,11 +186,25 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 			nysHolder = (NysHolder)convertView.getTag();
 			Nys nys = nyss.get(position);
 			ImageLoader.getInstance().displayImage(
-					"http://121.40.62.120/appimage/users/small/"
+					HttpUtil.ImageUrl+"users/small/"
 							+ nys.getThumbnail(),
 							nysHolder.imageView, ImageOptions.options);
 			nysHolder.nameTextView.setText(nys.getAlias());
-			nysHolder.pointTextView.setText(nys.getDescription());
+			if(nys.getLevel().getId()==2){
+				List<UserCrop> userCrops = nys.getCrops();
+				String cropstrString="擅长的作物：";
+				for (Iterator iterator = userCrops.iterator(); iterator
+						.hasNext();) {
+					UserCrop userCrop = (UserCrop) iterator.next();
+					cropstrString+=userCrop.getCrop().getName()+" ";
+				}
+				cropstrString.trim();
+				nysHolder.pointTextView.setText(cropstrString);
+			}
+			else{
+				nysHolder.pointTextView.setText(nys.getDescription());
+			}
+			
 			if(fuids.contains(nys.getId())){
 				nysHolder.followButton.setVisibility(View.GONE);
 			}
@@ -208,8 +226,9 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		case R.id.follow_btn:
 			
 			Nys n = (Nys)v.getTag();
-			
+			clickview = v;
 			follow(n);
+			clickview.setEnabled(false);
 			break;
 
 		default:
@@ -257,6 +276,9 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 			}
 			break;
 		case 2:
+			if(clickview!=null){
+				clickview.setEnabled(true);
+			}
 			if(msg.obj != null){
 				Gson gson = new Gson();
 				Follow follow = gson.fromJson(msg.obj.toString(),

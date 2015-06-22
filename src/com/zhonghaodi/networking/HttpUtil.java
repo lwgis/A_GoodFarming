@@ -1,18 +1,27 @@
 package com.zhonghaodi.networking;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -41,6 +50,10 @@ import org.apache.http.NameValuePair;
 import android.R.integer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 import com.zhonghaodi.model.Comment;
@@ -59,7 +72,9 @@ import com.zhonghaodi.model.User;
  *
  */
 public class HttpUtil {
-	private static final String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
+	private static final String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+//	private static final String RootURL = "http://192.168.0.119:8083/dfyy/rest/";
+	public static final String ImageUrl = "http://121.40.62.120/appimage8/";
 
 	public static String executeHttpGet(String urlString) {
 		StringBuffer sb = new StringBuffer();
@@ -85,6 +100,7 @@ public class HttpUtil {
 				return sb.toString();
 			} else {
 				// TODO 返回错误信息
+				
 			}
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -94,6 +110,57 @@ public class HttpUtil {
 			// TODO 返回网络错误
 		}
 		return null;
+	}
+	
+	/**
+	 * 根据不同状态码
+	 * @param urlString
+	 * @return
+	 */
+	public static String executeHttpGet1(String urlString) {
+		StringBuffer sb = new StringBuffer();
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpGet get = new HttpGet(urlString);
+		get.addHeader("Content-type", "application/json;charset=UTF-8");
+		get.addHeader("Accept-Charset", "utf-8");
+
+		try {
+			HttpResponse response = client.execute(get);
+
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == 200) {
+				InputStream inputStream = response.getEntity().getContent();
+				BufferedReader buffer = new BufferedReader(
+						new InputStreamReader(inputStream,
+								Charset.forName("utf-8")));
+				String line = null;
+				while ((line = buffer.readLine()) != null) {
+					sb.append(line);
+				}
+				inputStream.close();
+				return sb.toString();
+			} else {
+				// TODO 返回错误信息
+				InputStream inputStream = response.getEntity().getContent();
+				BufferedReader buffer = new BufferedReader(
+						new InputStreamReader(inputStream,
+								Charset.forName("utf-8")));
+				String line = null;
+				while ((line = buffer.readLine()) != null) {
+					sb.append(line);
+				}
+				inputStream.close();
+				return "error:"+sb.toString();
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			// TODO 返回协议错误信息
+			return "error:"+e.getMessage();
+		} catch (IOException e) {
+			e.printStackTrace();
+			// TODO 返回网络错误
+			return "error:"+e.getMessage();
+		}
 	}
 
 	public static String executeHttpGetNoHead(String urlString) {
@@ -197,7 +264,7 @@ public class HttpUtil {
 			inputStream.close();
 			return sb.toString();
 		} else {
-			throw new Exception("错误");
+			return "错误";
 		}
 	}
 
@@ -325,6 +392,72 @@ public class HttpUtil {
 		}
 		return null;
 	}
+	
+	public static Bitmap downloadBitmap(String url) {
+        final HttpClient client = new DefaultHttpClient();
+        final HttpGet getRequest = new HttpGet(url);
+                                                               
+        try {
+            HttpResponse response = client.execute(getRequest);
+            final int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != HttpStatus.SC_OK) {
+                return null;
+            }
+                                                                   
+            final HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                InputStream inputStream = null;
+                try {
+                    inputStream = entity.getContent();
+                    FilterInputStream fit = new FlushedInputStream(inputStream);
+                    return BitmapFactory.decodeStream(fit);
+                } finally {
+                    if (inputStream != null) {
+                        inputStream.close();
+                        inputStream = null;
+                    }
+                    entity.consumeContent();
+                }
+            }
+        } catch (IOException e) {
+            getRequest.abort();
+        } catch (IllegalStateException e) {
+            getRequest.abort();
+        } catch (Exception e) {
+            getRequest.abort();
+        } finally {
+            client.getConnectionManager().shutdown();
+        }
+        return null;
+    }
+	
+	/**
+     * An InputStream that skips the exact number of bytes provided, unless it reaches EOF.
+     */
+    static class FlushedInputStream extends FilterInputStream {
+        public FlushedInputStream(InputStream inputStream) {
+            super(inputStream);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            long totalBytesSkipped = 0L;
+            while (totalBytesSkipped < n) {
+                long bytesSkipped = in.skip(n - totalBytesSkipped);
+                if (bytesSkipped == 0L) {
+                    int b = read();
+                    if (b < 0) {
+                        break;  // we reached EOF
+                    } else {
+                        bytesSkipped = 1; // we read one byte
+                    }
+                }
+                totalBytesSkipped += bytesSkipped;
+            }
+            return totalBytesSkipped;
+        }
+    }
+	
 	public static String getQuestionsString() {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "questions");
 		return jsonString;
@@ -344,6 +477,17 @@ public class HttpUtil {
 	public static String getMyQuestionsString(String uid,int qid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL
 				+ "users/"+uid+"/questions?fromid=" + qid);
+		return jsonString;
+	}
+	
+	public static String getAscQuestionsString(String uid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/ascquestions");
+		return jsonString;
+	}
+
+	public static String getAscQuestionsString(String uid,int qid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL
+				+ "users/"+uid+"/ascquestions?fromid=" + qid);
 		return jsonString;
 	}
 
@@ -406,6 +550,13 @@ public class HttpUtil {
 	 */
 	public static String registerUser(User user) throws Throwable {
 		String urlString = RootURL + "users";
+		String jsonString = JsonUtil.convertObjectToJson(user,
+				"yyyy-MM-dd HH:mm:ss", new String[] { User.class.toString() });
+		return HttpUtil.executeHttpPost(urlString, jsonString);
+	}
+	
+	public static String modifyUser(User user) throws Throwable {
+		String urlString = RootURL + "users/"+user.getId();
 		String jsonString = JsonUtil.convertObjectToJson(user,
 				"yyyy-MM-dd HH:mm:ss", new String[] { User.class.toString() });
 		return HttpUtil.executeHttpPost(urlString, jsonString);
@@ -601,6 +752,14 @@ public class HttpUtil {
 		
 	}
 	
+	public static String getFollowids(String uid){
+		
+		String urlString = RootURL + "users/"+uid+"/followids";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
 	public static String getFollows(String uid){
 		
 		String urlString = RootURL + "users/"+uid+"/follows";
@@ -721,4 +880,138 @@ public class HttpUtil {
 				+ "/quans/my?fromid=" + qid);
 		return jsonString;
 	}
+	
+	public static String modifyPass(final String newpass,String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "users/" + uid
+				+ "/modifypass";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return newpass;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "newpass";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair1);
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	public static String passback(String phone) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/passback?phone="+phone);
+		return jsonString;
+	}
+	
+	public static String getSeconds(){
+		String url = RootURL + "seconds";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String buySecond(String uid,int sid){
+		String url = RootURL + "seconds/"+sid+"/buy?uid="+uid;
+		String jsonString = HttpUtil.executeHttpGet1(url);
+		return jsonString;
+	}
+	
+	public static Bitmap getSecondQRCode(int sid,String qrCode) {
+		Bitmap bitmap = null;
+		String urlString = RootURL + "seconds/"+sid+"/order/"+qrCode+"/QR";
+		bitmap=HttpUtil.getBitmap(urlString);
+		return bitmap;
+	}
+	
+	public static String getMySeconds(String uid){
+		String url = RootURL + "users/"+uid+"/myseconds";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getSecondOrderByCode(String uid,String code){
+		String url = RootURL + "users/"+uid+"/second/"+code;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String deleteSecondOrder (int secondid, int orderid) {
+		String urlString = RootURL + "seconds/" + secondid + "/order/"+String.valueOf(orderid)+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String getServerTime(){
+		String url = RootURL + "users/time";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getAppVersion(){
+		String url = RootURL + "apps/android";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String signIn(String uid){
+		String url = RootURL + "users/"+uid+"/signin";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	/**
+	 * 下载apk
+	 * @param path
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public static File getFileFromServer(String filename, ProgressBar pd,Handler handler) throws Exception{   
+	    //如果相等的话表示当前的sdcard挂载在手机上并且是可用的 
+		String id = UUID.randomUUID().toString();
+		String path = HttpUtil.ImageUrl+"apps/"+filename+"?id="+id;
+	    if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){   
+	        URL url = new URL(path);   
+	        HttpURLConnection conn =  (HttpURLConnection) url.openConnection();   
+	        conn.setConnectTimeout(5000);   
+	        //获取到文件的大小   
+	        int max = conn.getContentLength();
+	        pd.setMax(max);   
+	        InputStream is = conn.getInputStream();   
+	        File file = new File(Environment.getExternalStorageDirectory(), "GoodFarming.apk");   
+	        FileOutputStream fos = new FileOutputStream(file);   
+	        BufferedInputStream bis = new BufferedInputStream(is);   
+	        byte[] buffer = new byte[1024];   
+	        int len ;   
+	        int total=0;   
+	        while((len =bis.read(buffer))!=-1){   
+	            fos.write(buffer, 0, len);   
+	            total+= len;   
+	            //获取当前下载量    
+	            pd.setProgress(total); 
+	            int[] values = {total,max};
+	            handler.obtainMessage(1,values).sendToTarget(); 
+	        }  
+	        fos.close();   
+	        bis.close();   
+	        is.close();   
+	        return file;   
+	    }   
+	    else{   
+	        return null;   
+	    }   
+	}  
 }

@@ -1,6 +1,7 @@
 package com.zhonghaodi.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import android.R.integer;
 
@@ -18,6 +19,7 @@ public class User implements Serializable {
 	private int fanscount;
 	private String description;
 	private String tjPhone;
+	private List<UserCrop> crops;
 	
 	public User() {
 		// TODO Auto-generated constructor stub
@@ -132,5 +134,13 @@ public class User implements Serializable {
 	public void setTjPhone(String tjPhone) {
 		this.tjPhone = tjPhone;
 	}
+	
+	public List<UserCrop> getCrops() {
+		return crops;
+	}
 
+
+	public void setCrops(List<UserCrop> crops) {
+		this.crops = crops;
+	}
 }

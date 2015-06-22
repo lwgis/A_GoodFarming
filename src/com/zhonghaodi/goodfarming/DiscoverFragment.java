@@ -1,5 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
+import com.zhonghaodi.model.GFUserDictionary;
+
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	private View nysView;
 	private View nyqView;
 	private View nyjsView;
+	private View miaoView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,12 +32,20 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		nyqView.setOnClickListener(this);
 		nyjsView = view.findViewById(R.id.layout4);
 		nyjsView.setOnClickListener(this);
+		miaoView = view.findViewById(R.id.layout5);
+		miaoView.setOnClickListener(this);
 		return view;
 	}
 
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+		String uid = GFUserDictionary.getUserId();
+		if(uid==null){
+			Intent intent = new Intent(getActivity(), LoginActivity.class);
+			getActivity().startActivity(intent);
+			return;
+		}
 		switch (v.getId()) {
 		case R.id.layout1:
 			Intent intent = new Intent(getActivity(), StoresActivity.class);
@@ -51,6 +62,10 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		case R.id.layout4:
 			Intent intent3 = new Intent(getActivity(), AgrotechnicalActivity.class);
 			startActivity(intent3);
+			break;
+		case R.id.layout5:
+			Intent intent4 = new Intent(getActivity(), MiaoActivity.class);
+			startActivity(intent4);
 			break;
 
 		default:

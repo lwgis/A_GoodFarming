@@ -3,18 +3,15 @@ package com.zhonghaodi.goodfarming;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.CustomRelativeLayout;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.QuanHolder;
 import com.zhonghaodi.customui.QuanHolder3;
@@ -28,13 +25,14 @@ import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.OnSizeChangedListener;
 import com.zhonghaodi.model.Quan;
 import com.zhonghaodi.model.User;
+import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
-
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -69,6 +67,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	private PullToRefreshListView pullToRefreshList;
 	private NysAdapter adapter;
 	private GFHandler<NysActivity> handler = new GFHandler<NysActivity>(this);
+	private View clickView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -354,7 +353,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			case 0:
 				holder1 = (QuanHolder) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder1.headIv, ImageOptions.options);
 				holder1.nameTv.setText(quan.getWriter().getAlias());
@@ -409,7 +408,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder2 = (QuanHolder3) convertView.getTag();
 				holder2.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder2.headIv, ImageOptions.options);
 				holder2.nameTv.setText(quan.getWriter().getAlias());
@@ -448,7 +447,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				}
 				holder2.timeTv.setText(quan.getTime());
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(0).getUrl(),
 						holder2.imageView1, ImageOptions.options);
 				holder2.imageView1.setVisibility(View.VISIBLE);
@@ -457,7 +456,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				if (quan.getAttachments().size() > 1) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(1)
 													.getUrl(),
 									holder2.imageView2, ImageOptions.options);
@@ -468,7 +467,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				if (quan.getAttachments().size() > 2) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(2)
 													.getUrl(),
 									holder2.imageView3, ImageOptions.options);
@@ -491,7 +490,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder3 = (QuanHolder6) convertView.getTag();
 				holder3.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder3.headIv, ImageOptions.options);
 				holder3.nameTv.setText(quan.getWriter().getAlias());
@@ -530,28 +529,28 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder3.commentTv.setVisibility(View.GONE);
 				}
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(0).getUrl(),
 						holder3.imageView1, ImageOptions.options);
 				holder3.imageView1.setVisibility(View.VISIBLE);
 				holder3.imageView1.setIndex(0);
 				holder3.imageView1.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(1).getUrl(),
 						holder3.imageView2, ImageOptions.options);
 				holder3.imageView2.setVisibility(View.VISIBLE);
 				holder3.imageView2.setIndex(1);
 				holder3.imageView2.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(2).getUrl(),
 						holder3.imageView3, ImageOptions.options);
 				holder3.imageView3.setVisibility(View.VISIBLE);
 				holder3.imageView3.setIndex(2);
 				holder3.imageView3.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(3).getUrl(),
 						holder3.imageView4, ImageOptions.options);
 				holder3.imageView4.setVisibility(View.VISIBLE);
@@ -560,7 +559,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				if (quan.getAttachments().size() > 4) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(4)
 													.getUrl(),
 									holder3.imageView5, ImageOptions.options);
@@ -571,7 +570,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				if (quan.getAttachments().size() > 5) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(5)
 													.getUrl(),
 									holder3.imageView6, ImageOptions.options);
@@ -594,7 +593,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder4 = (QuanHolder9) convertView.getTag();
 				holder4.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder4.headIv, ImageOptions.options);
 				holder4.nameTv.setText(quan.getWriter().getAlias());
@@ -633,28 +632,28 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder4.commentTv.setVisibility(View.GONE);
 				}
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(0).getUrl(),
 						holder4.imageView1, ImageOptions.options);
 				holder4.imageView1.setVisibility(View.VISIBLE);
 				holder4.imageView1.setIndex(0);
 				holder4.imageView1.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(1).getUrl(),
 								holder4.imageView2, ImageOptions.options);
 				holder4.imageView2.setVisibility(View.VISIBLE);
 				holder4.imageView2.setIndex(1);
 				holder4.imageView2.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(2).getUrl(),
 								holder4.imageView3, ImageOptions.options);
 				holder4.imageView3.setVisibility(View.VISIBLE);
 				holder4.imageView3.setIndex(2);
 				holder4.imageView3.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(3).getUrl(),
 								holder4.imageView4, ImageOptions.options);
 				holder4.imageView4.setVisibility(View.VISIBLE);
@@ -662,7 +661,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder4.imageView4.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance()
 						.displayImage(
-								"http://121.40.62.120/appimage/quans/small/"
+								HttpUtil.ImageUrl+"quans/small/"
 										+ quan.getAttachments().get(4)
 												.getUrl(),
 												holder4.imageView5, ImageOptions.options);
@@ -671,7 +670,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder4.imageView5.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance()
 						.displayImage(
-								"http://121.40.62.120/appimage/quans/small/"
+								HttpUtil.ImageUrl+"quans/small/"
 										+ quan.getAttachments().get(5)
 												.getUrl(),
 												holder4.imageView6, ImageOptions.options);
@@ -680,7 +679,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder4.imageView6.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance()
 						.displayImage(
-								"http://121.40.62.120/appimage/quans/small/"
+								HttpUtil.ImageUrl+"quans/small/"
 										+ quan.getAttachments().get(6)
 												.getUrl(),
 												holder4.imageView7, ImageOptions.options);
@@ -690,7 +689,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				if (quan.getAttachments().size() > 7) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(7)
 													.getUrl(),
 													holder4.imageView8, ImageOptions.options);
@@ -701,7 +700,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				if (quan.getAttachments().size() > 8) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(8)
 													.getUrl(),
 													holder4.imageView9, ImageOptions.options);
@@ -723,11 +722,25 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			case 4:
 				holderNysInfo = (NysInfoHolder) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ user.getThumbnail(), holderNysInfo.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				holderNysInfo.titleTv.setText(user.getAlias());
 				holderNysInfo.jifenTv.setText(user.getDescription());
+//				if(user.getLevel().getId()==2){
+//					List<UserCrop> userCrops = user.getCrops();
+//					String str = "";
+//					for (Iterator iterator = userCrops.iterator(); iterator
+//							.hasNext();) {
+//						UserCrop userCrop = (UserCrop) iterator.next();
+//						str+=userCrop.getCrop().getName()+" ";
+//					}
+//					str = str.trim();
+//					holderNysInfo.jifenTv.setText(str);
+//				}
+//				else{
+//					holderNysInfo.jifenTv.setText(user.getDescription());
+//				}
 				if(bfollow){
 					holderNysInfo.followButton.setText("取消关注");
 				}
@@ -754,9 +767,41 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			Button btn = (Button)v;
 			if(btn.getText().equals("关注")){
 				follow();
+				v.setEnabled(false);
 			}
 			else{
-				cancelfollow();
+				
+				final Dialog dialog = new Dialog(this, R.style.MyDialog);
+		        //设置它的ContentView
+				LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		        View layout = inflater.inflate(R.layout.dialog, null);
+		        dialog.setContentView(layout);
+		        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+		        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+		        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+		        okBtn.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+						cancelfollow();
+						v.setEnabled(false);
+					}
+				});
+		        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+		        cancelButton.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+					}
+				});
+		        titleView.setText("提示");
+		        contentView.setText("确定要取消关注吗？");
+		        dialog.show();
+				
 			}
 			break;
 		case R.id.chat_btn:
@@ -783,6 +828,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			if(bfollow){
 				Quan quan = (Quan)v.getTag();
 				zan(quan);
+				v.setEnabled(false);
 			}
 			else{
 				GFToast.show("未关注不能点赞");
@@ -869,6 +915,9 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			break;
 			
 		case 1:
+			if(clickView!=null){
+				clickView.setEnabled(true);
+			}
 			if(msg.obj != null){
 				Gson gson = new Gson();
 				Follow follow = gson.fromJson(msg.obj.toString(),
@@ -888,6 +937,9 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			}
 			break;
 		case 2:
+			if(clickView!=null){
+				clickView.setEnabled(true);
+			}
 			if (msg.obj != null) {
 				String jsString = msg.obj.toString();
 				if(jsString!=""){

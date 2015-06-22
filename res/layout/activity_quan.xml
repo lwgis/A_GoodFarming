@@ -39,7 +39,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dip"
             android:scaleType="fitXY"
-            android:src="@drawable/note"
+            android:src="@drawable/camera"
             />
     </RelativeLayout>
     <RelativeLayout 

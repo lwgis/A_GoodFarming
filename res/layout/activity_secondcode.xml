@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:background="#eaeaea"
+     android:orientation="vertical" >
+
+     <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="45dp"
+         android:background="#38be99" >
+
+         <com.zhonghaodi.customui.MyTextButton
+             android:id="@+id/cancel_button"
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:layout_alignParentLeft="true"
+             android:background="@null"
+             android:text="&lt;返回"
+             android:textColor="#ffffff"
+             android:textSize="20sp"
+             android:layout_marginLeft="5dp" />
+
+         <TextView
+             android:id="@+id/title_text"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_centerInParent="true"
+             android:gravity="center"
+             android:text="抢购成功"
+             android:textColor="#FFFFFF"
+             android:textSize="18sp" />
+     </RelativeLayout>
+
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="5dp"
+         android:layout_marginRight="5dp"
+         android:layout_marginTop="5dp"
+         android:background="@drawable/background_with_shadow"
+         android:orientation="vertical" >
+
+         <TextView
+             android:id="@+id/ordercontent_text"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="5dp"
+             android:gravity="center_horizontal"
+             android:text="订单信息"
+             android:textColor="#404040"
+             android:textSize="16sp" />
+
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="10dp"
+             android:gravity="center_horizontal"
+             android:text="使用此图到农资店享受优惠价格购买"
+             android:textColor="#808080" />
+
+         <ImageView
+             android:id="@+id/qrcode_image"
+             android:layout_width="300dp"
+             android:layout_height="300dp"
+             android:layout_gravity="center"
+             android:layout_marginBottom="10dp" />
+     </LinearLayout>
+ </LinearLayout>

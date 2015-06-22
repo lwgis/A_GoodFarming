@@ -25,7 +25,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:padding="2dip"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:src="@drawable/placeholder" 
                 android:background="@drawable/head_img_back"/>
 
@@ -53,6 +53,15 @@
                     android:textColor="#808080"
                     android:textSize="12sp" />
             </LinearLayout>
+            <TextView
+                android:id="@+id/crop_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="5dip"
+                android:text="苦瓜"
+                android:gravity="center_vertical"
+                android:textColor="#38be99"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <TextView
@@ -115,8 +124,8 @@
             android:id="@+id/count_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dip"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dip"
             android:gravity="center"
             android:text="已有0个答案"
             android:textColor="#808080"

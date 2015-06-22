@@ -47,11 +47,21 @@ public class SelectCropFragment extends Fragment implements HandMessage {
 			@Override
 			public void run() {
 				String jsonString = HttpUtil.getAllCropsString();
-				if (!jsonString.equals("")) {
+				if(jsonString!=null){
+					if (!jsonString.equals("")) {
+						Message msg = handler.obtainMessage();
+						msg.what = 1;
+						msg.obj = jsonString;
+						msg.sendToTarget();
+					}
+				}
+				else{
 					Message msg = handler.obtainMessage();
-					msg.obj = jsonString;
+					msg.what = 0;
+					msg.obj = "链接服务器错误，请稍后再试！";
 					msg.sendToTarget();
 				}
+				
 			}
 		}).start();
 		return view;
@@ -123,20 +133,31 @@ public class SelectCropFragment extends Fragment implements HandMessage {
 	@Override
 	public void handleMessage(Message msg,Object object) {
 		final SelectCropFragment fragment = (SelectCropFragment)object;
-		if (msg.obj != null) {
-			Gson gson = new Gson();
-			fragment.allCrops = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<Crop>>() {
-					}.getType());
-			for (Crop crop : fragment.allCrops) {
-				if (crop.getCategory() == 0) {
-					fragment.rootCrops.add(crop);
+		switch (msg.what) {
+		case 1:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				fragment.allCrops = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Crop>>() {
+						}.getType());
+				for (Crop crop : fragment.allCrops) {
+					if (crop.getCategory() == 0) {
+						fragment.rootCrops.add(crop);
+					}
 				}
+				CropAdapter cropAdepter = fragment.new CropAdapter();
+				fragment.cropListView.setAdapter(cropAdepter);
+				
 			}
-			CropAdapter cropAdepter = fragment.new CropAdapter();
-			fragment.cropListView.setAdapter(cropAdepter);
-			
-		}		
+			break;
+		case 0:
+			GFToast.show(msg.obj.toString());
+			break;
+
+		default:
+			break;
+		}
+				
 	}
 
 }

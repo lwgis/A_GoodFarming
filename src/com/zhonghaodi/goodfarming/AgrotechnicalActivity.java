@@ -132,7 +132,7 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 			agroholder=(AgroHolder)convertView.getTag();
 			Agrotechnical agrotechnical = agrotechnicals.get(position);
 			if (agrotechnical.getThumbnail()!=null) {
-				ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/agrotechnicals/small/"+agrotechnical.getThumbnail(), agroholder.agroIv, ImageOptions.optionsNoPlaceholder);
+				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"agrotechnicals/small/"+agrotechnical.getThumbnail(), agroholder.agroIv, ImageOptions.optionsNoPlaceholder);
 			}
 			agroholder.titleTv.setText(agrotechnical.getTitle());
 			agroholder.timeTv.setText(agrotechnical.getTime());

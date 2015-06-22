@@ -39,5 +39,15 @@
         android:text="登录"
         android:textColor="#ffffff"
         android:textSize="18sp" />
+    <TextView 
+        android:id="@+id/passback_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="right"
+        android:padding="10dip"
+        android:text="忘记密码？"
+        android:textColor="#38be99"
+        android:textSize="18sp"
+        />
 
 </LinearLayout>

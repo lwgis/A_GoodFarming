@@ -95,8 +95,9 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 				// TODO Auto-generated method stub
 				Store store = stores.get(position-1);
 				Intent intent = new Intent(StoresActivity.this, StoreActivity.class);
-				intent.putExtra("name", store.getAlias());
-				intent.putExtra("id", store.getId());
+				Bundle bundle = new Bundle();
+				bundle.putSerializable("store", store);
+				intent.putExtras(bundle);
 				startActivity(intent);
 			}
 		});		
@@ -204,7 +205,7 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 			
 			holder = (StoreHolder)convertView.getTag();
 			ImageLoader.getInstance().displayImage(
-					"http://121.40.62.120/appimage/users/small/"
+					HttpUtil.ImageUrl+"users/small/"
 							+ store.getThumbnail(),
 							holder.imageView, ImageOptions.options);
 			holder.nameTextView.setText(store.getAlias());

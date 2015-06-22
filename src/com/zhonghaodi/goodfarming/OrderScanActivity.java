@@ -9,11 +9,13 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.zhonghaodi.camera.CameraManager;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.decoding.InactivityTimer;
 import com.zhonghaodi.decoding.OrderScanActivityHandler;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.RecipeOrder;
+import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -199,6 +201,9 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 		else if(codeString.contains("pay:")){
 			income(uid, codeString.split(":")[1]);
 		}
+		else if(codeString.contains("second:")){
+			RequestSecondOrder(uid,codeString.split(":")[1]);
+		}
 		
 	}
 	private void RequestOrder(final String uid,final String text) {
@@ -210,6 +215,22 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 				String jsonString = HttpUtil.getOrderByCode(uid, text);
 				Message msg = handler1.obtainMessage();
 				msg.what = 0;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+	}
+	
+	private void RequestSecondOrder(final String uid,final String text) {
+		// TODO Auto-generated method stub
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getSecondOrderByCode(uid, text);
+				Message msg = handler1.obtainMessage();
+				msg.what = 2;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 				
@@ -312,13 +333,9 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 			break;
 		case 1:
 			if (msg.obj != null) {
-				Gson gson = new Gson();
-				User user = gson.fromJson(msg.obj.toString(),
-						new TypeToken<User>() {
-						}.getType());
-				if(user!=null){
-					this.finish();
-				}
+				
+				GFToast.show(msg.obj.toString());
+				this.finish();
 				
 			} else {
 				Toast.makeText(this, "错误",
@@ -328,6 +345,23 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 		case -1:
 			Toast.makeText(this, "错误",
 					Toast.LENGTH_SHORT).show();
+			break;
+		case 2:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				SecondOrder secondOrder = gson.fromJson(msg.obj.toString(),
+						new TypeToken<SecondOrder>() {
+						}.getType());
+				Intent intent = new Intent(OrderScanActivity.this, SecondOrderActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putSerializable("order", secondOrder);
+				intent.putExtras(bundle);
+				OrderScanActivity.this.startActivityForResult(intent, 2);
+				
+			} else {
+				Toast.makeText(this, "订单不存在或者已经完成交易。",
+						Toast.LENGTH_SHORT).show();
+			}
 			break;
 		default:
 			break;

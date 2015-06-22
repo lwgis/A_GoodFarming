@@ -26,5 +26,16 @@
         android:text="我的提问"
         android:textColor="#ffffff"
         android:textSize="20sp" />
+    <Button
+        android:id="@+id/btnAsc"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:background="@drawable/menu_item_bg"
+        android:shadowColor="#222222"
+        android:shadowDy="-2"
+        android:shadowRadius="2"
+        android:text="与我相关"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
 
 </LinearLayout>

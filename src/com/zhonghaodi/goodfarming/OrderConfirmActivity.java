@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -89,7 +91,7 @@ public class OrderConfirmActivity extends Activity implements HandMessage {
 		
 		if (recipeOrder.getRecipe().getThumbnail() != null) {
 			ImageLoader.getInstance().displayImage(
-					"http://121.40.62.120/appimage/recipes/small/"
+					HttpUtil.ImageUrl+"recipes/small/"
 							+ recipeOrder.getRecipe().getThumbnail(),
 					recipeIv,
 					ImageOptions.optionsNoPlaceholder);
@@ -121,6 +123,17 @@ public class OrderConfirmActivity extends Activity implements HandMessage {
 			}
 		}).start();
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		 if (keyCode == KeyEvent.KEYCODE_BACK
+				 && event.getAction() == KeyEvent.ACTION_DOWN) {
+			 this.setResult(2);
+			 this.finish();
+			 return true;
+		 }
+		return super.onKeyDown(keyCode, event);
+	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
@@ -131,6 +144,9 @@ public class OrderConfirmActivity extends Activity implements HandMessage {
 			if(jsString!=""){
 				Toast.makeText(this, "订单确认出错",
 						Toast.LENGTH_SHORT).show();
+			}
+			else{
+				GFToast.show("交易成功");
 			}
 			
 		} else {

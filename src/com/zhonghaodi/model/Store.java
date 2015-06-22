@@ -1,7 +1,14 @@
 package com.zhonghaodi.model;
 
+import java.io.Serializable;
 
-public class Store extends User {
+
+public class Store extends User implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Double x;
 	
@@ -45,6 +52,12 @@ public class Store extends User {
 
 	public void setDistance(Double distance) {
 		this.distance = distance;
+	}
+
+	@Override
+	public String toString() {
+		return "Store [x=" + x + ", y=" + y + ", area=" + area + ", distance="
+				+ distance + "]";
 	}
 	
 }

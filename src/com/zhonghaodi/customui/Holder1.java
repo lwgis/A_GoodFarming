@@ -11,6 +11,7 @@ public	TextView nameTv;
 public	TextView timeTv;
 public	TextView contentTv;
 public	TextView countTv;
+public  TextView cropTv;
 public	ImageView headIv;
 
 	public Holder1(View view) {
@@ -19,5 +20,6 @@ public	ImageView headIv;
 		contentTv = (TextView) view.findViewById(R.id.content_text);
 		countTv = (TextView) view.findViewById(R.id.count_text);
 		headIv = (ImageView) view.findViewById(R.id.head_image);
+		cropTv = (TextView)view.findViewById(R.id.crop_text);
 	}
 }

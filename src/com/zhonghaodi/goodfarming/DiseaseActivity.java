@@ -173,7 +173,7 @@ public class DiseaseActivity extends Activity implements HandMessage {
 				holderDisease = (HolderDisease) convertView.getTag();
 				if (disease.getThumbnail() != null) {
 					ImageLoader.getInstance().displayImage(
-							"http://121.40.62.120/appimage/diseases/small/"
+							HttpUtil.ImageUrl+"diseases/small/"
 									+ disease.getThumbnail(),
 							holderDisease.headIv, ImageOptions.options);
 					holderDisease.headIv.setImages(disease.getAttachments(),
@@ -187,7 +187,7 @@ public class DiseaseActivity extends Activity implements HandMessage {
 			case 1:
 				holderRecipe=(HolderRecipe)convertView.getTag();
 				if (disease.getRecipes().get(position-1).getThumbnail()!=null) {
-					ImageLoader.getInstance().displayImage("http://121.40.62.120/appimage/recipes/small/"+disease.getRecipes().get(position-1).getThumbnail(), holderRecipe.recipeIv, ImageOptions.optionsNoPlaceholder);
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"recipes/small/"+disease.getRecipes().get(position-1).getThumbnail(), holderRecipe.recipeIv, ImageOptions.optionsNoPlaceholder);
 				}
 				holderRecipe.titleTv.setText(disease.getRecipes().get(position-1).getTitle());
 				holderRecipe.oldPriceTv.setText(String.valueOf(disease.getRecipes().get(position-1).getPrice()));

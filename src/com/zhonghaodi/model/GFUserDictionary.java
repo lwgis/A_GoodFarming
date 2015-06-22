@@ -1,5 +1,7 @@
 package com.zhonghaodi.model;
 
+import java.util.Iterator;
+
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
@@ -33,7 +35,15 @@ public class GFUserDictionary {
 		editor.putString("password", password);
 		editor.putString("phone", user.getPhone());
 		editor.putString("thumbnail", user.getThumbnail());
-
+		String croids = "";
+		if(user.getCrops()!=null && user.getCrops().size()>0){
+			for (Iterator iterator = user.getCrops().iterator(); iterator.hasNext();) {
+				UserCrop userCrop = (UserCrop) iterator.next();
+				croids+=userCrop.getCrop().getId()+" ";
+			}
+		}
+		croids.trim();
+		editor.putString("croids", croids);
 
 		// 提交
 		editor.commit();
@@ -76,6 +86,7 @@ public class GFUserDictionary {
 		editor.remove("alias");
 		editor.remove("password");
 		editor.remove("phone");
+		editor.remove("croids");
 		// 提交
 		editor.commit();
 	}
@@ -107,5 +118,11 @@ public class GFUserDictionary {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("thumbnail", null);
+	}
+	
+	public static String getCroids() {
+		SharedPreferences sharedPre = context.getSharedPreferences("config",
+				Context.MODE_PRIVATE);
+		return sharedPre.getString("croids", null);
 	}
 }

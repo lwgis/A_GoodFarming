@@ -10,16 +10,6 @@
         android:layout_height="45dp"
         android:background="#38be99" >
 
-             <Button
-            android:id="@+id/cancel_button"
-            android:layout_width="60dp"
-            android:layout_height="match_parent" 
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:text="注销"
-            android:background="#00000000" 
-            android:onClick="loginOut"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,6 +18,19 @@
             android:text="我"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="60dp"
+            android:layout_height="match_parent" 
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:text="注销"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="#00000000" 
+            android:onClick="loginOut"/>
+        
+
     </RelativeLayout>
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView

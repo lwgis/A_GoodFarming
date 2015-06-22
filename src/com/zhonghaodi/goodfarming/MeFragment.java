@@ -1,6 +1,8 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.baidu.platform.comapi.map.u;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -10,9 +12,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
+import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Function;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
+import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.GsonUtil;
@@ -26,13 +30,14 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MeFragment extends Fragment implements HandMessage {
+public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	private User user;
 	private ArrayList<Function> functions;
 	private PullToRefreshListView pullToRefreshList;
@@ -74,12 +79,32 @@ public class MeFragment extends Fragment implements HandMessage {
 				Intent it=new Intent();
 				Function function = functions.get(position-2);
 				it.setClass(getActivity(), function.getActivityClass());
-				if(function.getName().equals("当面付")){
+				if(function.getName().equals("当面付") || function.getName().equals("修改资料")){
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("user", user);
 					it.putExtras(bundle);
+					getActivity().startActivity(it);
 				}
-				getActivity().startActivity(it);
+				else if(function.getName().contains("作物")){
+					Intent it1 = new Intent(getActivity(),
+							SelectCropActivity.class);
+					ArrayList<Crop> selectCrops = null;
+					if(user.getCrops()!=null && user.getCrops().size()>0){
+						selectCrops = new ArrayList<Crop>();
+						for (Iterator iterator = user.getCrops().iterator(); iterator.hasNext();) {
+							UserCrop userCrop = (UserCrop) iterator.next();
+							selectCrops.add(userCrop.getCrop());
+						}
+					}
+					if (selectCrops != null) {
+						it1.putParcelableArrayListExtra("crops", selectCrops);
+					}
+					getActivity().startActivityForResult(it1, 100);
+				}
+				else{
+					getActivity().startActivity(it);
+				}
+				
 			}
 		});
 		return view;
@@ -99,8 +124,6 @@ public class MeFragment extends Fragment implements HandMessage {
 			}
 		}).start();
 	}
-
-
 	
 	class MeAdapter extends BaseAdapter {
 
@@ -165,7 +188,7 @@ public class MeFragment extends Fragment implements HandMessage {
 			case 0:
 				holderMeInfo = (HolderMeInfo) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ user.getThumbnail(), holderMeInfo.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				holderMeInfo.titleTv.setText(user.getAlias());
@@ -186,6 +209,12 @@ public class MeFragment extends Fragment implements HandMessage {
 		}
 
 	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
@@ -197,27 +226,35 @@ public class MeFragment extends Fragment implements HandMessage {
 		}
 		fragment.user = (User) GsonUtil
 				.fromJson(msg.obj.toString(), User.class);
+		Function cartFunction = new Function("我的订单", ShoppingCartActivity.class,R.drawable.store);
+		fragment.functions.add(cartFunction);
+		Function secondFunction = new Function("秒杀订单", MiaoOrdersActivity.class,R.drawable.second);
+		fragment.functions.add(secondFunction);
+		Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
+		fragment.functions.add(cropsFunction);
+		Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
+		fragment.functions.add(payFunction);
+		if(user.getLevel().getId()==3){
+			Function orderFunction = new Function("扫一扫", OrderScanActivity.class,R.drawable.scan);
+			fragment.functions.add(orderFunction);
+		}
 		switch (user.getLevel().getId()) {
 		case 1:
-			Function nysfuFunction = new Function("升级为农艺师", UpdateNysActivity.class,R.drawable.nys);
+			Function nysfuFunction = new Function("升级为农艺师", UpdateNysActivity.class,R.drawable.nysupdate);
 			fragment.functions.add(nysfuFunction);
 		case 2:
-			Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzd);
+			Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzdupdate);
 			fragment.functions.add(nzdFunction);
 		case 3:
-			Function zjFunction = new Function("升级为专家", UpdateZjActivity.class,R.drawable.zj);
+			Function zjFunction = new Function("升级为专家", UpdateZjActivity.class,R.drawable.zjupdate);
 			fragment.functions.add(zjFunction);
 		default:
 			break;
 		}
-		Function cartFunction = new Function("购物车", ShoppingCartActivity.class,R.drawable.inzd);
-		fragment.functions.add(cartFunction);
-		Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
-		fragment.functions.add(payFunction);
-		if(user.getLevel().getId()==3){
-			Function orderFunction = new Function("扫一扫", OrderScanActivity.class,R.drawable.inzd);
-			fragment.functions.add(orderFunction);
-		}
+		Function minfoFunction = new Function("修改资料", ModifyInfoActivity.class,R.drawable.me_s);
+		fragment.functions.add(minfoFunction);
+		Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
+		fragment.functions.add(modifyFunction);				
 		fragment.pullToRefreshList.onRefreshComplete();
 		adapter.notifyDataSetChanged();
 	}

@@ -81,7 +81,7 @@ public class AgroActivity extends Activity implements HandMessage {
 					}.getType());
 			if(agr!=null){
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/agrotechnicals/small/"
+						HttpUtil.ImageUrl+"agrotechnicals/small/"
 								+ agr.getThumbnail(),
 								agroactivity.headIv, ImageOptions.options);
 				agroactivity.headIv.setImages(agr.getAttachments(),

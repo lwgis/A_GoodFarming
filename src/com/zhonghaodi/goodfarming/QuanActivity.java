@@ -76,6 +76,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 	BroadcastReceiver receiver;	
 	IntentFilter filter;
 	private String uid;
+	private View clickView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -137,14 +138,19 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 	    filter = new IntentFilter();
 	    filter.addAction("refresh");
 	    filter.addCategory(Intent.CATEGORY_DEFAULT);
-	    uid = GFUserDictionary.getUserId();
+	    
 	}
 	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		uid = GFUserDictionary.getUserId();
 		registerReceiver(receiver, filter);
+		if(uid==null || uid.isEmpty()){
+			
+		}
+		
 		loadNewDate();
 	}
 
@@ -276,7 +282,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			case 0:
 				holder1 = (QuanHolder) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder1.headIv, ImageOptions.options);
 				holder1.nameTv.setText(quan.getWriter().getAlias());
@@ -331,7 +337,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder2 = (QuanHolder3) convertView.getTag();
 				holder2.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder2.headIv, ImageOptions.options);
 				holder2.nameTv.setText(quan.getWriter().getAlias());
@@ -371,7 +377,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				}
 				holder2.timeTv.setText(quan.getTime());
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(0).getUrl(),
 						holder2.imageView1, ImageOptions.options);
 				holder2.imageView1.setVisibility(View.VISIBLE);
@@ -380,7 +386,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				if (quan.getAttachments().size() > 1) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(1)
 													.getUrl(),
 									holder2.imageView2, ImageOptions.options);
@@ -391,7 +397,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				if (quan.getAttachments().size() > 2) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(2)
 													.getUrl(),
 									holder2.imageView3, ImageOptions.options);
@@ -414,7 +420,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder3 = (QuanHolder6) convertView.getTag();
 				holder3.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder3.headIv, ImageOptions.options);
 				holder3.nameTv.setText(quan.getWriter().getAlias());
@@ -453,28 +459,28 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 					holder3.commentTv.setVisibility(View.GONE);
 				}
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(0).getUrl(),
 						holder3.imageView1, ImageOptions.options);
 				holder3.imageView1.setVisibility(View.VISIBLE);
 				holder3.imageView1.setIndex(0);
 				holder3.imageView1.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(1).getUrl(),
 						holder3.imageView2, ImageOptions.options);
 				holder3.imageView2.setVisibility(View.VISIBLE);
 				holder3.imageView2.setIndex(1);
 				holder3.imageView2.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(2).getUrl(),
 						holder3.imageView3, ImageOptions.options);
 				holder3.imageView3.setVisibility(View.VISIBLE);
 				holder3.imageView3.setIndex(2);
 				holder3.imageView3.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(3).getUrl(),
 						holder3.imageView4, ImageOptions.options);
 				holder3.imageView4.setVisibility(View.VISIBLE);
@@ -483,7 +489,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				if (quan.getAttachments().size() > 4) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(4)
 													.getUrl(),
 									holder3.imageView5, ImageOptions.options);
@@ -494,7 +500,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				if (quan.getAttachments().size() > 5) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(5)
 													.getUrl(),
 									holder3.imageView6, ImageOptions.options);
@@ -517,7 +523,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder4 = (QuanHolder9) convertView.getTag();
 				holder4.reSetImageViews();
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/users/small/"
+						HttpUtil.ImageUrl+"users/small/"
 								+ quan.getWriter().getThumbnail(),
 						holder4.headIv, ImageOptions.options);
 				holder4.nameTv.setText(quan.getWriter().getAlias());
@@ -556,28 +562,28 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 					holder4.commentTv.setVisibility(View.GONE);
 				}
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(0).getUrl(),
 						holder4.imageView1, ImageOptions.options);
 				holder4.imageView1.setVisibility(View.VISIBLE);
 				holder4.imageView1.setIndex(0);
 				holder4.imageView1.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(1).getUrl(),
 								holder4.imageView2, ImageOptions.options);
 				holder4.imageView2.setVisibility(View.VISIBLE);
 				holder4.imageView2.setIndex(1);
 				holder4.imageView2.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(2).getUrl(),
 								holder4.imageView3, ImageOptions.options);
 				holder4.imageView3.setVisibility(View.VISIBLE);
 				holder4.imageView3.setIndex(2);
 				holder4.imageView3.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance().displayImage(
-						"http://121.40.62.120/appimage/quans/small/"
+						HttpUtil.ImageUrl+"quans/small/"
 								+ quan.getAttachments().get(3).getUrl(),
 								holder4.imageView4, ImageOptions.options);
 				holder4.imageView4.setVisibility(View.VISIBLE);
@@ -585,7 +591,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder4.imageView4.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance()
 						.displayImage(
-								"http://121.40.62.120/appimage/quans/small/"
+								HttpUtil.ImageUrl+"quans/small/"
 										+ quan.getAttachments().get(4)
 												.getUrl(),
 												holder4.imageView5, ImageOptions.options);
@@ -594,7 +600,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder4.imageView5.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance()
 						.displayImage(
-								"http://121.40.62.120/appimage/quans/small/"
+								HttpUtil.ImageUrl+"quans/small/"
 										+ quan.getAttachments().get(5)
 												.getUrl(),
 												holder4.imageView6, ImageOptions.options);
@@ -603,7 +609,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				holder4.imageView6.setImages(quan.getAttachments(),"quans");
 				ImageLoader.getInstance()
 						.displayImage(
-								"http://121.40.62.120/appimage/quans/small/"
+								HttpUtil.ImageUrl+"quans/small/"
 										+ quan.getAttachments().get(6)
 												.getUrl(),
 												holder4.imageView7, ImageOptions.options);
@@ -613,7 +619,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				if (quan.getAttachments().size() > 7) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(7)
 													.getUrl(),
 													holder4.imageView8, ImageOptions.options);
@@ -624,7 +630,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				if (quan.getAttachments().size() > 8) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/appimage/quans/small/"
+									HttpUtil.ImageUrl+"quans/small/"
 											+ quan.getAttachments().get(8)
 													.getUrl(),
 													holder4.imageView9, ImageOptions.options);
@@ -665,6 +671,8 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			break;
 		case R.id.zan_img:
 			Quan quan = (Quan)v.getTag();
+			clickView = v;
+			clickView.setEnabled(false);
 			zan(quan);
 			break;
 		case R.id.send_pinglun_button:
@@ -746,6 +754,9 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		final QuanActivity quanActivity =(QuanActivity)object;
 		switch (msg.what) {
 		case -1:
+			if(clickView!=null){
+				clickView.setEnabled(true);
+			}
 			GFToast.show("连接服务器失败,请稍候再试!");
 			break;
 			
@@ -767,6 +778,9 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			quanActivity.pullToRefreshListView.onRefreshComplete();
 			break;
 		case 1:
+			if(clickView!=null){
+				clickView.setEnabled(true);
+			}
 			loadNewDate();
 			break;
 		case 2:

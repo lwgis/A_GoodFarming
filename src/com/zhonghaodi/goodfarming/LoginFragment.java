@@ -10,6 +10,7 @@ import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
@@ -18,12 +19,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginFragment extends Fragment implements TextWatcher, HandMessage {
 	private MyEditText phoneEt;
 	private MyEditText passwordEt;
 	private MyTextButton loginBtn;
+	private TextView passButton;
 	private GFHandler<LoginFragment> handler = new GFHandler<LoginFragment>(
 			this);
 
@@ -62,6 +65,16 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 				}).start();
 			}
 		});
+		
+		passButton = (TextView) view.findViewById(R.id.passback_button);
+		passButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), PassBackActivity.class);
+				getActivity().startActivity(intent);
+			}
+		});
 		return view;
 	}
 
@@ -85,6 +98,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 			loginBtn.setEnabled(true);
 		} else {
 			loginBtn.setEnabled(false);
+//			loginBtn.setEnabled(true);
 		}
 	}
 
