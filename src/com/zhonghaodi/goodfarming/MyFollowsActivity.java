@@ -7,8 +7,10 @@ import com.easemob.chat.EMChatManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Nys;
+import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -39,6 +41,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 	private NysAdapter adapter;
 	private GFHandler<MyFollowsActivity> handler = new GFHandler<MyFollowsActivity>(this);
 	private String uid;
+	private Button addButton;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_myfollows);
 		gridView = (ListView)findViewById(R.id.pull_refresh_list);
+		addButton = (Button)findViewById(R.id.add_button);
+		addButton.setOnClickListener(this);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -62,15 +67,32 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				// TODO Auto-generated method stub
 				NysHolder nHolder = (NysHolder)view.getTag();
 				Nys nys = nyss.get(position);
-				Intent intent = new Intent(MyFollowsActivity.this, NysActivity.class);
-				intent.putExtra("uid", nys.getId());
-				if(nHolder.followButton.getVisibility()==view.GONE){
-					intent.putExtra("bfollow", true);
+				if(nys.getLevel().getId()==3){
+					Intent intent = new Intent(MyFollowsActivity.this, StoreActivity.class);
+					Bundle bundle = new Bundle();
+					User user = (User)nys;
+					bundle.putSerializable("store", user);
+					if(nHolder.followButton.getVisibility()==view.GONE){
+						intent.putExtra("bfollow", true);
+					}
+					else{
+						intent.putExtra("bfollow", false);
+					}
+					intent.putExtras(bundle);
+					startActivity(intent);
 				}
 				else{
-					intent.putExtra("bfollow", false);
+					Intent intent = new Intent(MyFollowsActivity.this, NysActivity.class);
+					intent.putExtra("uid", nys.getId());
+					if(nHolder.followButton.getVisibility()==view.GONE){
+						intent.putExtra("bfollow", true);
+					}
+					else{
+						intent.putExtra("bfollow", false);
+					}
+					MyFollowsActivity.this.startActivity(intent);
 				}
-				MyFollowsActivity.this.startActivity(intent);
+				
 			}
 		});
 		nyss = new ArrayList<Nys>();
@@ -211,7 +233,8 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+		Intent intent = new Intent(this,SearchActivity.class);
+		startActivity(intent);
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import com.easemob.util.PathUtil;
 import android.graphics.Bitmap;
 
 public class ImageUtil {
-	static final String imageUrl="http://121.40.62.120:8080/dfyy/rest/files/addimage";
+	static final String imageUrl=HttpUtil.RootURL+"files/addimage";
 	public static String uploadImage(Bitmap bitmap,String folder)throws Throwable {
 		String result="";
 		 String end = "\r\n";

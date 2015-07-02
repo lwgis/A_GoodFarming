@@ -42,6 +42,15 @@
             android:gravity="center"
             >
             <Button
+	           android:id="@+id/follow_btn"
+	           android:layout_width="80dip"
+	           android:layout_height="30dip"
+	           android:layout_margin="2dip"
+	           android:background="@drawable/gree_btn"
+	           android:textColor="#ffffff"
+	           android:text="关注"
+	           />
+            <Button
 	            android:id="@+id/chat_btn"
 	            android:layout_width="80dip"
 	            android:layout_height="30dip"

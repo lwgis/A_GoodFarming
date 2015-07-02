@@ -21,54 +21,66 @@ import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
+import com.zhonghaodi.utils.PublicHelper;
 
 import android.R.integer;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-public class HomeFragment extends Fragment implements HandMessage,OnClickListener {
+public class HomeFragment extends Fragment implements HandMessage,OnClickListener,OnCreateContextMenuListener {
 	private PullToRefreshListView pullToRefreshListView;
 	private ArrayList<Question> allQuestions;
 	private QuestionAdpter adapter;
-	private TextView titleView;
 	private GFHandler<HomeFragment> handler = new GFHandler<HomeFragment>(this);
 	private int bAll = 0;
-	private View popView;
-	private PopupWindow mPopupWindow;
 	private Button signinButton;
+	private TextView allTextView;
+	private TextView ascTextView;
+	private TextView myTextView;
+	private PopupWindow popupWindow;
+	private View popView;
+	private Question selectQuestion;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
-		popView = LayoutInflater.from(getActivity()).inflate(R.layout.popupwindow_question,null);
-		Button btnall = (Button)popView.findViewById(R.id.btnAll);
-		btnall.setOnClickListener(this);
-		Button btnmy = (Button)popView.findViewById(R.id.btnMy);
-		btnmy.setOnClickListener(this);
-		Button btnAsc = (Button)popView.findViewById(R.id.btnAsc);
-		btnAsc.setOnClickListener(this);
-		titleView = (TextView)view.findViewById(R.id.title_txt);
-		titleView.setOnClickListener(this);
 		Button questionButton = (Button) view
 				.findViewById(R.id.question_button);
 		questionButton.setOnClickListener(this);
+		allTextView = (TextView)view.findViewById(R.id.all_text);
+		allTextView.setOnClickListener(this);
+		ascTextView = (TextView)view.findViewById(R.id.asc_text);
+		ascTextView.setOnClickListener(this);
+		myTextView = (TextView)view.findViewById(R.id.my_text);
+		myTextView.setOnClickListener(this);
+		popView = inflater.inflate(R.layout.popupwindow_camera, container,
+				false);
+		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
+				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
 		signinButton = (Button)view.findViewById(R.id.signin_button);
 		signinButton.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) view
@@ -128,8 +140,66 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						getActivity().startActivity(it);
 					}
 				});
+		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
+		selectTextView(allTextView);
+		
 		return view;
 	}
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		String uid = GFUserDictionary.getUserId();
+		if(uid!=null){
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+			Question question = allQuestions.get(info.position-1);
+			if(question.getWriter().getId().equals(uid)){
+				menu.add(0, 0, 0, "删除");
+			} 
+		}
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
+                .getMenuInfo(); 
+		selectQuestion = allQuestions.get(info.position-1);
+		final Dialog dialog = new Dialog(getActivity(), R.style.MyDialog);
+        //设置它的ContentView
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog, null);
+        dialog.setContentView(layout);
+        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+        okBtn.setText("确定");
+        okBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				delete(selectQuestion.getId());
+			}
+		});
+        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+        cancelButton.setText("取消");
+        cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+        titleView.setText("提示");
+        contentView.setText("确定要删除选中的提问吗？");
+        dialog.show();
+		return super.onContextItemSelected(item);
+	}
+
 
 	private void loadNewDate() {
 		new Thread(new Runnable() {
@@ -228,6 +298,20 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				String jsonString = HttpUtil.signIn(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 2;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
+	private void delete(final int qid){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.deleteQuestion(qid);
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 			}
@@ -349,6 +433,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					break;
 				}
 			}
+			String content = PublicHelper.TrimRight(question.getContent());
 			switch (type) {
 			case 0:
 				holder1 = (Holder1) convertView.getTag();
@@ -358,7 +443,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						holder1.headIv, ImageOptions.options);
 				holder1.nameTv.setText(question.getWriter().getAlias());
 				holder1.timeTv.setText(question.getTime());
-				holder1.contentTv.setText(question.getContent());
+				holder1.contentTv.setText(content);
 				holder1.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				holder1.cropTv.setText(question.getCrop().getName());
@@ -371,7 +456,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 								+ question.getWriter().getThumbnail(),
 						holder2.headIv, ImageOptions.options);
 				holder2.nameTv.setText(question.getWriter().getAlias());
-				holder2.contentTv.setText(question.getContent());
+				holder2.contentTv.setText(content);
 				holder2.timeTv.setText(question.getTime());
 				holder2.cropTv.setText(question.getCrop().getName());
 				ImageLoader.getInstance().displayImage(
@@ -415,7 +500,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						holder3.headIv, ImageOptions.options);
 				holder3.nameTv.setText(question.getWriter().getAlias());
 				holder3.timeTv.setText(question.getTime());
-				holder3.contentTv.setText(question.getContent());
+				holder3.contentTv.setText(content);
 				holder3.cropTv.setText(question.getCrop().getName());
 				ImageLoader.getInstance().displayImage(
 						HttpUtil.ImageUrl+"users/small/"
@@ -455,7 +540,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				if (question.getAttachments().size() > 4) {
 					ImageLoader.getInstance()
 							.displayImage(
-									"http://121.40.62.120/questions/users/small/"
+									HttpUtil.ImageUrl+"questions/small/"
 											+ question.getAttachments().get(4)
 													.getUrl(),
 									holder3.imageView5, ImageOptions.options);
@@ -511,52 +596,40 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			}
 			break;
 		case R.id.title_txt:
-			if (mPopupWindow==null) {
-				mPopupWindow=new PopupWindow(popView,DpTransform.dip2px(getActivity(), 180),DpTransform.dip2px(getActivity(), 150));
-			}
-			if (mPopupWindow.isShowing()) {
-				mPopupWindow.dismiss();
-			}
-			else {
-				
-				mPopupWindow.showAsDropDown(v,-DpTransform.dip2px(getActivity(), 55),DpTransform.dip2px(getActivity(), 10));
-			}
+			
 			break;
 			
-		case R.id.btnAll:
-			titleView.setText("所有提问");
+		case R.id.all_text:
+			selectTextView(v);
 			loadNewDate();
-			mPopupWindow.dismiss();
 			bAll = 0;
 			break;
-		case R.id.btnMy:
+		case R.id.my_text:
+			selectTextView(v);
 			String uid = GFUserDictionary.getUserId();
-			mPopupWindow.dismiss();
 			if(uid==null){
 				Intent intent = new Intent(getActivity(),LoginActivity.class);
 				getActivity().startActivity(intent);
 			}
 			else{
-				titleView.setText("我的提问");
 				loadNewMyDate();
 				
 				bAll = 1;
 			}
 			
 			break;
-		case R.id.btnAsc:
+		case R.id.asc_text:
+			selectTextView(v);
 			String uid1 = GFUserDictionary.getUserId();
-			mPopupWindow.dismiss();
 			String cropids = GFUserDictionary.getCroids();
 			if(uid1==null){
 				Intent intent = new Intent(getActivity(),LoginActivity.class);
 				getActivity().startActivity(intent);
 			}
-			else if(cropids.isEmpty()){
+			else if(cropids==null || cropids.isEmpty()){
 				popupDialog();
 			}
 			else{
-				titleView.setText("与我相关");
 				loadNewAscDate();
 				bAll = 2;
 			}
@@ -566,10 +639,19 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}
 	}
 	
+	public void selectTextView(View view){
+		allTextView.setTextColor(Color.rgb(128, 128, 128));
+		allTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		ascTextView.setTextColor(Color.rgb(128, 128, 128));
+		ascTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		myTextView.setTextColor(Color.rgb(128, 128, 128));
+		myTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		
+		TextView selectTextView = (TextView)view;
+		selectTextView.setTextColor(Color.rgb(56, 190, 153));
+	}
+	
 	public void hidePopueWindow(){
-		if (mPopupWindow.isShowing()) {
-			mPopupWindow.dismiss();
-		}
 	}
 	
 
@@ -595,7 +677,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 				fragment.pullToRefreshListView.onRefreshComplete();
 			}
-			else{
+			else if(msg.what==2){
 				signinButton.setEnabled(true);
 				if(msg.obj!=null){
 					GFToast.show(msg.obj.toString());
@@ -603,6 +685,18 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				else{
 					GFToast.show("连接服务器失败,请稍候再试!");
 				}
+			}
+			else if(msg.what==3){
+				
+				String str = msg.obj.toString();
+				if(!str.isEmpty()){
+					GFToast.show(str);
+				}
+				else{
+					allQuestions.remove(selectQuestion);
+					fragment.adapter.notifyDataSetChanged();
+				}
+				
 			}
 	
 	}

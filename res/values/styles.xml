@@ -42,5 +42,39 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
-
+    <style name="Widget.LinearLayout.SearchBackLayout" parent="@style/Widget.HLayout">
+	    <item name="android:gravity">center</item>
+	    <item name="android:paddingLeft">2dip</item>
+	    <item name="android:paddingTop">0dip</item>
+	    <item name="android:paddingRight">2dip</item>
+	    <item name="android:paddingBottom">0dip</item>
+	    <item name="android:background">@drawable/searchlayoutborder</item>
+	</style>
+	<style name="Widget.LinearLayout.SearchLayout" parent="@style/Widget.HLayout">
+	    <item name="android:background">@drawable/cornerlayout</item>
+	    <item name="android:gravity">center</item>
+	    <item name="android:paddingLeft">8dip</item>
+	    <item name="android:paddingTop">2dip</item>
+	    <item name="android:paddingRight">8dip</item>
+	    <item name="android:paddingBottom">2dip</item>
+	</style>
+	<style name="Widget.Image" parent="@style/Widget">
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:contentDescription"> </item>
+    </style>
+	<style name="Widget.Image.SearchClear" parent="@style/Widget.Image">
+        <item name="android:src">@drawable/cleanbtn</item>
+    </style>
+    <style name="Widget.Image.SearchIcon" parent="@style/Widget.Image">
+        <item name="android:src">@drawable/search</item>
+    </style>
+    <style name="SearchEdit">
+	    <item name="android:background">#00000000</item>
+	    <item name="android:imeOptions">actionDone</item>
+	    <item name="android:singleLine">true</item>
+	    <item name="android:paddingLeft">3dip</item>
+	    <item name="android:textSize">15sp</item>
+	    <item name="android:hint">输入手机号码</item>
+	    <item name="android:textColorHint">#FFbdbdbd</item>
+	</style>
 </resources>

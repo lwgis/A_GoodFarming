@@ -74,6 +74,9 @@ public class MessageFragment extends Fragment implements OnClickListener {
 					it.putExtra("title", message.getUser()==null?message.getTitle():message.getUser().getAlias());
 					it.putExtra("thumbnail", message.getUser()==null?"":message.getUser().getThumbnail());
 					getActivity().startActivityForResult(it, 2);
+					EMConversation emConversation1 = EMChatManager.getInstance().getConversation(message.getUser().getPhone());
+					emConversation1.resetUnreadMsgCount();
+					((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
 				}
 				else{
 					if(message.getType().equals("question")){
@@ -107,6 +110,7 @@ public class MessageFragment extends Fragment implements OnClickListener {
 						((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
 						Intent intent = new Intent(getActivity(), SysMessageActivity.class);
 						intent.putExtra("messages", (Serializable)gfMessages);
+						intent.putExtra("userName", "种好地");
 						getActivity().startActivityForResult(intent, 2);
 						
 					}
@@ -142,10 +146,11 @@ public class MessageFragment extends Fragment implements OnClickListener {
 
 	public void loadData() {
 		list = loadConversationsWithRecentChat();
+		messages.clear();
 		if (list.size()==0) {
+			adapter.notifyDataSetChanged();
 			return;
 		}
-		messages.clear();
 		for (EMConversation emConversation : list) {
 			GFMessage message = new GFMessage();
 			message.setTitle(emConversation.getUserName());
@@ -180,10 +185,19 @@ public class MessageFragment extends Fragment implements OnClickListener {
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getUsers(messages);
-				Message msg = handler.obtainMessage();
-				msg.obj = jsonString;
-				msg.sendToTarget();
+				try {
+					String jsonString = HttpUtil.getUsers(messages);
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				} catch (Exception e) {
+					// TODO: handle exception
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = e.getMessage();
+					msg.sendToTarget();
+				}
 			}
 		}).start();
 		// getActivity().runOnUiThread(new Runnable() {
@@ -327,35 +341,40 @@ public class MessageFragment extends Fragment implements OnClickListener {
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
-			if (msg.obj != null) {
-				Gson gson = new Gson();
-				List<User> users = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<User>>() {
-						}.getType());
-				if (users==null) {
-					GFToast.show("获取消息失败");
-					return;
-				}
-				for (GFMessage message :messages) {
-					User user = fragment.findUser(users, message.getTitle());
-					if (user != null) {
-						message.setUser(user);
-					}				
-				}
-				int count=0;
-				for (GFMessage gfMessage : messages) {
-					count+=gfMessage.getCount();
-				}
-				if(getActivity()!=null){
-					((MainActivity)getActivity()).setUnreadMessageCount(count);
-					 adapter.notifyDataSetChanged();
-				}
-				else{
-//					GFToast.show("空");
-				}
+			if(msg.what==0){
 				
-			} else {
-				GFToast.show("获取消息失败");
+			}
+			else if(msg.what==1) {
+				if(msg.obj != null) {
+					Gson gson = new Gson();
+					List<User> users = gson.fromJson(msg.obj.toString(),
+							new TypeToken<List<User>>() {
+							}.getType());
+					if (users==null) {
+						GFToast.show("获取消息失败");
+						return;
+					}
+					for (GFMessage message :messages) {
+						User user = fragment.findUser(users, message.getTitle());
+						if (user != null) {
+							message.setUser(user);
+						}				
+					}
+					int count=0;
+					for (GFMessage gfMessage : messages) {
+						count+=gfMessage.getCount();
+					}
+					if(getActivity()!=null){
+						((MainActivity)getActivity()).setUnreadMessageCount(count);
+						 adapter.notifyDataSetChanged();
+					}
+					else{
+//						GFToast.show("空");
+					}
+					
+				} else {
+					GFToast.show("获取消息失败");
+				}
 			}
 		}
 	}

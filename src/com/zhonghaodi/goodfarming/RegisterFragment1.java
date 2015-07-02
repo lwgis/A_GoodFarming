@@ -4,13 +4,17 @@ package com.zhonghaodi.goodfarming;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.zxing.common.StringUtils;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Message;
@@ -44,15 +48,16 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		checkNumBtn = (MyTextButton) view.findViewById(R.id.checknum_button);
 		nextBtn = (MyTextButton) view.findViewById(R.id.next_button);
 		nextBtn.setEnabled(false);
-//		nextBtn.setEnabled(true);
 		checkNumBtn.setEnabled(false);
 		phoneEt.addTextChangedListener(this);
 		checkNumEt.addTextChangedListener(this);
 		checkNumBtn.setOnClickListener(this);
 		nextBtn.setOnClickListener(this);
+		smsCheckNum = readCode();
 		time = new TimeCount(60000, 1000);
 		return view;
 	}
+	
 
 	@Override
 	public void onClick(View v) {
@@ -63,6 +68,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
+			saveCode("");
 			smsCheckNum=null;
 			checkNumBtn.setEnabled(false);
 			time.start();
@@ -85,7 +91,10 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 			}).start();
 			break;
 		case R.id.next_button:
+			smsCheckNum = readCode();
 			if (smsCheckNum.equals(checkNumEt.getText().toString())) {
+				smsCheckNum=null;
+				saveCode("");
 				LoginActivity activity = (LoginActivity) getActivity();
 				activity.setPhone(phoneEt.getText().toString());
 				activity.selectFragment(2);
@@ -93,9 +102,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 				Toast.makeText(getActivity(), "验证码错误", Toast.LENGTH_SHORT)
 						.show();
 			}
-//			LoginActivity activity = (LoginActivity) getActivity();
-//			activity.setPhone(phoneEt.getText().toString());
-//			activity.selectFragment(2);
+
 			break;
 		default:
 			break;
@@ -117,7 +124,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		if (phoneEt.getText().length() > 10&&smsCheckNum==null) {
+		if (phoneEt.getText().length() > 10&&(smsCheckNum==null || smsCheckNum.isEmpty())) {
 			checkNumBtn.setEnabled(true);
 		} else {
 			checkNumBtn.setEnabled(false);
@@ -126,7 +133,6 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 			nextBtn.setEnabled(true);
 		} else {
 			nextBtn.setEnabled(false);
-//			nextBtn.setEnabled(true);
 		}
 	}
 
@@ -140,10 +146,18 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		System.out.println(m.matches() + "---");
 
 		return m.matches();
-//		return true;
+	}
+	
+	public void saveCode(String code){
+		SharedPreferences checkInfo = getActivity().getSharedPreferences("CheckInfo", 0);
+		checkInfo.edit().putString("code", code).commit();
 	}
 
-
+	public String readCode(){
+		SharedPreferences deviceInfo = getActivity().getSharedPreferences("CheckInfo", 0);
+        String code = deviceInfo.getString("code", "");
+        return code;
+	}
 
 	class TimeCount extends CountDownTimer {
 
@@ -176,8 +190,8 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 					@Override
 					public void run() {
-						String jsonString = "8888";
-//						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString());
+//						String jsonString = "8888";
+						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString());
 						Message numMsg = registerFragment1.handler
 								.obtainMessage();
 						numMsg.what = 1;
@@ -193,6 +207,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		case 1:
 			if (msg.obj != null) {
 				registerFragment1.smsCheckNum = msg.obj.toString().trim();
+				saveCode(smsCheckNum);
 			}
 		case 2:
 

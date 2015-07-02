@@ -35,9 +35,16 @@
                    android:text="用户名"
                    android:textColor="#444444"
                    android:textSize="15sp" />
+               
+               <TextView
+                   android:id="@+id/level_text"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:textColor="#808080"
+                   android:textSize="14sp" />
 
                <TextView
-                   android:id="@+id/point_text"
+                   android:id="@+id/des_text"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:maxLines="2"

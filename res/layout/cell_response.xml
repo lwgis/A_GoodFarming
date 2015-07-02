@@ -2,19 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="@drawable/item_background_default"
-        android:orientation="vertical" >
+        android:background="@drawable/background_with_shadow"
+        android:orientation="vertical" 
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             >
 
             <ImageView
@@ -24,33 +27,40 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:padding="2dip"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:src="@drawable/placeholder" 
-                android:background="@drawable/head_img_back"/>
+                android:background="@drawable/head_img_back"
+                android:focusable="false"
+                />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dip"
-                android:orientation="vertical" >
+                android:orientation="vertical" 
+                >
 
                 <TextView
                     android:id="@+id/name_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="用户名"
                     android:textColor="#444444"
-                    android:textSize="13sp" />
+                    android:textSize="13sp" 
+                    android:focusable="false"
+                    />
 
                 <TextView
                     android:id="@+id/time_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                                                                                                android:text="21:37:20"
+                    android:text="21:37:20"
                     android:textColor="#808080"
-                    android:textSize="12sp" />
+                    android:textSize="12sp" 
+                    android:focusable="false"
+                    />
             </LinearLayout>
 			<TextView 
 			    android:id="@+id/count_text"
@@ -59,6 +69,7 @@
 			    android:gravity="center_vertical|right"
 			    android:textColor="#808080"
 			    android:layout_marginRight="5dp"
+			    android:focusable="false"
 			    android:text="0"/>
             <Button
                 android:id="@+id/zan_button"
@@ -66,14 +77,17 @@
                 android:layout_height="20dp"
                 android:layout_marginTop="5dip"
                 android:background="@drawable/button_zan" 
+                android:focusable="false"
                 android:layout_marginRight="10dp"/>
         </LinearLayout>
 
-        <TextView
+      <TextView
             android:layout_width="match_parent"
             android:layout_height="12dp"
             android:text="- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-            android:textColor="#cccccc" />
+            android:textColor="#cccccc" 
+            android:focusable="false"
+            />
 
         <com.zhonghaodi.customui.UrlTextView
             android:id="@+id/content_text"
@@ -81,10 +95,14 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dip"
+            android:layout_marginBottom="8dip"
+            android:layout_marginTop="5dip"
             android:text="内容"
             android:textColor="#333333"
-            android:textSize="17sp" />
+            android:textSize="17sp" 
+            android:focusable="false"
+            android:clickable="false"
+            />
     </LinearLayout>
 
 </LinearLayout>

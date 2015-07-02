@@ -53,8 +53,8 @@
 	            android:gravity="center_vertical"
 	            android:layout_toRightOf="@+id/avimg3"
 	            android:paddingLeft="10dip"
-	            android:textColor="#a5a5a5"
-	            android:textSize="16sp"
+	            android:textColor="#444444"
+	            android:textSize="18sp"
 	            android:text="农艺圈"
 	            />
 	        
@@ -82,8 +82,8 @@
 	            android:gravity="center_vertical"
 	            android:layout_toRightOf="@+id/avimg2"
 	            android:paddingLeft="10dip"
-	            android:textColor="#a5a5a5"
-	            android:textSize="16sp"
+	            android:textColor="#444444"
+	            android:textSize="18sp"
 	            android:text="农艺师"
 	            />
 	        
@@ -111,8 +111,8 @@
 	            android:gravity="center_vertical"
 	            android:layout_toRightOf="@+id/avimg1"
 	            android:paddingLeft="10dip"
-	            android:textColor="#a5a5a5"
-	            android:textSize="16sp"
+	            android:textColor="#444444"
+	            android:textSize="18sp"
 	            android:text="附近农资店"
 	            />
 	        
@@ -140,8 +140,8 @@
 	            android:gravity="center_vertical"
 	            android:layout_toRightOf="@+id/avimg4"
 	            android:paddingLeft="10dip"
-	            android:textColor="#a5a5a5"
-	            android:textSize="16sp"
+	            android:textColor="#444444"
+	            android:textSize="18sp"
 	            android:text="农业技术知识"
 	            />
 	        
@@ -170,8 +170,8 @@
 	            android:gravity="center_vertical"
 	            android:layout_toRightOf="@+id/avimg5"
 	            android:paddingLeft="10dip"
-	            android:textColor="#a5a5a5"
-	            android:textSize="16sp"
+	            android:textColor="#444444"
+	            android:textSize="18sp"
 	            android:text="秒杀"
 	            />
 	        

@@ -8,11 +8,17 @@ import u.aly.v;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.model.Follow;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Nys;
+import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Store;
 import com.zhonghaodi.model.UserCrop;
@@ -41,7 +47,7 @@ import android.widget.Toast;
 
 public class NyssActivity extends Activity implements OnClickListener,HandMessage {
 	
-	private ListView gridView;
+	private PullToRefreshListView gridView;
 	private List<Nys> nyss;
 	private NysAdapter adapter;
 	private GFHandler<NyssActivity> handler = new GFHandler<NyssActivity>(this);
@@ -55,7 +61,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nyss);
-		gridView = (ListView)findViewById(R.id.pull_refresh_list);
+		gridView = (PullToRefreshListView)findViewById(R.id.pull_refresh_list);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -71,7 +77,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 					int position, long id) {
 				// TODO Auto-generated method stub
 				NysHolder nHolder = (NysHolder)view.getTag();
-				Nys nys = nyss.get(position);
+				Nys nys = nyss.get(position-1);
 				Intent intent = new Intent(NyssActivity.this, NysActivity.class);
 				intent.putExtra("uid", nys.getId());
 				if(nHolder.followButton.getVisibility()==view.GONE){
@@ -83,10 +89,29 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 				NyssActivity.this.startActivity(intent);
 			}
 		});
+		gridView.setMode(Mode.PULL_FROM_END);
+		gridView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+
+					@Override
+					public void onPullDownToRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+
+					}
+
+					@Override
+					public void onPullUpToRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+						if (nyss.size() == 0) {
+							return;
+						}
+						loadMoreNyss(nyss.size());
+					}
+
+				});
 		nyss = new ArrayList<Nys>();
 		fuids = new ArrayList<String>();
 		adapter = new NysAdapter();
-		gridView.setAdapter(adapter);
+		gridView.getRefreshableView().setAdapter(adapter);
 		
 	}
 	
@@ -121,6 +146,25 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 				msg1.obj = jsString;
 				msg1.sendToTarget();
 				
+			}
+		}).start();
+	}
+	
+	/**
+	 * 获取更多农艺师
+	 */
+	private void loadMoreNyss(final int position){
+		
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getMoreNyss(uid,position);
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
+				msg.obj = jsonString;
+				msg.sendToTarget();
 			}
 		}).start();
 	}
@@ -296,6 +340,22 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 				Toast.makeText(this, "关注农艺师失败!",
 						Toast.LENGTH_SHORT).show();
 			}
+			break;
+		case 3:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Nys> nyss1 = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Nys>>() {
+						}.getType());
+				for (Nys nys : nyss1) {
+					nysactivity.nyss.add(nys);
+				}
+				nysactivity.adapter.notifyDataSetChanged();
+				
+			} else {
+				GFToast.show("连接服务器失败,请稍候再试!");
+			}
+			gridView.onRefreshComplete();
 			break;
 
 		default:

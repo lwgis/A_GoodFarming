@@ -3,11 +3,21 @@ package com.zhonghaodi.goodfarming;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.goodfarming.StoreActivity.RecipeAdapter;
+import com.zhonghaodi.goodfarming.StoresActivity.StoreLocationListenner;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.networking.GFHandler;
@@ -15,6 +25,7 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -35,10 +46,15 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MiaoActivity extends Activity implements HandMessage,OnClickListener,OnItemClickListener {
 	
-	private ListView pullToRefreshListView;
+	private PullToRefreshListView pullToRefreshListView;
 	private List<Second> seconds;
 	private SecondAdapter adapter;
 	private GFHandler<MiaoActivity> handler = new GFHandler<MiaoActivity>(this);
+	private double x;
+	private double y;
+	// 定位相关
+	LocationClient mLocClient;
+	public MiaoLocationListenner myListener = new MiaoLocationListenner();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +63,45 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 		setContentView(R.layout.activity_miao);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
-		pullToRefreshListView = (ListView) findViewById(R.id.pull_refresh_list);		
-		pullToRefreshListView.setOnItemClickListener(this);		
+		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);		
+		pullToRefreshListView.setOnItemClickListener(this);	
+		pullToRefreshListView.setMode(Mode.PULL_FROM_END);
+		pullToRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+
+			@Override
+			public void onPullDownToRefresh(
+					PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPullUpToRefresh(
+					PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				if(seconds.size()==0){
+					pullToRefreshListView.onRefreshComplete();
+					return;
+				}
+				loadMoreData(x,y,seconds.get(seconds.size()-1).getId());
+				
+			}
+
+			
+		});
 		seconds = new ArrayList<Second>();
 		adapter = new SecondAdapter();
-		pullToRefreshListView.setAdapter(adapter);	
-		loadData();
+		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
+		location();
 	}
 	
-	private void loadData(){
+	private void loadData(final double x,final double y){
 		
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getSeconds();
+				String jsonString = HttpUtil.getSeconds(x,y);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -70,6 +110,56 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			}
 		}).start();
 		
+	}
+	
+	private void loadMoreData(final double x,final double y,final int fromid){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getMoreSeconds(x,y,fromid);
+				Message msg = handler.obtainMessage();
+				msg.what = 1;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+		
+	}
+	
+	private void location() {
+		
+		mLocClient = new LocationClient(getApplicationContext());
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(5000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+	}
+	
+	/**
+	 * 定位SDK监听函数
+	 */
+	public class MiaoLocationListenner implements BDLocationListener {
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			if (location == null)
+				return;
+			x=location.getLongitude();
+			y=location.getLatitude();
+			
+			loadData(x,y);
+			mLocClient.stop();
+			
+		}
+
+		public void onReceivePoi(BDLocation poiLocation) {
+		}
 	}
 	
 	class HolderSecond {
@@ -141,7 +231,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		Second second = seconds.get(position);
+		Second second = seconds.get(position-1);
 		if(second!=null){
 			Intent intent = new Intent(this,SecondActivity.class);
 			Bundle bundle = new Bundle();
@@ -175,9 +265,9 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			miaoactivity.adapter.notifyDataSetChanged();
 			
 		} else {
-			Toast.makeText(this, "连接服务器失败,请稍候再试!",
-					Toast.LENGTH_SHORT).show();
+			GFToast.show("连接服务器失败,请稍候再试!");
 		}
+		pullToRefreshListView.onRefreshComplete();
 	}
 
 }

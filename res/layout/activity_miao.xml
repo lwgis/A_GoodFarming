@@ -32,7 +32,8 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
-    <ListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pull_refresh_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"

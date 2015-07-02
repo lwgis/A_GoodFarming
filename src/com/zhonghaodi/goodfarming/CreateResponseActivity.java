@@ -19,6 +19,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CreateResponseActivity extends Activity implements HandMessage {
@@ -28,7 +29,7 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 	private int questionId;
 	private GFHandler<CreateResponseActivity> handler = new GFHandler<CreateResponseActivity>(
 			this);
-
+	private String wname="";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -36,6 +37,11 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 		super.setContentView(R.layout.activity_create_response);
 		contentEt = (MyEditText) findViewById(R.id.content_edit);
 		questionId = getIntent().getIntExtra("questionId", 0);
+		wname = getIntent().getStringExtra("wname");
+		TextView titleTxt = (TextView)findViewById(R.id.title_text);
+		if(wname!=null&&!wname.isEmpty()){
+			titleTxt.setText(wname.substring(0, wname.length()-1));
+		}
 		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -79,7 +85,12 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 				im.hideSoftInputFromWindow(contentEt.getWindowToken(),
 						InputMethodManager.HIDE_NOT_ALWAYS);
 				Response response = new Response();
-				response.setContent(GFString.htmlToStr(contentEt.getText().toString()));
+				if(wname!=null && !wname.isEmpty()){
+					response.setContent(wname+GFString.htmlToStr(contentEt.getText().toString()));
+				}
+				else{
+					response.setContent(GFString.htmlToStr(contentEt.getText().toString()));
+				}
 				User writer = new User();
 				writer.setId(GFUserDictionary.getUserId());
 				response.setWriter(writer);

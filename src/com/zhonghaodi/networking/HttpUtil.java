@@ -72,7 +72,7 @@ import com.zhonghaodi.model.User;
  *
  */
 public class HttpUtil {
-	private static final String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static final String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
 //	private static final String RootURL = "http://192.168.0.119:8083/dfyy/rest/";
 	public static final String ImageUrl = "http://121.40.62.120/appimage8/";
 
@@ -710,11 +710,30 @@ public class HttpUtil {
 		}
 	}
 	
-	public static String getStoresString(double x,double y,double distance) {
-		if(distance>80001){
-			return "80001";
-		}
-		String url = RootURL + "users/around?x="+x+"&y="+y+"&distance="+distance;
+	public static String getStoresString(double x,double y) {
+		
+		String url = RootURL + "users/around?x="+x+"&y="+y;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getMoreStoresString(double x,double y,int position) {
+		
+		String url = RootURL + "users/around?x="+x+"&y="+y+"&position="+position;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getAllStoresString(double x,double y) {
+		
+		String url = RootURL + "users/nzds?x="+x+"&y="+y;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getAllMoreStoresString(double x,double y,int position) {
+		
+		String url = RootURL + "users/nzds?x="+x+"&y="+y+"&position="+position;
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
@@ -752,6 +771,14 @@ public class HttpUtil {
 		
 	}
 	
+	public static String getMoreNyss(String uid,int position){
+		
+		String urlString = RootURL + "users/nys?exid="+uid+"&position="+position;
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
 	public static String getFollowids(String uid){
 		
 		String urlString = RootURL + "users/"+uid+"/followids";
@@ -781,7 +808,26 @@ public class HttpUtil {
 		}
 	}
 	
+	public static String follow(String uid,User user){
+		String urlString = RootURL + "users/"+uid+"/follow";
+		Gson sGson=new Gson();
+		String jsonString=sGson.toJson(user);
+		try {
+			return HttpUtil.executeHttpPost(urlString, jsonString);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static String cancelfollow(String uid,Nys nys){
+		String urlString = RootURL + "users/"+uid+"/cancelfollow?tid="+nys.getId();
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String cancelfollow(String uid,User nys){
 		String urlString = RootURL + "users/"+uid+"/cancelfollow?tid="+nys.getId();
 		String result =HttpUtil.executeHttpDelete(urlString);
 		return result;
@@ -790,6 +836,14 @@ public class HttpUtil {
 	public static String getAgrotechnical(){
 		
 		String urlString = RootURL + "agrotechnicals";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	public static String getMoreAgrotechnical(int fromid){
+		
+		String urlString = RootURL + "agrotechnicals?fromid="+fromid;
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
@@ -917,8 +971,14 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getSeconds(){
-		String url = RootURL + "seconds";
+	public static String getSeconds(double x,double y){
+		String url = RootURL + "seconds?x="+x+"&y="+y;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getMoreSeconds(double x,double y,int fromid){
+		String url = RootURL + "seconds?x="+x+"&y="+y+"&fromid="+fromid;
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
@@ -969,6 +1029,55 @@ public class HttpUtil {
 	public static String signIn(String uid){
 		String url = RootURL + "users/"+uid+"/signin";
 		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String deleteQuestion(int qid){
+		String urlString = RootURL + "questions/"+qid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String deleteResponse(int qid,int rid){
+		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String getPtoc(){
+		String urlString = RootURL + "dics/ptoc";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+	}
+	
+	public static String exchange(final int points,String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "users/" + uid
+				+ "/ptoc";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(points);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "points";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair1);
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 		return jsonString;
 	}
 	

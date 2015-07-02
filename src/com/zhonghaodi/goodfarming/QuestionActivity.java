@@ -1,10 +1,13 @@
 package com.zhonghaodi.goodfarming;
 
+import javax.sdp.Info;
+
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
@@ -18,19 +21,30 @@ import com.zhonghaodi.networking.GFString;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.PublicHelper;
 
+import android.R.integer;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class QuestionActivity extends Activity implements UrlOnClick,
 		HandMessage {
@@ -40,6 +54,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private GFHandler<QuestionActivity> handler = new GFHandler<QuestionActivity>(
 			this);
 	private ResponseAdapter adapter;
+	private Response selectResponse;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +103,102 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						loadData();
 					}
 				});
+//		pullToRefreshListView.getRefreshableView().setOnItemClickListener(new OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view,
+//					int position, long id) {
+//				// TODO Auto-generated method stub
+//				GFToast.show("item:"+position);
+//			}
+//		});
+		registerForContextMenu(pullToRefreshListView.getRefreshableView());
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		if(info.position>1){
+			String uid = GFUserDictionary.getUserId();
+			if(uid!=null){
+				
+				Response response = question.getResponses().get(info.position-2);
+				menu.add(0, 0, 0, "回复");
+				if(response.getWriter().getId().equals(uid)){
+					menu.add(0, 1, 1, "删除");
+				} 
+			}
+		}
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
+                .getMenuInfo();
+		selectResponse = question.getResponses().get(info.position-2);
+		if(item.getItemId()==0){
+			String wname = "回复 "+question.getResponses().get(info.position-2).getWriter().getAlias()+"：";
+			Intent it = new Intent(QuestionActivity.this,
+					CreateResponseActivity.class);
+			it.putExtra("questionId", questionId);
+			it.putExtra("wname", wname);
+			QuestionActivity.this.startActivityForResult(it, 2);
+		}
+		else{
+			final Dialog dialog = new Dialog(this, R.style.MyDialog);
+	        //设置它的ContentView
+			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	        View layout = inflater.inflate(R.layout.dialog, null);
+	        dialog.setContentView(layout);
+	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+	        okBtn.setText("确定");
+	        okBtn.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					
+					delete(question.getId(),selectResponse.getId());
+				}
+			});
+	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+	        cancelButton.setText("取消");
+	        cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+	        titleView.setText("提示");
+	        contentView.setText("确定要删除选中的评论吗？");
+	        dialog.show();
+		}
+		 
+		return super.onContextItemSelected(item);
+	}
+	
+	private void delete(final int qid,final int rid){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.deleteResponse(qid,rid);
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
 	}
 
 	@Override
@@ -113,6 +224,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				// TODO Auto-generated method stub
 				String jsonString = HttpUtil.getSingleQuestion(questionId);
 				Message msg = handler.obtainMessage();
+				msg.what = 1;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 			}
@@ -205,6 +317,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					break;
 				}
 			}
+			
+			String content = PublicHelper.TrimRight(question.getContent());
 			switch (type) {
 			case 0:
 				holder1 = (Holder1) convertView.getTag();
@@ -214,7 +328,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						holder1.headIv, ImageOptions.options);
 				holder1.nameTv.setText(question.getWriter().getAlias());
 				holder1.timeTv.setText(question.getTime());
-				holder1.contentTv.setText(question.getContent());
+				holder1.contentTv.setText(content);
 				holder1.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				holder1.cropTv.setText(question.getCrop().getName());
@@ -227,7 +341,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 								+ question.getWriter().getThumbnail(),
 						holder2.headIv, ImageOptions.options);
 				holder2.nameTv.setText(question.getWriter().getAlias());
-				holder2.contentTv.setText(question.getContent());
+				holder2.contentTv.setText(content);
 				holder2.timeTv.setText(question.getTime());
 				ImageLoader.getInstance().displayImage(
 						HttpUtil.ImageUrl+"questions/small/"
@@ -274,7 +388,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						holder3.headIv, ImageOptions.options);
 				holder3.nameTv.setText(question.getWriter().getAlias());
 				holder3.timeTv.setText(question.getTime());
-				holder3.contentTv.setText(question.getContent());
+				holder3.contentTv.setText(content);
 				ImageLoader.getInstance().displayImage(
 						HttpUtil.ImageUrl+"users/small/"
 								+ question.getWriter().getThumbnail(),
@@ -353,7 +467,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						holderResponse.headIv, ImageOptions.options);
 				holderResponse.nameTv.setText(response.getWriter().getAlias());
 				holderResponse.timeTv.setText(response.getTime());
-				holderResponse.contentTv.setHtmlText(response.getContent());
+				String rcontent = PublicHelper.TrimRight(response.getContent());
+				holderResponse.contentTv.setHtmlText(rcontent);
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
 				holderResponse.countTv
 						.setText(String.valueOf(response.getZan()));
@@ -427,7 +542,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		Intent it = new Intent(this, DiseaseActivity.class);
 		it.putExtra("diseaseId", Integer.parseInt(urlString));
 		startActivity(it);
-		// Toast.makeText(this, urlString, Toast.LENGTH_SHORT).show();
 	}
 	
 
@@ -439,12 +553,31 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	}
 
 	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		unregisterForContextMenu(pullToRefreshListView.getRefreshableView());
+	}
+
+	@Override
 	public void handleMessage(Message msg, Object object) {
 		QuestionActivity activity = (QuestionActivity) object;
-		Gson gson = new Gson();
-		String jsonString = (String) msg.obj;
-		activity.question = gson.fromJson(jsonString, Question.class);
-		activity.adapter.notifyDataSetChanged();
-		activity.pullToRefreshListView.onRefreshComplete();
+		if(msg.what==1){
+			Gson gson = new Gson();
+			String jsonString = (String) msg.obj;
+			activity.question = gson.fromJson(jsonString, Question.class);
+			activity.adapter.notifyDataSetChanged();
+			activity.pullToRefreshListView.onRefreshComplete();
+		}
+		else if(msg.what == 3){
+			String strerr = msg.obj.toString();
+			if(!strerr.isEmpty()){
+				GFToast.show(strerr);
+			}
+			else{
+				question.getResponses().remove(selectResponse);
+				adapter.notifyDataSetChanged();
+			}
+		}
 	}
 }

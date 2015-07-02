@@ -232,6 +232,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		fragment.functions.add(secondFunction);
 		Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
 		fragment.functions.add(cropsFunction);
+		Function exchangeFunction = new Function("积分兑换", ExchangeActivity.class,R.drawable.pay);
+		fragment.functions.add(exchangeFunction);
 		Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
 		fragment.functions.add(payFunction);
 		if(user.getLevel().getId()==3){

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="所有提问"
+            android:text="种好地"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 
@@ -42,6 +42,53 @@
             android:textColor="#ffffff"
             android:textSize="18sp" />
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:baselineAligned="false" 
+        android:orientation="horizontal"
+        >
+		<TextView
+           android:id="@+id/all_text"
+           android:layout_width="0dip"
+           android:layout_height="34dip"
+           android:layout_weight="1"
+           android:layout_gravity="center_horizontal"
+           android:text="所有问题"
+           android:textColor="#38be99"
+           android:background="@drawable/topbar"
+           android:gravity="center"
+           android:padding="8dip"
+           android:textSize="18sp" />
+		
+		<TextView
+           android:id="@+id/asc_text"
+           android:layout_width="0dip"
+           android:layout_height="34dip"
+           android:layout_weight="1"
+           android:layout_gravity="center_horizontal"
+           android:text="与我相关"
+           android:textColor="#000000"
+           android:background="@drawable/topbar_g"
+           android:gravity="center"
+           android:padding="8dip"
+           android:textSize="18sp" />
+		
+		<TextView
+           android:id="@+id/my_text"
+           android:layout_width="0dip"
+           android:layout_height="34dip"
+           android:layout_weight="1"
+           android:layout_gravity="center_horizontal"
+           android:text="我的问题"
+           android:textColor="#000000"
+           android:background="@drawable/topbar"
+           android:gravity="center"
+           android:padding="8dip"
+           android:textSize="18sp" />
+        
+    </LinearLayout>
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"

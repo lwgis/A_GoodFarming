@@ -15,14 +15,18 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Store;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -47,6 +51,9 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 	private double distance=10000;
 	private double x;
 	private double y;
+	private TextView allTextView;
+	private TextView fujinTextView;
+	private int bfujin = 0;
 	// 定位相关
 	LocationClient mLocClient;
 	public StoreLocationListenner myListener = new StoreLocationListenner();
@@ -65,8 +72,12 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 				finish();
 			}
 		});
+		allTextView = (TextView)findViewById(R.id.all_text);
+		allTextView.setOnClickListener(this);
+		fujinTextView = (TextView)findViewById(R.id.fujin_text);
+		fujinTextView.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
-		pullToRefreshListView.setMode(Mode.PULL_UP_TO_REFRESH);
+		pullToRefreshListView.setMode(Mode.PULL_FROM_END);
 		pullToRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 
 			@Override
@@ -80,8 +91,15 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// TODO Auto-generated method stub
-				distance = distance *2;
-				loadData();
+				if(stores.size()==0){
+					return;
+				}
+				if(bfujin==0){
+					loadMoreData(stores.size());
+				}
+				else{
+					loadAllMoreData(stores.size());
+				}
 				
 			}
 
@@ -105,7 +123,18 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 		stores = new ArrayList<Store>();
 		adapter = new StoreAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
+		selectTextView(fujinTextView);
 		location();
+	}
+	
+	public void selectTextView(View view){
+		allTextView.setTextColor(Color.rgb(128, 128, 128));
+		allTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		fujinTextView.setTextColor(Color.rgb(128, 128, 128));
+		fujinTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		
+		TextView selectTextView = (TextView)view;
+		selectTextView.setTextColor(Color.rgb(56, 190, 153));
 	}
 	
 	private void loadData(){
@@ -114,9 +143,60 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getStoresString(x, y, distance);
+				String jsonString = HttpUtil.getStoresString(x, y);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+		
+	}
+	
+	private void loadMoreData(final int position){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getMoreStoresString(x, y,position);
+				Message msg = handler.obtainMessage();
+				msg.what = 1;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+		
+	}
+	
+	private void loadAllData(){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getAllStoresString(x, y);
+				Message msg = handler.obtainMessage();
+				msg.what = 0;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+		
+	}
+	
+	private void loadAllMoreData(final int position){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getAllMoreStoresString(x, y,position);
+				Message msg = handler.obtainMessage();
+				msg.what = 1;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 				
@@ -226,14 +306,32 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Store store = (Store)v.getTag();
-		if(store==null){
-			return;
+		switch (v.getId()) {
+		case R.id.all_text:
+			selectTextView(v);
+			loadAllData();
+			bfujin=1;
+			break;
+		case R.id.fujin_text:
+			selectTextView(v);
+			bfujin=0;
+			loadData();
+			break;
+		case R.id.map_image:
+			Store store = (Store)v.getTag();
+			if(store==null){
+				return;
+			}
+			Intent intent = new Intent(this, NearNzdMapActivity.class);
+			intent.putExtra("x", store.getX());
+			intent.putExtra("y", store.getY());
+			startActivity(intent);
+			break;
+
+		default:
+			break;
 		}
-		Intent intent = new Intent(this, NearNzdMapActivity.class);
-		intent.putExtra("x", store.getX());
-		intent.putExtra("y", store.getY());
-		startActivity(intent);
+		
 	}
 
 	@Override
@@ -259,10 +357,10 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 			}
 			
 		} else {
-			Toast.makeText(this, "连接服务器失败,请稍候再试!",
-					Toast.LENGTH_SHORT).show();
+			GFToast.show("连接服务器失败,请稍候再试!");
 		}
 		storeactivity.pullToRefreshListView.onRefreshComplete();
+		
 	}
 
 }

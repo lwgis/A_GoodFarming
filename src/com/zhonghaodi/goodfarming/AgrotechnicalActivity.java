@@ -5,7 +5,12 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Recipe;
@@ -33,7 +38,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class AgrotechnicalActivity extends Activity implements HandMessage {
 
-	private ListView pullToRefreshListView;
+	private PullToRefreshListView pullToRefreshListView;
 	private List<Agrotechnical> agrotechnicals;
 	private AgroAdapter adapter;
 	private GFHandler<AgrotechnicalActivity> handler = new GFHandler<AgrotechnicalActivity>(this);
@@ -50,7 +55,7 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 				finish();
 			}
 		});
-		pullToRefreshListView = (ListView) findViewById(R.id.pull_refresh_list);
+		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		
 		pullToRefreshListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -58,16 +63,36 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Agrotechnical agrotechnical = agrotechnicals.get(position);
+				Agrotechnical agrotechnical = agrotechnicals.get(position-1);
 				Intent intent = new Intent(AgrotechnicalActivity.this, AgroActivity.class);
 				intent.putExtra("aid", agrotechnical.getId());
 				AgrotechnicalActivity.this.startActivity(intent);
 			}
 		});
 		
+		pullToRefreshListView.setMode(Mode.PULL_FROM_END);
+		pullToRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+
+					@Override
+					public void onPullDownToRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+
+					}
+
+					@Override
+					public void onPullUpToRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+						if (agrotechnicals.size() == 0) {
+							return;
+						}
+						loadMoreData(agrotechnicals.get(agrotechnicals.size()-1).getId());
+					}
+
+				});
+		
 		agrotechnicals = new ArrayList<Agrotechnical>();
 		adapter = new AgroAdapter();
-		pullToRefreshListView.setAdapter(adapter);	
+		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
 		loadData();
 	}
 	
@@ -85,7 +110,23 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 			}
 		}).start();
 		
-	}	
+	}
+	
+	private void loadMoreData(final int fromid){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getMoreAgrotechnical(fromid);
+				Message msg = handler.obtainMessage();
+				msg.what = 1;
+				msg.obj = jsonString;
+				msg.sendToTarget();				
+			}
+		}).start();
+		
+	}
 	
 	class AgroHolder{
 		public ImageView agroIv;
@@ -159,9 +200,9 @@ public class AgrotechnicalActivity extends Activity implements HandMessage {
 			agrotechnicalactivity.adapter.notifyDataSetChanged();
 			
 		} else {
-			Toast.makeText(this, "连接服务器失败,请稍候再试!",
-					Toast.LENGTH_SHORT).show();
+			GFToast.show("连接服务器失败,请稍候再试!");
 		}
+		pullToRefreshListView.onRefreshComplete();
 	}
 
 }

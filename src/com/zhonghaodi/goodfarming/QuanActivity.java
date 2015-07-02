@@ -670,9 +670,9 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			displayInput();		
 			break;
 		case R.id.zan_img:
-			Quan quan = (Quan)v.getTag();
 			clickView = v;
-			clickView.setEnabled(false);
+			clickView.setVisibility(View.GONE);
+			Quan quan = (Quan)v.getTag();
 			zan(quan);
 			break;
 		case R.id.send_pinglun_button:
@@ -755,7 +755,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		switch (msg.what) {
 		case -1:
 			if(clickView!=null){
-				clickView.setEnabled(true);
+				clickView.setVisibility(View.VISIBLE);
 			}
 			GFToast.show("连接服务器失败,请稍候再试!");
 			break;

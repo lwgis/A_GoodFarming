@@ -54,6 +54,7 @@
         android:background="#ffffff"
         android:gravity="top"
         android:hint="编写答案.."
+        android:maxLength="200"
         android:padding="1dp"
         android:textColor="#333333" />
 

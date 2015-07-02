@@ -13,6 +13,7 @@ import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
+import com.zhonghaodi.utils.PublicHelper;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -21,8 +22,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +38,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	private static final int TypeQuestion = 1;
 	private static final int TypeImage = 2;
 	private static final int TypeNoImage = 3;
+	private static final int TypeError = -1;
 	private SelectCropFragment selectCropFragment = null;
 	private CreateQuestionFragment createQuestionFragment = null;
 	private TextView titleTv = null;
@@ -92,17 +96,27 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 									String imageName = ImageUtil.uploadImage(
 											createQuestionFragment.getImages()
 													.get(index), "questions");
+									if(imageName==null || imageName.isEmpty() || imageName.equals("error")){
+										Message msg = handler.obtainMessage();
+										msg.what = TypeError;
+										msg.sendToTarget();
+										return;
+									}
 									NetImage netImage = new NetImage();
 									netImage.setUrl(imageName.trim());
 									netImages.add(netImage);
 									Message msg = handler.obtainMessage();
 									msg.what = TypeImage;
+									msg.obj = imageName.trim();
 									msg.sendToTarget();
 								} catch (Throwable e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 									isSending = false;
-									GFToast.show("发送失败");
+									Message msg = handler.obtainMessage();
+									msg.what = TypeError;
+									msg.obj = e.getMessage();
+									msg.sendToTarget();
 								}
 							}
 						}).start();
@@ -262,8 +276,9 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			break;
 		case TypeNoImage:
 			final Question question = new Question();
-			question.setContent(activity.createQuestionFragment
+			String content = PublicHelper.TrimRight(activity.createQuestionFragment
 					.getContentString());
+			question.setContent(content);
 			User writer = new User();
 			writer.setId(GFUserDictionary.getUserId());
 			question.setWriter(writer);
@@ -284,7 +299,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-						GFToast.show("发送失败");
+//						GFToast.show("发送失败");
 					}
 				}
 			}).start();
@@ -293,6 +308,15 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			activity.isSending = false;
 			GFToast.show("发送成功");
 //			activity.finish();
+			break;
+		case TypeError:
+			if(msg.obj==null){
+				Log.d("uploadimageError", "空");
+			}
+			else{
+				Log.d("uploadimageError", msg.obj.toString());
+			}
+			GFToast.show("发送失败");
 			break;
 		default:
 			break;

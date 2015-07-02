@@ -40,6 +40,7 @@ import com.zhonghaodi.networking.LoadImageTask;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -63,6 +64,8 @@ import android.view.View.OnClickListener;
 import android.view.MotionEvent;
 import android.view.View.OnTouchListener;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
@@ -127,8 +130,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				emConversation.clear();
-				adapter.notifyDataSetChanged();
+				popupDialog();
 			}
 		});
 		// 动画资源文件,用于录制语音时
@@ -276,6 +278,42 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 		} else {
 			moreView.setVisibility(View.GONE);
 		}
+	}
+	
+	private void popupDialog(){
+		final Dialog dialog = new Dialog(this, R.style.MyDialog);
+        //设置它的ContentView
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog, null);
+        dialog.setContentView(layout);
+        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+        okBtn.setText("确定");
+        okBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				EMChatManager.getInstance().clearConversation(userName);
+				adapter.notifyDataSetChanged();
+			}
+		});
+        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+        cancelButton.setText("取消");
+        cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+
+			}
+		});
+        titleView.setText("提示");
+        contentView.setText("确定要清空对话吗？");
+        dialog.show();
 	}
 
 	/**
@@ -1064,5 +1102,13 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				}
 			}
 		}
+	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		 if (keyCode == KeyEvent.KEYCODE_BACK
+				 && event.getAction() == KeyEvent.ACTION_DOWN) {
+			 finish();
+		 }
+		return super.onKeyDown(keyCode, event);
 	}
 }
