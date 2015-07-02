@@ -35,6 +35,7 @@ import android.widget.TextView;
 public class SecondActivity extends Activity implements HandMessage,OnClickListener {
 
 	private TextView titleView;
+	private TextView nzdTextView;
 	private ImageView headImage;
 	private TextView oldTextView;
 	private TextView newTextView;
@@ -51,6 +52,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second);
 		titleView = (TextView)findViewById(R.id.title_text);
+		nzdTextView=(TextView)findViewById(R.id.nzd_text);
 		headImage = (ImageView)findViewById(R.id.head_image);
 		oldTextView = (TextView)findViewById(R.id.oldprice_text);
 		oldTextView.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );
@@ -65,12 +67,12 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		second = (Second)getIntent().getSerializableExtra("second");
 		if(second!=null){
 			titleView.setText(second.getTitle());
+			nzdTextView.setText(second.getNzd().getAlias());
 			ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+second.getImage(), headImage, ImageOptions.optionsNoPlaceholder);
 			oldTextView.setText("原价：￥"+String.valueOf(second.getOprice()));
 			newTextView.setText("现价：￥"+String.valueOf(second.getNprice()));
 			countTextView.setText("数量："+String.valueOf(second.getCount()));
 			contentTextView.setText(second.getContent());
-			
 		}
 	}
 

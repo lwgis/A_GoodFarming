@@ -169,6 +169,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 		public TextView newPriceTv;
 		public TextView countTv;
 		public TextView timeTv;
+		public TextView nzdTv;
 		 public HolderSecond(View view){
 			 secondIv=(ImageView)view.findViewById(R.id.second_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
@@ -177,6 +178,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			 oldPriceTv.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );
 			 countTv = (TextView)view.findViewById(R.id.count_text);
 			 timeTv = (TextView)view.findViewById(R.id.time_text);
+			 nzdTv=(TextView)view.findViewById(R.id.nzd_text);
 		 }
 	}
 	
@@ -218,6 +220,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+second.getImage(), holdersecond.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
 			holdersecond.titleTv.setText(second.getTitle());
+			holdersecond.nzdTv.setText(second.getNzd().getAlias());
 			holdersecond.oldPriceTv.setText("￥"+String.valueOf(second.getOprice()));
 			holdersecond.newPriceTv.setText("￥"+String.valueOf(second.getNprice()));
 			holdersecond.countTv.setText("数量："+String.valueOf(second.getCount()));

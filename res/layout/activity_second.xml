@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="#eaeaea"
     android:orientation="vertical" >
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -14,11 +15,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
             android:background="@null"
             android:text="&lt;返回"
             android:textColor="#ffffff"
-            android:textSize="20sp" 
-            android:layout_marginLeft="5dp"/>
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,119 +30,138 @@
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
     </RelativeLayout>
-    <LinearLayout 
+
+    <LinearLayout
         android:layout_width="match_parent"
-	    android:layout_height="match_parent" 
-	    android:orientation="vertical"
-        >
-        <ScrollView 
-		    android:layout_width="match_parent"
-		    android:layout_height="match_parent" 
-		    android:layout_weight="1"
-		    android:clickable="true"
-		    >
-	    <LinearLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="5dp"
-	        android:layout_marginRight="5dp"
-	        android:background="@drawable/item_background_default"
-	        android:orientation="vertical" >
-	        <LinearLayout 
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:orientation="vertical"
-	            android:layout_margin="10dip"
-	            >
-	            <TextView
-	                android:id="@+id/title_text"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_marginTop="2dp"
-	                android:text="用户名"
-	                android:textColor="#444444"
-	                android:textSize="20sp" />
-	        </LinearLayout>
-	
-	        <ImageView
-	               android:id="@+id/head_image"
-	               android:layout_width="match_parent"
-	               android:layout_height="200dip" 
-	               android:layout_margin="5dip"
-	               android:scaleType="centerCrop"/>
-	        <LinearLayout 
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:orientation="horizontal"
-	            >
-	            <TextView
-	                android:id="@+id/oldprice_text"
-	                android:layout_width="180dip"
-	                android:layout_height="wrap_content"
-	                android:layout_margin="5dp"
-	                android:singleLine="true"
-	                android:text="100.00"
-	                android:textColor="#444444"
-	                android:textSize="15sp" />
-	            
-	            <TextView
-	                android:id="@+id/newprice_text"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_margin="5dp"
-	                android:singleLine="true"
-	                android:text="100.00"
-	                android:textColor="#ffff0000"
-	                android:textSize="15sp" />
-	        </LinearLayout>
-	        <TextView
-	            android:id="@+id/count_text"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_margin="5dp"
-	            android:singleLine="true"
-	            android:text="数量：5"
-	            android:textColor="#444444"
-	            android:textSize="15sp" />
-	        <TextView
-	            android:id="@+id/content_text"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_marginTop="5dip"
-	            android:layout_marginLeft="5dp"
-	            android:layout_marginRight="5dp"
-	            android:layout_marginBottom="10dip"
-	            android:text="内容"
-	            android:textColor="#333333"
-	            android:textSize="16sp" />
-	    </LinearLayout>
-		</ScrollView>
-		<RelativeLayout 
-		    android:layout_width="match_parent"
-		    android:layout_height="50dip" 
-		    
-		    >
-		    <com.zhonghaodi.customui.MyTextButton
-		        android:id="@+id/buy_button"
-		        android:layout_width="match_parent"
-		        android:layout_height="40dp"
-		        android:layout_margin="5dp"
-		        android:background="@drawable/button_shape"
-		        android:text="抢购"
-		        android:textColor="#ffffff"
-		        android:textSize="18sp" 
-		        android:visibility="gone"
-		        />
-		    
-		    <com.zhonghaodi.customui.MyTextButton
-		        android:id="@+id/time_button"
-		        android:layout_width="match_parent"
-		        android:layout_height="40dp"
-		        android:layout_margin="5dp"
-		        android:background="@drawable/button_order_shape"
-		        android:text="时间"
-		        android:textColor="#ffffff"
-		        android:textSize="18sp" />
-		</RelativeLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/item_background_default"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dip"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/title_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="用户名"
+                        android:textColor="#444444"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/head_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dip"
+                    android:layout_margin="5dip"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/nzd_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:text="农资店名称"
+                    android:textColor="#444444"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/oldprice_text"
+                        android:layout_width="180dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:singleLine="true"
+                        android:text="100.00"
+                        android:textColor="#444444"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/newprice_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:singleLine="true"
+                        android:text="100.00"
+                        android:textColor="#ffff0000"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/count_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:text="数量：5"
+                    android:textColor="#444444"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/content_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dip"
+                    android:text="内容"
+                    android:textColor="#333333"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dip" >
+
+            <com.zhonghaodi.customui.MyTextButton
+                android:id="@+id/buy_button"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape"
+                android:text="抢购"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <com.zhonghaodi.customui.MyTextButton
+                android:id="@+id/time_button"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_order_shape"
+                android:text="时间"
+                android:textColor="#ffffff"
+                android:textSize="18sp" />
+        </RelativeLayout>
     </LinearLayout>
+
 </LinearLayout>
