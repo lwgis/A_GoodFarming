@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +10,13 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tencent.mm.sdk.modelmsg.GetMessageFromWX;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
@@ -25,6 +33,9 @@ import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -38,6 +49,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MeFragment extends Fragment implements HandMessage,OnClickListener{
+	private static String WX_APP_ID="wx8fd908378b8ab3e5";
+	IWXAPI wxApi;
 	private User user;
 	private ArrayList<Function> functions;
 	private PullToRefreshListView pullToRefreshList;
@@ -76,8 +89,25 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				if (position<2) {
 					return;
 				}
-				Intent it=new Intent();
 				Function function = functions.get(position-2);
+				if (function.getName().equals("分享到微信朋友圈")) {
+					WXWebpageObject webpage = new WXWebpageObject();
+					webpage.webpageUrl = "http://www.baidu.com";
+					WXMediaMessage msg = new WXMediaMessage(webpage);
+					msg.title = "WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
+					msg.description = "WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
+					Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+					msg.thumbData = MeFragment.bmpToByteArray(thumb, true);
+					
+					SendMessageToWX.Req req = new SendMessageToWX.Req();
+					req.transaction = buildTransaction("webpage");
+					req.message = msg;
+					req.scene=SendMessageToWX.Req.WXSceneTimeline;
+					wxApi.sendReq(req);
+					
+					return;
+				}
+				Intent it=new Intent();
 				it.setClass(getActivity(), function.getActivityClass());
 				if(function.getName().equals("当面付") || function.getName().equals("修改资料")){
 					Bundle bundle = new Bundle();
@@ -107,6 +137,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				
 			}
 		});
+		//微信
+		wxApi=WXAPIFactory.createWXAPI(getActivity(),WX_APP_ID, true);
+		wxApi.registerApp(WX_APP_ID);
 		return view;
 	}
 
@@ -257,8 +290,29 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		fragment.functions.add(minfoFunction);
 		Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
 		fragment.functions.add(modifyFunction);				
+		Function shareFunction = new Function("分享到微信朋友圈",null,R.drawable.password);
+		fragment.functions.add(shareFunction);				
 		fragment.pullToRefreshList.onRefreshComplete();
 		adapter.notifyDataSetChanged();
 	}
-
+	private String buildTransaction(final String type) {
+		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+	}
+	
+	public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		bmp.compress(CompressFormat.PNG, 100, output);
+		if (needRecycle) {
+			bmp.recycle();
+		}
+		
+		byte[] result = output.toByteArray();
+		try {
+			output.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 }
