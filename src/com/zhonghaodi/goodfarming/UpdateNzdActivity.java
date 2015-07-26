@@ -24,6 +24,7 @@ import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.model.LatLng;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.GFImageButton.ImageChangedListener;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
@@ -377,6 +378,10 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 			activity.sendBtn.setEnabled(true);
 			break;
 		case TypeImage:
+			if(x<0||x>180||y<0||y>90){
+				GFToast.show("定位错误。申请不能提交");
+				return;
+			}
 			final UpdateUser updateUser = new UpdateUser();
 			User user = new User();
 			user.setId(GFUserDictionary.getUserId());

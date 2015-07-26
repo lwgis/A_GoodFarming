@@ -22,6 +22,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Build;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -93,4 +94,20 @@ public class UILApplication extends Application {
 	    }
 	    return false;
 	}
+	
+	/**
+     * 检测网络是否连接
+     * @return
+     */
+    public static boolean checkNetworkState() {
+            boolean flag = false;
+            //得到网络连接信息
+            ConnectivityManager manager = (ConnectivityManager) applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+            //去进行判断网络是否连接
+            if (manager.getActiveNetworkInfo() != null) {
+                    flag = manager.getActiveNetworkInfo().isAvailable();
+            }
+
+            return flag;
+    }
 }

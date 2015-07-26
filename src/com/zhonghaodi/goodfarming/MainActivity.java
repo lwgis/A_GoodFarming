@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +35,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +74,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	private boolean isLogin = false;
 	private MainHandler handler = new MainHandler(this);
 	private EMMessage currenEmMsg;
+	private final static String lancherActivityClassName = WelcomeActivity.class.getName();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -441,6 +446,11 @@ public class MainActivity extends Activity implements OnClickListener,
 								0)).build();
 		// 发出通知
 		manager.notify(0, notification);
+//		int count = EMChatManager.getInstance().getUnreadMsgsCount();
+//		if(count>0)
+//		{
+//			sendBadgeNumber(String.valueOf(count));
+//		}
 	}
 
 	/**
@@ -498,6 +508,94 @@ public class MainActivity extends Activity implements OnClickListener,
 			countTv.setText(String.valueOf(count));
 		}
 	}
+	
+	private void sendBadgeNumber(String number) {
+		Log.d("sendBadgeNumber", number);
+        if (TextUtils.isEmpty(number)) {
+            number = "0";
+        } else {
+            int numInt = Integer.valueOf(number);
+            number = String.valueOf(Math.max(0, Math.min(numInt, 99)));
+        }
+        Log.d("sendBadgeNumber", number);
+        Log.d("sendBadgeNumber", Build.MANUFACTURER);
+        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+            sendToXiaoMi(number);
+        } else if (Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
+            sendToSony(number);
+        } else if (Build.MANUFACTURER.toLowerCase().contains("sony")) {
+            sendToSamsumg(number);
+        } else {
+            
+        }
+    }
+ 
+    private void sendToXiaoMi(String number) {
+    	Log.d("sendToXiaoMi", number);
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = null;
+        boolean isMiUIV6 = true;
+        try {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this); 
+            builder.setContentTitle("您有"+number+"未读消息");
+            builder.setTicker("您有"+number+"未读消息");
+            builder.setAutoCancel(true);
+            builder.setSmallIcon(R.drawable.design_red_point);
+            builder.setDefaults(Notification.DEFAULT_LIGHTS);
+            notification = builder.build(); 
+            Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
+            Object miuiNotification = miuiNotificationClass.newInstance();
+            Field field = miuiNotification.getClass().getDeclaredField("messageCount");
+            field.setAccessible(true);
+            field.set(miuiNotification, Integer.valueOf(number));// 设置信息数
+            field = notification.getClass().getField("extraNotification"); 
+            field.setAccessible(true);
+        field.set(notification, miuiNotification);  
+        }catch (Exception e) {
+            e.printStackTrace();
+            //miui 6之前的版本
+            isMiUIV6 = false;
+                Intent localIntent = new Intent("android.intent.action.APPLICATION_MESSAGE_UPDATE");
+                localIntent.putExtra("android.intent.extra.update_application_component_name",getPackageName() + "/"+ lancherActivityClassName );
+                localIntent.putExtra("android.intent.extra.update_application_message_text",number);
+                sendBroadcast(localIntent);
+        }
+        finally
+        {
+          if(notification!=null && isMiUIV6 )
+           {
+               //miui6以上版本需要使用通知发送
+            nm.notify(101010, notification); 
+           }
+        }
+ 
+    }
+ 
+    private void sendToSony(String number) {
+    	Log.d("sendToSony", number);
+        boolean isShow = true;
+        if ("0".equals(number)) {
+            isShow = false;
+        }
+        Intent localIntent = new Intent();
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.SHOW_MESSAGE",isShow);//是否显示
+        localIntent.setAction("com.sonyericsson.home.action.UPDATE_BADGE");
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.ACTIVITY_NAME",lancherActivityClassName );//启动页
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.MESSAGE", number);//数字
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.PACKAGE_NAME",getPackageName());//包名
+        sendBroadcast(localIntent);
+ 
+    }
+ 
+    private void sendToSamsumg(String number) 
+    {
+    	Log.d("sendToSamsumg", number);
+        Intent localIntent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
+        localIntent.putExtra("badge_count", number);//数字
+        localIntent.putExtra("badge_count_package_name", getPackageName());//包名
+        localIntent.putExtra("badge_count_class_name",lancherActivityClassName ); //启动页
+        sendBroadcast(localIntent);
+    }
 
 	static class MainHandler extends Handler {
 		MainActivity activity;

@@ -51,6 +51,9 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_welcome);
+		if(!UILApplication.checkNetworkState()){
+			GFToast.show("没有有效的网络连接");
+		}
 		Init();
 		 
 	}

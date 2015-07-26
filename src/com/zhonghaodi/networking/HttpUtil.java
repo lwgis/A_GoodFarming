@@ -48,8 +48,10 @@ import org.apache.http.NameValuePair;
 
 
 import android.R.integer;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
@@ -73,8 +75,9 @@ import com.zhonghaodi.model.User;
  */
 public class HttpUtil {
 	public static final String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-//	private static final String RootURL = "http://192.168.0.119:8083/dfyy/rest/";
 	public static final String ImageUrl = "http://121.40.62.120/appimage8/";
+//	public static final String RootURL = "http://192.168.0.120:8083/dfyy/rest/";
+//	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
 	public static String executeHttpGet(String urlString) {
 		StringBuffer sb = new StringBuffer();
@@ -1100,7 +1103,7 @@ public class HttpUtil {
 	        int max = conn.getContentLength();
 	        pd.setMax(max);   
 	        InputStream is = conn.getInputStream();   
-	        File file = new File(Environment.getExternalStorageDirectory(), "GoodFarming.apk");   
+	        File file = new File(Environment.getExternalStorageDirectory(), filename);   
 	        FileOutputStream fos = new FileOutputStream(file);   
 	        BufferedInputStream bis = new BufferedInputStream(is);   
 	        byte[] buffer = new byte[1024];   

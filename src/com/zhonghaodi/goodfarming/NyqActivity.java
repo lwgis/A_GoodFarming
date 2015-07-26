@@ -24,6 +24,8 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.ImageOptions;
+
+import android.R.integer;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -51,6 +53,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class NyqActivity extends Activity implements HandMessage {
 	private static final int TypeQuan = 1;
 	private static final int TypeImage = 2;
+	private static final int TypeError = -1;
 	private Button nyqSend;
 	private MyEditText nyqEditText;
 	private GridView imageGridView;
@@ -61,6 +64,7 @@ public class NyqActivity extends Activity implements HandMessage {
 	private View popView;
 	private File currentfile;
 	private GFHandler<NyqActivity> handler = new GFHandler<NyqActivity>(this);
+	private int imageCount;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -165,45 +169,58 @@ public class NyqActivity extends Activity implements HandMessage {
 	public void uploadImages(){
 		
 		nyqSend.setEnabled(false);
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-
-				try {
+		imgs = new ArrayList<NetImage>();
+		if(projectImages!=null&&projectImages.size()>0){
+			imageCount = 0;
+			for (int i=0;i<projectImages.size();i++) {
+				final int index = i;
+				new Thread(new Runnable() {
 					
-					imgs = new ArrayList<NetImage>();
-					for (ProjectImage projectImage : projectImages) {
-						String imageName = ImageUtil.uploadImage(projectImage.getImage()
-								, "quans");
-						NetImage netImage = new NetImage();
-						netImage.setUrl(imageName.trim());
-						imgs.add(netImage);
+					@Override
+					public void run() {
+
+						try {
+							
+							
+							String imageName = ImageUtil.uploadImage(projectImages.get(index).getImage()
+									, "quans");
+							if(imageName==null || imageName.isEmpty() || imageName.equals("error")){
+								Message msg = handler.obtainMessage();
+								msg.what = TypeError;
+								msg.sendToTarget();
+								return;
+							}
+							NetImage netImage = new NetImage();
+							netImage.setUrl(imageName.trim());
+							imgs.add(netImage);
+							Message msg = handler.obtainMessage();
+							msg.what = TypeImage;
+							msg.sendToTarget();
+							
+							
+						} catch (Exception e) {
+							
+							e.printStackTrace();
+							Message msg=new Message();
+							msg.what=TypeError;
+							handler.sendMessage(msg);
+							
+						} catch (Throwable e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							Message msg=new Message();
+							msg.what=TypeError;
+							handler.sendMessage(msg);
+						}
 						
 					}
-					Message msg = handler.obtainMessage();
-					msg.what = TypeImage;
-					msg.sendToTarget();
-					
-					
-				} catch (Exception e) {
-					
-					e.printStackTrace();
-					Message msg=new Message();
-					msg.what=0;
-					handler.sendMessage(msg);
-					
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					Message msg=new Message();
-					msg.what=0;
-					handler.sendMessage(msg);
-				}
-				
-			}
-		}).start(); 
+				}).start();
+			} 
+		}
+		else{
+			
+		}
+		
 		this.finish();
 	}
 	
@@ -289,31 +306,33 @@ public class NyqActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		final NyqActivity activity = (NyqActivity) object;
 		switch (msg.what) {
-		case 0:
+		case TypeError:
 			nyqSend.setEnabled(true);
 			GFToast.show("发送失败");
 			break;
 		case TypeImage:
-			final Quan quan = new Quan();
-			quan.setContent(activity.nyqEditText.getText().toString());
-			quan.setAttachments(activity.imgs);
-			new Thread(new Runnable() {
+			imageCount++;
+			if(imageCount==projectImages.size()){
+				final Quan quan = new Quan();
+				quan.setContent(activity.nyqEditText.getText().toString());
+				quan.setAttachments(activity.imgs);
+				new Thread(new Runnable() {
 
-				@Override
-				public void run() {
-					try {
-						HttpUtil.sendQuan(GFUserDictionary.getUserId(),quan);
-						Message msg = activity.handler.obtainMessage();
-						msg.what = TypeQuan;
-						msg.sendToTarget();
-					} catch (Throwable e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					@Override
+					public void run() {
+						try {
+							HttpUtil.sendQuan(GFUserDictionary.getUserId(),quan);
+							Message msg = activity.handler.obtainMessage();
+							msg.what = TypeQuan;
+							msg.sendToTarget();
+						} catch (Throwable e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-				}
-			}).start();
-			break;
-		
+				}).start();
+			}	
+			break;		
 		case TypeQuan:
 			GFToast.show("发送成功");
 			SendRefreshBroadcase();

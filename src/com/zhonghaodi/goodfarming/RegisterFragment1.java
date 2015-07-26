@@ -32,7 +32,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	private MyEditText checkNumEt;
 	private MyTextButton checkNumBtn;
 	private MyTextButton nextBtn;
-	private String smsCheckNum;
+	public String smsCheckNum;
 	private TimeCount time;
 
 	private GFHandler<RegisterFragment1> handler = new GFHandler<RegisterFragment1>(
@@ -53,7 +53,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		checkNumEt.addTextChangedListener(this);
 		checkNumBtn.setOnClickListener(this);
 		nextBtn.setOnClickListener(this);
-		smsCheckNum = readCode();
+//		smsCheckNum = readCode();
 		time = new TimeCount(60000, 1000);
 		return view;
 	}
@@ -68,10 +68,12 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			saveCode("");
-			smsCheckNum=null;
-			checkNumBtn.setEnabled(false);
-			time.start();
+			
+			if(!UILApplication.checkNetworkState()){
+				GFToast.show("没有有效的网络连接！");
+				return;
+			}
+			
 			new Thread(new Runnable() {
 
 				@Override
@@ -124,7 +126,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		if (phoneEt.getText().length() > 10&&(smsCheckNum==null || smsCheckNum.isEmpty())) {
+		if (phoneEt.getText().length() > 10){//&&(smsCheckNum==null || smsCheckNum.isEmpty())) {
 			checkNumBtn.setEnabled(true);
 		} else {
 			checkNumBtn.setEnabled(false);
@@ -139,7 +141,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	public boolean isMobileNO(String mobiles) {
 
 		Pattern p = Pattern
-				.compile("^((13[0-9])|(17[0-9])|(15[^4,\\D])|(18[0-9]))\\d{8}$");
+				.compile("^((13[0-9])|(17[0-9])|(15[0-9])|(18[0-9]))\\d{8}$");
 
 		Matcher m = p.matcher(mobiles);
 
@@ -183,9 +185,13 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	public void handleMessage(Message msg, Object object) {
 		final RegisterFragment1 registerFragment1 = (RegisterFragment1) object;
 		switch (msg.what) {
-		// 检查是否注册
+		// 检查是否注册返回
 		case 0:
 			if (msg.obj != null && msg.obj.toString().trim().equals("true")) {
+				smsCheckNum=null;
+				saveCode("");
+				checkNumBtn.setEnabled(false);
+				time.start();
 				new Thread(new Runnable() {
 
 					@Override

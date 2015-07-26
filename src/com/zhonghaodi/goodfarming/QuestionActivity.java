@@ -566,7 +566,12 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			Gson gson = new Gson();
 			String jsonString = (String) msg.obj;
 			activity.question = gson.fromJson(jsonString, Question.class);
-			activity.adapter.notifyDataSetChanged();
+			if(question.getStatus()!=1){
+				activity.adapter.notifyDataSetChanged();
+			}
+			else{
+				GFToast.show("问题已删除");
+			}
 			activity.pullToRefreshListView.onRefreshComplete();
 		}
 		else if(msg.what == 3){

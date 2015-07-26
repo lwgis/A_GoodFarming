@@ -30,6 +30,7 @@ public class RecipeActivity extends Activity implements HandMessage {
 	private TextView priceNewTv;
 	private TextView priceOldTv;
 	private TextView descriptionTv;
+	private TextView storeNameTextView;
 	private MyEditText recipeCountEt;
 	private MyTextButton addBtn;
 	private MyTextButton removeBtn;
@@ -53,6 +54,7 @@ public class RecipeActivity extends Activity implements HandMessage {
 		priceOldTv = (TextView) findViewById(R.id.oldprice_text);
 		priceOldTv.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 		priceNewTv = (TextView) findViewById(R.id.newprice_text);
+		storeNameTextView = (TextView)findViewById(R.id.nzdName_text);
 		descriptionTv = (TextView) findViewById(R.id.description_text);
 		orderBtn=(MyTextButton)findViewById(R.id.order_button);
 		addBtn=(MyTextButton)findViewById(R.id.addrecipe_button);
@@ -172,6 +174,7 @@ public class RecipeActivity extends Activity implements HandMessage {
 						.valueOf(recipeActivity.recipe.getNewprice()));
 				recipeActivity.descriptionTv.setText(recipeActivity.recipe
 						.getDescription());
+				storeNameTextView.setText(recipe.getNzd().getAlias());
 			}
 		}
 	}

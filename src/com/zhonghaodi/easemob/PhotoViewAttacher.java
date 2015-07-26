@@ -31,6 +31,7 @@ package com.zhonghaodi.easemob;
 import java.lang.ref.WeakReference;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;

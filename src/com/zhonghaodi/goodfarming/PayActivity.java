@@ -70,6 +70,7 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 			break;
 		case R.id.confirm_button:
 			confirmBtn.setEnabled(false);
+			sendPay();
 			break;
 
 		default:

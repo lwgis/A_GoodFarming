@@ -91,11 +91,15 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				}
 				Function function = functions.get(position-2);
 				if (function.getName().equals("分享到微信朋友圈")) {
+					if(!wxApi.isWXAppInstalled()){
+						GFToast.show("您还未安装微信客户端");
+						return;
+					}
 					WXWebpageObject webpage = new WXWebpageObject();
-					webpage.webpageUrl = "http://www.baidu.com";
+					webpage.webpageUrl = "http://a.app.qq.com/o/simple.jsp?pkgname=com.zhonghaodi.goodfarming";
 					WXMediaMessage msg = new WXMediaMessage(webpage);
-					msg.title = "WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
-					msg.description = "WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
+					msg.title = "种好地APP:让种地不再难";
+					msg.description = "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。";
 					Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.app108);
 					msg.thumbData = MeFragment.bmpToByteArray(thumb, true);
 					
@@ -265,7 +269,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		fragment.functions.add(secondFunction);
 		Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
 		fragment.functions.add(cropsFunction);
-		Function exchangeFunction = new Function("积分兑换", ExchangeActivity.class,R.drawable.pay);
+		Function exchangeFunction = new Function("积分兑换", ExchangeActivity.class,R.drawable.exchange);
 		fragment.functions.add(exchangeFunction);
 		Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
 		fragment.functions.add(payFunction);
@@ -290,7 +294,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		fragment.functions.add(minfoFunction);
 		Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
 		fragment.functions.add(modifyFunction);				
-		Function shareFunction = new Function("分享到微信朋友圈",null,R.drawable.password);
+		Function shareFunction = new Function("分享到微信朋友圈",null,R.drawable.weixin);
 		fragment.functions.add(shareFunction);				
 		fragment.pullToRefreshList.onRefreshComplete();
 		adapter.notifyDataSetChanged();

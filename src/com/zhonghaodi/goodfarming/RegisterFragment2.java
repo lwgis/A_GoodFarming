@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -140,6 +141,13 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 						try {
 							headImageName = ImageUtil.uploadImage(
 									headGfImageButton.getBitmap(), "users");
+							if(headImageName==null || headImageName.isEmpty() || headImageName.equals("error")){
+								Message msg = handler.obtainMessage();
+								msg.what = 0;
+								msg.obj = "图片上传失败";
+								msg.sendToTarget();
+								return;
+							}
 							Message msg = handler.obtainMessage();
 							msg.what = 1;
 							msg.sendToTarget();
@@ -148,6 +156,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 							e.printStackTrace();
 							Message msg = handler.obtainMessage();
 							msg.what = 0;
+							msg.obj="注册失败";
 							msg.sendToTarget();
 							isSending = false;
 						}
@@ -259,7 +268,12 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 		switch (msg.what) {
 		// 注册失败
 		case 0:
-			Toast.makeText(getActivity(), "注册失败", Toast.LENGTH_SHORT).show();
+			if(msg.obj!=null){
+				GFToast.show(msg.obj.toString());
+			}
+			else{
+				GFToast.show("操作失败");
+			}
 			isSending = false;
 			registerBtn.setEnabled(true);
 			registerBtn.setText("注册");
@@ -304,11 +318,9 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 				GFUserDictionary.saveLoginInfo(loginUser.getUser(),registerFragment2.passwordEt.getText().toString(),registerFragment2.getActivity());
 				registerFragment2.getActivity().setResult(4);
 				registerFragment2.getActivity().finish();
-				 Toast.makeText(registerFragment2.getActivity(), "注册成功",
-				 Toast.LENGTH_SHORT).show();
+				GFToast.show("注册成功");
 			} else {
-				Toast.makeText(registerFragment2.getActivity(), "注册失败",
-						Toast.LENGTH_SHORT).show();
+				GFToast.show("注册失败");
 			}
 			isSending = false;
 			registerFragment2.registerBtn.setEnabled(true);

@@ -91,6 +91,7 @@
 	            android:hint="输入个人简要描述"
 	            android:maxLength="50"
 	            android:singleLine="false"
+	            android:gravity="top|left"
 	            android:textColor="#333333" />
 	
 	        <com.zhonghaodi.customui.MyTextButton

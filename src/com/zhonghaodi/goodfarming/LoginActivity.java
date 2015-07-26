@@ -55,6 +55,8 @@ public class LoginActivity extends Activity {
 		});
 		selectFragment(0);
 	}
+	
+	
 
 	public void selectFragment(int index) {
 		FragmentTransaction transaction = getFragmentManager()
@@ -111,6 +113,9 @@ public class LoginActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		if(resgiterFragment1!=null){
+			resgiterFragment1.smsCheckNum = resgiterFragment1.readCode();
+		}
 	}
 
 	@Override

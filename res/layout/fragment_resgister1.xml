@@ -42,10 +42,12 @@
 
         <com.zhonghaodi.customui.MyTextButton
             android:id="@+id/checknum_button"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/button_shape"
+            android:paddingLeft="5dip"
+            android:paddingRight="5dip"
             android:text="获取验证码"
             android:textColor="#ffffff"
             android:textSize="18sp" />

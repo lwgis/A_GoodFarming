@@ -22,7 +22,6 @@ import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Message;

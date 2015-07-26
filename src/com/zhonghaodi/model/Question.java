@@ -13,6 +13,7 @@ public class Question {
 	private String time;
 	private int responsecount;
 	private String inform;
+	private int status;
 	private List<Response> responses;
 	public List<Response> getResponses() {
 		return responses;
@@ -84,6 +85,14 @@ public class Question {
 
 	public void setInform(String inform) {
 		this.inform = inform;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }

@@ -76,6 +76,7 @@ public class MessageFragment extends Fragment implements OnClickListener {
 					getActivity().startActivityForResult(it, 2);
 					EMConversation emConversation1 = EMChatManager.getInstance().getConversation(message.getUser().getPhone());
 					emConversation1.resetUnreadMsgCount();
+					
 					((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
 				}
 				else{
