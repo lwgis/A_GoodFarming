@@ -2,6 +2,7 @@ package com.zhonghaodi.model;
 
 import java.io.Serializable;
 
+
 public class Recipe implements Serializable {
 	/**
 	 * 
@@ -10,10 +11,14 @@ public class Recipe implements Serializable {
 	private int id;
 	private String title;
 	private String description;
-	private User nzd;
+	private Store nzd;
 	private String thumbnail;
 	private double price;
 	private double newprice;
+	private int haocount;
+	private int zhongcount;
+	private int chacount;
+	private int sumcount;
 	
 	public Recipe() {
 		// TODO Auto-generated constructor stub
@@ -37,10 +42,10 @@ public class Recipe implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public User getNzd() {
+	public Store getNzd() {
 		return nzd;
 	}
-	public void setNzd(User nzd) {
+	public void setNzd(Store nzd) {
 		this.nzd = nzd;
 	}
 	public String getThumbnail() {
@@ -60,6 +65,38 @@ public class Recipe implements Serializable {
 	}
 	public void setNewprice(double newprice) {
 		this.newprice = newprice;
+	}
+
+	public int getHaocount() {
+		return haocount;
+	}
+
+	public void setHaocount(int haocount) {
+		this.haocount = haocount;
+	}
+
+	public int getZhongcount() {
+		return zhongcount;
+	}
+
+	public void setZhongcount(int zhongcount) {
+		this.zhongcount = zhongcount;
+	}
+
+	public int getChacount() {
+		return chacount;
+	}
+
+	public void setChacount(int chacount) {
+		this.chacount = chacount;
+	}
+
+	public int getSumcount() {
+		return sumcount;
+	}
+
+	public void setSumcount(int sumcount) {
+		this.sumcount = sumcount;
 	}
 
 	@Override

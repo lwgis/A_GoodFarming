@@ -50,7 +50,7 @@ public class NearNzdMapActivity extends Activity {
 		super.setContentView(R.layout.activity_near_map_nzd);
 		mCurrentMode = LocationMode.NORMAL;
 		tilteTv = (TextView) findViewById(R.id.title_text);
-		tilteTv.setText("附近农资店");
+		tilteTv.setText("农资店位置");
 		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		sendBtn = (MyTextButton) findViewById(R.id.send_button);
 		mapView = (MapView) findViewById(R.id.mapView);

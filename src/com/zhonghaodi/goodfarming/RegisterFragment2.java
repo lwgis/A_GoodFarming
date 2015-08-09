@@ -120,6 +120,14 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 
 			@Override
 			public void onClick(View v) {
+				if(aliasEt.getText().toString().isEmpty()){
+					GFToast.show("别名不能为空");
+					return;
+				}
+//				if(aliasEt.getText().toString().equals("种好地")){
+//					GFToast.show("别名不能使用APP名称");
+//					return;
+//				}
 				if (!passwordEt.getText().toString()
 						.equals(passwordEt2.getText().toString())) {
 					Toast.makeText(getActivity(), "两次输入的密码不相同",

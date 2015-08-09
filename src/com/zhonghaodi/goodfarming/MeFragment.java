@@ -281,12 +281,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		case 1:
 			Function nysfuFunction = new Function("升级为农艺师", UpdateNysActivity.class,R.drawable.nysupdate);
 			fragment.functions.add(nysfuFunction);
-		case 2:
 			Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzdupdate);
 			fragment.functions.add(nzdFunction);
-		case 3:
-			Function zjFunction = new Function("升级为专家", UpdateZjActivity.class,R.drawable.zjupdate);
-			fragment.functions.add(zjFunction);
+			break;			
 		default:
 			break;
 		}
@@ -295,7 +292,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
 		fragment.functions.add(modifyFunction);				
 		Function shareFunction = new Function("分享到微信朋友圈",null,R.drawable.weixin);
-		fragment.functions.add(shareFunction);				
+		fragment.functions.add(shareFunction);
+		Function downFunction = new Function("APP下载", AppdownActivity.class,R.drawable.appdownload);
+		fragment.functions.add(downFunction);
 		fragment.pullToRefreshList.onRefreshComplete();
 		adapter.notifyDataSetChanged();
 	}

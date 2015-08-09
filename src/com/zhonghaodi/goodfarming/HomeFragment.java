@@ -434,6 +434,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 			}
 			String content = PublicHelper.TrimRight(question.getContent());
+			
 			switch (type) {
 			case 0:
 				holder1 = (Holder1) convertView.getTag();
@@ -444,6 +445,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				holder1.nameTv.setText(question.getWriter().getAlias());
 				holder1.timeTv.setText(question.getTime());
 				holder1.contentTv.setText(content);
+				
 				holder1.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				holder1.cropTv.setText(question.getCrop().getName());
@@ -457,6 +459,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						holder2.headIv, ImageOptions.options);
 				holder2.nameTv.setText(question.getWriter().getAlias());
 				holder2.contentTv.setText(content);
+				
 				holder2.timeTv.setText(question.getTime());
 				holder2.cropTv.setText(question.getCrop().getName());
 				ImageLoader.getInstance().displayImage(
@@ -501,6 +504,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				holder3.nameTv.setText(question.getWriter().getAlias());
 				holder3.timeTv.setText(question.getTime());
 				holder3.contentTv.setText(content);
+				
 				holder3.cropTv.setText(question.getCrop().getName());
 				ImageLoader.getInstance().displayImage(
 						HttpUtil.ImageUrl+"users/small/"
@@ -641,11 +645,11 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	
 	public void selectTextView(View view){
 		allTextView.setTextColor(Color.rgb(128, 128, 128));
-		allTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		allTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		ascTextView.setTextColor(Color.rgb(128, 128, 128));
-		ascTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		ascTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		myTextView.setTextColor(Color.rgb(128, 128, 128));
-		myTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		myTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		
 		TextView selectTextView = (TextView)view;
 		selectTextView.setTextColor(Color.rgb(56, 190, 153));

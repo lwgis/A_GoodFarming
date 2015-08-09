@@ -14,6 +14,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.goodfarming.StoreActivity.RecipeAdapter;
@@ -52,6 +53,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 	private GFHandler<MiaoActivity> handler = new GFHandler<MiaoActivity>(this);
 	private double x;
 	private double y;
+	private CustomProgressDialog progressDialog;
 	// 定位相关
 	LocationClient mLocClient;
 	public MiaoLocationListenner myListener = new MiaoLocationListenner();
@@ -130,7 +132,10 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 	}
 	
 	private void location() {
-		
+		if(progressDialog==null){
+			progressDialog = new CustomProgressDialog(this, "定位中...");
+		}
+		progressDialog.show();
 		mLocClient = new LocationClient(getApplicationContext());
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
@@ -152,7 +157,9 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 				return;
 			x=location.getLongitude();
 			y=location.getLatitude();
-			
+			if(progressDialog!=null){
+				progressDialog.dismiss();
+			}
 			loadData(x,y);
 			mLocClient.stop();
 			
@@ -271,6 +278,9 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			GFToast.show("连接服务器失败,请稍候再试!");
 		}
 		pullToRefreshListView.onRefreshComplete();
+		if(seconds.size()==0){
+			GFToast.show("附近没有秒杀活动！");
+		}
 	}
 
 }

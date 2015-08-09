@@ -753,6 +753,18 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
+	public static String getScoringOrders(String uid){
+		String url = RootURL + "users/"+uid+"/scoringorders";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getCompleteOrders(String uid){
+		String url = RootURL + "users/"+uid+"/completedorders";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
 	public static String getOrderByCode(String uid,String code){
 		String url = RootURL + "users/"+uid+"/order/"+code;
 		String jsonString = HttpUtil.executeHttpGet(url);
@@ -1053,6 +1065,12 @@ public class HttpUtil {
 		return result;
 	}
 	
+	public static String getScoringdics(){
+		String url = RootURL + "dics/scoringdics";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
 	public static String exchange(final int points,String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "users/" + uid
@@ -1081,6 +1099,87 @@ public class HttpUtil {
 			e.printStackTrace();
 			return null;
 		}
+		return jsonString;
+	}
+	
+	/**
+	 * 订单评价
+	 * @return
+	 */
+	public static String sendEvaluate(String nzdid,final int urid,int rid,final int scoring,final String evaluate) {
+		String jsonString = null;
+		String urlString = RootURL + "users/" + nzdid
+				+ "/recipes/"+rid+"/order/evaluate";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(urid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "oid";
+			}
+		};
+		nameValuePairs.add(nameValuePair1);
+		NameValuePair nameValuePair2 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(scoring);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "scoring";
+			}
+		};
+		nameValuePairs.add(nameValuePair2);
+		NameValuePair nameValuePair3 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return evaluate;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "evaluate";
+			}
+		};
+		nameValuePairs.add(nameValuePair3);
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 获取配方的评价
+	 * @param nzdCode
+	 * @param rid
+	 * @param position
+	 * @return
+	 */
+	public static String getEvaluates(String nzdCode, int rid,int position) {
+		String urlString = RootURL + "users/" + nzdCode
+				+ "/recipes/" + String.valueOf(rid)+"/evaluates";
+		if(position>0){
+			urlString+="?position="+position;
+		}
+		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}
 	

@@ -162,7 +162,6 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				dialog.dismiss();
-				MyFollowsActivity.this.finish();
 			}
 		});
         titleView.setText("提示");

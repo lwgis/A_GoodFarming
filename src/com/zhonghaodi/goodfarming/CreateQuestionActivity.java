@@ -245,8 +245,14 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			if (activity.imageCount == activity.createQuestionFragment
 					.getImages().size()) {
 				final Question question = new Question();
-				question.setContent(activity.createQuestionFragment
+				String content = PublicHelper.TrimRight(activity.createQuestionFragment
 						.getContentString());
+				String zdContent = activity.createQuestionFragment
+						.getBhzdContent();
+				if(!zdContent.isEmpty()){
+					content = content+zdContent;
+				}
+				question.setContent(content);
 				User writer = new User();
 				writer.setId(GFUserDictionary.getUserId());
 				question.setWriter(writer);
@@ -278,6 +284,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			final Question question = new Question();
 			String content = PublicHelper.TrimRight(activity.createQuestionFragment
 					.getContentString());
+			String zdContent = activity.createQuestionFragment
+					.getBhzdContent();
+			if(!zdContent.isEmpty()){
+				content = content+zdContent;
+			}
 			question.setContent(content);
 			User writer = new User();
 			writer.setId(GFUserDictionary.getUserId());

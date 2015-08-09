@@ -27,25 +27,77 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="购物车"
+            android:text="我的订单"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
     </RelativeLayout>
-
-    <ListView
-        android:id="@+id/pull_refresh_list"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:baselineAligned="false" 
+        android:orientation="horizontal"
+        >
+		<TextView
+           android:id="@+id/ordertxt0"
+           android:layout_width="0dip"
+           android:layout_height="34dip"
+           android:layout_weight="1"
+           android:layout_gravity="center_horizontal"
+           android:text="未完成"
+           android:textColor="#38be99"
+           android:background="@drawable/topbar"
+           android:gravity="center"
+           android:padding="8dip"
+           android:textSize="18sp" />
+		
+		<TextView
+           android:id="@+id/ordertxt1"
+           android:layout_width="0dip"
+           android:layout_height="34dip"
+           android:layout_weight="1"
+           android:layout_gravity="center_horizontal"
+           android:text="待评价"
+           android:textColor="#000000"
+           android:background="@drawable/topbar_g"
+           android:gravity="center"
+           android:padding="8dip"
+           android:textSize="18sp" />
+		
+		<TextView
+           android:id="@+id/ordertxt2"
+           android:layout_width="0dip"
+           android:layout_height="34dip"
+           android:layout_weight="1"
+           android:layout_gravity="center_horizontal"
+           android:text="已完成"
+           android:textColor="#000000"
+           android:background="@drawable/topbar"
+           android:gravity="center"
+           android:padding="8dip"
+           android:textSize="18sp" />
+        
+    </LinearLayout>
+    <RelativeLayout 
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:cacheColorHint="#000000"
-        android:divider="#eaeaea"
-        android:dividerHeight="8dp"
-        android:fadingEdge="none"
-        android:fastScrollEnabled="false"
-        android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
-        android:listSelector="#00000000"
-        android:smoothScrollbar="true"
-        />
+        >
+        <ListView
+	        android:id="@+id/pull_refresh_list"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:cacheColorHint="#000000"
+	        android:divider="#eaeaea"
+	        android:dividerHeight="8dp"
+	        android:fadingEdge="none"
+	        android:fastScrollEnabled="false"
+	        android:footerDividersEnabled="false"
+	        android:headerDividersEnabled="false"
+	        android:listSelector="#00000000"
+	        android:smoothScrollbar="true"
+	        />
+        <include layout="@layout/view_empty" />
+    </RelativeLayout>
 
 </LinearLayout>

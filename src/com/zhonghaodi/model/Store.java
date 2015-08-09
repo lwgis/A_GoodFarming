@@ -1,6 +1,7 @@
 package com.zhonghaodi.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 public class Store extends User implements Serializable {
@@ -17,6 +18,10 @@ public class Store extends User implements Serializable {
 	private Area area;
 	
 	private Double distance;
+	
+	private List<Recipe> recipes;
+	
+	private Double scoring;
 	
 	public Store() {
 		// TODO Auto-generated constructor stub
@@ -52,6 +57,22 @@ public class Store extends User implements Serializable {
 
 	public void setDistance(Double distance) {
 		this.distance = distance;
+	}
+
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
+
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
+	}
+
+	public Double getScoring() {
+		return scoring;
+	}
+
+	public void setScoring(Double scoring) {
+		this.scoring = scoring;
 	}
 
 	@Override

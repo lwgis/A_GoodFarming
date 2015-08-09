@@ -151,7 +151,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 					// TODO Auto-generated catch block
 					Message msg = handler.obtainMessage();
 					msg.what = -1;
-					msg.obj = "更新请求错误";
+					msg.obj = "";
 					msg.sendToTarget();
 				}
 				

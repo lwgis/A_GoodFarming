@@ -146,9 +146,13 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 	
 	private void clickOkButton(){
 		if(aliasEt.getText().toString().isEmpty()){
-			GFToast.show("昵称不能为空");
+			GFToast.show("别名不能为空");
 			return;
 		}
+//		if(aliasEt.getText().toString().equals("种好地")){
+//			GFToast.show("别名不能使用APP名称");
+//			return;
+//		}
 		if(addressEt.getText().toString().isEmpty()){
 			GFToast.show("地址不能为空");
 			return;

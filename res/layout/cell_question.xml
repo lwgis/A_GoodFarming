@@ -78,7 +78,6 @@
             android:text="内容"
             android:textColor="#333333"
             android:textSize="17sp" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="12dp"

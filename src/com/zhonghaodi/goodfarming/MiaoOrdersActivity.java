@@ -75,6 +75,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 	class HolderSecondOrder {
 		public ImageView secondIv;
 		public TextView titleTv;
+		public TextView nzdTv;
 		public TextView countPriceTv;
 		public TextView sumPriceTv;
 		public TextView statusTv;
@@ -82,6 +83,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 		 public HolderSecondOrder(View view){
 			 secondIv=(ImageView)view.findViewById(R.id.second_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
+			 nzdTv = (TextView)view.findViewById(R.id.nzd_text);
 			 countPriceTv=(TextView)view.findViewById(R.id.countprice_text);
 			 sumPriceTv=(TextView)view.findViewById(R.id.sumprice_text);
 			 statusTv = (TextView)view.findViewById(R.id.status_text);
@@ -127,6 +129,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+secondOrder.getSecond().getImage(), holdersecondorder.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
 			holdersecondorder.titleTv.setText(secondOrder.getSecond().getTitle());
+			holdersecondorder.nzdTv.setText(secondOrder.getSecond().getNzd().getAlias());
 			holdersecondorder.countPriceTv.setText("￥"+String.valueOf(secondOrder.getSecond().getNprice())+" X 1份");
 			holdersecondorder.sumPriceTv.setText("共￥"+String.valueOf(secondOrder.getSecond().getNprice()));
 			if(secondOrder.getStatus()==1){
@@ -135,7 +138,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 			else{
 				holdersecondorder.statusTv.setText("交易未完成");
 			}
-			holdersecondorder.timeTv.setText("时间"+secondOrder.getTime());
+			holdersecondorder.timeTv.setText("时间:"+secondOrder.getTime());
 			return convertView;
 		}
 		

@@ -131,7 +131,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		} else {
 			checkNumBtn.setEnabled(false);
 		}
-		if (phoneEt.getText().length() > 10&&checkNumEt.getText().length() > 3&&smsCheckNum!=null) {
+		if (phoneEt.getText().length() > 10&&checkNumEt.getText().length() > 3&&smsCheckNum!=null){
 			nextBtn.setEnabled(true);
 		} else {
 			nextBtn.setEnabled(false);

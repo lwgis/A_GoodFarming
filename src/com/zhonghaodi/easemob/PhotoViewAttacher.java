@@ -208,41 +208,58 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	public final void cleanup() {
-		if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-			if (null != mImageView) {
-				mImageView.get().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-			}
+//		if (VERSION.SDK_INT >= 16) {
+//			if (null != mImageView) {
+//				mImageView.get().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//			}
+//
+//			if (null != mViewTreeObserver && mViewTreeObserver.isAlive()) {
+//				mViewTreeObserver.removeOnGlobalLayoutListener(this);
+//
+//				mViewTreeObserver = null;
+//
+//				// Clear listeners too
+//				mMatrixChangeListener = null;
+//				mPhotoTapListener = null;
+//				mViewTapListener = null;
+//				// Finally, clear ImageView
+//				mImageView = null;
+//			}
+//
+//		} else {
+//			if (null != mImageView) {
+//				mImageView.get().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//			}
+//
+//			if (null != mViewTreeObserver && mViewTreeObserver.isAlive()) {
+//				mViewTreeObserver.removeGlobalOnLayoutListener(this);
+//
+//				mViewTreeObserver = null;
+//
+//				// Clear listeners too
+//				mMatrixChangeListener = null;
+//				mPhotoTapListener = null;
+//				mViewTapListener = null;
+//				// Finally, clear ImageView
+//				mImageView = null;
+//			}
+//		}
+		
+		if (null != mImageView) {
+			mImageView.get().getViewTreeObserver().removeGlobalOnLayoutListener(this);
+		}
 
-			if (null != mViewTreeObserver && mViewTreeObserver.isAlive()) {
-				mViewTreeObserver.removeOnGlobalLayoutListener(this);
+		if (null != mViewTreeObserver && mViewTreeObserver.isAlive()) {
+			mViewTreeObserver.removeGlobalOnLayoutListener(this);
 
-				mViewTreeObserver = null;
+			mViewTreeObserver = null;
 
-				// Clear listeners too
-				mMatrixChangeListener = null;
-				mPhotoTapListener = null;
-				mViewTapListener = null;
-				// Finally, clear ImageView
-				mImageView = null;
-			}
-
-		} else {
-			if (null != mImageView) {
-				mImageView.get().getViewTreeObserver().removeGlobalOnLayoutListener(this);
-			}
-
-			if (null != mViewTreeObserver && mViewTreeObserver.isAlive()) {
-				mViewTreeObserver.removeGlobalOnLayoutListener(this);
-
-				mViewTreeObserver = null;
-
-				// Clear listeners too
-				mMatrixChangeListener = null;
-				mPhotoTapListener = null;
-				mViewTapListener = null;
-				// Finally, clear ImageView
-				mImageView = null;
-			}
+			// Clear listeners too
+			mMatrixChangeListener = null;
+			mPhotoTapListener = null;
+			mViewTapListener = null;
+			// Finally, clear ImageView
+			mImageView = null;
 		}
 	}
 

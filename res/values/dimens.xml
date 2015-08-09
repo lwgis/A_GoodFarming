@@ -6,4 +6,5 @@
 	<dimen name="topbar_height">45dip</dimen>
     <dimen name="tabbar_height">0dip</dimen>
     <color name="transparent">#00000000</color>
+    <dimen name="radio_width">90dip</dimen>
 </resources>

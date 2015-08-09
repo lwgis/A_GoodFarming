@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.baidu.location.BDLocation;
@@ -15,8 +16,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Store;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -39,6 +42,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +58,7 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 	private TextView allTextView;
 	private TextView fujinTextView;
 	private int bfujin = 0;
+	private CustomProgressDialog progressDialog;
 	// 定位相关
 	LocationClient mLocClient;
 	public StoreLocationListenner myListener = new StoreLocationListenner();
@@ -129,9 +134,9 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 	
 	public void selectTextView(View view){
 		allTextView.setTextColor(Color.rgb(128, 128, 128));
-		allTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		allTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		fujinTextView.setTextColor(Color.rgb(128, 128, 128));
-		fujinTextView.setBackground(getResources().getDrawable(R.drawable.topbar));
+		fujinTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		
 		TextView selectTextView = (TextView)view;
 		selectTextView.setTextColor(Color.rgb(56, 190, 153));
@@ -206,7 +211,10 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 	}
 	
 	private void location() {
-		
+		if(progressDialog==null){
+			progressDialog = new CustomProgressDialog(this, "定位中...");
+		}
+		progressDialog.show();
 		mLocClient = new LocationClient(getApplicationContext());
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
@@ -228,7 +236,9 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 				return;
 			x=location.getLongitude();
 			y=location.getLatitude();
-			
+			if(progressDialog!=null){
+				progressDialog.dismiss();
+			}
 			loadData();
 			mLocClient.stop();
 			
@@ -243,11 +253,15 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 		public TextView nameTextView;
 		public TextView disTextView;
 		public ImageView locationView;
+		public RatingBar ratingBar;
+		public TextView recipeTextView;
 		public StoreHolder(View view){
 			imageView = (ImageView)view.findViewById(R.id.head_image);
 			nameTextView = (TextView)view.findViewById(R.id.name_text);
 			disTextView = (TextView)view.findViewById(R.id.dis_text);
 			locationView = (ImageView)view.findViewById(R.id.map_image);
+			ratingBar = (RatingBar)view.findViewById(R.id.rb);
+			recipeTextView = (TextView)view.findViewById(R.id.recipe_text);
 		}
 	}
 	
@@ -292,6 +306,20 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 			if(store.getDistance()!=null){
 				DecimalFormat    df   = new DecimalFormat("######0.00");   
 				holder.disTextView.setText("距离："+df.format(store.getDistance())+"公里");
+			}
+			float sc = (float)(store.getScoring()/100);
+			holder.ratingBar.setRating(sc);
+			if(store.getRecipes()!=null && store.getRecipes().size()>0){
+				String recipeStr = "擅长：";
+				for (Iterator iterator = store.getRecipes().iterator(); iterator
+						.hasNext();) {
+					Recipe recipe = (Recipe) iterator.next();
+					recipeStr+=recipe.getTitle()+" ";					
+				}
+				holder.recipeTextView.setText(recipeStr);
+			}
+			else{
+				holder.recipeTextView.setText(store.getDescription());
 			}
 			holder.locationView.setTag(store);
 			holder.locationView.setOnClickListener(StoresActivity.this);
@@ -360,7 +388,9 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 			GFToast.show("连接服务器失败,请稍候再试!");
 		}
 		storeactivity.pullToRefreshListView.onRefreshComplete();
-		
+		if(storeactivity.stores.size()==0){
+			GFToast.show("附近没有农资店");
+		}
 	}
 
 }
