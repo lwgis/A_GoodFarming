@@ -11,6 +11,8 @@ public class UpdateUser {
 	private String name;
 	private List<NetImage> attachments;
 	private List<UpdateCrop> crops;
+	private Area area;
+	private Nyscate category;
 	public User getUser() {
 		return user;
 	}
@@ -74,4 +76,21 @@ public class UpdateUser {
 	public void setCrops(List<UpdateCrop> crops) {
 		this.crops = crops;
 	}
+
+	public Area getArea() {
+		return area;
+	}
+
+	public void setArea(Area area) {
+		this.area = area;
+	}
+
+	public Nyscate getCategory() {
+		return category;
+	}
+
+	public void setCategory(Nyscate category) {
+		this.category = category;
+	}
+	
 }

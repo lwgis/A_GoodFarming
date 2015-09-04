@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            android:text="取消"
+            android:textColor="#ffffff"
+            android:textSize="20sp" 
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="新建收货地址"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" >
+	
+	    <com.zhonghaodi.customui.MyEditText
+	        android:id="@+id/name_edit"
+	        style="@style/my_edittext_style"
+	        android:layout_width="match_parent"
+	        android:layout_height="45dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginTop="10dp"
+	        android:hint="请收货人姓名"
+	        android:maxLength="20"
+	        android:textColor="#333333" />
+	
+	    <com.zhonghaodi.customui.MyEditText
+	        android:id="@+id/phone_edit"
+	        style="@style/my_edittext_style"
+	        android:layout_width="match_parent"
+	        android:layout_height="45dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:hint="请输入收货人的电话"
+	        android:inputType="numberSigned"
+        	android:maxLength="11"
+	        android:textColor="#333333" />
+	    
+	    <com.zhonghaodi.customui.MyEditText
+	        android:id="@+id/post_edit"
+	        style="@style/my_edittext_style"
+	        android:layout_width="match_parent"
+	        android:layout_height="45dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:hint="请输入收货人的邮编"
+	        android:inputType="numberSigned"
+        	android:maxLength="6"
+	        android:textColor="#333333" />
+	    <com.zhonghaodi.customui.MyEditText
+	        android:id="@+id/address_edit"
+	        style="@style/my_edittext_style"
+	        android:layout_width="match_parent"
+	        android:layout_height="45dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:hint="请输入收货人的地址"
+	        android:textColor="#333333" />
+	
+	    <com.zhonghaodi.customui.MyTextButton
+	        android:id="@+id/ok_button"
+	        android:layout_width="match_parent"
+	        android:layout_height="40dp"
+	        android:layout_margin="10dp"
+	        android:background="@drawable/button_shape"
+	        android:text="确定"
+	        android:textColor="#ffffff"
+	        android:textSize="18sp" />
+	
+	</LinearLayout>
+
+</LinearLayout>

@@ -39,6 +39,13 @@
          android:orientation="vertical"
          android:background="#FFFFFF"
          >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:text="扫一扫二维码下载种好地APP"
+            android:textColor="#808080"
+            android:textSize="14sp" />
          <ImageView
              android:id="@+id/down_image"
              android:layout_width="300dp"

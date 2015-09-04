@@ -349,6 +349,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				dialog.dismiss();
+				allQuestions.clear();
+				adapter.notifyDataSetChanged();
 			}
 		});
         titleView.setText("提示");
@@ -670,6 +672,11 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 							}.getType());
 					if (msg.what == 0) {
 						fragment.allQuestions.clear();
+					}
+					if(bAll==1){
+						if(questions==null || questions.size()==0){
+							GFToast.show("您还没有提问过。");
+						}
 					}
 					for (Question question : questions) {
 						fragment.allQuestions.add(question);

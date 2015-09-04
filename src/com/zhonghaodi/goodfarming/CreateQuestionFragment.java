@@ -2,13 +2,18 @@ package com.zhonghaodi.goodfarming;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.MyEditText;
+import com.zhonghaodi.goodfarming.ContactsActivity.ShdzHolder;
+import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.networking.ImageOptions;
 
+import android.R.integer;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -27,10 +32,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 public class CreateQuestionFragment extends Fragment implements OnClickListener {
 	private View view;
@@ -45,11 +54,10 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 	private View popView;
 	private File currentfile;
 	private GFImageButton currentGFimageButton;
-	private RadioGroup gxGroup;
-	private RadioGroup fbGroup;
-	private RadioGroup nsGroup;
-	private RadioGroup bhGroup;
-	private RadioGroup fzGroup;
+	private Spinner spFenbu;
+	private Spinner spQingkuang;
+	private Spinner spSudu;
+	private Spinner spGenxi;
 
 	public File getCurrentfile() {
 		return currentfile;
@@ -80,11 +88,11 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 		jubuBtn.setTitle("局部照");
 		zhengmianBtn.setTitle("正面照");
 		fanmianBtn.setTitle("反面照");
-		gxGroup = (RadioGroup)view.findViewById(R.id.radioGenxi);
-		fbGroup = (RadioGroup)view.findViewById(R.id.radioFenbu);
-		nsGroup = (RadioGroup)view.findViewById(R.id.radioNongshi);
-		bhGroup = (RadioGroup)view.findViewById(R.id.radioBhfb);
-		fzGroup = (RadioGroup)view.findViewById(R.id.radioFzsd);
+		spFenbu = (Spinner)view.findViewById(R.id.spFenbu);
+		spQingkuang = (Spinner)view.findViewById(R.id.spQingkuang);
+		spSudu = (Spinner)view.findViewById(R.id.spSudu);
+		spGenxi = (Spinner)view.findViewById(R.id.spGenxi);
+//		spNongshi = (Spinner)view.findViewById(R.id.spNongshi);
 		jinzhaoBtn.setOnClickListener(this);
 		yuanzhaoBtn.setOnClickListener(this);
 		zhengtiBtn.setOnClickListener(this);
@@ -223,36 +231,54 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 	public String getBhzdContent(){
 		String content = "";
 		
-		if(fbGroup.getCheckedRadioButtonId()!=R.id.rd_fbbqc){
-			RadioButton radioButton = (RadioButton)fbGroup.findViewById(fbGroup.getCheckedRadioButtonId());
-			content += "病害分布规律："+radioButton.getText()+"\n";
+		if(spFenbu.getSelectedItemPosition()!=0
+				&& spQingkuang.getSelectedItemPosition()!=0){
+			content += "\n病害呈"+spFenbu.getSelectedItem().toString()+"、"+
+				spQingkuang.getSelectedItem().toString()+"分布";
+		}
+		else if(spFenbu.getSelectedItemPosition()!=0
+				&& spQingkuang.getSelectedItemPosition()==0){
+			content += "\n病害呈"+spFenbu.getSelectedItem().toString()+"分布";
+		}
+		else if(spFenbu.getSelectedItemPosition()==0
+				&& spQingkuang.getSelectedItemPosition()!=0){
+			content += "\n病害呈"+spQingkuang.getSelectedItem().toString()+"分布";
 		}
 		
-		if(bhGroup.getCheckedRadioButtonId()!=R.id.rd_bhfbbqc){
-			RadioButton radioButton = (RadioButton)bhGroup.findViewById(bhGroup.getCheckedRadioButtonId());
-			content += "病害发生情况："+radioButton.getText()+"\n";
+		if(spSudu.getSelectedItemPosition()!=0){
+			String ss = "";
+			if(content.length()>0){
+				ss="，";
+			}
+			else{
+				ss="\n病害";
+			}
+			if(spSudu.getSelectedItemPosition()==3){
+				content += ss+spSudu.getSelectedItem().toString();
+			}
+			else{
+				content += ss+"发展速度"+spSudu.getSelectedItem().toString();
+			}
+			
 		}
 		
-		if(fzGroup.getCheckedRadioButtonId()!=R.id.rd_fzsdbqc){
-			RadioButton radioButton = (RadioButton)fzGroup.findViewById(fzGroup.getCheckedRadioButtonId());
-			content += "病害发展速度："+radioButton.getText()+"\n";
-		}
-		
-		if(gxGroup.getCheckedRadioButtonId()!=R.id.rd_gxbqc){
-			RadioButton radioButton = (RadioButton)gxGroup.findViewById(gxGroup.getCheckedRadioButtonId());
-			content += "植株根系情况："+radioButton.getText()+"\n";
+		if(spGenxi.getSelectedItemPosition()!=0){
+			String ss = "";
+			if(content.length()>0){
+				ss="，";
+			}
+			else{
+				ss="\n";
+			}
+			content += ss+"植株"+spGenxi.getSelectedItem().toString();
 		}	
-		
-		if(nsGroup.getCheckedRadioButtonId()!=R.id.rd_qtcz){
-			RadioButton radioButton = (RadioButton)nsGroup.findViewById(nsGroup.getCheckedRadioButtonId());
-			content += "农事操作情况："+radioButton.getText()+"\n";
-		}
 		
 		if(!content.isEmpty())
 		{
-			content = "\n"+content;
+			content +="。";
 		}
 		
 		return content;
 	}
+	
 }

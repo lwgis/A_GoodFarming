@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="fenbuarr">
+	    <item>不清楚</item>  
+	    <item>规律性</item>  
+	    <item>非规律性</item>  
+    </string-array>
+    <string-array name="qingkuangarr">
+	    <item>不清楚</item>  
+	    <item>零星少量</item>  
+	    <item>大面积</item>  
+    </string-array>
+    <string-array name="suduarr">
+	    <item>不清楚</item>  
+	    <item>迅速</item>  
+	    <item>缓慢</item>  
+	    <item>刚发生</item> 
+    </string-array>
+    <string-array name="genxiarr">
+	    <item>不清楚</item>  
+	    <item>根系良好</item>  
+	    <item>根系有损</item>  
+    </string-array>
+    <string-array name="nongshiarr">
+	    <item>其它操作</item>  
+	    <item>浇水</item>  
+	    <item>打药</item>  
+    </string-array>
+</resources>

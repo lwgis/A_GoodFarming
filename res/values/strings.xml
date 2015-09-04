@@ -2,6 +2,8 @@
 
     <string name="app_name">种好地</string>
     <string name="hello_world">Hello world!</string>
+    <string name="nyscate">农艺师分类</string>
+    <string name="selectqy">选择省份</string>
     <string name="action_settings">Settings</string>
     <string name="text_ack_msg">read</string>
     <string name="text_delivered_msg">delivered</string>

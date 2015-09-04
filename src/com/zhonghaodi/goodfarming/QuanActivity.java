@@ -28,12 +28,14 @@ import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.OnSizeChangedListener;
 import com.zhonghaodi.model.Quan;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.Response;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -41,8 +43,11 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -126,6 +131,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		adapter = new QuanAdapter();
 		pullToRefreshListView.getRefreshableView()
 				.setAdapter(adapter);
+		registerForContextMenu(pullToRefreshListView.getRefreshableView());
 		//注册一个广播接收器，启动餐桌抖动动画  
         receiver = new BroadcastReceiver() {
 	    	@Override
@@ -161,6 +167,61 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		unregisterReceiver(receiver);
 	}
 
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		String uid = GFUserDictionary.getUserId();
+		if(uid!=null){		
+			Quan quan = allQuans.get(info.position-1);
+			if(quan.getWriter().getId().equals(uid)){
+				menu.add(0, 1, 1, "删除");
+			} 
+		}
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
+                .getMenuInfo();
+		selectQuan = allQuans.get(info.position-1);
+		final Dialog dialog = new Dialog(this, R.style.MyDialog);
+        //设置它的ContentView
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog, null);
+        dialog.setContentView(layout);
+        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+        okBtn.setText("确定");
+        okBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();			
+				delete(selectQuan.getId());
+			}
+		});
+        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+        cancelButton.setText("取消");
+        cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+        titleView.setText("提示");
+        contentView.setText("确定要删除选中的文章吗？");
+        dialog.show();
+		return super.onContextItemSelected(item);
+	}
+
 	private void loadNewDate() {
 		new Thread(new Runnable() {
 
@@ -182,6 +243,20 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 				String jsonString = HttpUtil.getQuansString(uid, qid);
 				Message msg = handler.obtainMessage();
 				msg.what = 2;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
+	private void delete(final int qid){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String uid = GFUserDictionary.getUserId();
+				String jsonString = HttpUtil.deleteQuan(uid,qid);
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 			}
@@ -799,7 +874,16 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			}
 			quanActivity.pullToRefreshListView.onRefreshComplete();
 			break;
-
+		case 3:
+			String strerr = msg.obj.toString();
+			if(!strerr.isEmpty()){
+				GFToast.show(strerr);
+			}
+			else{
+				allQuans.remove(selectQuan);
+				adapter.notifyDataSetChanged();
+			}
+			break;
 		default:
 			break;
 		}

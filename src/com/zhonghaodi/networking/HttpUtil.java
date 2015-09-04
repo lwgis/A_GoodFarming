@@ -74,9 +74,9 @@ import com.zhonghaodi.model.User;
  *
  */
 public class HttpUtil {
-	public static final String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-	public static final String ImageUrl = "http://121.40.62.120/appimage8/";
-//	public static final String RootURL = "http://192.168.0.120:8083/dfyy/rest/";
+	public static String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage/";
+//	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
 //	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
 	public static String executeHttpGet(String urlString) {
@@ -778,17 +778,29 @@ public class HttpUtil {
 		return result;
 	}
 	
-	public static String getNyss(String uid){
+	public static String getNyss(String uid,int position){
 		
-		String urlString = RootURL + "users/nys?exid="+uid;
+		String urlString ="";
+		if(position>0){
+			urlString = RootURL + "users/nysm?exid="+uid+"&position="+position;
+		}
+		else{
+			urlString = RootURL + "users/nysm?exid="+uid;
+		}
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
 	}
 	
-	public static String getMoreNyss(String uid,int position){
+	public static String getZj(String uid,int position){
 		
-		String urlString = RootURL + "users/nys?exid="+uid+"&position="+position;
+		String urlString ="";
+		if(position>0){
+			urlString = RootURL + "users/zjm?exid="+uid+"&position="+position;
+		}
+		else{
+			urlString = RootURL + "users/zjm?exid="+uid;
+		}
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
@@ -872,14 +884,26 @@ public class HttpUtil {
 		
 	}
 	
+	public static String getAreas(){		
+		String urlString = RootURL + "areas";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;	
+	}
+	
+	public static String getCates(){		
+		String urlString = RootURL + "nyscate";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;	
+	}
+	
 	public static String getQuansString(String uid) {
-		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid + "/quans");
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid + "/quans/timeline");
 		return jsonString;
 	}
 
 	public static String getQuansString(String uid,int qid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid
-				+ "/quans?fromid=" + qid);
+				+ "/quans/timeline?fromid=" + qid);
 		return jsonString;
 	}
 	
@@ -894,7 +918,8 @@ public class HttpUtil {
 		String jsonString = JsonUtil.convertObjectToJson(comment,
 				"yyyy-MM-dd HH:mm:ss", new String[] {
 						Comment.class.toString(), NetImage.class.toString() });
-		HttpUtil.executeHttpPost(RootURL + "users/"+uid+"/quans/"+qid+"/comment", jsonString);
+		String ssString = HttpUtil.executeHttpPost(RootURL + "users/"+uid+"/quans/"+qid+"/comment", jsonString);
+		String kkString = "dd";
 	}
 	
 	public static Bitmap getPayQRCode(String uid,int currency) {
@@ -992,6 +1017,12 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
+	public static String getRecipes(double x,double y,int position){
+		String url = RootURL + "users/around/recipes?x="+x+"&y="+y+"&position="+position;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
 	public static String getMoreSeconds(double x,double y,int fromid){
 		String url = RootURL + "seconds?x="+x+"&y="+y+"&fromid="+fromid;
 		String jsonString = HttpUtil.executeHttpGet(url);
@@ -1055,6 +1086,12 @@ public class HttpUtil {
 	
 	public static String deleteResponse(int qid,int rid){
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String deleteQuan(String uid,int qid){
+		String urlString = RootURL +"users/"+uid+ "/quans/"+qid;
 		String result =HttpUtil.executeHttpDelete(urlString);
 		return result;
 	}
@@ -1181,6 +1218,232 @@ public class HttpUtil {
 		}
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
+	}
+	
+	/**
+	 * 获取积分商品
+	 * @param position
+	 * @return
+	 */
+	public static String getCommodities(int position){
+		
+		String urlString = RootURL + "commodities?position="+position;
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	/**
+	 * 获取收货地址
+	 * @param uid
+	 * @return
+	 */
+	public static String getContacts(String uid){
+		
+		String urlString = RootURL + "contacts/"+uid;
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	/**
+	 * 添加收货地址
+	 * @param newpass
+	 * @param uid
+	 * @return
+	 */
+	public static String addContact(final String uid,
+			final String name,
+			final String phone,
+			final String post,
+			final String address) {
+		String jsonString = null;
+		String urlString = RootURL + "contacts";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return name;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "name";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair);
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return phone;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "phone";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		NameValuePair addressValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return address;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "address";
+			}
+		};
+		
+		nameValuePairs.add(addressValuePair);
+		
+		NameValuePair postValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return post;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "postnumber";
+			}
+		};
+		
+		nameValuePairs.add(postValuePair);
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 积分换商品
+	 * @param uid
+	 * @param contact
+	 * @return
+	 */
+	public static String exChangeCommodity(final String uid,
+			final int contact,
+			final int commodityid) {
+		String jsonString = null;
+		String urlString = RootURL + "commodities/"+commodityid+"/exchange";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(contact);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "contact";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair);
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return "1";
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "count";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 获取用户的积分订单
+	 * @param uid
+	 * @return
+	 */
+	public static String getPointOrders(String uid){
+		String url = RootURL + "pointorders?uid="+uid;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	/**
+	 * 结束订单
+	 */
+	public static String endPointOrder(int poid) throws Throwable {
+		
+		String resultString = HttpUtil.executeHttpPut(RootURL + "pointorders/"+poid+"/end",
+				"");
+		return resultString;
 	}
 	
 	/**

@@ -6,14 +6,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.customui.SettingPopupwindow;
+import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.AppVersion;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Recipe;
+import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
@@ -24,6 +31,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -31,10 +39,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -61,12 +71,69 @@ public class WelcomeActivity extends Activity implements HandMessage {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if(bUpdate){
-			tryUpdate();
+		 new Handler().postDelayed(new Runnable(){  
+		     public void run() {  
+		     //execute the task  
+		    	 popupwindow();
+		     }  
+		  }, 1000); 
+//		if(bUpdate){
+//			tryUpdate();
+//		}
+//		else{
+//			sleep();
+//		}
+	}
+	
+	public void popupwindow(){
+		final SettingPopupwindow settingPopupwindow = new SettingPopupwindow(this);
+		OnClickListener clickListener = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				SharedPreferences sharedPre = WelcomeActivity.this.getSharedPreferences("test",
+						Context.MODE_PRIVATE);
+				String surl = settingPopupwindow.serviceEditText.getText().toString();
+				String iurl = settingPopupwindow.imageEditText.getText().toString();
+				if(!surl.isEmpty()){
+					HttpUtil.RootURL = surl;
+				}
+				if(!iurl.isEmpty()){
+					HttpUtil.ImageUrl = iurl;
+				}
+				// 获取Editor对象
+				Editor editor = sharedPre.edit();
+				// 设置参数
+				editor.putString("serviceurl", HttpUtil.RootURL);
+				editor.putString("imageurl", HttpUtil.ImageUrl);
+				// 提交
+				editor.commit();
+				settingPopupwindow.dismiss();
+				if(bUpdate){
+					tryUpdate();
+				}
+				else{
+					sleep();
+				}
+			}
+		};
+		settingPopupwindow.setlistener(clickListener);
+		SharedPreferences sharedPre = WelcomeActivity.this.getSharedPreferences("test",
+				Context.MODE_PRIVATE);
+		String serviceurl = sharedPre.getString("serviceurl", "");
+		if(serviceurl.isEmpty()){
+			serviceurl = HttpUtil.RootURL;
 		}
-		else{
-			sleep();
+		String imageurl = sharedPre.getString("imageurl", "");
+		if(imageurl.isEmpty())
+		{
+			imageurl = HttpUtil.ImageUrl;
 		}
+		settingPopupwindow.serviceEditText.setText(serviceurl);
+		settingPopupwindow.imageEditText.setText(imageurl);
+		settingPopupwindow.showAtLocation(findViewById(R.id.welcome), 
+				Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 30);
 	}
 	
 	private void Init(){
@@ -286,7 +353,6 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		
 		case 0:
 			if(msg.obj==null){
-				GFToast.show("版本请求错误");
 				tomain();
 				return;
 			}

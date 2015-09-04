@@ -218,10 +218,31 @@ public class NyqActivity extends Activity implements HandMessage {
 			} 
 		}
 		else{
-			
+			sendQuan();
 		}
 		
 		this.finish();
+	}
+	
+	private void sendQuan(){
+		final Quan quan = new Quan();
+		quan.setContent(nyqEditText.getText().toString());
+		quan.setAttachments(imgs);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					HttpUtil.sendQuan(GFUserDictionary.getUserId(),quan);
+					Message msg = handler.obtainMessage();
+					msg.what = TypeQuan;
+					msg.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 	
 	@Override
@@ -313,24 +334,7 @@ public class NyqActivity extends Activity implements HandMessage {
 		case TypeImage:
 			imageCount++;
 			if(imageCount==projectImages.size()){
-				final Quan quan = new Quan();
-				quan.setContent(activity.nyqEditText.getText().toString());
-				quan.setAttachments(activity.imgs);
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						try {
-							HttpUtil.sendQuan(GFUserDictionary.getUserId(),quan);
-							Message msg = activity.handler.obtainMessage();
-							msg.what = TypeQuan;
-							msg.sendToTarget();
-						} catch (Throwable e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}).start();
+				sendQuan();
 			}	
 			break;		
 		case TypeQuan:

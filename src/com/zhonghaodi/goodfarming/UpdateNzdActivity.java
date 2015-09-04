@@ -359,6 +359,8 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 			marker=(Marker)map.addOverlay(overlayOptions);
 			x=location.getLongitude();
 			y=location.getLatitude();
+//			x=5e-324;
+//			y=5e-324;
 			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
 			map.animateMapStatus(u);
 			mLocClient.stop();
@@ -378,7 +380,7 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 			activity.sendBtn.setEnabled(true);
 			break;
 		case TypeImage:
-			if(x<0||x>180||y<0||y>90){
+			if(x<73||x>136||y<3||y>54){
 				GFToast.show("定位错误。申请不能提交");
 				return;
 			}

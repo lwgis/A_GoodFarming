@@ -157,6 +157,8 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 				return;
 			x=location.getLongitude();
 			y=location.getLatitude();
+//			x=118.7139351318554;
+//			y=36.80689424778121;
 			if(progressDialog!=null){
 				progressDialog.dismiss();
 			}

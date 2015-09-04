@@ -2,17 +2,28 @@ package com.zhonghaodi.goodfarming;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zhonghaodi.adapter.AreaAdapter;
+import com.zhonghaodi.adapter.NysCateAdapter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
+import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.customui.GFImageButton.ImageChangedListener;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.customui.SpinnerPopupwindow;
+import com.zhonghaodi.model.Agrotechnical;
+import com.zhonghaodi.model.Area;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Level;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.model.Nyscate;
 import com.zhonghaodi.model.UpdateCrop;
 import com.zhonghaodi.model.UpdateUser;
 import com.zhonghaodi.model.User;
@@ -31,12 +42,14 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,11 +65,15 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 	private TextView selectCropTv;
 	private PopupWindow popupWindow;
 	private View popView;
+	private TextView cateTextView;
+	private TextView areaTextView;
 	private File currentfile;
 	private MyTextButton sendBtn;
 	private GFImageButton currentGFimageButton;
 	private ArrayList<String> images;
 	private GFHandler<UpdateNysActivity> handler=new GFHandler<UpdateNysActivity>(this);
+	private List<Object> areas = new ArrayList<Object>();
+	private List<Object> cates = new ArrayList<Object>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -166,6 +183,11 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 				popupWindow.dismiss();
 			}
 		});
+		cateTextView = (TextView)findViewById(R.id.nyscate_select);
+		cateTextView.setOnClickListener(this);
+		areaTextView = (TextView)findViewById(R.id.area_select);
+		areaTextView.setOnClickListener(this);
+		loadData();
 	}
 
 	@Override
@@ -213,6 +235,26 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 			checkUi();
 		}
 	}
+	
+	private void loadData(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getAreas();
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
+				msg.obj = jsonString;
+				msg.sendToTarget();	
+				
+				String jsonString1 = HttpUtil.getCates();
+				Message msg1 = handler.obtainMessage();
+				msg1.what = 4;
+				msg1.obj = jsonString1;
+				msg1.sendToTarget();
+			}
+		}).start();
+	}
 
 	private void checkUi() {
 		if (descriptionEv.getText().length() > 0 && zhengmianBtn.isHasImage()
@@ -259,6 +301,20 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 
 	@Override
 	public void onClick(View v) {
+		if(v.getId()==R.id.nyscate_select){
+			SpinnerPopupwindow spinnerPopupwindow = new SpinnerPopupwindow(this, cateTextView.getText().toString(), 
+					cates, cateTextView,"农艺师类别");
+			spinnerPopupwindow.showAtLocation(findViewById(R.id.main), 
+					Gravity.CENTER, 0, 0);
+			return;
+		}
+		if(v.getId() == R.id.area_select){
+			SpinnerPopupwindow spinnerPopupwindow = new SpinnerPopupwindow(this, areaTextView.getText().toString(), 
+					areas, areaTextView,"省份");
+			spinnerPopupwindow.showAtLocation(findViewById(R.id.main), 
+					Gravity.CENTER, 0, 0);
+			return;
+		}
 		currentGFimageButton = (GFImageButton) v;
 		if (popupWindow.isShowing()) {
 			popupWindow.dismiss();
@@ -286,6 +342,10 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 			Level level = new Level();
 			level.setId(2);
 			updateUser.setLevel(level);
+			Area area1 = (Area)areaTextView.getTag();
+			updateUser.setArea(area1);
+			Nyscate cate1 = (Nyscate)cateTextView.getTag();
+			updateUser.setCategory(cate1);
 			ArrayList<NetImage> arrayList=new ArrayList<NetImage>();
 			for (String imageNameString : images) {
 				NetImage netImage=new NetImage();
@@ -317,7 +377,44 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 			break;
 		case TypeUpdate:
 			Toast.makeText(activity, "成功提交申请", Toast.LENGTH_SHORT).show();
-//			activity.finish();
+			break;
+		case 3:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Area> as = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Area>>() {
+						}.getType());
+				areas.clear();
+				if(as!=null && as.size()>0){
+					areaTextView.setText(as.get(0).toString());
+					areaTextView.setTag(as.get(0));
+					for (Area area: as) {
+						areas.add(area);
+					}
+				}
+				
+			} else {
+				GFToast.show("获取省份数据失败!");
+			}
+			break;
+		case 4:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Nyscate> cs = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Nyscate>>() {
+						}.getType());
+				cates.clear();
+				if(cs!=null&&cs.size()>0){
+					cateTextView.setText(cs.get(0).toString());
+					cateTextView.setTag(cs.get(0));
+					for (Nyscate cate: cs) {
+						cates.add(cate);
+					}
+				}
+				
+			} else {
+				GFToast.show("获取农艺师类别失败!");
+			}
 			break;
 		default:
 			break;

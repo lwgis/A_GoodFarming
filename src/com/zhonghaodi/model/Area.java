@@ -49,4 +49,10 @@ public class Area implements Serializable {
 		this.text = text;
 	}
 
+	@Override
+	public String toString() {
+		return text;
+	}
+
+	
 }

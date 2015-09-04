@@ -20,6 +20,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
+import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Function;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -38,6 +39,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +51,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MeFragment extends Fragment implements HandMessage,OnClickListener{
-	private static String WX_APP_ID="wx8fd908378b8ab3e5";
-	IWXAPI wxApi;
+	
 	private User user;
 	private ArrayList<Function> functions;
 	private PullToRefreshListView pullToRefreshList;
@@ -71,6 +72,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		View view = inflater.inflate(R.layout.fragment_me, container, false);
 		pullToRefreshList = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
+		
 		adapter = new MeAdapter();
 		functions = new ArrayList<Function>();
 		pullToRefreshList.setAdapter(adapter);
@@ -90,25 +92,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					return;
 				}
 				Function function = functions.get(position-2);
-				if (function.getName().equals("分享到微信朋友圈")) {
-					if(!wxApi.isWXAppInstalled()){
-						GFToast.show("您还未安装微信客户端");
-						return;
-					}
-					WXWebpageObject webpage = new WXWebpageObject();
-					webpage.webpageUrl = "http://a.app.qq.com/o/simple.jsp?pkgname=com.zhonghaodi.goodfarming";
-					WXMediaMessage msg = new WXMediaMessage(webpage);
-					msg.title = "种好地APP:让种地不再难";
-					msg.description = "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。";
-					Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.app108);
-					msg.thumbData = MeFragment.bmpToByteArray(thumb, true);
-					
-					SendMessageToWX.Req req = new SendMessageToWX.Req();
-					req.transaction = buildTransaction("webpage");
-					req.message = msg;
-					req.scene=SendMessageToWX.Req.WXSceneTimeline;
-					wxApi.sendReq(req);
-					
+				if (function.getName().equals("APP分享")) {
+					MainActivity mainActivity = (MainActivity)getActivity();
+					mainActivity.popwindow();
 					return;
 				}
 				Intent it=new Intent();
@@ -141,9 +127,6 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				
 			}
 		});
-		//微信
-		wxApi=WXAPIFactory.createWXAPI(getActivity(),WX_APP_ID, true);
-		wxApi.registerApp(WX_APP_ID);
 		return view;
 	}
 
@@ -263,12 +246,17 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		}
 		fragment.user = (User) GsonUtil
 				.fromJson(msg.obj.toString(), User.class);
+		GFUserDictionary.saveLoginInfo(user, GFUserDictionary.getPassword(), getActivity());
 		Function cartFunction = new Function("我的订单", ShoppingCartActivity.class,R.drawable.store);
 		fragment.functions.add(cartFunction);
 		Function secondFunction = new Function("秒杀订单", MiaoOrdersActivity.class,R.drawable.second);
 		fragment.functions.add(secondFunction);
+		Function pointOrderFunction = new Function("积分订单", PointOrdersActivity.class,R.drawable.scorestore);
+		fragment.functions.add(pointOrderFunction);
 		Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
 		fragment.functions.add(cropsFunction);
+		Function contactsFunction = new Function("收货地址", ContactsActivity.class,R.drawable.address);
+		fragment.functions.add(contactsFunction);
 		Function exchangeFunction = new Function("积分兑换", ExchangeActivity.class,R.drawable.exchange);
 		fragment.functions.add(exchangeFunction);
 		Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
@@ -283,7 +271,10 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			fragment.functions.add(nysfuFunction);
 			Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzdupdate);
 			fragment.functions.add(nzdFunction);
-			break;			
+			break;	
+		case 2:
+			Function zjFunction = new Function("升级为专家", UpdateZjActivity.class, R.drawable.zjupdate);
+			fragment.functions.add(zjFunction);
 		default:
 			break;
 		}
@@ -291,16 +282,16 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		fragment.functions.add(minfoFunction);
 		Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
 		fragment.functions.add(modifyFunction);				
-		Function shareFunction = new Function("分享到微信朋友圈",null,R.drawable.weixin);
+		Function shareFunction = new Function("APP分享",null,R.drawable.weixin);
 		fragment.functions.add(shareFunction);
-		Function downFunction = new Function("APP下载", AppdownActivity.class,R.drawable.appdownload);
+		Function downFunction = new Function("推荐农友下载", AppdownActivity.class,R.drawable.appdownload);
 		fragment.functions.add(downFunction);
 		fragment.pullToRefreshList.onRefreshComplete();
 		adapter.notifyDataSetChanged();
 	}
-	private String buildTransaction(final String type) {
-		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
-	}
+//	private String buildTransaction(final String type) {
+//		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+//	}
 	
 	public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();

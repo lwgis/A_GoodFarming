@@ -27,8 +27,11 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
+import android.R.bool;
+import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -54,6 +57,9 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	private String uid;
 	private List<String> fuids;
 	private View clickview;
+	private TextView nysTextView;
+	private TextView zjTextView;
+	private int status = 0;
 	
 
 	@Override
@@ -62,6 +68,10 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nyss);
 		gridView = (PullToRefreshListView)findViewById(R.id.pull_refresh_list);
+		nysTextView = (TextView)findViewById(R.id.nys_text);
+		nysTextView.setOnClickListener(this);
+		zjTextView = (TextView)findViewById(R.id.zj_text);
+		zjTextView.setOnClickListener(this);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -104,7 +114,12 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 						if (nyss.size() == 0) {
 							return;
 						}
-						loadMoreNyss(nyss.size());
+						if(status==0){
+							loadNyss(nyss.size());
+						}
+						else{
+							loadZj(nyss.size());
+						}
 					}
 
 				});
@@ -112,6 +127,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		fuids = new ArrayList<String>();
 		adapter = new NysAdapter();
 		gridView.getRefreshableView().setAdapter(adapter);
+		selectTextView(nysTextView);
 		
 	}
 	
@@ -121,22 +137,40 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		super.onResume();
 		uid = GFUserDictionary.getUserId();
 		
-		loadNyss();
+		if(status==0){
+			loadNyss(0);
+		}
+		else{
+			loadZj(0);
+		}
+	}
+	
+	public void selectTextView(View view){
+		nysTextView.setTextColor(Color.rgb(128, 128, 128));
+		nysTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		zjTextView.setTextColor(Color.rgb(128, 128, 128));
+		zjTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		
+		TextView selectTextView = (TextView)view;
+		selectTextView.setTextColor(Color.rgb(56, 190, 153));
 	}
 	
 	/**
 	 * 获取农艺师
 	 */
-	private void loadNyss(){
+	private void loadNyss(final int position){
 		
 		
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getNyss(uid);
+				String jsonString = HttpUtil.getNyss(uid,position);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
+				if(position>0){
+					msg.what=3;
+				}
 				msg.obj = jsonString;
 				msg.sendToTarget();
 				
@@ -151,23 +185,34 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	}
 	
 	/**
-	 * 获取更多农艺师
+	 * 获取专家
 	 */
-	private void loadMoreNyss(final int position){
+	private void loadZj(final int position){
 		
 		
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getMoreNyss(uid,position);
+				String jsonString = HttpUtil.getZj(uid,position);
 				Message msg = handler.obtainMessage();
-				msg.what = 3;
+				msg.what = 0;
+				if(position>0){
+					msg.what=3;
+				}
 				msg.obj = jsonString;
 				msg.sendToTarget();
+				
+				String jsString = HttpUtil.getFollowids(uid);
+				Message msg1 = handler.obtainMessage();
+				msg1.what = 1;
+				msg1.obj = jsString;
+				msg1.sendToTarget();
 			}
 		}).start();
 	}
+	
+	
 	
 	private void follow(final Nys nys) {
 		new Thread(new Runnable() {
@@ -273,6 +318,17 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 			clickview = v;
 			follow(n);
 			clickview.setEnabled(false);
+			break;
+			
+		case R.id.nys_text:
+			selectTextView(v);
+			status=0;
+			loadNyss(0);
+			break;
+		case R.id.zj_text:
+			selectTextView(v);
+			status=1;
+			loadZj(0);
 			break;
 
 		default:

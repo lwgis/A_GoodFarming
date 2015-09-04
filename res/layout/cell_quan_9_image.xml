@@ -11,6 +11,7 @@
           android:layout_width="50dip"
           android:layout_height="50dip"
           android:scaleType="centerCrop"
+          android:focusable="false"
           />
       <LinearLayout 
           android:layout_width="match_parent"
@@ -26,6 +27,7 @@
             android:textColor="#455683"
             android:textSize="14sp"
             android:text="linping"
+            android:focusable="false"
             />
        <TextView 
            android:id="@+id/content_txt"
@@ -35,6 +37,7 @@
            android:textColor="#484848"
            android:textSize="14sp"
            android:text="看看漂亮不？"
+           android:focusable="false"
            />
        <LinearLayout
             android:layout_width="320dp"
@@ -49,7 +52,9 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/placeholder" />
+                android:src="@drawable/placeholder" 
+                android:focusable="false"
+                />
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image2"
@@ -58,14 +63,18 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/placeholder" />
+                android:src="@drawable/placeholder" 
+                android:focusable="false"
+                />
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image3"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/placeholder" />
+                android:src="@drawable/placeholder" 
+                android:focusable="false"
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="320dp"
@@ -80,7 +89,9 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/placeholder" />
+                android:src="@drawable/placeholder" 
+                android:focusable="false"
+                />
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image5"
@@ -89,14 +100,18 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/placeholder" />
+                android:src="@drawable/placeholder" 
+                android:focusable="false"
+                />
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image6"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/placeholder" />
+                android:src="@drawable/placeholder" 
+                android:focusable="false"
+                />
         </LinearLayout>
         <LinearLayout
            android:layout_width="320dp"
@@ -111,7 +126,9 @@
                android:layout_width="80dp"
                android:layout_height="80dp"
                android:scaleType="centerCrop"
-               android:src="@drawable/placeholder" />
+               android:src="@drawable/placeholder" 
+               android:focusable="false"
+               />
 
            <com.zhonghaodi.customui.GFImageView
                android:id="@+id/image8"
@@ -120,14 +137,18 @@
                android:layout_marginLeft="10dp"
                android:layout_marginRight="10dp"
                android:scaleType="centerCrop"
-               android:src="@drawable/placeholder" />
+               android:src="@drawable/placeholder" 
+               android:focusable="false"
+               />
 
            <com.zhonghaodi.customui.GFImageView
                android:id="@+id/image9"
                android:layout_width="80dp"
                android:layout_height="80dp"
                android:scaleType="centerCrop"
-               android:src="@drawable/placeholder" />
+               android:src="@drawable/placeholder" 
+               android:focusable="false"
+               />
        </LinearLayout>
        
        <RelativeLayout 
@@ -144,6 +165,7 @@
             android:textColor="#a7a7a7"
             android:textSize="12sp"
             android:text="3小时"
+            android:focusable="false"
             />
            <ImageView 
             android:id="@+id/pinglun_img"
@@ -179,6 +201,7 @@
            android:text="看看漂亮不？"
            android:background="@drawable/vl"
            android:visibility="gone"
+           android:focusable="false"
            />
        
       </LinearLayout>

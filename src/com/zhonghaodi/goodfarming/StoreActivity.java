@@ -3,6 +3,8 @@ package com.zhonghaodi.goodfarming;
 import java.util.ArrayList;
 import java.util.List;
 
+import u.aly.bf;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -109,6 +111,13 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 				msg.what = 0;
 				msg.obj = jsonString;
 				msg.sendToTarget();
+				
+				String myid = GFUserDictionary.getUserId();
+				String jsString = HttpUtil.getFollowids(myid);
+				Message msg1 = handler.obtainMessage();
+				msg1.what = 3;
+				msg1.obj = jsString;
+				msg1.sendToTarget();
 				
 			}
 		}).start();
@@ -401,6 +410,31 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 						Toast.LENGTH_SHORT).show();
 			}
 			break; 
+			
+		case 3:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<String> fids = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<String>>() {
+						}.getType());
+				if(fids!=null&&fids.size()>0){
+					if(fids.contains(id)){
+						bfollow = true;
+					}
+					else{
+						bfollow = false;
+					}
+				}
+				else{
+					bfollow = false;
+				}
+				adapter.notifyDataSetChanged();
+				
+			} else {
+				Toast.makeText(this, "获取关注列表失败!",
+						Toast.LENGTH_SHORT).show();
+			}
+			break;
 
 		default:
 			break;

@@ -6,5 +6,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/libammsdk.jar"/>
+	<classpathentry kind="lib" path="libs/mta-sdk-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/open_sdk_r5276.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

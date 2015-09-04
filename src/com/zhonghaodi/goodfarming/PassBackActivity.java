@@ -80,8 +80,8 @@ public class PassBackActivity extends Activity implements HandMessage,OnClickLis
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		String bstr = msg.obj.toString();
 		try {
+			String bstr = msg.obj.toString();
 			int code = Integer.parseInt(bstr);
 			GFToast.show("操作成功，新密码将以短信的形式发送");
 			this.finish();

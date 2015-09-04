@@ -30,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 	private ListView pullToRefreshListView;
 	private List<SecondOrder> secondOrders;
 	private SecondOrderAdapter adapter;
+	private LinearLayout emptyLayout;
 	private GFHandler<MiaoOrdersActivity> handler = new GFHandler<MiaoOrdersActivity>(this);
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 		cancelBtn.setOnClickListener(this);
 		pullToRefreshListView = (ListView) findViewById(R.id.pull_refresh_list);		
 		pullToRefreshListView.setOnItemClickListener(this);		
+		emptyLayout = (LinearLayout)findViewById(R.id.empty_layout);
 		secondOrders = new ArrayList<SecondOrder>();
 		adapter = new SecondOrderAdapter();
 		pullToRefreshListView.setAdapter(adapter);	
@@ -182,6 +185,12 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 				secondOrders.add(secondOrder);
 			}
 			adapter.notifyDataSetChanged();
+			if(secondOrders.size()>0){
+				emptyLayout.setVisibility(View.GONE);
+			}
+			else{
+				emptyLayout.setVisibility(View.VISIBLE);
+			}
 			
 		} else {
 			Toast.makeText(this, "连接服务器失败,请稍候再试!",
