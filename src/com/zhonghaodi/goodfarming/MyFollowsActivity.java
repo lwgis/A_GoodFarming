@@ -274,7 +274,9 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				}
 				
 			} else {
-				Toast.makeText(this, "获取关注列表失败!",
+				nysactivity.nyss.clear();
+				nysactivity.adapter.notifyDataSetChanged();
+				Toast.makeText(this, "您没有关注任何人!",
 						Toast.LENGTH_SHORT).show();
 			}
 			break;

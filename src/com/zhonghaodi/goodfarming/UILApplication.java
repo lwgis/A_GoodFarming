@@ -33,6 +33,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 
 /**
@@ -56,6 +57,7 @@ public class UILApplication extends Application {
 		GFToast.GFContext=getApplicationContext();
 		GFUserDictionary.context=getApplicationContext();
 //		GFUserDictionary.removeUserInfo();
+		GFPointDictionary.context = getApplicationContext();
 		SDKInitializer.initialize(getApplicationContext());		
 		EMChat.getInstance().init(getApplicationContext());
 		EMChat.getInstance().setDebugMode(true);

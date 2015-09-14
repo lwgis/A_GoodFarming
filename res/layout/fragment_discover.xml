@@ -236,6 +236,36 @@
 	        
 	    </RelativeLayout>
 	    
+	    <RelativeLayout 
+            android:id="@+id/layout8"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:background="@drawable/background_with_shadow"
+	        android:padding="5dip"
+	        android:clickable="true"
+	        >
+	        <ImageView 
+	            android:id="@+id/avimg8"
+	            android:layout_width="40dip"
+	            android:layout_height="40dip"
+	            android:scaleType="fitXY"
+	            android:src="@drawable/scorestore"
+	            />
+	        <TextView 
+	            android:id="@+id/avname8"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dip"
+	            android:gravity="center_vertical"
+	            android:layout_toRightOf="@+id/avimg8"
+	            android:paddingLeft="10dip"
+	            android:textColor="#444444"
+	            android:textSize="18sp"
+	            android:text="刮刮乐"
+	            />
+	        
+	    </RelativeLayout>
+	    
        </LinearLayout>
 
 </LinearLayout>

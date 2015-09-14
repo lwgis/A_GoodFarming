@@ -19,6 +19,7 @@ public class User implements Serializable {
 	private int fanscount;
 	private String description;
 	private String tjPhone;
+	private String tjCode;
 	private List<UserCrop> crops;
 	
 	public User() {
@@ -135,6 +136,14 @@ public class User implements Serializable {
 		this.tjPhone = tjPhone;
 	}
 	
+	public String getTjCode() {
+		return tjCode;
+	}
+
+	public void setTjCode(String tjCode) {
+		this.tjCode = tjCode;
+	}
+
 	public List<UserCrop> getCrops() {
 		return crops;
 	}

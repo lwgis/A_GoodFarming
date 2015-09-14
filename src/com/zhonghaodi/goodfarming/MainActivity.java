@@ -33,11 +33,14 @@ import com.tencent.tauth.UiError;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.PointDic;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.utils.PublicHelper;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -126,6 +129,8 @@ public class MainActivity extends Activity implements OnClickListener,
 		wxApi=WXAPIFactory.createWXAPI(this,WX_APP_ID, true);
 		wxApi.registerApp(WX_APP_ID);
 		mTencent = Tencent.createInstance(QQ_APP_ID, this.getApplicationContext());
+		
+		loadPointdics();
 
 	}
 
@@ -170,7 +175,28 @@ public class MainActivity extends Activity implements OnClickListener,
 				});
 
 	}
+	
+	/**
+	 * 获取积分字典
+	 */
+	public void loadPointdics(){
+		new Thread(new Runnable() {
 
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getPointdicsString();
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+
+	/**
+	 * 切换tab
+	 * @param i
+	 */
 	public void seletFragmentIndex(int i) {
 		FragmentTransaction transction = getFragmentManager()
 				.beginTransaction();
@@ -190,7 +216,6 @@ public class MainActivity extends Activity implements OnClickListener,
 			meFragment = new MeFragment();
 			transction.add(R.id.content, meFragment);
 		}
-//		homeFragment.hidePopueWindow();
 		transction.hide(homeFragment);
 		transction.hide(messageFragment);
 		transction.hide(discoverFragment);
@@ -235,6 +260,9 @@ public class MainActivity extends Activity implements OnClickListener,
 		pageIndex = i;
 	}
 
+	/**
+	 * 点击事件
+	 */
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -343,6 +371,9 @@ public class MainActivity extends Activity implements OnClickListener,
 			initEm();
 		} else {
 			messageFragment.loadData();
+			if(pageIndex==3){
+				meFragment.loadData();
+			}
 		}
 	}
 
@@ -382,22 +413,6 @@ public class MainActivity extends Activity implements OnClickListener,
 		mTencent.onActivityResult(requestCode, resultCode, data);
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// if (keyCode == KeyEvent.KEYCODE_BACK
-		// && event.getAction() == KeyEvent.ACTION_DOWN) {
-		// if ((System.currentTimeMillis() - exitTime) > 2000) {
-		// Toast.makeText(getApplicationContext(), "再按一次退出种好地",
-		// Toast.LENGTH_SHORT).show();
-		// exitTime = System.currentTimeMillis();
-		// } else {
-		// finish();
-		// System.exit(0);
-		// }
-		// return true;
-		// }
-		return super.onKeyDown(keyCode, event);
-	}
 
 	/**
 	 * 注销用户
@@ -602,6 +617,10 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 	}
 
+	/**
+	 * 显示未读信息数
+	 * @param count
+	 */
 	public void setUnreadMessageCount(int count) {
 		if (count == 0) {
 			countTv.setVisibility(View.GONE);
@@ -772,7 +791,18 @@ public class MainActivity extends Activity implements OnClickListener,
 					GFToast.show("更新失败");
 				}
 				break;
-
+				
+			case 3:
+				if (msg.obj != null) {
+					Gson gson = new Gson();
+					List<PointDic> pointdics = gson.fromJson(msg.obj.toString(),
+							new TypeToken<List<PointDic>>() {
+							}.getType());
+					if (pointdics != null && pointdics.size()>0) {
+						GFPointDictionary.savePointDics(pointdics);
+					}
+				}
+				break;
 			default:
 				break;
 			}

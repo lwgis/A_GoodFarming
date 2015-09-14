@@ -10,12 +10,14 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ModifyPassActivity extends Activity implements HandMessage,OnClickListener {
@@ -25,6 +27,7 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 	private EditText confirmPassEt;
 	private Button okBtn;
 	private Button cancelBtn;
+	private TextView passButton;
 	private GFHandler<ModifyPassActivity> handler = new GFHandler<ModifyPassActivity>(this);
 	private String newpass;
 	@Override
@@ -39,6 +42,15 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 		okBtn.setOnClickListener(this);
 		cancelBtn = (Button)findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
+		passButton = (TextView)findViewById(R.id.passback_button);
+		passButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ModifyPassActivity.this, PassBackActivity.class);
+				ModifyPassActivity.this.startActivity(intent);
+			}
+		});
 	}
 
 	@Override

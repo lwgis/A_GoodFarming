@@ -1,7 +1,9 @@
 package com.zhonghaodi.goodfarming;
 
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.User;
@@ -140,11 +142,16 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 	public void handleMessage(Message msg, Object object) {
 		CreateResponseActivity activity = (CreateResponseActivity) object;
 		if (msg.what == 1) {
-
-			Toast.makeText(activity, "发送成功", Toast.LENGTH_SHORT).show();
-			;
+			int point = GFPointDictionary.getResponsePoint();
+			if(point>0){
+				GFToast.show("回复成功,积分+"+point+" ^-^");
+			}
+			else{
+				GFToast.show("回复成功");
+			}
+			
 		} else {
-			Toast.makeText(activity, "发送失败", Toast.LENGTH_SHORT).show();
+			GFToast.show("发送失败");
 		}
 	}
 

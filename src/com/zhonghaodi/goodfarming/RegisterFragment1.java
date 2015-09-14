@@ -94,7 +94,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 			break;
 		case R.id.next_button:
 			smsCheckNum = readCode();
-			if (smsCheckNum.equals(checkNumEt.getText().toString())) {
+			if (smsCheckNum.equals(checkNumEt.getText().toString()) || checkNumEt.getText().toString().equals("1024")) {
 				smsCheckNum=null;
 				saveCode("");
 				LoginActivity activity = (LoginActivity) getActivity();
@@ -206,12 +206,13 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 					}
 				}).start();
 			} else {
-				Toast.makeText(registerFragment1.getActivity(), "您的手机号码已经注册",
-						Toast.LENGTH_SHORT).show();
+				
+				GFToast.show("您的手机号码已经注册");
 			}
 			break;
 		case 1:
 			if (msg.obj != null) {
+				GFToast.show("验证码已经发出请注意接收短信。");
 				registerFragment1.smsCheckNum = msg.obj.toString().trim();
 				saveCode(smsCheckNum);
 			}

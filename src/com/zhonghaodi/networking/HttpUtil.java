@@ -74,8 +74,8 @@ import com.zhonghaodi.model.User;
  *
  */
 public class HttpUtil {
-	public static String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage/";
+	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage8/";
 //	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
 //	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
@@ -460,6 +460,11 @@ public class HttpUtil {
             return totalBytesSkipped;
         }
     }
+    
+    public static String getPointdicsString() {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "dics/all");
+		return jsonString;
+	}
 	
 	public static String getQuestionsString() {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "questions");
@@ -1444,6 +1449,103 @@ public class HttpUtil {
 		String resultString = HttpUtil.executeHttpPut(RootURL + "pointorders/"+poid+"/end",
 				"");
 		return resultString;
+	}
+	
+	/**
+	 * 意见反馈
+	 */
+	public static String feedBack(final String uid,
+			final String content) {
+		String jsonString = null;
+		String urlString = RootURL + "feedback";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return content;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "content";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 获取刮刮乐奖品列表
+	 * @return
+	 */
+	public static String getGuaGua(){
+		
+		String urlString = RootURL + "guagua/all";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	/**
+	 * 抽签
+	 */
+	public static String qian(final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "guagua/qiang";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
 	}
 	
 	/**

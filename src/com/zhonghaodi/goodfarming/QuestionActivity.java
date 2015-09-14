@@ -13,6 +13,7 @@ import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.customui.HolderResponse;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
+import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
@@ -103,15 +104,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						loadData();
 					}
 				});
-//		pullToRefreshListView.getRefreshableView().setOnItemClickListener(new OnItemClickListener() {
-//
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view,
-//					int position, long id) {
-//				// TODO Auto-generated method stub
-//				GFToast.show("item:"+position);
-//			}
-//		});
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
 	}
 	
@@ -507,6 +499,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 											response.zan(GFUserDictionary
 													.getUserId());
 											holder.zan();
+											int point = GFPointDictionary.getZanPoint();
+											if(point>0){
+												GFToast.show("点赞成功，积分+"+point+" ^-^");
+											}
 										} else {
 											new Thread(new Runnable() {
 

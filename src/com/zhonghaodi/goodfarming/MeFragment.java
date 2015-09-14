@@ -216,6 +216,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.youhuibiTv.setText(String.valueOf(user.getCurrency()));
 				holderMeInfo.fensiTv.setText(String.valueOf(user.getFanscount()));
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
+				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
 				break;
 			case 1:
 				holdFunction=(HoldFunction)convertView.getTag();
@@ -247,12 +248,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		fragment.user = (User) GsonUtil
 				.fromJson(msg.obj.toString(), User.class);
 		GFUserDictionary.saveLoginInfo(user, GFUserDictionary.getPassword(), getActivity());
-		Function cartFunction = new Function("我的订单", ShoppingCartActivity.class,R.drawable.store);
+		Function cartFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
 		fragment.functions.add(cartFunction);
-		Function secondFunction = new Function("秒杀订单", MiaoOrdersActivity.class,R.drawable.second);
-		fragment.functions.add(secondFunction);
-		Function pointOrderFunction = new Function("积分订单", PointOrdersActivity.class,R.drawable.scorestore);
-		fragment.functions.add(pointOrderFunction);
 		Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
 		fragment.functions.add(cropsFunction);
 		Function contactsFunction = new Function("收货地址", ContactsActivity.class,R.drawable.address);
@@ -286,12 +283,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		fragment.functions.add(shareFunction);
 		Function downFunction = new Function("推荐农友下载", AppdownActivity.class,R.drawable.appdownload);
 		fragment.functions.add(downFunction);
+		Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.appdownload);
+		fragment.functions.add(feedbackFunction);
 		fragment.pullToRefreshList.onRefreshComplete();
 		adapter.notifyDataSetChanged();
 	}
-//	private String buildTransaction(final String type) {
-//		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
-//	}
 	
 	public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();

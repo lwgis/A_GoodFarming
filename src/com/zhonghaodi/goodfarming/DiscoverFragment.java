@@ -19,6 +19,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	private View miaoView;
 	private View commodityView;
 	private View recipeView;
+	private View rubblerView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +41,8 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		commodityView.setOnClickListener(this);
 		recipeView = view.findViewById(R.id.layout7);
 		recipeView.setOnClickListener(this);
+		rubblerView = view.findViewById(R.id.layout8);
+		rubblerView.setOnClickListener(this);
 		return view;
 	}
 
@@ -81,7 +84,10 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 			Intent intent6 = new Intent(getActivity(), RecipesActivity.class);
 			startActivity(intent6);
 			break;
-
+		case R.id.layout8:
+			Intent intent7 = new Intent(getActivity(), RubblerActivity.class);
+			startActivity(intent7);
+			break;
 		default:
 			break;
 		}

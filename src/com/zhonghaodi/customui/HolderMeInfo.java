@@ -13,6 +13,7 @@ public class HolderMeInfo {
 	public TextView youhuibiTv;
 	public TextView guanzhuTv;
 	public TextView fensiTv;
+	public TextView tjcodeTv;
 	public View guanzhuView;
 	public View fensiView;
 	public HolderMeInfo(View view){
@@ -24,5 +25,6 @@ public class HolderMeInfo {
 		fensiTv=(TextView)view.findViewById(R.id.fensi_text);
 		guanzhuView=view.findViewById(R.id.guanzhu_view);
 		fensiView=view.findViewById(R.id.fensi_view);
+		tjcodeTv = (TextView)view.findViewById(R.id.tjcode_text);
 	}
 }

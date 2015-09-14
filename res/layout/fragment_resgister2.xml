@@ -32,7 +32,7 @@
             android:inputType="textPassword"
             android:textColor="#333333" />
 
-        <com.zhonghaodi.customui.MyEditText
+        <!-- <com.zhonghaodi.customui.MyEditText
             android:id="@+id/password2_edit"
             style="@style/my_edittext_style"
             android:layout_width="match_parent"
@@ -42,7 +42,7 @@
             android:layout_marginTop="10dp"
             android:hint="再次输入密码"
             android:inputType="textPassword"
-            android:textColor="#333333" />
+            android:textColor="#333333" /> -->
 
         <com.zhonghaodi.customui.MyEditText
             android:id="@+id/alias_edit"
@@ -78,10 +78,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:hint="推荐人手机（选填）"
+            android:hint="推荐人的推荐码（选填）"
             android:singleLine="true"
-            android:inputType="numberSigned"
-        	android:maxLength="11"
+        	android:maxLength="4"
             android:textColor="#333333" />
 
         <com.zhonghaodi.customui.MyTextButton

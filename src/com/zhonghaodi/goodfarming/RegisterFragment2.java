@@ -40,7 +40,7 @@ import android.widget.Toast;
 public class RegisterFragment2 extends Fragment implements TextWatcher,
 		HandMessage {
 	private MyEditText passwordEt;
-	private MyEditText passwordEt2;
+//	private MyEditText passwordEt2;
 	private MyEditText aliasEt;
 	private MyEditText addressEt;
 	private MyEditText tjphoneEt;
@@ -105,14 +105,14 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
 				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
 		passwordEt = (MyEditText) view.findViewById(R.id.password_edit);
-		passwordEt2 = (MyEditText) view.findViewById(R.id.password2_edit);
+//		passwordEt2 = (MyEditText) view.findViewById(R.id.password2_edit);
 		aliasEt = (MyEditText) view.findViewById(R.id.alias_edit);
 		addressEt = (MyEditText) view.findViewById(R.id.address_edit);
 		tjphoneEt = (MyEditText)view.findViewById(R.id.tjphone_edit);
 		registerBtn = (MyTextButton) view.findViewById(R.id.register_button);
 		headGfImageButton = (GFImageButton) view.findViewById(R.id.head_image);
 		passwordEt.addTextChangedListener(this);
-		passwordEt2.addTextChangedListener(this);
+//		passwordEt2.addTextChangedListener(this);
 		aliasEt.addTextChangedListener(this);
 		addressEt.addTextChangedListener(this);
 		registerBtn.setEnabled(false);
@@ -128,9 +128,8 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 //					GFToast.show("别名不能使用APP名称");
 //					return;
 //				}
-				if (!passwordEt.getText().toString()
-						.equals(passwordEt2.getText().toString())) {
-					Toast.makeText(getActivity(), "两次输入的密码不相同",
+				if (passwordEt.getText().toString().isEmpty()) {
+					Toast.makeText(getActivity(), "密码不能为空",
 							Toast.LENGTH_LONG).show();
 					return;
 				}
@@ -249,7 +248,6 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 	@Override
 	public void afterTextChanged(Editable s) {
 		if (passwordEt.getText().length() > 0
-				&& passwordEt2.getText().length() > 0
 				&& aliasEt.getText().length() > 0
 				&& addressEt.getText().length() > 0) {
 			registerBtn.setEnabled(true);
@@ -300,7 +298,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					user.setPhone(activity.getPhone());
 					user.setAddress(addressEt.getText().toString());
 					user.setAlias(aliasEt.getText().toString());
-					user.setTjPhone(tjphoneEt.getText().toString());
+					user.setTjCode(tjphoneEt.getText().toString());
 					user.setThumbnail(registerFragment2.headImageName.trim());
 					try {
 						Message msgUser = handler.obtainMessage();

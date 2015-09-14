@@ -19,8 +19,8 @@
 
             <ImageView
                 android:id="@+id/head_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
                 android:layout_margin="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_head" />
@@ -34,7 +34,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="3dp"
                     android:orientation="vertical" >
 
                     <TextView
@@ -57,7 +57,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="3dp"
                         android:gravity="right"
                         android:singleLine="true"
                         android:text="积    分:"
@@ -68,7 +68,7 @@
                         android:id="@+id/jifen_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="3dp"
                         android:singleLine="true"
                         android:text="0"
                         android:textColor="#444444"
@@ -84,7 +84,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="3dp"
                         android:gravity="right"
                         android:singleLine="true"
                         android:text="优惠币:"
@@ -95,7 +95,33 @@
                         android:id="@+id/youhuibi_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="3dp"
+                        android:singleLine="true"
+                        android:text="0"
+                        android:textColor="#444444"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:gravity="right"
+                        android:singleLine="true"
+                        android:text="推荐码:"
+                        android:textColor="#808080"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tjcode_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
                         android:singleLine="true"
                         android:text="0"
                         android:textColor="#444444"

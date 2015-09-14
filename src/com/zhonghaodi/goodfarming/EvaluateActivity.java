@@ -8,11 +8,14 @@ import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.ScoringDic;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+
+import android.R.integer;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -162,6 +165,10 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 				GFToast.show(msg.obj.toString());
 			}
 			else{
+				int point = GFPointDictionary.getScoringPoint();
+				if(point>0){
+					GFToast.show("评价成功，积分+"+point+" ^-^");
+				}
 				this.finish();
 			}
 			break;
