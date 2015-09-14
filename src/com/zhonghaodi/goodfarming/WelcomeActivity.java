@@ -71,18 +71,18 @@ public class WelcomeActivity extends Activity implements HandMessage {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		 new Handler().postDelayed(new Runnable(){  
-		     public void run() {  
-		     //execute the task  
-		    	 popupwindow();
-		     }  
-		  }, 1000); 
-//		if(bUpdate){
-//			tryUpdate();
-//		}
-//		else{
-//			sleep();
-//		}
+//		 new Handler().postDelayed(new Runnable(){  
+//		     public void run() {  
+//		     //execute the task  
+//		    	 popupwindow();
+//		     }  
+//		  }, 1000); 
+		if(bUpdate){
+			tryUpdate();
+		}
+		else{
+			sleep();
+		}
 	}
 	
 	public void popupwindow(){
