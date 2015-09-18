@@ -67,7 +67,7 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (contentEt.length() > 0) {
+				if (!contentEt.getText().toString().trim().isEmpty()) {
 					CreateResponseActivity.this.sendBtn.setEnabled(true);
 				} else {
 					CreateResponseActivity.this.sendBtn.setEnabled(false);
@@ -142,7 +142,6 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 		if (msg.what == 1) {
 
 			Toast.makeText(activity, "发送成功", Toast.LENGTH_SHORT).show();
-			;
 		} else {
 			Toast.makeText(activity, "发送失败", Toast.LENGTH_SHORT).show();
 		}
