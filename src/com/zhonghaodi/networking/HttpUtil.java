@@ -32,29 +32,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.NameValuePair;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import android.R.integer;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
