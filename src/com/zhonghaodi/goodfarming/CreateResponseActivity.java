@@ -69,7 +69,7 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (contentEt.length() > 0) {
+				if (!contentEt.getText().toString().trim().isEmpty()) {
 					CreateResponseActivity.this.sendBtn.setEnabled(true);
 				} else {
 					CreateResponseActivity.this.sendBtn.setEnabled(false);

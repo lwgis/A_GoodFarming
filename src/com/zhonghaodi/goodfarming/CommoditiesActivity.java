@@ -141,39 +141,9 @@ public class CommoditiesActivity extends Activity implements OnClickListener,Han
 	
 	public void exchange(final Commodity commodity){
 		
-		final Dialog dialog = new Dialog(this, R.style.MyDialog);
-        //设置它的ContentView
-		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.dialog, null);
-        dialog.setContentView(layout);
-        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-        okBtn.setText("确定");
-        okBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
-				Intent intent = new Intent(CommoditiesActivity.this, ConfirmOrderActivity.class);
-				intent.putExtra("commodity", commodity);
-				CommoditiesActivity.this.startActivity(intent);
-			}
-		});
-        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
-        cancelButton.setText("取消");
-        cancelButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
-			}
-		});
-        titleView.setText("提示");
-        contentView.setText("您确定要用"+commodity.getPoint()+"积分去兑换"+commodity.getName()+"吗？");
-        dialog.show();
+		Intent intent = new Intent(CommoditiesActivity.this, ConfirmOrderActivity.class);
+		intent.putExtra("commodity", commodity);
+		CommoditiesActivity.this.startActivity(intent);
 		
 	}
 	

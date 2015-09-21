@@ -81,7 +81,7 @@
                     android:layout_marginTop="5dp"
                     android:background="#ffffff"
                     android:gravity="top"
-                    android:hint="病虫害的详细描述..."
+                    android:hint="病虫害的详细描述...(200字以内)"
                     android:padding="1dp"
                     android:maxLength="200"
                     android:textColor="#333333" />

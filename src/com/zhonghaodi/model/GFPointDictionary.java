@@ -73,4 +73,11 @@ public class GFPointDictionary {
 		int point = sharedPre.getInt("scoring", 0);
 		return point;
 	}
+	
+	public static int getGuaguaPoint() {
+		SharedPreferences sharedPre = context.getSharedPreferences("dics",
+				Context.MODE_PRIVATE);
+		int point = sharedPre.getInt("guagua", 0);
+		return point;
+	}
 }

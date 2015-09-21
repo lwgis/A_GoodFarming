@@ -250,7 +250,7 @@
 	            android:layout_width="40dip"
 	            android:layout_height="40dip"
 	            android:scaleType="fitXY"
-	            android:src="@drawable/scorestore"
+	            android:src="@drawable/guaguale"
 	            />
 	        <TextView 
 	            android:id="@+id/avname8"

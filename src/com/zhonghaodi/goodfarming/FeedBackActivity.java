@@ -78,7 +78,7 @@ public class FeedBackActivity extends Activity implements HandMessage,OnClickLis
 	@Override
 	public void afterTextChanged(Editable s) {
 		// TODO Auto-generated method stub
-		if (contentEt.getText().length() > 0){
+		if (!contentEt.getText().toString().trim().isEmpty()){
 			sendBtn.setEnabled(true);
 		} else {
 			sendBtn.setEnabled(false);

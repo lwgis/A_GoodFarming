@@ -786,7 +786,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 	public void pinglun(Quan quan){
 		hideInput();
 		String content = pinglunEditText.getText().toString();
-		if(content==null || content==""){
+		if(content==null || content=="" ||content.trim().isEmpty()){
 			return;
 		}
 		Comment comment = new Comment();

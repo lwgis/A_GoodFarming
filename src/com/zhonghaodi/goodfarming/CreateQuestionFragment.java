@@ -119,7 +119,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 			@Override
 			public void afterTextChanged(Editable s) {
 				CreateQuestionActivity activity = (CreateQuestionActivity) getActivity();
-				if (contentEt.getText().length() > 0) {
+				if (!contentEt.getText().toString().trim().isEmpty()) {
 					activity.getSendBtn().setEnabled(true);
 				} else {
 					activity.getSendBtn().setEnabled(false);

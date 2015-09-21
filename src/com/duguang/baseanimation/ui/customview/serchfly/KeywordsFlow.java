@@ -202,7 +202,7 @@ public class KeywordsFlow extends FrameLayout implements OnGlobalLayoutListener{
             for (int i = 0; i < size; i++) {  
                 String keyword = vecKeywords.get(i);  
                 // 随机颜色  
-                int ranColor = 0xff000000 | random.nextInt(0x0077ffff);  
+                int ranColor = 0xffffff00 | random.nextInt(0x0077ffff);  
                 // 随机位置，糙值  
                 int xy[] = randomXY(random, listX, listY, xItem);  
                 // 随机字体大小  

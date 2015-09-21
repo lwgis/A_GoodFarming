@@ -1530,6 +1530,211 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 刮奖确认
+	 * @param uid
+	 * @param contact
+	 * @return
+	 */
+	public static String guaConfirm(final String uid,
+			final int contact,
+			final int oid) {
+		String jsonString = null;
+		String urlString = RootURL + "guagua/guaConfirm";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(contact);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "cid";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair);
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(oid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "oid";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 刮奖取消
+	 * @param uid
+	 * @param contact
+	 * @return
+	 */
+	public static String guaCancel(final String uid,
+			final int oid) {
+		String jsonString = null;
+		String urlString = RootURL + "guagua/guaCancel";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(oid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "oid";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 获取用户的刮奖订单
+	 * @param uid
+	 * @return
+	 */
+	public static String getGuaOrders(String uid){
+		String url = RootURL + "guagua/orders?uid="+uid;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	/**
+	 * 刮奖确认收货
+	 * @param uid
+	 * @param contact
+	 * @return
+	 */
+	public static String guaOrderConfirm(final String uid,
+			final int oid) {
+		String jsonString = null;
+		String urlString = RootURL + "guagua/orderConfirm";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(oid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "oid";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 获取刮刮乐奖品列表
+	 * @return
+	 */
+	public static String getRecentOrders(){
+		
+		String urlString = RootURL + "guagua/recentOrder?size=10";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	/**
 	 * 下载apk
 	 * @param path
 	 * @param pd

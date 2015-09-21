@@ -1,10 +1,15 @@
 package com.zhonghaodi.goodfarming;
 
+import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -85,8 +90,15 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 			startActivity(intent6);
 			break;
 		case R.id.layout8:
-			Intent intent7 = new Intent(getActivity(), RubblerActivity.class);
-			startActivity(intent7);
+			int point = GFUserDictionary.getPoint();
+			int guagua = GFPointDictionary.getGuaguaPoint();
+			if(point>=guagua){
+				Intent intent7 = new Intent(getActivity(), RubblerActivity.class);
+				startActivity(intent7);
+			}
+			else{
+				GFToast.show("您的积分不足！");
+			}
 			break;
 		default:
 			break;

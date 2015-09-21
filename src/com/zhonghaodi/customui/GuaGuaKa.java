@@ -261,7 +261,7 @@ public class GuaGuaKa extends View
 			{
 				int percent = (int) (wipeArea * 100 / totalArea);
 
-				if (percent > 70)
+				if (percent > 60)
 				{
 					Message msg = mHandler.obtainMessage();
                     msg.what = 100;

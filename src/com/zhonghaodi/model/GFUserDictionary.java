@@ -35,6 +35,7 @@ public class GFUserDictionary {
 		editor.putString("password", password);
 		editor.putString("phone", user.getPhone());
 		editor.putString("thumbnail", user.getThumbnail());
+		editor.putInt("point", user.getPoint());
 		String croids = "";
 		if(user.getCrops()!=null && user.getCrops().size()>0){
 			for (Iterator iterator = user.getCrops().iterator(); iterator.hasNext();) {
@@ -87,6 +88,7 @@ public class GFUserDictionary {
 		editor.remove("password");
 		editor.remove("phone");
 		editor.remove("croids");
+		editor.remove("point");
 		// 提交
 		editor.commit();
 	}
@@ -124,5 +126,11 @@ public class GFUserDictionary {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("croids", null);
+	}
+	
+	public static int getPoint() {
+		SharedPreferences sharedPre = context.getSharedPreferences("config",
+				Context.MODE_PRIVATE);
+		return sharedPre.getInt("point", 0);
 	}
 }

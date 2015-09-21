@@ -156,7 +156,7 @@ public class NyqActivity extends Activity implements HandMessage {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				String str = nyqEditText.getText().toString();
-				if(projectImages.size()==0&&str.isEmpty()){
+				if(projectImages.size()==0&&str.trim().isEmpty()){
 					GFToast.show("没有任何内容");
 					return;
 				}

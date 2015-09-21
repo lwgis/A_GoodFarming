@@ -39,6 +39,16 @@
 			        android:layout_height="145dp" />
 	        </LinearLayout>
 	    </LinearLayout>
+	    <TextView 
+	        android:id="@+id/orders_text"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dip"
+	        android:layout_weight="1"
+	        android:padding="10dip"
+	        android:gravity="top|left"
+	        android:textSize="14dip"
+	        android:textColor="#FFFFFF"
+	        />
 	    
 	</LinearLayout>
 
