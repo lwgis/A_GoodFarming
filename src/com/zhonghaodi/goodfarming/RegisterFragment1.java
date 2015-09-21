@@ -212,6 +212,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 			break;
 		case 1:
 			if (msg.obj != null) {
+				GFToast.show("验证码已经发出请注意接收短信。");
 				registerFragment1.smsCheckNum = msg.obj.toString().trim();
 				saveCode(smsCheckNum);
 			}
