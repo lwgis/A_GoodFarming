@@ -172,8 +172,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		Intent mainIntent = new Intent(WelcomeActivity.this,  
                 MainActivity.class);  
         WelcomeActivity.this.startActivity(mainIntent);  
-//		overridePendingTransition(R.anim.zoomin, 
-//        		R.anim.zoomout); 
+
         WelcomeActivity.this.finish(); 
 	}
 	
@@ -206,7 +205,6 @@ public class WelcomeActivity extends Activity implements HandMessage {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				
 				try {
 					String jsonString = HttpUtil.getAppVersion();
 					Message msg = handler.obtainMessage();

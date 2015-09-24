@@ -148,8 +148,8 @@ public class RecipesActivity extends Activity implements HandMessage,OnClickList
 				return;
 //			x=location.getLongitude();
 //			y=location.getLatitude();
-			x=118.7139351318554;
-			y=36.80689424778121;
+			x=118.780813;
+			y=36.815181;
 			if(progressDialog!=null){
 				progressDialog.dismiss();
 			}
