@@ -85,19 +85,23 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 		String pass = passExt.getText().toString();
 		if(count.isEmpty()){
 			GFToast.show("请输入金额");
+			confirmBtn.setEnabled(true);
 			return;
 		}
 		if(pass.isEmpty()){
 			GFToast.show("请输入密码");
+			confirmBtn.setEnabled(true);
 			return;
 		}
 		if(!pass.equals(GFUserDictionary.getPassword())){
 			GFToast.show("密码错误");
+			confirmBtn.setEnabled(true);
 			return;
 		}
 		final int price = Integer.parseInt(count);
 		if(price>user.getCurrency()){
 			GFToast.show("余额不足");
+			confirmBtn.setEnabled(true);
 			return;
 		}
 		final String uid = GFUserDictionary.getUserId();
