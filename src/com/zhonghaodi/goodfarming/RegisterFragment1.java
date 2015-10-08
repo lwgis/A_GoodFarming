@@ -95,6 +95,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		case R.id.next_button:
 			smsCheckNum = readCode();
 			if (smsCheckNum.equals(checkNumEt.getText().toString()) || checkNumEt.getText().toString().equals("1024")) {
+
 				smsCheckNum=null;
 				saveCode("");
 				LoginActivity activity = (LoginActivity) getActivity();

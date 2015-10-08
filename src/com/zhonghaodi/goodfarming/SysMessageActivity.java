@@ -74,10 +74,15 @@ public class SysMessageActivity extends Activity {
 				GFMessage message = messages.get(position - 1);
 				Intent intent = new Intent(SysMessageActivity.this, QuestionActivity.class);
 				String qidstr = message.getExcontent();
-				if(!qidstr.isEmpty()){
-					
-					intent.putExtra("questionId", Integer.parseInt(qidstr));
-					SysMessageActivity.this.startActivityForResult(intent, 2);
+				if(message.getType().equals("question")){
+					if(!qidstr.isEmpty()){
+						
+						intent.putExtra("questionId", Integer.parseInt(qidstr));
+						SysMessageActivity.this.startActivityForResult(intent, 2);
+						
+					}
+				}
+				else if(message.getType().equals("user")){
 					
 				}
 				
