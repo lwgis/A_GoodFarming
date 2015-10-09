@@ -38,7 +38,6 @@
 		            >
 		            <com.zhonghaodi.customui.GuaGuaKa
 				        android:id="@+id/guagua"
-				        android:layout_centerInParent="true"
 				        android:layout_width="290dp"
 				        android:layout_height="145dp" />
 		        </LinearLayout>
@@ -46,30 +45,40 @@
 		    <LinearLayout 
 		        android:id="@+id/start_layout"
 		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
+		        android:layout_height="match_parent"
 		        android:orientation="vertical"
-		        android:gravity="center"
+		        android:gravity="center_vertical|center_horizontal"
 		        >
-		        <TextView 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_marginTop="30dip"
-			        android:layout_marginBottom="10dip"
-			        android:padding="10dip"
-			        android:gravity="center"
-			        android:textSize="18dip"
-			        android:textColor="#FFFFFF"
-			        android:text="拼手气赢红包1积分刮一次"
-			        />
-		        <com.zhonghaodi.customui.MyTextButton
-	                android:id="@+id/start_btn"
-	                android:layout_width="150dip"
-	                android:layout_height="40dp"
-	                android:layout_margin="5dp"
-	                android:background="@drawable/button_order_shape"
-	                android:text="开始刮"
-	                android:textColor="#ffffff"
-	                android:textSize="18sp" />
+		        <LinearLayout 
+		            android:layout_width="280dp"
+				    android:layout_height="145dp"
+		            android:orientation="vertical"
+		            android:gravity="center"
+		            android:layout_marginLeft="30dip"
+		            android:layout_marginRight="30dip"
+		            android:background="#c0c0c0"
+		            >
+		            <TextView 
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:layout_marginTop="30dip"
+				        android:layout_marginBottom="10dip"
+				        android:gravity="center"
+				        android:textSize="18dip"
+				        android:textColor="#FFFFFF"
+				        android:text="拼手气赢红包1积分刮一次"
+				        />
+			        <com.zhonghaodi.customui.MyTextButton
+		                android:id="@+id/start_btn"
+		                android:layout_width="150dip"
+		                android:layout_height="40dp"
+		                android:layout_margin="5dp"
+		                android:background="@drawable/button_order_shape"
+		                android:text="开始刮"
+		                android:textColor="#ffffff"
+		                android:textSize="18sp" />
+		        </LinearLayout>
+		        
 		    </LinearLayout>
 	    </FrameLayout>
 	    <LinearLayout 

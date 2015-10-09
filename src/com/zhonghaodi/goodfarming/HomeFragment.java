@@ -452,8 +452,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				holder1.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				holder1.cropTv.setText(question.getCrop().getName());
-				holder1.headIv.setTag(question.getWriter());
-				holder1.headIv.setOnClickListener(HomeFragment.this);
 				break;
 			case 1:
 				holder2 = (Holder2) convertView.getTag();
@@ -498,8 +496,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 				holder2.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
-				holder2.headIv.setTag(question.getWriter());
-				holder2.headIv.setOnClickListener(HomeFragment.this);
 				break;
 			case 2:
 				holder3 = (Holder3) convertView.getTag();
@@ -572,8 +568,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 				holder3.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
-				holder3.headIv.setTag(question.getWriter());
-				holder3.headIv.setOnClickListener(HomeFragment.this);
 				break;
 			default:
 				break;
@@ -647,18 +641,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				bAll = 2;
 			}
 			break;
-		case R.id.head_image:
-			User user = (User)v.getTag();
-			if(user.getLevelID()!=1){
-				Intent itd = new Intent();
-				itd.setClass(getActivity(), ChatActivity.class);
-				itd.putExtra("userName", user.getPhone());
-				itd.putExtra("title", user.getAlias());
-				itd.putExtra("thumbnail", user.getThumbnail());
-				startActivity(itd);
-			}
-			
-			break;
+		
 		default:
 			break;
 		}
