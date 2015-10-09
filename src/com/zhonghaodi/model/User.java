@@ -21,6 +21,7 @@ public class User implements Serializable {
 	private String tjPhone;
 	private String tjCode;
 	private List<UserCrop> crops;
+	private int levelID;
 	
 	public User() {
 		// TODO Auto-generated constructor stub
@@ -152,4 +153,13 @@ public class User implements Serializable {
 	public void setCrops(List<UserCrop> crops) {
 		this.crops = crops;
 	}
+
+	public int getLevelID() {
+		return levelID;
+	}
+
+	public void setLevelID(int levelID) {
+		this.levelID = levelID;
+	}
+	
 }

@@ -17,6 +17,7 @@ import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFString;
 import com.zhonghaodi.networking.HttpUtil;
@@ -48,7 +49,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class QuestionActivity extends Activity implements UrlOnClick,
-		HandMessage {
+		HandMessage,OnClickListener {
 	private PullToRefreshListView pullToRefreshListView;
 	private Question question;
 	private int questionId;
@@ -324,6 +325,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder1.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				holder1.cropTv.setText(question.getCrop().getName());
+				holder1.headIv.setTag(question.getWriter());
+				holder1.headIv.setOnClickListener(QuestionActivity.this);
 				break;
 			case 1:
 				holder2 = (Holder2) convertView.getTag();
@@ -370,6 +373,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder2.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				holder2.cropTv.setText(question.getCrop().getName());
+				holder2.headIv.setTag(question.getWriter());
+				holder2.headIv.setOnClickListener(QuestionActivity.this);
 				break;
 			case 2:
 				holder3 = (Holder3) convertView.getTag();
@@ -447,6 +452,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder3.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
 				holder3.cropTv.setText(question.getCrop().getName());
+				holder3.headIv.setTag(question.getWriter());
+				holder3.headIv.setOnClickListener(QuestionActivity.this);
 				break;
 			case 3:
 				holderResponse = (HolderResponse) convertView.getTag();
@@ -521,6 +528,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 								}
 							});
 				}
+				holderResponse.headIv.setTag(response.getWriter());
+				holderResponse.headIv.setOnClickListener(QuestionActivity.this);
 				break;
 			default:
 				break;
@@ -553,6 +562,21 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		unregisterForContextMenu(pullToRefreshListView.getRefreshableView());
+	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		User user = (User)v.getTag();
+		if(user.getLevelID()!=1){
+			Intent it = new Intent();
+			it.setClass(this, ChatActivity.class);
+			it.putExtra("userName", user.getPhone());
+			it.putExtra("title", user.getAlias());
+			it.putExtra("thumbnail", user.getThumbnail());
+			startActivity(it);
+		}
+		
 	}
 
 	@Override

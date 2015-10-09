@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.duguang.baseanimation.ui.customview.serchfly.KeywordsFlow;
@@ -22,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.GuaGuaKa;
+import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Gua;
@@ -39,6 +41,8 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
     private GuaResult guaResult;
     private KeywordsFlow keywordsFlow;   
     private TextView ordersTextView;
+    private LinearLayout startLayout;
+    private MyTextButton startButton;
     private boolean isOpen = false;
     private GFHandler<RubblerActivity> handler = new GFHandler<RubblerActivity>(this);
  
@@ -49,6 +53,10 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
         keywordsFlow = (KeywordsFlow) findViewById(R.id.frameLayout1);
 		keywordsFlow.setDuration(800l);
 		keywordsFlow.setOnClickListener(this);
+		
+		startLayout = (LinearLayout)findViewById(R.id.start_layout);
+		startButton = (MyTextButton)findViewById(R.id.start_btn);
+		startButton.setOnClickListener(this);
 		
 		guaGuaKa = (GuaGuaKa)findViewById(R.id.guagua);
 		guaGuaKa.setmWipeListener(this);
@@ -141,6 +149,9 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			feedKeywordsFlow(keywordsFlow, keywords);
 			keywordsFlow.go2Show(KeywordsFlow.ANIMATION_IN);
 			break;
+		case R.id.start_btn:
+			startLayout.setVisibility(View.GONE);
+			break;
 
 		default:
 			break;
@@ -176,6 +187,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 	        
 	        titleView.setText("提示");
 	        contentView.setText("恭喜您刮中"+guaResult.getGuagua().getName()+"，请马上去填写收货地址，否则抽奖结果将作废。");
+	        dialog.setCancelable(false);
 	        dialog.show();
 		}
 	}
@@ -244,6 +256,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 								order.getUser().getAlias()+":"+order.getGuagua().getName();
 						split = "\n";
 					}
+					content+="\n……";
 					ordersTextView.setText(content);
 				}
 				

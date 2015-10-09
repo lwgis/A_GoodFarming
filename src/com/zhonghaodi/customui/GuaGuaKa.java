@@ -148,8 +148,8 @@ public class GuaGuaKa extends View
 		mOutterPaint.setStyle(Paint.Style.FILL);
 		mCanvas.drawRoundRect(new RectF(0, 0, width, height), 30, 30,
 				mOutterPaint);
-		mCanvas.drawBitmap(BitmapFactory.decodeResource(getResources(),
-				R.drawable.s_title), null, new RectF(0, 0, width, height), null);
+//		mCanvas.drawBitmap(BitmapFactory.decodeResource(getResources(),
+//				R.drawable.s_title), null, new RectF(0, 0, width, height), null);
 	}
 
 	/**
@@ -261,7 +261,7 @@ public class GuaGuaKa extends View
 			{
 				int percent = (int) (wipeArea * 100 / totalArea);
 
-				if (percent > 60)
+				if (percent > 30)
 				{
 					Message msg = mHandler.obtainMessage();
                     msg.what = 100;
