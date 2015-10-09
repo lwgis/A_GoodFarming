@@ -60,7 +60,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		
 		guaGuaKa = (GuaGuaKa)findViewById(R.id.guagua);
 		guaGuaKa.setmWipeListener(this);
-		
+		guaGuaKa.setVisibility(View.GONE);
 		ordersTextView = (TextView)findViewById(R.id.orders_text);
  
 		loadData();
@@ -151,6 +151,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			break;
 		case R.id.start_btn:
 			startLayout.setVisibility(View.GONE);
+			guaGuaKa.setVisibility(View.VISIBLE);
 			break;
 
 		default:
