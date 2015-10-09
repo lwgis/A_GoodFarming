@@ -176,6 +176,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 	        
 	        titleView.setText("提示");
 	        contentView.setText("恭喜您刮中"+guaResult.getGuagua().getName()+"，请马上去填写收货地址，否则抽奖结果将作废。");
+	        dialog.setCancelable(false);
 	        dialog.show();
 		}
 	}
