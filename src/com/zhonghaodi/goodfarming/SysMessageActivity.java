@@ -85,6 +85,14 @@ public class SysMessageActivity extends Activity {
 				else if(message.getType().equals("user")){
 					
 				}
+				else if(message.getType().isEmpty()){
+					Intent it = new Intent();
+					it.setClass(SysMessageActivity.this, ChatActivity.class);
+					it.putExtra("userName", message.getUser()==null?message.getTitle():message.getTitle());
+					it.putExtra("title", message.getUser()==null?message.getTitle():message.getUser().getAlias());
+					it.putExtra("thumbnail", message.getUser()==null?"":message.getUser().getThumbnail());
+					SysMessageActivity.this.startActivityForResult(it, 2);
+				}
 				
 			}
 		});
