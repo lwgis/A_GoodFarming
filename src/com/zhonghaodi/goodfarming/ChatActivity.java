@@ -71,6 +71,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,6 +106,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 	private ImageView micImage;
 	private View recordingContainer;
 	private TextView recordingHint;
+	private LinearLayout bottomLayout;
 	private File cameraFile;
 	private GFHandler<ChatActivity> micImageHandler = new GFHandler<ChatActivity>(
 			this);
@@ -161,9 +163,13 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 		recordingContainer = findViewById(R.id.recording_container);
 		recordingHint = (TextView) findViewById(R.id.recording_hint);
 		pullToRefreshList = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
+		bottomLayout = (LinearLayout)findViewById(R.id.bottom_view);
 		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		chatEv.addTextChangedListener(this);
 		userName = getIntent().getStringExtra("userName");
+		if(userName.equals("种好地团队")){
+			bottomLayout.setVisibility(View.GONE);
+		}
 		thumbnail = getIntent().getStringExtra("thumbnail");
 		titleTv.setText(getIntent().getStringExtra("title"));
 		emConversation = EMChatManager.getInstance().getConversation(userName);

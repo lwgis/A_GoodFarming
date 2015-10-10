@@ -44,6 +44,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
     private LinearLayout startLayout;
     private MyTextButton startButton;
     private boolean isOpen = false;
+    private boolean isStart = false;
     private GFHandler<RubblerActivity> handler = new GFHandler<RubblerActivity>(this);
  
     @Override
@@ -132,12 +133,58 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		// TODO Auto-generated method stub
     	if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) { 
 	        if (event.getAction() == KeyEvent.ACTION_DOWN) { 
-	        	if(!isOpen&&guaResult.isSuccess()){
-	        		cancelGua();
+	        	if(!isStart){
+	        		if(guaResult.isSuccess()){
+	        			cancelGua();
+	        		}
+	        		finish();
 	        	}
+	        	else{
+	        		if(!isOpen){
+	        			final Dialog dialog = new Dialog(this, R.style.MyDialog);
+	        	        //设置它的ContentView
+	        			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	        	        View layout = inflater.inflate(R.layout.dialog, null);
+	        	        dialog.setContentView(layout);
+	        	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+	        	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+	        	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+	        	        okBtn.setText("确定退出");
+	        	        okBtn.setOnClickListener(new OnClickListener() {
+	        				
+	        				@Override
+	        				public void onClick(View v) {
+	        					// TODO Auto-generated method stub
+	        					dialog.dismiss();
+	        					if(guaResult.isSuccess()){
+	        	        			cancelGua();
+	        	        		}
+	        					finish();
+	        				}
+	        			});
+	        	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+	        	        cancelButton.setText("继续刮完");
+	        	        cancelButton.setOnClickListener(new OnClickListener() {
+	        				
+	        				@Override
+	        				public void onClick(View v) {
+	        					// TODO Auto-generated method stub
+	        					dialog.dismiss();
+	        				}
+	        			});
+	        	        titleView.setText("提示");
+	        	        contentView.setText("您还没有刮开奖卷，确定要退出吗？");
+	        	        dialog.setCancelable(false);
+	        	        dialog.show();
+		        	}
+	        		else{
+	        			finish();
+	        		}
+	        	}
+	        	
 	        } 
 	    } 
-		return super.dispatchKeyEvent(event);
+		return false;
 
 	}
 
@@ -153,6 +200,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		case R.id.start_btn:
 			startLayout.setVisibility(View.GONE);
 			guaGuaKa.setVisibility(View.VISIBLE);
+			isStart = true;
 			break;
 
 		default:
