@@ -91,6 +91,7 @@
                 android:maxLines="3"
                 android:minHeight="40dp"
                 android:onClick="editClick"
+                android:hint="由于咨询较多，若未及时回复请谅解"
                 android:paddingLeft="5dp"
                 android:textSize="18sp" />
 
