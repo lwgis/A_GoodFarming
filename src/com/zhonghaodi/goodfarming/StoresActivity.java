@@ -234,10 +234,10 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return;
-//			x=location.getLongitude();
-//			y=location.getLatitude();
-			x=118.780813;
-			y=36.815181;
+			x=location.getLongitude();
+			y=location.getLatitude();
+//			x=118.780813;
+//			y=36.815181;
 			if(progressDialog!=null){
 				progressDialog.dismiss();
 			}
