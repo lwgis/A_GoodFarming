@@ -167,11 +167,11 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		chatEv.addTextChangedListener(this);
 		userName = getIntent().getStringExtra("userName");
-		if(userName.equals("种好地团队")){
+		if(userName!=null&&userName.equals("种好地团队")){
 			bottomLayout.setVisibility(View.GONE);
 		}
 		thumbnail = getIntent().getStringExtra("thumbnail");
-		titleTv.setText(getIntent().getStringExtra("title"));
+		titleTv.setText(getIntent().getStringExtra("title")!=null?getIntent().getStringExtra("title"):"");
 		emConversation = EMChatManager.getInstance().getConversation(userName);
 		emConversation.resetUnreadMsgCount();
 		pullToRefreshList.setAdapter(adapter);

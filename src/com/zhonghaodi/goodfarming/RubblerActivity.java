@@ -213,32 +213,33 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		// TODO Auto-generated method stub
 		isOpen = true;
 		if(guaResult.isSuccess()){
-			final Dialog dialog = new Dialog(this, R.style.MyDialog);
-	        //设置它的ContentView
-			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	        View layout = inflater.inflate(R.layout.dialog_alert, null);
-	        dialog.setContentView(layout);
-	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-	        okBtn.setText("去填写收货地址");
-	        okBtn.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Intent intent = new Intent(RubblerActivity.this, GuaConfirmActivity.class);
-					intent.putExtra("commodity", guaResult);
-					RubblerActivity.this.startActivity(intent);
-					dialog.dismiss();
-					RubblerActivity.this.finish();
-				}
-			});
-	        
-	        titleView.setText("提示");
-	        contentView.setText("恭喜您刮中"+guaResult.getGuagua().getName()+"，请马上去填写收货地址，否则抽奖结果将作废。");
-	        dialog.setCancelable(false);
-	        dialog.show();
+			GFToast.show("恭喜您刮中"+guaResult.getGuagua().getName()+"，请您填写收货地址。");
+			Intent intent = new Intent(RubblerActivity.this, GuaConfirmActivity.class);
+			intent.putExtra("commodity", guaResult);
+			RubblerActivity.this.startActivity(intent);
+			RubblerActivity.this.finish();
+//			final Dialog dialog = new Dialog(this, R.style.MyDialog);
+//	        //设置它的ContentView
+//			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//	        View layout = inflater.inflate(R.layout.dialog_alert, null);
+//	        dialog.setContentView(layout);
+//	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+//	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+//	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+//	        okBtn.setText("去填写收货地址");
+//	        okBtn.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					
+//				}
+//			});
+//	        
+//	        titleView.setText("提示");
+//	        contentView.setText("恭喜您刮中"+guaResult.getGuagua().getName()+"，请马上去填写收货地址，否则抽奖结果将作废。");
+//	        dialog.setCancelable(false);
+//	        dialog.show();
 		}
 	}
 

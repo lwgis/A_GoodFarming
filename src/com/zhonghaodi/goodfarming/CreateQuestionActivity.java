@@ -35,10 +35,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class CreateQuestionActivity extends Activity implements HandMessage {
-	private static final int TypeQuestion = 1;
-	private static final int TypeImage = 2;
-	private static final int TypeNoImage = 3;
-	private static final int TypeError = -1;
+	private  final int TypeQuestion = 1;
+	private  final int TypeImage = 2;
+	private  final int TypeNoImage = 3;
+	private  final int TypeError = -1;
 	private SelectCropFragment selectCropFragment = null;
 	private CreateQuestionFragment createQuestionFragment = null;
 	private TextView titleTv = null;

@@ -67,10 +67,13 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 	public void displayCommodity(){
 		
 		Commodity commodity = (Commodity)getIntent().getSerializableExtra("commodity");
-		ImageLoader.getInstance().displayImage(
-				HttpUtil.ImageUrl+"commodities/small/"
-						+ commodity.getImage(),
-						cImageView, ImageOptions.options);
+		if(commodity.getImage()!=null){
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"commodities/small/"
+							+ commodity.getImage(),
+							cImageView, ImageOptions.options);
+		}
+		
 		cTextView.setText(commodity.getName());
 		poinTextView.setText("积分："+commodity.getPoint());
 		desTextView.setText(commodity.getDescription());
