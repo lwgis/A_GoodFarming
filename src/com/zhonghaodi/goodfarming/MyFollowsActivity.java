@@ -67,7 +67,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				// TODO Auto-generated method stub
 				NysHolder nHolder = (NysHolder)view.getTag();
 				Nys nys = nyss.get(position);
-				if(nys.getLevel().getId()==3){
+				if(nys.getLevelID()==3){
 					Intent intent = new Intent(MyFollowsActivity.this, StoreActivity.class);
 					Bundle bundle = new Bundle();
 					User user = (User)nys;
