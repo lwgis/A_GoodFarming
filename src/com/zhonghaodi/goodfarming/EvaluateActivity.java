@@ -48,9 +48,24 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 		cancelButton.setOnClickListener(this);
 		sendButton = (MyTextButton)findViewById(R.id.ok_button);
 		sendButton.setOnClickListener(this);
-		urid = getIntent().getIntExtra("urid", 0);
-		rid = getIntent().getIntExtra("rid", 0);
-		nzdid = getIntent().getStringExtra("nzdid");
+		if(getIntent().hasExtra("urid")){
+			urid = getIntent().getIntExtra("urid", 0);
+		}
+		else{
+			urid=0;
+		}
+		if(getIntent().hasExtra("rid")){
+			rid = getIntent().getIntExtra("rid", 0);
+		}
+		else{
+			rid=0;
+		}
+		if(getIntent().hasExtra("nzdid")){
+			nzdid = getIntent().getStringExtra("nzdid");
+		}
+		else{
+			nzdid="";
+		}
 		loadScoring();
 	}
 	
@@ -99,6 +114,10 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 		final String evaluate =radioButton.getText()+"。"+evaluateEditText.getText().toString();
 		if(evaluate.isEmpty()){
 			GFToast.show("请输入评价意见");
+			return;
+		}
+		if(nzdid.equals("") || urid==0 || rid==0){
+			GFToast.show("id值有错误");
 			return;
 		}
 		sendButton.setEnabled(false);

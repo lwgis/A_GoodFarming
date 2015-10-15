@@ -32,6 +32,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.NameValuePair;
+
+import android.R.integer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -531,6 +533,42 @@ public class HttpUtil {
 				"yyyy-MM-dd HH:mm:ss", new String[] { User.class.toString() });
 		return HttpUtil.executeHttpPost(RootURL + "users/login", jsonString);
 	}
+	
+	/**
+	 * 检查别名是否存在
+	 * @param alias
+	 * @return
+	 */
+	public static String checkAlias(final String alias) {
+		String jsonString = null;
+		String urlString = RootURL + "users/checkname";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return alias;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "alias";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
 
 	/**
 	 * @param user
@@ -580,6 +618,117 @@ public class HttpUtil {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * 赞同回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static String agreeResponse(int qid,int rid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/agree";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 反对回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static String disagreeResponse(int qid,int rid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/disagree";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 采纳回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static String adoptResponse(int qid,int rid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/adopt";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
 	}
 
 	public static String getRecipe(String nzdCode, int rid) {

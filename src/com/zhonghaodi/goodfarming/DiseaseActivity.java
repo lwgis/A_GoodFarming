@@ -56,7 +56,12 @@ public class DiseaseActivity extends Activity implements HandMessage {
 				finish();
 			}
 		});
-		diseaseId = getIntent().getIntExtra("diseaseId", 0);
+		if(getIntent().hasExtra("diseaseId")){
+			diseaseId = getIntent().getIntExtra("diseaseId", 0);
+		}
+		else{
+			diseaseId=0;
+		}
 		pullToRefreshListView
 				.setOnRefreshListener(new OnRefreshListener<ListView>() {
 

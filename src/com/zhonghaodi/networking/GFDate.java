@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import android.R.integer;
+
 
 public class GFDate {
 	private final static ThreadLocal<SimpleDateFormat> dateFormater2 = new ThreadLocal<SimpleDateFormat>() {
@@ -121,6 +123,41 @@ public class GFDate {
 		return ftime;
 
 	}
+	
+	public static boolean lessTenMinutes(String sdate) {
+		Date time = toDate(sdate);
+		if (time == null) {
+			return false;
+		}
+		String ftime = "";
+		Calendar cal = Calendar.getInstance();
+
+		// 判断是否是同一天
+		String curDate = dateFormater2.get().format(cal.getTime());
+		String paramDate = dateFormater2.get().format(time);
+		if (curDate.subSequence(0, curDate.indexOf(" ")).equals(paramDate.subSequence(0, paramDate.indexOf(" ")))) {
+			if ((cal.getTimeInMillis()- time.getTime())/60000<1) {
+				return true;
+			}
+			int hour = (int) ((cal.getTimeInMillis() - time.getTime()) / 3600000);
+			if (hour == 0){
+				long minute = ((cal.getTimeInMillis() - time.getTime()) / 60000);
+				if(minute<10){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}	
+			else
+				return false;
+		}
+		else{
+			return false;
+		}
+
+	}
+	
 	/**
 	 * 将字符串转位日期类型
 	 * 

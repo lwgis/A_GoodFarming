@@ -12,24 +12,17 @@ public class HolderResponse {
 	public	TextView timeTv;
 	public	UrlTextView contentTv;
 	public	ImageView headIv;
-	public TextView countTv;
-	public Button zanBtn;
+	public MyTextButton agreebtn;
+	public MyTextButton disagreebtn;
+	public View cainaView;
 		public HolderResponse(View view) {
 			nameTv = (TextView) view.findViewById(R.id.name_text);
 			timeTv = (TextView) view.findViewById(R.id.time_text);
 			contentTv = (UrlTextView) view.findViewById(R.id.content_text);
 			headIv = (ImageView) view.findViewById(R.id.head_image);
-			countTv=(TextView)view.findViewById(R.id.count_text);
-			zanBtn=(Button)view.findViewById(R.id.zan_button);
+			agreebtn = (MyTextButton)view.findViewById(R.id.agree_button);
+			disagreebtn = (MyTextButton)view.findViewById(R.id.disagree_button);
+			cainaView = view.findViewById(R.id.cainalayout);
 		}
-		public void zan() {
-			int count=Integer.parseInt(countTv.getText().toString());
-			count++;
-			countTv.setText(String.valueOf(count));
-		}
-		public void cancelZan() {
-			int count=Integer.parseInt(countTv.getText().toString());
-			count--;
-			countTv.setText(String.valueOf(count));
-		}
+		
 }

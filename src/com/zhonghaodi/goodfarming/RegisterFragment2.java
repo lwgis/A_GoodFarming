@@ -10,6 +10,7 @@ import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.LoginUser;
 import com.zhonghaodi.model.User;
@@ -124,10 +125,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					GFToast.show("别名不能为空");
 					return;
 				}
-//				if(aliasEt.getText().toString().equals("种好地")){
-//					GFToast.show("别名不能使用APP名称");
-//					return;
-//				}
+
 				if (passwordEt.getText().toString().isEmpty()) {
 					Toast.makeText(getActivity(), "密码不能为空",
 							Toast.LENGTH_LONG).show();
@@ -138,35 +136,16 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 							.show();
 					return;
 				}
-				registerBtn.setEnabled(false);
-//				registerBtn.setText("注册中...");
 				new Thread(new Runnable() {
 
 					@Override
 					public void run() {
-						isSending = true;
-						try {
-							headImageName = ImageUtil.uploadImage(
-									headGfImageButton.getBitmap(), "users");
-							if(headImageName==null || headImageName.isEmpty() || headImageName.equals("error")){
-								Message msg = handler.obtainMessage();
-								msg.what = 0;
-								msg.obj = "图片上传失败";
-								msg.sendToTarget();
-								return;
-							}
-							Message msg = handler.obtainMessage();
-							msg.what = 1;
-							msg.sendToTarget();
-						} catch (Throwable e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							Message msg = handler.obtainMessage();
-							msg.what = 0;
-							msg.obj="注册失败";
-							msg.sendToTarget();
-							isSending = false;
-						}
+						String jsonString= HttpUtil.checkAlias(aliasEt.getText().toString());
+						Message numMsg = handler
+								.obtainMessage();
+						numMsg.what = 3;
+						numMsg.obj = jsonString;
+						numMsg.sendToTarget();
 					}
 				}).start();
 
@@ -230,6 +209,39 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			}
 		});
 		return view;
+	}
+	
+	private void updateImage(){
+		registerBtn.setEnabled(false);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				isSending = true;
+				try {
+					headImageName = ImageUtil.uploadImage(
+							headGfImageButton.getBitmap(), "users");
+					if(headImageName==null || headImageName.isEmpty() || headImageName.equals("error")){
+						Message msg = handler.obtainMessage();
+						msg.what = 0;
+						msg.obj = "图片上传失败";
+						msg.sendToTarget();
+						return;
+					}
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj="注册失败";
+					msg.sendToTarget();
+					isSending = false;
+				}
+			}
+		}).start();
 	}
 
 	@Override
@@ -331,6 +343,22 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			isSending = false;
 			registerFragment2.registerBtn.setEnabled(true);
 			registerFragment2.registerBtn.setText("注册");
+			break;
+		case 3:
+			//验证别名的返回结果解析
+			if(msg.obj!=null){
+				Checkobj checkobj = (Checkobj) GsonUtil.fromJson(
+						msg.obj.toString(), Checkobj.class);
+				if(checkobj!=null && !checkobj.isResult()){
+					updateImage();
+				}
+				else{
+					GFToast.show("别名已经存在！");
+				}
+			}
+			else{
+				GFToast.show("别名验证失败");
+			}
 			break;
 		default:
 			break;

@@ -94,5 +94,8 @@ public class Question {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	public String getStime(){
+		return time;
+	}
 
 }

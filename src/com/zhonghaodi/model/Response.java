@@ -9,6 +9,9 @@ public class Response {
 	private User writer;
 	private String content ;
 	private int zan;
+	private int agree;
+	private int disagree;
+	private boolean adopt;
 	private String time;
 	private ArrayList<Zan> items;
 	public int getId() {
@@ -48,6 +51,25 @@ public class Response {
 		this.items = items;
 	}
 	
+	public int getAgree() {
+		return agree;
+	}
+	public void setAgree(int agree) {
+		this.agree = agree;
+	}
+	public int getDisagree() {
+		return disagree;
+	}
+	public void setDisagree(int disagree) {
+		this.disagree = disagree;
+	}
+	
+	public boolean isAdopt() {
+		return adopt;
+	}
+	public void setAdopt(boolean adopt) {
+		this.adopt = adopt;
+	}
 	/**是否有用户点过赞
 	 * @param uid 用户id
 	 * @return

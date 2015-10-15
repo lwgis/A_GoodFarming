@@ -13,6 +13,7 @@ import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.customui.HolderResponse;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
+import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
@@ -20,6 +21,7 @@ import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFString;
+import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -57,6 +59,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			this);
 	private ResponseAdapter adapter;
 	private Response selectResponse;
+	private boolean mContains=false;
+	private String uid;
+	private boolean adopt = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					Intent it = new Intent(QuestionActivity.this,
 							CreateResponseActivity.class);
 					it.putExtra("questionId", questionId);
+					it.putExtra("time", question.getStime());
+					it.putExtra("contains", mContains);
 					QuestionActivity.this.startActivityForResult(it, 2);
 				} else {
 					Intent it = new Intent(QuestionActivity.this,
@@ -106,6 +113,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					}
 				});
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
+		uid=GFUserDictionary.getUserId();
 	}
 	
 	@Override
@@ -140,6 +148,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					CreateResponseActivity.class);
 			it.putExtra("questionId", questionId);
 			it.putExtra("wname", wname);
+			it.putExtra("time", question.getStime());
+			it.putExtra("contains", mContains);
 			QuestionActivity.this.startActivityForResult(it, 2);
 		}
 		else{
@@ -464,70 +474,30 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						HttpUtil.ImageUrl+"users/small/"
 								+ response.getWriter().getThumbnail(),
 						holderResponse.headIv, ImageOptions.options);
+				if(response.getWriter().getId().equals(uid)){
+					mContains=true;
+				}
 				holderResponse.nameTv.setText(response.getWriter().getAlias());
 				holderResponse.timeTv.setText(response.getTime());
 				String rcontent = PublicHelper.TrimRight(response.getContent());
 				holderResponse.contentTv.setHtmlText(rcontent);
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
-				holderResponse.countTv
-						.setText(String.valueOf(response.getZan()));
-				if (response.getWriter().getId()
-						.equals(GFUserDictionary.getUserId())) {
-					holderResponse.zanBtn.setEnabled(false);
-				} else {
-					final Button zanButton = holderResponse.zanBtn;
-					if (response.isHasUser(GFUserDictionary.getUserId())) {
-						zanButton.setSelected(true);
-					} else {
-						zanButton.setSelected(false);
-					}
-					holderResponse.zanBtn
-							.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									if (GFUserDictionary.getUserId() == null) {
-										Intent it = new Intent(
-												QuestionActivity.this,
-												LoginActivity.class);
-										QuestionActivity.this.startActivity(it);
-									} else {
-										zanButton.setSelected(!zanButton
-												.isSelected());
-										if (zanButton.isSelected()) {
-											new Thread(new Runnable() {
-
-												@Override
-												public void run() {
-													HttpUtil.zanResponse(
-															question.getId(),
-															response.getId());
-												}
-											}).start();
-											response.zan(GFUserDictionary
-													.getUserId());
-											holder.zan();
-											int point = GFPointDictionary.getZanPoint();
-											if(point>0){
-												GFToast.show("点赞成功，积分+"+point+" ^-^");
-											}
-										} else {
-											new Thread(new Runnable() {
-
-												@Override
-												public void run() {
-													HttpUtil.cancelZanResponse(
-															question.getId(),
-															response.getId());
-												}
-											}).start();
-											response.cancelZan(GFUserDictionary
-													.getUserId());
-											holder.cancelZan();
-										}
-									}
-								}
-							});
+				if(question.getWriter().getId().equals(uid)){
+					holderResponse.agreebtn.setText("采纳");
 				}
+				else{
+					holderResponse.agreebtn.setText("赞同("+response.getAgree()+")");
+				}
+				holderResponse.agreebtn.setTag(response);
+				holderResponse.agreebtn.setOnClickListener(QuestionActivity.this);
+				holderResponse.disagreebtn.setText("反对("+response.getDisagree()+")");
+				holderResponse.disagreebtn.setTag(response);
+				holderResponse.disagreebtn.setOnClickListener(QuestionActivity.this);
+				if(response.isAdopt()){
+					holderResponse.cainaView.setVisibility(View.VISIBLE);
+					adopt = true;
+				}
+
 				holderResponse.headIv.setTag(response.getWriter());
 				holderResponse.headIv.setOnClickListener(QuestionActivity.this);
 				break;
@@ -567,34 +537,97 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		User user = (User)v.getTag();
-		if(user.getLevelID()!=1){
-			Intent it = new Intent();
-			it.setClass(this, ChatActivity.class);
-			it.putExtra("userName", user.getPhone());
-			it.putExtra("title", user.getAlias());
-			it.putExtra("thumbnail", user.getThumbnail());
-			startActivity(it);
+		switch (v.getId()) {
+		case R.id.head_image:
+			User user = (User)v.getTag();
+			if(user.getLevelID()!=1){
+				Intent it = new Intent();
+				it.setClass(this, ChatActivity.class);
+				it.putExtra("userName", user.getPhone());
+				it.putExtra("title", user.getAlias());
+				it.putExtra("thumbnail", user.getThumbnail());
+				startActivity(it);
+			}
+			break;
+		case R.id.agree_button:
+			if(question.getWriter().getId().equals(uid)){
+				if(adopt){
+					GFToast.show("已经采纳过了");
+					return;
+				}
+				selectResponse = (Response)v.getTag();
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						String jsonString = HttpUtil.adoptResponse(questionId,selectResponse.getId(),question.getWriter().getId());
+						Message msg = handler.obtainMessage();
+						msg.what = 6;
+						msg.obj = jsonString;
+						msg.sendToTarget();
+					}
+				}).start();
+				
+			}
+			else{
+				selectResponse = (Response)v.getTag();
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						String jsonString = HttpUtil.agreeResponse(questionId,selectResponse.getId(),uid);
+						Message msg = handler.obtainMessage();
+						msg.what = 4;
+						msg.obj = jsonString;
+						msg.sendToTarget();
+					}
+				}).start();
+			}
+			break;
+		case R.id.disagree_button:
+			selectResponse = (Response)v.getTag();
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					String jsonString = HttpUtil.disagreeResponse(questionId,selectResponse.getId(),uid);
+					Message msg = handler.obtainMessage();
+					msg.what = 5;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+			break;
+		default:
+			break;
 		}
+		
 		
 	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		QuestionActivity activity = (QuestionActivity) object;
-		if(msg.what==1){
+		switch (msg.what) {
+		case 1:
 			Gson gson = new Gson();
 			String jsonString = (String) msg.obj;
 			activity.question = gson.fromJson(jsonString, Question.class);
 			if(question.getStatus()!=1){
+				if(question.getWriter().getId().equals(uid)){
+					mContains=true;
+				}
 				activity.adapter.notifyDataSetChanged();
 			}
 			else{
 				GFToast.show("问题已删除");
 			}
 			activity.pullToRefreshListView.onRefreshComplete();
-		}
-		else if(msg.what == 3){
+			break;
+		case 3:
 			String strerr = msg.obj.toString();
 			if(!strerr.isEmpty()){
 				GFToast.show(strerr);
@@ -603,6 +636,59 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				question.getResponses().remove(selectResponse);
 				adapter.notifyDataSetChanged();
 			}
+			break;
+		case 4:
+			if(msg.obj!=null){
+				Checkobj checkobj = (Checkobj) GsonUtil.fromJson(
+						msg.obj.toString(), Checkobj.class);
+				if(checkobj!=null && checkobj.isResult()){
+					selectResponse.setAgree(selectResponse.getAgree()+1);
+					adapter.notifyDataSetChanged();
+				}
+				else{
+					GFToast.show(checkobj.getMessage());
+				}
+			}
+			else{
+				GFToast.show("操作失败");
+			}
+			break;
+		case 5:
+			if(msg.obj!=null){
+				Checkobj checkobj = (Checkobj) GsonUtil.fromJson(
+						msg.obj.toString(), Checkobj.class);
+				if(checkobj!=null && checkobj.isResult()){
+					selectResponse.setDisagree(selectResponse.getDisagree()+1);
+					adapter.notifyDataSetChanged();
+				}
+				else{
+					GFToast.show(checkobj.getMessage());
+				}
+			}
+			else{
+				GFToast.show("操作失败");
+			}
+			break;
+		case 6:
+			if(msg.obj!=null){
+				Checkobj checkobj = (Checkobj) GsonUtil.fromJson(
+						msg.obj.toString(), Checkobj.class);
+				if(checkobj!=null && checkobj.isResult()){
+					selectResponse.setAdopt(true);
+					adapter.notifyDataSetChanged();
+				}
+				else{
+					GFToast.show(checkobj.getMessage());
+				}
+			}
+			else{
+				GFToast.show("操作失败");
+			}
+			break;
+
+		default:
+			break;
 		}
+		
 	}
 }

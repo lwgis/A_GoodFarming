@@ -1,5 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
+import java.util.Date;
+
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
@@ -7,6 +9,7 @@ import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.User;
+import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFString;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -32,6 +35,8 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 	private GFHandler<CreateResponseActivity> handler = new GFHandler<CreateResponseActivity>(
 			this);
 	private String wname="";
+	private String qtime="";
+	private boolean contains=false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -39,11 +44,15 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 		super.setContentView(R.layout.activity_create_response);
 		contentEt = (MyEditText) findViewById(R.id.content_edit);
 		questionId = getIntent().getIntExtra("questionId", 0);
-		wname = getIntent().getStringExtra("wname");
+		if(getIntent().hasExtra("wname")){
+			wname = getIntent().getStringExtra("wname");
+		}
 		TextView titleTxt = (TextView)findViewById(R.id.title_text);
 		if(wname!=null&&!wname.isEmpty()){
 			titleTxt.setText(wname.substring(0, wname.length()-1));
 		}
+		qtime=getIntent().getStringExtra("time");
+		contains = getIntent().getBooleanExtra("contains", false);
 		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -142,12 +151,23 @@ public class CreateResponseActivity extends Activity implements HandMessage {
 	public void handleMessage(Message msg, Object object) {
 		CreateResponseActivity activity = (CreateResponseActivity) object;
 		if (msg.what == 1) {
-			int point = GFPointDictionary.getResponsePoint();
-			if(point>0){
-				GFToast.show("回复成功,积分+"+point+" ^-^");
+			if(contains){
+				GFToast.show("回复成功");
 			}
 			else{
-				GFToast.show("回复成功");
+				boolean less = GFDate.lessTenMinutes(qtime);
+				int point = GFPointDictionary.getResponsePoint();
+				if(point>0){
+					if(less){
+						GFToast.show("回复成功,10分钟内回答双倍积分+"+(2*point)+" ^-^");
+					}
+					else{
+						GFToast.show("回复成功,积分+"+point+" ^-^");
+					}
+				}
+				else{
+					GFToast.show("回复成功");
+				}
 			}
 			
 		} else {

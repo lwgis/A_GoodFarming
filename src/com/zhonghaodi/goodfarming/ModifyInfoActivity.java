@@ -11,6 +11,7 @@ import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
@@ -149,10 +150,6 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 			GFToast.show("别名不能为空");
 			return;
 		}
-//		if(aliasEt.getText().toString().equals("种好地")){
-//			GFToast.show("别名不能使用APP名称");
-//			return;
-//		}
 		if(addressEt.getText().toString().isEmpty()){
 			GFToast.show("地址不能为空");
 			return;
@@ -165,7 +162,22 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 			GFToast.show("请上传头像");
 			return;
 		}
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString= HttpUtil.checkAlias(aliasEt.getText().toString());
+				Message numMsg = handler
+						.obtainMessage();
+				numMsg.what = 3;
+				numMsg.obj = jsonString;
+				numMsg.sendToTarget();
+			}
+		}).start();
 		
+	}
+	
+	public void uploadImage(){
 		if(!bitUpdate){
 			okBtn.setEnabled(false);
 			update();
@@ -310,6 +322,22 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 			} catch (Exception e) {
 				// TODO: handle exception
 				GFToast.show("更新失败");
+			}
+			break;
+		case 3:
+			//验证别名的返回结果解析
+			if(msg.obj!=null){
+				Checkobj checkobj = (Checkobj) GsonUtil.fromJson(
+						msg.obj.toString(), Checkobj.class);
+				if(checkobj!=null && !checkobj.isResult()){
+					uploadImage();
+				}
+				else{
+					GFToast.show("别名已经存在！");
+				}
+			}
+			else{
+				GFToast.show("别名验证失败");
 			}
 			break;
 		default:
