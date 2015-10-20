@@ -1,10 +1,11 @@
 package com.zhonghaodi.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.zhonghaodi.networking.GFDate;
 
-public class Response {
+public class Response implements Serializable {
 	private int id;
 	private User writer;
 	private String content ;
@@ -14,6 +15,8 @@ public class Response {
 	private boolean adopt;
 	private String time;
 	private ArrayList<Zan> items;
+	private ArrayList<RComment> comments;
+	private int commentCount;
 	public int getId() {
 		return id;
 	}
@@ -69,6 +72,20 @@ public class Response {
 	}
 	public void setAdopt(boolean adopt) {
 		this.adopt = adopt;
+	}
+	
+	public ArrayList<RComment> getComments() {
+		return comments;
+	}
+	public void setComments(ArrayList<RComment> comments) {
+		this.comments = comments;
+	}
+	
+	public int getCommentCount() {
+		return commentCount;
+	}
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
 	}
 	/**是否有用户点过赞
 	 * @param uid 用户id

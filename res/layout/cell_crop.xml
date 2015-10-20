@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical" 
-    android:background="#00000000">
+    android:background="@drawable/select_crop_color">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/group_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/background_with_shadow"
-        android:orientation="vertical" >
+        android:background="#38be99"
+        android:gravity="center_vertical|center_horizontal"
+        android:padding="3dip"
+        android:textSize="17sp" 
+        android:text="S"
+        android:textColor="#FFFFFF" />
 
-        <TextView
-            android:id="@+id/title_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Large Text"
-            android:textColor="#333333"
-            android:textSize="18sp" 
-            android:layout_marginLeft="5dp"/>
-
-        <TextView
-            android:id="@+id/discription_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Medium Text"
-            android:textColor="#808080"
-            android:textSize="13sp" 
-            android:layout_marginLeft="5dp"/>
-    </LinearLayout>
-
+    <TextView
+        android:id="@+id/crop_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="40.0dip"
+        android:paddingLeft="10dip"
+        android:text="深圳"
+        android:textColor="#444444"
+        android:textSize="15sp" 
+        />
+	<View  
+	   android:layout_width="match_parent"  
+	   android:layout_height="0.2px" 
+	   android:layout_marginLeft="10dip"
+	   android:layout_marginTop="3dip"
+	   android:layout_marginBottom="3dip"
+	   android:layout_marginRight="0dip"
+	   android:background="#cccccc"  
+	/> 
 </LinearLayout>

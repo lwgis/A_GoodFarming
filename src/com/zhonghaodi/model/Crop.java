@@ -13,6 +13,7 @@ public class Crop implements Parcelable,Serializable {
 	private int id;
 	private int category;
 	private String name;
+	private String pname;
 	public static final Parcelable.Creator<Crop> CREATOR = new Parcelable.Creator<Crop>(){  
         @Override  
         public Crop createFromParcel(Parcel source) {//从Parcel中读取数据，返回person对象  
@@ -55,6 +56,14 @@ public class Crop implements Parcelable,Serializable {
 
 	public void setCategory(int category) {
 		this.category = category;
+	}
+
+	public String getPname() {
+		return pname;
+	}
+
+	public void setPname(String pname) {
+		this.pname = pname;
 	}
 
 	@Override

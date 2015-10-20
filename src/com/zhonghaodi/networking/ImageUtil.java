@@ -44,7 +44,7 @@ public class ImageUtil {
 		      dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\""
 		          + "123.jpg" + "\"" + end);
 		      dos.writeBytes(end);
-		      double maxSize =200.00; 
+		      double maxSize =400.00; 
 		      ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		      bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 		      byte[] b = baos.toByteArray();

@@ -14,7 +14,6 @@ import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.customui.HolderResponse;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
 import com.zhonghaodi.model.Checkobj;
-import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
@@ -27,7 +26,6 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -41,17 +39,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class QuestionActivity extends Activity implements UrlOnClick,
-		HandMessage,OnClickListener {
+		HandMessage,OnClickListener{
 	private PullToRefreshListView pullToRefreshListView;
 	private Question question;
 	private int questionId;
@@ -126,9 +123,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			if(uid!=null){
 				
 				Response response = question.getResponses().get(info.position-2);
-				menu.add(0, 0, 0, "回复");
 				if(response.getWriter().getId().equals(uid)){
-					menu.add(0, 1, 1, "删除");
+					menu.add(0, 0, 0, "删除");
 				} 
 			}
 		}
@@ -142,50 +138,38 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
                 .getMenuInfo();
 		selectResponse = question.getResponses().get(info.position-2);
-		if(item.getItemId()==0){
-			String wname = "回复 "+question.getResponses().get(info.position-2).getWriter().getAlias()+"：";
-			Intent it = new Intent(QuestionActivity.this,
-					CreateResponseActivity.class);
-			it.putExtra("questionId", questionId);
-			it.putExtra("wname", wname);
-			it.putExtra("time", question.getStime());
-			it.putExtra("contains", mContains);
-			QuestionActivity.this.startActivityForResult(it, 2);
-		}
-		else{
-			final Dialog dialog = new Dialog(this, R.style.MyDialog);
-	        //设置它的ContentView
-			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	        View layout = inflater.inflate(R.layout.dialog, null);
-	        dialog.setContentView(layout);
-	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-	        okBtn.setText("确定");
-	        okBtn.setOnClickListener(new OnClickListener() {
+		final Dialog dialog = new Dialog(this, R.style.MyDialog);
+        //设置它的ContentView
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog, null);
+        dialog.setContentView(layout);
+        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+        okBtn.setText("确定");
+        okBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
 				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					dialog.dismiss();
-					
-					delete(question.getId(),selectResponse.getId());
-				}
-			});
-	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
-	        cancelButton.setText("取消");
-	        cancelButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					dialog.dismiss();
-				}
-			});
-	        titleView.setText("提示");
-	        contentView.setText("确定要删除选中的评论吗？");
-	        dialog.show();
-		}
+				delete(question.getId(),selectResponse.getId());
+			}
+		});
+        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+        cancelButton.setText("取消");
+        cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+        titleView.setText("提示");
+        contentView.setText("确定要删除选中的评论吗？");
+        dialog.show();
 		 
 		return super.onContextItemSelected(item);
 	}
@@ -500,6 +484,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 
 				holderResponse.headIv.setTag(response.getWriter());
 				holderResponse.headIv.setOnClickListener(QuestionActivity.this);
+				holderResponse.countTv.setText(String.valueOf(response.getCommentCount()));
+				holderResponse.countView.setTag(response);
+				holderResponse.countView.setOnClickListener(QuestionActivity.this);
+				
 				break;
 			default:
 				break;
@@ -600,6 +588,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					msg.sendToTarget();
 				}
 			}).start();
+			break;
+		case R.id.count_layout:
+			Response response = (Response)v.getTag();
+			Intent intent = new Intent(this, CommentActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("question", question);		
+			bundle.putSerializable("response", response);
+			intent.putExtras(bundle);
+			startActivity(intent);
 			break;
 		default:
 			break;

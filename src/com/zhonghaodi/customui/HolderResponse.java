@@ -15,6 +15,8 @@ public class HolderResponse {
 	public MyTextButton agreebtn;
 	public MyTextButton disagreebtn;
 	public View cainaView;
+	public View countView;
+	public TextView countTv;
 		public HolderResponse(View view) {
 			nameTv = (TextView) view.findViewById(R.id.name_text);
 			timeTv = (TextView) view.findViewById(R.id.time_text);
@@ -23,6 +25,8 @@ public class HolderResponse {
 			agreebtn = (MyTextButton)view.findViewById(R.id.agree_button);
 			disagreebtn = (MyTextButton)view.findViewById(R.id.disagree_button);
 			cainaView = view.findViewById(R.id.cainalayout);
+			countView = view.findViewById(R.id.count_layout);
+			countTv = (TextView)view.findViewById(R.id.count_tv);
 		}
 		
 }

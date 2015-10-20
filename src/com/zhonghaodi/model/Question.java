@@ -1,10 +1,11 @@
 package com.zhonghaodi.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.zhonghaodi.networking.GFDate;
 
-public class Question {
+public class Question implements Serializable {
 	private int id;
 	private String content;
 	private User writer;

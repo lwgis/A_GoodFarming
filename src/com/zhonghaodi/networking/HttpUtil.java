@@ -487,6 +487,12 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}
+	
+	public static String getSingleResponse(int qid,int rid) {
+		String urlString = RootURL + "questions/" + String.valueOf(qid)+"/responses/"+String.valueOf(rid);
+		String jsonString = HttpUtil.executeHttpGet(urlString);
+		return jsonString;
+	}
 
 	public static String getAllCropsString() {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "crops");
@@ -720,6 +726,60 @@ public class HttpUtil {
 		};
 		
 		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 反对回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static String commentResponse(int qid,int rid,final String uid,final String content) {
+		String jsonString = null;
+		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/comment";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair cotentValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return content;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "content";
+			}
+		};
+		
+		nameValuePairs.add(cotentValuePair1);
 		
 		try {
 			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
