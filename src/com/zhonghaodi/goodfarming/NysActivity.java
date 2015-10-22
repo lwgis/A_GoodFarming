@@ -68,11 +68,13 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	private NysAdapter adapter;
 	private GFHandler<NysActivity> handler = new GFHandler<NysActivity>(this);
 	private View clickView;
+	private TextView titleView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nys);
+		titleView = (TextView)findViewById(R.id.title_text);
 		uid = getIntent().getStringExtra("uid");
 		mid = GFUserDictionary.getUserId();
 		bfollow = getIntent().getBooleanExtra("bfollow", false);
@@ -910,6 +912,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			}
 			nysactivity.user = (Nys) GsonUtil
 					.fromJson(msg.obj.toString(), Nys.class);
+			titleView.setText(user.getLevel().getName());
 			loadNewDate();
 			
 			break;

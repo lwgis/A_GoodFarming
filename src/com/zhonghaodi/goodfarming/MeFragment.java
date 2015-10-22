@@ -215,6 +215,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.jifenTv.setText(String.valueOf(user.getPoint()));
 				holderMeInfo.youhuibiTv.setText(String.valueOf(user.getCurrency()));
 				holderMeInfo.fensiTv.setText(String.valueOf(user.getFanscount()));
+				holderMeInfo.fensiView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
 				break;
@@ -234,7 +235,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+		Intent intent = new Intent(getActivity(), MyFollowsActivity.class);
+		intent.putExtra("status", 1);
+		getActivity().startActivity(intent);
 	}
 
 	@Override

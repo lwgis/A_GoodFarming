@@ -42,12 +42,14 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 	private GFHandler<MyFollowsActivity> handler = new GFHandler<MyFollowsActivity>(this);
 	private String uid;
 	private Button addButton;
-	
+	private TextView titleView;
+	private int status = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_myfollows);
+		titleView = (TextView)findViewById(R.id.title_text);
 		gridView = (ListView)findViewById(R.id.pull_refresh_list);
 		addButton = (Button)findViewById(R.id.add_button);
 		addButton.setOnClickListener(this);
@@ -98,6 +100,15 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 		nyss = new ArrayList<Nys>();
 		adapter = new NysAdapter();
 		gridView.setAdapter(adapter);
+		status = getIntent().getIntExtra("status", 0);
+		if(status==0){
+			titleView.setText("我的关注");
+			addButton.setVisibility(View.VISIBLE);
+		}
+		else{
+			titleView.setText("我的粉丝");
+			addButton.setVisibility(View.GONE);
+		}
 	}
 	
 	@Override
@@ -110,11 +121,16 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 			startActivity(intent);
 			return;
 		}
-		loadNyss();
+		if(status==0){
+			loadNyss();
+		}
+		else{
+			loadFans();
+		}
 	}
 	
 	/**
-	 * 获取农艺师
+	 * 获取我的关注
 	 */
 	private void loadNyss(){
 		
@@ -125,6 +141,27 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 			public void run() {
 				
 				String jsString = HttpUtil.getFollows(uid);
+				Message msg1 = handler.obtainMessage();
+				msg1.what = 1;
+				msg1.obj = jsString;
+				msg1.sendToTarget();
+				
+			}
+		}).start();
+	}
+	
+	/**
+	 * 获取我的粉丝
+	 */
+	private void loadFans(){
+		
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				String jsString = HttpUtil.getFans(uid);
 				Message msg1 = handler.obtainMessage();
 				msg1.what = 1;
 				msg1.obj = jsString;

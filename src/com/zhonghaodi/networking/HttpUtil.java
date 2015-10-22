@@ -1017,6 +1017,14 @@ public class HttpUtil {
 		
 	}
 	
+	public static String getFans(String uid){
+		
+		String urlString = RootURL + "users/"+uid+"/fans";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
 	public static String follow(String uid,Nys nys){
 		String urlString = RootURL + "users/"+uid+"/follow";
 		Gson sGson=new Gson();
