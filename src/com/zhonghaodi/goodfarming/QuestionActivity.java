@@ -496,7 +496,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.countTv.setText(String.valueOf(response.getCommentCount()));
 				holderResponse.countView.setTag(response);
 				holderResponse.countView.setOnClickListener(QuestionActivity.this);
-				
 				break;
 			default:
 				break;

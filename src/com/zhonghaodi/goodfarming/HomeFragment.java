@@ -656,18 +656,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				bAll = 2;
 			}
 			break;
-		case R.id.head_image:
-			User user = (User)v.getTag();
-			if(user.getLevelID()!=1){
-				Intent itd = new Intent();
-				itd.setClass(getActivity(), ChatActivity.class);
-				itd.putExtra("userName", user.getPhone());
-				itd.putExtra("title", user.getAlias());
-				itd.putExtra("thumbnail", user.getThumbnail());
-				startActivity(itd);
-			}
-			
-			break;
+		
 		default:
 			break;
 		}

@@ -140,7 +140,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		
 		SharedPreferences deviceInfo = getSharedPreferences("StartInfo", 0);
         String updatetime = deviceInfo.getString("updatetime", "");
-        if (updatetime.equals("")) {
+        if (updatetime.equals("") || updatetime==null) {
 			bUpdate = true;
 		}
         else{
