@@ -49,6 +49,7 @@ import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Quan;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.Solution;
 import com.zhonghaodi.model.UpdateUser;
 import com.zhonghaodi.model.User;
 
@@ -498,6 +499,11 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "crops");
 		return jsonString;
 	}
+	
+	public static String getAllCropsHasDisease() {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "crops/hasDisease");
+		return jsonString;
+	}
 
 	public static void sendQuestion(Question question) throws Throwable {
 		String jsonString = JsonUtil.convertObjectToJson(question,
@@ -516,10 +522,148 @@ public class HttpUtil {
 		HttpUtil.executeHttpPost(urlString, jsonString);
 	}
 
-	public static String getDisease(int diseaseId) {
-		String urlString = RootURL + "diseases/" + String.valueOf(diseaseId);
+	public static String getDisease(int diseaseId,String uid) {
+		String urlString = RootURL + "diseases/" + String.valueOf(diseaseId)+"?uid="+uid;
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
+	}
+	
+	public static String sendSolution(Solution solution, int did)
+			throws Throwable {
+		String urlString = RootURL + "diseases/" + String.valueOf(did)
+				+ "/advise";
+		String jsonString = JsonUtil.convertObjectToJson(solution,
+				"yyyy-MM-dd HH:mm:ss",
+				new String[] { Solution.class.toString(), });
+		return HttpUtil.executeHttpPost(urlString, jsonString);
+	}
+	
+	public static String commentSolution(int did,int sid,final String uid,final String content) {
+		String jsonString = null;
+		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/comment";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair cotentValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return content;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "content";
+			}
+		};
+		
+		nameValuePairs.add(cotentValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	public static String deleteSolution(int did,int sid){
+		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String zanSolution(int did,int sid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/zan";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	public static String cancelZanSolution(int did,int sid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/cancelzan";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	public static String getSingleSolution(int did,int sid,String uid) {
+		String urlString = RootURL + "diseases/" + String.valueOf(did)+"/advice/"+String.valueOf(sid)+"?uid="+uid;
+		String jsonString = HttpUtil.executeHttpGet(urlString);
+		return jsonString;
+	}
+	
+	public static String deleteSolutionComment(int did,int sid,int cid){
+		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/comments/"+cid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
 	}
 
 	public static String checkUserIsExist(String phone) throws Throwable {
@@ -1949,6 +2093,17 @@ public class HttpUtil {
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
+	}
+	
+	/**
+	 * 根据作物获取病害
+	 * @param cid
+	 * @return
+	 */
+	public static String getDiseasesByCrop(int cid){
+		String url = RootURL + "diseases/crop?id="+cid;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
 	}
 	
 	/**

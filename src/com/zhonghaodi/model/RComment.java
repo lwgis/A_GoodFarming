@@ -10,6 +10,7 @@ public class RComment implements Serializable {
 
 	private int id;
 	private int rid;
+	private int sid;
 	private User writer;
 	private String content;
 	private String time;
@@ -32,6 +33,14 @@ public class RComment implements Serializable {
 
 	public void setRid(int rid) {
 		this.rid = rid;
+	}
+
+	public int getSid() {
+		return sid;
+	}
+
+	public void setSid(int sid) {
+		this.sid = sid;
 	}
 
 	public User getWriter() {

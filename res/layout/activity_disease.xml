@@ -51,5 +51,41 @@
         ptr:ptrHeaderBackground="@null"
         ptr:ptrHeaderSubTextColor="#00ffff"
         ptr:ptrHeaderTextColor="#868686" />
+    <LinearLayout
+        android:id="@+id/sendlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff" 
+    	android:visibility="gone"
+        android:orientation="horizontal"
+         >
+
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/chat_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:maxLines="3"
+            android:maxLength="50"
+            android:minHeight="40dp"
+            android:paddingLeft="5dp"
+            android:textSize="18sp" 
+            android:hint="50字以内的评论"/>
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/send_meassage_button"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="5dip"
+            android:background="@null"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="#444444"
+            android:textSize="20sp"/>
+    </LinearLayout>
 
 </LinearLayout>

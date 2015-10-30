@@ -2,8 +2,14 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.goodfarming.RecipesActivity.RecipeLocationListenner;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
@@ -58,6 +64,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	}
 
 	private int cropId;
+	private double x;
+	private double y;
+	// 定位相关
+	LocationClient mLocClient;
+	public QuestionLocationListenner myListener = new QuestionLocationListenner();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +140,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				finish();
 			}
 		});
+		location();
 		sendBtn.setEnabled(false);
 		showFragment(0);
 	}
@@ -171,6 +183,39 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 
 	public void setCropId(int cropId) {
 		this.cropId = cropId;
+	}
+	
+	private void location() {
+		
+		mLocClient = new LocationClient(getApplicationContext());
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(5000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+	}
+	
+	/**
+	 * 定位SDK监听函数
+	 */
+	public class QuestionLocationListenner implements BDLocationListener {
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			if (location == null)
+				return;
+			x=location.getLongitude();
+			y=location.getLatitude();
+//			x=118.7139351318554;
+//			y=36.80689424778121;
+			mLocClient.stop();
+			
+		}
+
+		public void onReceivePoi(BDLocation poiLocation) {
+		}
 	}
 
 	@Override
@@ -262,6 +307,12 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				question.setInform("0");
 				question.setTime("2015-04-08 00:00:00");
 				question.setAttachments(activity.netImages);
+				if(x>=73&&x<=136){
+					question.setX(x);
+				}
+				if(y>=3&&y<=54){
+					question.setY(y);
+				}
 				new Thread(new Runnable() {
 
 					@Override
@@ -298,6 +349,12 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			question.setCrop(crop);
 			question.setInform("0");
 			question.setTime("2015-04-08 00:00:00");
+			if(x>=73&&x<=136){
+				question.setX(x);
+			}
+			if(y>=3&&y<=54){
+				question.setY(y);
+			}
 			new Thread(new Runnable() {
 
 				@Override
@@ -318,7 +375,6 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		case TypeQuestion:
 			activity.isSending = false;
 			GFToast.show("发送成功");
-//			activity.finish();
 			break;
 		case TypeError:
 			if(msg.obj==null){

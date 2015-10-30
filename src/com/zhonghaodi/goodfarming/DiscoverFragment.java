@@ -25,6 +25,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	private View commodityView;
 	private View recipeView;
 	private View rubblerView;
+	private View bchView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +49,8 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		recipeView.setOnClickListener(this);
 		rubblerView = view.findViewById(R.id.layout8);
 		rubblerView.setOnClickListener(this);
+		bchView = view.findViewById(R.id.layout9);
+		bchView.setOnClickListener(this);
 		return view;
 	}
 
@@ -99,6 +102,10 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 			else{
 				GFToast.show("您的积分不足！");
 			}
+			break;
+		case R.id.layout9:
+			Intent intent8 = new Intent(getActivity(), FarmCropsActivity.class);
+			startActivity(intent8);
 			break;
 		default:
 			break;

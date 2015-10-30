@@ -321,6 +321,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder1.cropTv.setText(question.getCrop().getName());
 				holder1.headIv.setTag(question.getWriter());
 				holder1.headIv.setOnClickListener(QuestionActivity.this);
+				if(question.getAddress()!=null){
+					holder1.addressTextView.setText(question.getAddress());
+				}
 				break;
 			case 1:
 				holder2 = (Holder2) convertView.getTag();
@@ -369,6 +372,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder2.cropTv.setText(question.getCrop().getName());
 				holder2.headIv.setTag(question.getWriter());
 				holder2.headIv.setOnClickListener(QuestionActivity.this);
+				if(question.getAddress()!=null){
+					holder2.addressTextView.setText(question.getAddress());
+				}
 				break;
 			case 2:
 				holder3 = (Holder3) convertView.getTag();
@@ -448,6 +454,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder3.cropTv.setText(question.getCrop().getName());
 				holder3.headIv.setTag(question.getWriter());
 				holder3.headIv.setOnClickListener(QuestionActivity.this);
+				if(question.getAddress()!=null){
+					holder3.addressTextView.setText(question.getAddress());
+				}
 				break;
 			case 3:
 				holderResponse = (HolderResponse) convertView.getTag();

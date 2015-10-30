@@ -9,6 +9,9 @@ public class Disease {
 	private List<NetImage>attachments;
 	private String thumbnail;
 	private List<Recipe>recipes;
+	private List<Solution> solutions;
+	private Category_disease category;
+	private Crop crop;
 	public int getId() {
 		return id;
 	}
@@ -45,4 +48,23 @@ public class Disease {
 	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
 	}
+	public Category_disease getCategory() {
+		return category;
+	}
+	public void setCategory(Category_disease category) {
+		this.category = category;
+	}
+	public Crop getCrop() {
+		return crop;
+	}
+	public void setCrop(Crop crop) {
+		this.crop = crop;
+	}
+	public List<Solution> getSolutions() {
+		return solutions;
+	}
+	public void setSolutions(List<Solution> solutions) {
+		this.solutions = solutions;
+	}
+	
 }

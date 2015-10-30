@@ -14,6 +14,7 @@ public class Crop implements Parcelable,Serializable {
 	private int category;
 	private String name;
 	private String pname;
+	private String image;
 	public static final Parcelable.Creator<Crop> CREATOR = new Parcelable.Creator<Crop>(){  
         @Override  
         public Crop createFromParcel(Parcel source) {//从Parcel中读取数据，返回person对象  
@@ -70,6 +71,14 @@ public class Crop implements Parcelable,Serializable {
 	public int describeContents() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	@Override

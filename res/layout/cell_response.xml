@@ -166,13 +166,13 @@
 	     <ImageView
               android:id="@+id/caina_image"
               android:layout_width="60dp"
-              android:layout_height="60dp"
+              android:layout_height="79dp"
               android:layout_marginRight="5dp"
               android:layout_marginTop="5dp"
               android:layout_alignParentRight="true"
               android:padding="2dip"
               android:scaleType="centerCrop"
-              android:src="@drawable/cai_na" 
+              android:src="@drawable/caina" 
               android:focusable="false"
               />
 	</RelativeLayout>

@@ -6,38 +6,58 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderDisease;
 import com.zhonghaodi.customui.HolderRecipe;
+import com.zhonghaodi.customui.MyEditText;
+import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.customui.SolutionHolder;
 import com.zhonghaodi.model.Disease;
+import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.Solution;
+import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DiseaseActivity extends Activity implements HandMessage {
+public class DiseaseActivity extends Activity implements HandMessage,OnClickListener {
 	private PullToRefreshListView pullToRefreshListView;
 	private TextView titleTv;
 	private int diseaseId;
 	private Disease disease;
 	private DiseaseAdapter adapter;
+	private LinearLayout sendLayout;
+	private MyEditText mzEditText;
+	private MyTextButton sendButton;
 	private GFHandler<DiseaseActivity> handler = new GFHandler<DiseaseActivity>(
 			this);
+	private Solution selectSolution;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +66,10 @@ public class DiseaseActivity extends Activity implements HandMessage {
 		adapter = new DiseaseAdapter();
 		super.setContentView(R.layout.activity_disease);
 		titleTv = (TextView) findViewById(R.id.title_text);
+		sendLayout = (LinearLayout)findViewById(R.id.sendlayout);
+		mzEditText = (MyEditText)findViewById(R.id.chat_edit);
+		sendButton = (MyTextButton)findViewById(R.id.send_meassage_button);
+		sendButton.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setAdapter(adapter);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
@@ -71,22 +95,9 @@ public class DiseaseActivity extends Activity implements HandMessage {
 						loadData();
 					}
 				});
+		registerForContextMenu(pullToRefreshListView.getRefreshableView());
 		loadData();
-		pullToRefreshListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				if (position==1) {
-					return;
-				}
-				Intent it=new Intent();
-				it.setClass(DiseaseActivity.this, RecipeActivity.class);
-				it.putExtra("recipeId", disease.getRecipes().get(position-2).getId());
-				it.putExtra("nzdCode", disease.getRecipes().get(position-2).getNzd().getId());
-				DiseaseActivity.this.startActivity(it);
-			}
-		});
+		
 	}
 
 	protected void loadData() {
@@ -95,16 +106,93 @@ public class DiseaseActivity extends Activity implements HandMessage {
 			@Override
 			public void run() {
 				try {
-					String jsonString = HttpUtil.getDisease(diseaseId);
+					String uid = GFUserDictionary.getUserId();
+					String jsonString = HttpUtil.getDisease(diseaseId,uid);
 					Message msg = handler.obtainMessage();
+					msg.what = 1;
 					msg.obj = jsonString;
 					msg.sendToTarget();
 				} catch (Exception e) {
-					Toast.makeText(DiseaseActivity.this, "获取病虫害信息失败",
-							Toast.LENGTH_SHORT).show();
-					pullToRefreshListView.onRefreshComplete();
 					e.printStackTrace();
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = "获取病虫害信息失败";
+					msg.sendToTarget();
 				}
+			}
+		}).start();
+	}
+	
+	private void sendText(final String content){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					Solution solution = new Solution();
+					solution.setContent(content);
+					User user = new User();
+					user.setId(GFUserDictionary.getUserId());
+					solution.setWriter(user);
+					HttpUtil.sendSolution(solution, disease.getId());
+					Message msg = handler.obtainMessage();
+					msg.what = 2;
+					msg.sendToTarget();
+					user = null;
+					solution = null;
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = "发送失败";
+					msg.sendToTarget();
+				}
+			}
+		}).start();
+	}
+	
+	private void delete(final int did,final int sid){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.deleteSolution(did,sid);
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
+	private void zan(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String uid = GFUserDictionary.getUserId();
+				String jsonString = HttpUtil.zanSolution(disease.getId(), selectSolution.getId(), uid);
+				Message msg = handler.obtainMessage();
+				msg.what = 4;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	private void cancelzan(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String uid = GFUserDictionary.getUserId();
+				String jsonString = HttpUtil.cancelZanSolution(disease.getId(), selectSolution.getId(), uid);
+				Message msg = handler.obtainMessage();
+				msg.what = 4;
+				msg.obj = jsonString;
+				msg.sendToTarget();
 			}
 		}).start();
 	}
@@ -117,11 +205,11 @@ public class DiseaseActivity extends Activity implements HandMessage {
 			if (disease == null) {
 				return 0;
 			}
-			if (disease.getRecipes() == null
-					|| disease.getRecipes().size() == 0) {
+			if (disease.getSolutions() == null
+					|| disease.getSolutions().size() == 0) {
 				return 1;
 			}
-			return disease.getRecipes().size() + 1;
+			return disease.getSolutions().size() + 1;
 		}
 
 		@Override
@@ -154,7 +242,7 @@ public class DiseaseActivity extends Activity implements HandMessage {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			HolderDisease holderDisease;
-			HolderRecipe holderRecipe;
+			SolutionHolder holderSolution;
 			if (convertView == null) {
 				switch (getItemViewType(position)) {
 				case 0:
@@ -165,9 +253,9 @@ public class DiseaseActivity extends Activity implements HandMessage {
 					break;
 				case 1:
 					convertView = LayoutInflater.from(DiseaseActivity.this)
-							.inflate(R.layout.cell_recipe, parent, false);
-					holderRecipe = new HolderRecipe(convertView);
-					convertView.setTag(holderRecipe);
+							.inflate(R.layout.cell_solution, parent, false);
+					holderSolution = new SolutionHolder(convertView);
+					convertView.setTag(holderSolution);
 					break;
 				default:
 					break;
@@ -188,15 +276,35 @@ public class DiseaseActivity extends Activity implements HandMessage {
 							+ "图片");
 				}
 				holderDisease.contentTv.setText(disease.getDescription());
+				holderDisease.mzButton.setOnClickListener(DiseaseActivity.this);
 				break;
 			case 1:
-				holderRecipe=(HolderRecipe)convertView.getTag();
-				if (disease.getRecipes().get(position-1).getThumbnail()!=null) {
-					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"recipes/small/"+disease.getRecipes().get(position-1).getThumbnail(), holderRecipe.recipeIv, ImageOptions.optionsNoPlaceholder);
+				holderSolution=(SolutionHolder)convertView.getTag();
+				if (disease.getSolutions().get(position-1).getWriter().getThumbnail()!=null) {
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"users/small/"+disease.getSolutions().get(position-1).getWriter().getThumbnail(), holderSolution.headIv, ImageOptions.optionsNoPlaceholder);
 				}
-				holderRecipe.titleTv.setText(disease.getRecipes().get(position-1).getTitle());
-				holderRecipe.oldPriceTv.setText(String.valueOf(disease.getRecipes().get(position-1).getPrice()));
-				holderRecipe.newPriceTv.setText(String.valueOf(disease.getRecipes().get(position-1).getNewprice()));
+				if(position==1){
+					holderSolution.solcountTv.setVisibility(View.VISIBLE);
+					holderSolution.solcountTv.setText(disease.getSolutions().size()+"则相关妙招");
+				}
+				else{
+					holderSolution.solcountTv.setVisibility(View.GONE);
+				}
+				holderSolution.nameTv.setText(disease.getSolutions().get(position-1).getWriter().getAlias());
+				holderSolution.timeTv.setText(disease.getSolutions().get(position-1).getTime());
+				holderSolution.contentTv.setText(disease.getSolutions().get(position-1).getContent());
+				holderSolution.zancountTv.setText(String.valueOf(disease.getSolutions().get(position-1).getZan()));
+				if(disease.getSolutions().get(position-1).isLiked()){
+					holderSolution.zanIv.setSelected(true);
+				}
+				else{
+					holderSolution.zanIv.setSelected(false);
+				}
+				holderSolution.zanLayout.setTag(disease.getSolutions().get(position-1));
+				holderSolution.zanLayout.setOnClickListener(DiseaseActivity.this);
+				holderSolution.commentTv.setText(String.valueOf(disease.getSolutions().get(position-1).getCommentCount()));
+				holderSolution.commentLayout.setTag(disease.getSolutions().get(position-1));
+				holderSolution.commentLayout.setOnClickListener(DiseaseActivity.this);
 			default:
 				break;
 			}
@@ -204,27 +312,177 @@ public class DiseaseActivity extends Activity implements HandMessage {
 		}
 
 	}
+	
+	
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		if(info.position>1){
+			String uid = GFUserDictionary.getUserId();
+			if(uid!=null){
+				
+				Solution solution = disease.getSolutions().get(info.position-2);
+				if(solution.getWriter().getId().equals(uid)){
+					menu.add(0, 0, 0, "删除");
+				} 
+				solution=null;
+			}
+		}
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
+                .getMenuInfo();
+		selectSolution = disease.getSolutions().get(info.position-2);
+		final Dialog dialog = new Dialog(this, R.style.MyDialog);
+        //设置它的ContentView
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog, null);
+        dialog.setContentView(layout);
+        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+        okBtn.setText("确定");
+        okBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				
+				delete(disease.getId(),selectSolution.getId());
+			}
+		});
+        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+        cancelButton.setText("取消");
+        cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+        titleView.setText("提示");
+        contentView.setText("确定要删除选中的评论吗？");
+        dialog.show();
+		return super.onContextItemSelected(item);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.miaozhao_button:
+			sendLayout.setVisibility(View.VISIBLE);
+			mzEditText.setFocusable(true);
+			mzEditText.setFocusableInTouchMode(true);
+			mzEditText.requestFocus();
+			mzEditText.findFocus();
+			InputMethodManager inputManager =  
+		               (InputMethodManager)mzEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
+		           inputManager.showSoftInput(mzEditText, 0);  
+			break;
+		case R.id.send_meassage_button:
+			if(mzEditText.getText().toString().trim().isEmpty()){
+				return;
+			}
+			sendText(mzEditText.getText().toString());
+			mzEditText.setText("");
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
+			sendLayout.setVisibility(View.GONE);
+			break;
+		case R.id.commentLayout:
+			Solution s = (Solution)v.getTag();
+			Intent intent = new Intent(DiseaseActivity.this, SolutionActivity.class);
+			intent.putExtra("solution", s);
+			intent.putExtra("did", disease.getId());
+			intent.putExtra("dname", disease.getName());
+			startActivity(intent);
+			break;
+		case R.id.zan_layout:
+			selectSolution = (Solution)v.getTag();
+			if(selectSolution.isLiked()){
+				cancelzan();
+			}
+			else{
+				zan();
+			}
+			break;
+		default:
+			break;
+		}
+	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
-		if (msg.obj != null) {
-			DiseaseActivity activity = (DiseaseActivity) object;
-			Gson gson = new Gson();
-			try {
-				activity.disease = gson.fromJson(msg.obj.toString(),
-						Disease.class);
-				titleTv.setText(disease.getName());
-				adapter.notifyDataSetChanged();
-				pullToRefreshListView.onRefreshComplete();
-			} catch (JsonSyntaxException e) {
-				pullToRefreshListView.onRefreshComplete();
-				Toast.makeText(this, "获取病虫害信息失败", Toast.LENGTH_SHORT).show();
-				e.printStackTrace();
+		switch (msg.what) {
+		case 0:
+			if(msg.obj!=null){
+				GFToast.show(msg.obj.toString());
 			}
-		} else {
-			Toast.makeText(this, "获取病虫害信息失败", Toast.LENGTH_SHORT).show();
-			finish();
+			break;
+		case 1:
+			if (msg.obj != null) {
+				DiseaseActivity activity = (DiseaseActivity) object;
+				Gson gson = new Gson();
+				try {
+					activity.disease = gson.fromJson(msg.obj.toString(),
+							Disease.class);
+					titleTv.setText(disease.getName());
+					adapter.notifyDataSetChanged();
+					pullToRefreshListView.onRefreshComplete();
+				} catch (JsonSyntaxException e) {
+					pullToRefreshListView.onRefreshComplete();
+					Toast.makeText(this, "获取病虫害信息失败", Toast.LENGTH_SHORT).show();
+					e.printStackTrace();
+				}
+			} else {
+				Toast.makeText(this, "获取病虫害信息失败", Toast.LENGTH_SHORT).show();
+				finish();
+			}
+			break;
+		case 2:
+			if(msg.obj==null){
+				
+				loadData();
+				GFToast.show("操作成功");
+			}
+			else{
+				GFToast.show("操作失败");
+			}
+			break;
+		case 3:
+			String strerr = msg.obj.toString();
+			if(!strerr.isEmpty()){
+				GFToast.show(strerr);
+			}
+			else{
+				disease.getSolutions().remove(selectSolution);
+				adapter.notifyDataSetChanged();
+			}
+			break;
+		case 4:
+			if(msg.obj==null){
+				GFToast.show("操作失败");
+			}
+			else{
+				loadData();
+				GFToast.show("操作成功");
+			}
+			break;
+
+		default:
+			break;
 		}
+		
 	}
 
 }
