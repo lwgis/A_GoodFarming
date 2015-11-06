@@ -38,7 +38,7 @@
         android:background="@drawable/button_shape"
         android:text="登录"
         android:textColor="#ffffff"
-        android:textSize="18sp" />
+        android:textSize="18dip" />
     <TextView 
         android:id="@+id/passback_button"
         android:layout_width="match_parent"
@@ -47,7 +47,7 @@
         android:padding="10dip"
         android:text="忘记密码？"
         android:textColor="#38be99"
-        android:textSize="18sp"
+        android:textSize="18dip"
         />
 
 </LinearLayout>

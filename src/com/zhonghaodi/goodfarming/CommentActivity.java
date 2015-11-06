@@ -71,6 +71,10 @@ public class CommentActivity extends Activity implements UrlOnClick,
 
 			@Override
 			public void onClick(View v) {
+				if(GFUserDictionary.getUserId()==null){
+					GFToast.show("请您先登录！");
+					return;
+				}
 				if(chatEv.getText().toString().trim().isEmpty()){
 					return;
 				}
@@ -121,20 +125,17 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return comments.size()+2;
+			return comments.size()+1;
 		}
 
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
 			if(position==0){
-				return question;
-			}
-			else if(position==1){
 				return response;
 			}
 			else{
-				return comments.get(position-2);
+				return comments.get(position-1);
 			}
 			
 		}
@@ -148,7 +149,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		@Override
 		public int getViewTypeCount() {
 			// TODO Auto-generated method stub
-			return 3;
+			return 2;
 		}
 
 		@Override
@@ -156,11 +157,8 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			if(position==0){
 				return 0;
 			}
-			else if(position ==1){
-				return 1;
-			}
 			else{
-				return 2;
+				return 1;
 			}
 		}
 
@@ -172,7 +170,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			HolderCommentQr holder1;
 			HolderCommentTextMessage holderCommentTextMessage;
 			if (convertView == null) {
-				if(type==0 || type==1){
+				if(type==0){
 					convertView = getLayoutInflater().inflate(
 							R.layout.cell_comment_qr, parent, false);
 					holder1 = new HolderCommentQr(convertView);
@@ -190,23 +188,9 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			// 文本
 			case 0:
 				holder1 = (HolderCommentQr) convertView.getTag();
-				holder1.contentTv.setText(question.getContent());
-				holder1.timeTv.setText("提问于："+question.getTime());
-				holder1.nameTv.setText(question.getWriter().getAlias());
-				holder1.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
-				holder1.cropTv.setVisibility(View.VISIBLE);
-				holder1.cropTv.setText(question.getCrop().getName());
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"users/small/"
-								+ question.getWriter().getThumbnail(), holder1.headIv,
-						ImageOptions.optionsNoPlaceholder);
-				break;
-			case 1:
-				holder1 = (HolderCommentQr) convertView.getTag();
 				holder1.contentTv.setHtmlText(rContent);
 				holder1.contentTv.setUrlOnClick(CommentActivity.this);
-				holder1.timeTv.setText("回复于："+response.getTime());
+				holder1.timeTv.setText(response.getTime());
 				holder1.nameTv.setText(response.getWriter().getAlias());
 				holder1.cropTv.setVisibility(View.GONE);
 				holder1.countTv.setText("评论：" + response.getCommentCount());
@@ -215,13 +199,19 @@ public class CommentActivity extends Activity implements UrlOnClick,
 								+ response.getWriter().getThumbnail(), holder1.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				break;
-			case 2:
-				RComment comment = comments.get(position-2);
+			case 1:
+				RComment comment = comments.get(position-1);
 				holderCommentTextMessage = (HolderCommentTextMessage) convertView.getTag();
 				holderCommentTextMessage.contentTv.setHtmlText(comment.getContent());
 				holderCommentTextMessage.contentTv.setUrlOnClick(CommentActivity.this);
 				holderCommentTextMessage.timeTv.setText(comment.getTime());
 				holderCommentTextMessage.nameTv.setText(comment.getWriter().getAlias());
+				if(position==1){
+					holderCommentTextMessage.spcLayout.setVisibility(View.VISIBLE);
+				}
+				else{
+					holderCommentTextMessage.spcLayout.setVisibility(View.GONE);
+				}
 				ImageLoader.getInstance()
 						.displayImage(
 								HttpUtil.ImageUrl+"users/small/"

@@ -22,7 +22,7 @@
         android:paddingLeft="3dip"
         android:paddingRight="3dip"
         android:textColor="#444444"
-        android:textSize="16sp"
+        android:textSize="16dip"
         android:text="王老吉"
         />
 	<TextView 
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="3dip"
         android:paddingRight="3dip"
-        android:textSize="12sp"
+        android:textSize="12dip"
         android:textColor="#808080"
         android:text="1"
         />

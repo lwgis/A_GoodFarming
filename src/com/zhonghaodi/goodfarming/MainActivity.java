@@ -1,7 +1,13 @@
 package com.zhonghaodi.goodfarming;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -32,6 +38,7 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
+import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -50,10 +57,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,29 +80,28 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener,
 		EMEventListener {
-	// private long exitTime = 0;
 	HomeFragment homeFragment;
-	MessageFragment messageFragment;
+	ForumFragment forumFragment;
 	DiscoverFragment discoverFragment;
 	MeFragment meFragment;
-	ImageView homeIv;
-	ImageView messageIv;
+	ImageView homeIv;	
+	ImageView forumIv;
 	ImageView discoverIv;
 	ImageView meIv;
 	TextView homeTv;
-	TextView messageTv;
+	TextView forumTv;
 	TextView discoverTv;
 	TextView meTv;
-	View homeView;
-	View messageView;
+	View homeView;	
+	View forumView;
 	View discoverView;
 	View meView;
-	int pageIndex;
-	private TextView countTv;
+	int pageIndex;	
 	private boolean isLogin = false;
 	private MainHandler handler = new MainHandler(this);
 	private EMMessage currenEmMsg;
@@ -101,26 +112,31 @@ public class MainActivity extends Activity implements OnClickListener,
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	SharePopupwindow sharePopupwindow;
+	
+	private boolean bUpdate;
+	private int markString;
+	private ProgressBar progressBar;
+	private TextView proTextView1;
+	private TextView proTextView2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		homeView = findViewById(R.id.home_layout);
-		messageView = findViewById(R.id.message_layout);
+		forumView = findViewById(R.id.forum_layout);
 		discoverView = findViewById(R.id.discover_layout);
 		meView = findViewById(R.id.me_layout);
 		homeIv = (ImageView) findViewById(R.id.home_image);
-		messageIv = (ImageView) findViewById(R.id.message_image);
+		forumIv = (ImageView)findViewById(R.id.forum_image);
 		discoverIv = (ImageView) findViewById(R.id.discover_image);
 		meIv = (ImageView) findViewById(R.id.me_image);
 		homeTv = (TextView) findViewById(R.id.home_text);
-		messageTv = (TextView) findViewById(R.id.message_text);
+		forumTv = (TextView)findViewById(R.id.forum_text);
 		discoverTv = (TextView) findViewById(R.id.discover_text);
 		meTv = (TextView) findViewById(R.id.me_text);
-		countTv = (TextView) findViewById(R.id.count_text);
 		homeView.setOnClickListener(this);
-		messageView.setOnClickListener(this);
+		forumView.setOnClickListener(this);
 		discoverView.setOnClickListener(this);
 		meView.setOnClickListener(this);
 		seletFragmentIndex(0);
@@ -130,10 +146,30 @@ public class MainActivity extends Activity implements OnClickListener,
 		wxApi.registerApp(WX_APP_ID);
 		mTencent = Tencent.createInstance(QQ_APP_ID, this.getApplicationContext());
 		
+		//检查该不该请求更新
+		SharedPreferences deviceInfo = getSharedPreferences("StartInfo", 0);
+        String updatetime = deviceInfo.getString("updatetime", "");
+        if (updatetime.equals("") || updatetime==null) {
+			bUpdate = true;
+		}
+        else{
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        	try {
+				Date upDate = dateFormat.parse(updatetime);
+				Date curDate = new Date();
+				bUpdate = checkUpdate(upDate, curDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				bUpdate = false;
+			}
+        }
+		
 		loadPointdics();
 
 	}
 
+	
 	/**
 	 * 初始化环信
 	 */
@@ -157,7 +193,7 @@ public class MainActivity extends Activity implements OnClickListener,
 										MainActivity.this,
 										new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
 						EMChat.getInstance().setAppInited();
-						messageFragment.loadData();
+						forumFragment.loadData();
 						isLogin = true;
 					}
 
@@ -174,6 +210,173 @@ public class MainActivity extends Activity implements OnClickListener,
 					}
 				});
 
+	}
+	
+	public boolean checkUpdate(Date upDate,Date currentDate){
+		Calendar cal1 = Calendar.getInstance(); 
+	    Calendar cal2 = Calendar.getInstance(); 
+	    cal1.setTime(currentDate); 
+	    cal2.setTime(upDate);
+	    
+	    int yi = cal1.get(Calendar.YEAR) - cal2.get(Calendar.YEAR);
+	    if (yi>0) {
+			return true;
+		}
+	    else{
+	    	int di = cal1.get(Calendar.DAY_OF_YEAR)-cal2.get(Calendar.DAY_OF_YEAR);
+	    	if (di>0) {
+				return true;
+			}
+	    	else{
+	    		return false;
+	    	}
+	    }
+	}
+	
+	public void tryUpdate(){
+		markString = getVersion();
+		requestVersion();
+	}
+
+	/**
+	 * 获取版本号
+	 * @return
+	 */
+	public int getVersion(){
+		PackageManager packageManager = this.getPackageManager();
+		int versionString;
+		try {
+		PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), 0);
+		versionString = packageInfo.versionCode;
+	} catch (NameNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		versionString = 0;
+	}
+		return versionString;
+	}
+
+	public void requestVersion(){
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					String jsonString = HttpUtil.getAppVersion();
+					Message msg = handler.obtainMessage();
+					msg.what = 4;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					Message msg = handler.obtainMessage();
+					msg.what = -1;
+					msg.obj = "";
+					msg.sendToTarget();
+				}
+				
+			}
+		}).start();
+		
+	}
+	
+	/**
+	*  
+	* 弹出对话框通知用户更新程序  
+	*  
+	* 弹出对话框的步骤： 
+	*  1.创建alertDialog的builder.   
+	*  2.要给builder设置属性, 对话框的内容,样式,按钮 
+	*  3.通过builder 创建一个对话框 
+	*  4.对话框show()出来   
+	*/  
+	public void showUpdataDialog(final AppVersion appVersion) {  
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date curDate = new Date(System.currentTimeMillis());
+		String curtime = dateFormat.format(curDate);
+		SharedPreferences deviceInfo = getSharedPreferences("StartInfo", 0);
+		deviceInfo.edit().putString("updatetime", curtime).commit();
+		
+		final Dialog dialog = new Dialog(this, R.style.MyDialog);
+	   //设置它的ContentView
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	   View layout = inflater.inflate(R.layout.dialog, null);
+	   dialog.setContentView(layout);
+	   TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+	   TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+	   Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+	   okBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				downLoadApk(appVersion);  
+	           dialog.dismiss();
+			}
+		});
+	   Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+	   cancelButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+	   titleView.setText("版本升级");
+	   contentView.setText("检测到新版本，请及时更新");
+	   dialog.show();
+	} 
+	
+	/**
+	* 从服务器中下载APK 
+	*/  
+	public void downLoadApk(final AppVersion appVersion) {  
+	   final Dialog pd;    //进度条对话框   
+	   pd = new  Dialog(this,R.style.MyDialog);  
+	   LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	   View layout = inflater.inflate(R.layout.progressdialog, null);
+	   pd.setContentView(layout);
+	   pd.setCancelable(false);
+	   pd.show();  
+	   
+	   progressBar = (ProgressBar)layout.findViewById(R.id.proBar);
+	   proTextView1 = (TextView)layout.findViewById(R.id.pro_bfb);
+	   proTextView2 = (TextView)layout.findViewById(R.id.pro_value);
+	   
+	   new Thread(){  
+	       @Override  
+	       public void run() {  
+	           try {  
+	               File file = HttpUtil.getFileFromServer(appVersion.getUrl(), progressBar,handler);  
+	               sleep(3000);  
+	               Message msg = handler.obtainMessage();
+					msg.what = 6;
+					msg.obj = file;
+					msg.sendToTarget(); 
+	               pd.dismiss(); //结束掉进度条对话框   
+	           } catch (Exception e) {  
+	           	Message msg = handler.obtainMessage();
+					msg.what = -1;
+					msg.obj = "下载错误";
+					msg.sendToTarget(); 
+	               e.printStackTrace();  
+	           }  
+	       }}.start();  
+	}  
+	
+	/**
+	* 安装apk
+	* @param file
+	*/
+	protected void installApk(File file) {  
+	   Intent intent = new Intent();  
+	   //执行动作   
+	   intent.setAction(Intent.ACTION_VIEW);  
+	   //执行的数据类型   
+	   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	   intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");//编者按：此处Android应为android，否则造成安装不了    
+	   this.startActivity(intent);  
 	}
 	
 	/**
@@ -204,9 +407,9 @@ public class MainActivity extends Activity implements OnClickListener,
 			homeFragment = new HomeFragment();
 			transction.add(R.id.content, homeFragment);
 		}
-		if (messageFragment == null) {
-			messageFragment = new MessageFragment();
-			transction.add(R.id.content, messageFragment);
+		if (forumFragment == null) {
+			forumFragment = new ForumFragment();
+			transction.add(R.id.content, forumFragment);
 		}
 		if (discoverFragment == null) {
 			discoverFragment = new DiscoverFragment();
@@ -217,15 +420,15 @@ public class MainActivity extends Activity implements OnClickListener,
 			transction.add(R.id.content, meFragment);
 		}
 		transction.hide(homeFragment);
-		transction.hide(messageFragment);
+		transction.hide(forumFragment);
 		transction.hide(discoverFragment);
 		transction.hide(meFragment);
 		homeIv.setImageResource(R.drawable.home);
-		messageIv.setImageResource(R.drawable.message);
+		forumIv.setImageResource(R.drawable.message);
 		discoverIv.setImageResource(R.drawable.discover);
 		meIv.setImageResource(R.drawable.me);
 		homeTv.setTextColor(Color.rgb(128, 128, 128));
-		messageTv.setTextColor(Color.rgb(128, 128, 128));
+		forumTv.setTextColor(Color.rgb(128, 128, 128));
 		discoverTv.setTextColor(Color.rgb(128, 128, 128));
 		meTv.setTextColor(Color.rgb(128, 128, 128));
 
@@ -236,9 +439,9 @@ public class MainActivity extends Activity implements OnClickListener,
 			homeTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 1:
-			transction.show(messageFragment);
-			messageIv.setImageResource(R.drawable.message_s);
-			messageTv.setTextColor(Color.rgb(12, 179, 136));
+			transction.show(forumFragment);
+			forumIv.setImageResource(R.drawable.message_s);
+			forumTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 2:
 			transction.show(discoverFragment);
@@ -269,12 +472,12 @@ public class MainActivity extends Activity implements OnClickListener,
 		if (v == homeView && pageIndex != 0) {
 			seletFragmentIndex(0);
 		}
-		if (v == messageView && pageIndex != 1) {
+		if (v == forumView && pageIndex != 1) {
 			seletFragmentIndex(1);
 			if (GFUserDictionary.getUserId() == null) {
 				return;
 			}
-			messageFragment.loadData();
+			forumFragment.loadData();
 		}
 		if (v == discoverView && pageIndex != 2) {
 
@@ -370,10 +573,14 @@ public class MainActivity extends Activity implements OnClickListener,
 		if (!isLogin) {
 			initEm();
 		} else {
-			messageFragment.loadData();
+			forumFragment.loadData();
 			if(pageIndex==3){
 				meFragment.loadData();
 			}
+		}
+		homeFragment.setUnreadMessageCount();
+		if(bUpdate){
+			tryUpdate();
 		}
 	}
 
@@ -387,12 +594,22 @@ public class MainActivity extends Activity implements OnClickListener,
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == 4) {
+		if (resultCode==3) {
 			seletFragmentIndex(3);
 			initEm();
+			
+		}
+		if(resultCode==4){
+			seletFragmentIndex(3);
+			initEm();
+			
+			Intent it1 = new Intent(this,
+					SelectCropActivity.class);
+			
+			this.startActivityForResult(it1, 100);
 		}
 		if (resultCode == 2) {
-			messageFragment.loadData();
+			forumFragment.loadData();
 		}
 		if(resultCode == RESULT_OK && requestCode == 100){
 			ArrayList<Crop> selectCrops = data.getParcelableArrayListExtra("crops");
@@ -510,13 +727,13 @@ public class MainActivity extends Activity implements OnClickListener,
 						}
 						
 						Message msg = handler.obtainMessage();
-						msg.what =1;
+						msg.what =5;
 						msg.obj = jsonString;
 						msg.sendToTarget();
 					}
 				}).start();
 			} else {
-				messageFragment.loadData();
+				forumFragment.loadData();
 			}
 			// 提示新消息
 
@@ -551,7 +768,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		if (message.getType() == Type.IMAGE) {
 			content = "[图片]";
 		}
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, MessagesActivity.class);
 		Notification notification = new NotificationCompat.Builder(this)
 				.setSmallIcon(R.drawable.appicon)
 				.setContentTitle(nick)
@@ -563,11 +780,6 @@ public class MainActivity extends Activity implements OnClickListener,
 								0)).build();
 		// 发出通知
 		manager.notify(0, notification);
-//		int count = EMChatManager.getInstance().getUnreadMsgsCount();
-//		if(count>0)
-//		{
-//			sendBadgeNumber(String.valueOf(count));
-//		}
 	}
 
 	/**
@@ -617,18 +829,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 	}
 
-	/**
-	 * 显示未读信息数
-	 * @param count
-	 */
-	public void setUnreadMessageCount(int count) {
-		if (count == 0) {
-			countTv.setVisibility(View.GONE);
-		} else {
-			countTv.setVisibility(View.VISIBLE);
-			countTv.setText(String.valueOf(count));
-		}
-	}
+	
 	
 	private void sendBadgeNumber(String number) {
 		Log.d("sendBadgeNumber", number);
@@ -763,7 +964,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			switch (msg.what) {
-			case 1:
+			case 5:
 				if (msg.obj != null) {
 					Gson gson = new Gson();
 					List<User> users = gson.fromJson(msg.obj.toString(),
@@ -802,6 +1003,39 @@ public class MainActivity extends Activity implements OnClickListener,
 						GFPointDictionary.savePointDics(pointdics);
 					}
 				}
+				break;
+			case 4:
+				if(msg.obj==null){
+					return;
+				}
+				Gson gson = new Gson();
+				AppVersion appVersion = gson.fromJson(msg.obj.toString(),
+						new TypeToken<AppVersion>() {
+						}.getType());
+				if(activity.markString<appVersion.getVersion()){
+					activity.showUpdataDialog(appVersion);
+				}
+				else{
+				}
+				break;
+			case 1:
+				int[] values = (int[])msg.obj;
+				float bf = (values[0]*100*1.000f/values[1]);
+				bf = (float)(Math.round(bf*100))/100;
+				activity.proTextView1.setText(bf+"%");
+				float pf = (values[0]*1.000f/(1024*1024));
+				pf = (float)(Math.round(pf*100))/100;
+				float cf = (values[1]*1.000f/(1024*1024));
+				cf = (float)(Math.round(cf*100))/100;
+				activity.proTextView2.setText(pf+"M/"+cf+"M");
+				break;
+			case 6:
+				File file = (File)msg.obj;
+				activity.installApk(file);
+				break;
+			case -1:
+				String errString = msg.obj.toString();
+				GFToast.show(errString);
 				break;
 			default:
 				break;

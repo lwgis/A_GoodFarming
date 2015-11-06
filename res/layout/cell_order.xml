@@ -39,7 +39,7 @@
                     android:singleLine="true"
                     android:text="药方名称"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="18dip" />
                 <TextView
                     android:id="@+id/nzd_text"
                     android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
                     android:singleLine="true"
                     android:text="农资店名称"
                     android:textColor="#666666"
-                    android:textSize="12sp" />
+                    android:textSize="12dip" />
             </LinearLayout>
 
             <LinearLayout
@@ -66,7 +66,7 @@
                     android:singleLine="true"
                     android:text="￥100.00 X 1"
                     android:textColor="#444444"
-                    android:textSize="15sp" />
+                    android:textSize="15dip" />
                 
                 <TextView
                     android:id="@+id/sumprice_text"
@@ -77,7 +77,7 @@
                     android:singleLine="true"
                     android:text="共￥100.00"
                     android:textColor="#ffff0000"
-                    android:textSize="15sp" />
+                    android:textSize="15dip" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -94,7 +94,7 @@
                   android:singleLine="true"
                   android:text="时间：2015-10-11 12:00:00"
                   android:textColor="#444444"
-                  android:textSize="13sp" />
+                  android:textSize="13dip" />
                 <TextView
                   android:id="@+id/status_text"
                   android:layout_width="wrap_content"
@@ -104,7 +104,7 @@
                   android:singleLine="true"
                   android:text="交易完成"
                   android:textColor="#444444"
-                  android:textSize="15sp" />
+                  android:textSize="15dip" />
             </LinearLayout>        
         </LinearLayout>
     </LinearLayout>

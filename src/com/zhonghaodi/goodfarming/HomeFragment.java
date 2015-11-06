@@ -1,8 +1,11 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMConversation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -32,6 +35,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -46,6 +50,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -56,10 +61,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	private QuestionAdpter adapter;
 	private GFHandler<HomeFragment> handler = new GFHandler<HomeFragment>(this);
 	private int bAll = 0;
-	private Button signinButton;
 	private TextView allTextView;
 	private TextView ascTextView;
 	private TextView myTextView;
+	private ImageView messageIv;
+	private View messageView;
+	private TextView countTv;
 	private PopupWindow popupWindow;
 	private View popView;
 	private Question selectQuestion;
@@ -78,12 +85,15 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		ascTextView.setOnClickListener(this);
 		myTextView = (TextView)view.findViewById(R.id.my_text);
 		myTextView.setOnClickListener(this);
+		messageView = view.findViewById(R.id.message_layout);
+		messageView.setOnClickListener(this);
+		messageIv = (ImageView) view.findViewById(R.id.message_image);
+		countTv = (TextView) view.findViewById(R.id.count_text);
 		popView = inflater.inflate(R.layout.popupwindow_camera, container,
 				false);
 		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
 				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
-		signinButton = (Button)view.findViewById(R.id.signin_button);
-		signinButton.setOnClickListener(this);
+		
 		pullToRefreshListView = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
@@ -290,19 +300,26 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 	
-	private void signin() {
-		final String  uid= GFUserDictionary.getUserId();
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				String jsonString = HttpUtil.signIn(uid);
-				Message msg = handler.obtainMessage();
-				msg.what = 2;
-				msg.obj = jsonString;
-				msg.sendToTarget();
+	/**
+	 * 显示未读信息数
+	 * @param count
+	 */
+	public void setUnreadMessageCount() {
+		int count=2;
+		// 获取所有会话，包括陌生人
+		Hashtable<String, EMConversation> conversations = EMChatManager
+				.getInstance().getAllConversations();
+		for (EMConversation conversation : conversations.values()) {
+			if (conversation.getAllMessages().size() != 0) {
+				count+=conversation.getUnreadMsgCount();
 			}
-		}).start();
+		}
+		if (count == 0) {
+			countTv.setVisibility(View.GONE);
+		} else {
+			countTv.setVisibility(View.VISIBLE);
+			countTv.setText(String.valueOf(count));
+		}
 	}
 	
 	private void delete(final int qid){
@@ -606,16 +623,16 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			}
 			getActivity().startActivity(it);
 			break;
-		case R.id.signin_button:
+		case R.id.message_layout:
 			Intent it1 = new Intent();
 			if (GFUserDictionary.getUserId()==null) {
 				it1.setClass(getActivity(), LoginActivity.class);
-				getActivity().startActivity(it1);
+				
 			}
 			else {
-				signinButton.setEnabled(false);
-				signin();
+				it1.setClass(getActivity(), MessagesActivity.class);			
 			}
+			getActivity().startActivity(it1);
 			break;
 		case R.id.title_txt:
 			
@@ -656,7 +673,21 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				bAll = 2;
 			}
 			break;
-		
+		case R.id.head_image:
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
+			User user = (User)v.getTag();
+			if(user.getLevelID()!=1){
+				Intent it2 = new Intent();
+				it2.setClass(getActivity(), ChatActivity.class);
+				it2.putExtra("userName", user.getPhone());
+				it2.putExtra("title", user.getAlias());
+				it2.putExtra("thumbnail", user.getThumbnail());
+				startActivity(it2);
+			}
+			break;
 		default:
 			break;
 		}
@@ -704,15 +735,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 							Toast.LENGTH_SHORT).show();
 				}
 				fragment.pullToRefreshListView.onRefreshComplete();
-			}
-			else if(msg.what==2){
-				signinButton.setEnabled(true);
-				if(msg.obj!=null){
-					GFToast.show(msg.obj.toString());
-				}
-				else{
-					GFToast.show("连接服务器失败,请稍候再试!");
-				}
 			}
 			else if(msg.what==3){
 				

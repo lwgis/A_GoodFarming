@@ -20,6 +20,7 @@ public class Agrotechnical implements Serializable {
 	private Integer status;
 	private List<NetImage> attachments;
 	private String thumbnail;
+	private Category_disease category;
 	
 	public Agrotechnical() {
 		// TODO Auto-generated constructor stub
@@ -79,6 +80,14 @@ public class Agrotechnical implements Serializable {
 
 	public void setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
+	}
+
+	public Category_disease getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category_disease category) {
+		this.category = category;
 	}
 
 	@Override

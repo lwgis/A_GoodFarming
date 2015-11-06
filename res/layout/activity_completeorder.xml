@@ -22,7 +22,7 @@
                 android:background="@null"
                 android:text="&lt;返回"
                 android:textColor="#ffffff"
-                android:textSize="20sp" 
+                android:textSize="20dip" 
                 android:layout_marginLeft="5dp"/>
 
             <TextView
@@ -33,7 +33,7 @@
                 android:gravity="center"
                 android:text="订单"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:textSize="18dip" />
         </RelativeLayout>
 
         <LinearLayout
@@ -72,7 +72,7 @@
                         android:singleLine="true"
                         android:text="药方名称"
                         android:textColor="#444444"
-                        android:textSize="18sp" />
+                        android:textSize="18dip" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                             android:singleLine="true"
                             android:text="原    价:"
                             android:textColor="#444444"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
 
                         <TextView
                             android:id="@+id/oldprice_text"
@@ -98,7 +98,7 @@
                             android:singleLine="true"
                             android:text="100.00"
                             android:textColor="#e4393c"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -115,7 +115,7 @@
                             android:singleLine="true"
                             android:text="优惠价:"
                             android:textColor="#444444"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
 
                         <TextView
                             android:id="@+id/newprice_text"
@@ -124,7 +124,7 @@
                             android:singleLine="true"
                             android:text="100.00"
                             android:textColor="#e4393c"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -141,7 +141,7 @@
                             android:singleLine="true"
                             android:text="数  量:"
                             android:textColor="#444444"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
 
                         <TextView
                             android:id="@+id/count_text"
@@ -150,7 +150,7 @@
                             android:singleLine="true"
                             android:text="100.00"
                             android:textColor="#e4393c"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -166,7 +166,7 @@
                             android:singleLine="true"
                             android:text="总  价:"
                             android:textColor="#444444"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
 
                         <TextView
                             android:id="@+id/sum_text"
@@ -175,7 +175,7 @@
                             android:singleLine="true"
                             android:text="100.00"
                             android:textColor="#e4393c"
-                            android:textSize="15sp" />
+                            android:textSize="15dip" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -193,7 +193,7 @@
                 android:layout_marginTop="5dp"
                 android:text="药方描述"
                 android:textColor="#888888"
-                android:textSize="18sp" />
+                android:textSize="18dip" />
         </LinearLayout>
     </LinearLayout>
 

@@ -10,15 +10,37 @@
         android:layout_height="45dp"
         android:background="#38be99" >
         
-        <Button
-            android:id="@+id/signin_button"
-            android:layout_width="60dp"
-            android:layout_height="match_parent" 
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:text="签到"
-            android:background="#00000000" 
-            android:onClick="loginOut"/>
+        <RelativeLayout
+            android:id="@+id/message_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+             >
+
+            <ImageView
+                android:id="@+id/message_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/message" />
+
+            <TextView
+                android:id="@+id/count_text"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/design_red_point"
+                android:gravity="center"
+                android:text="70"
+                android:textColor="@android:color/white"
+                android:textSize="13dip"
+                android:visibility="gone" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/title_txt"
@@ -26,9 +48,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="测试版1.0"
+            android:text="测试版1.1"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
 
         <Button
             android:id="@+id/question_button"
@@ -40,7 +62,7 @@
             android:gravity="center"
             android:text="我要提问"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,7 +82,7 @@
            android:background="@drawable/topbar"
            android:gravity="center"
            android:padding="8dip"
-           android:textSize="18sp" />
+           android:textSize="18dip" />
 		
 		<TextView
            android:id="@+id/asc_text"
@@ -73,7 +95,7 @@
            android:background="@drawable/topbar_g"
            android:gravity="center"
            android:padding="8dip"
-           android:textSize="18sp" />
+           android:textSize="18dip" />
 		
 		<TextView
            android:id="@+id/my_text"
@@ -86,7 +108,7 @@
            android:background="@drawable/topbar"
            android:gravity="center"
            android:padding="8dip"
-           android:textSize="18sp" />
+           android:textSize="18dip" />
         
     </LinearLayout>
 

@@ -36,7 +36,7 @@
             android:scaleType="fitEnd"
             android:src="@drawable/chatto_voice_playing"
             android:textColor="#444444"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/length_text"
@@ -47,7 +47,7 @@
             android:layout_toLeftOf="@id/play_image"
             android:text="12&quot;"
             android:textColor="#808080"
-            android:textSize="13sp" />
+            android:textSize="13dip" />
 
         <TextView
             android:id="@+id/readed_text"
@@ -57,7 +57,7 @@
             android:background="@drawable/design_red_point"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="13sp"
+            android:textSize="13dip"
             android:visibility="gone" />
     </RelativeLayout>
 

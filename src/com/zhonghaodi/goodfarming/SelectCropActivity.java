@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.networking.GFHandler;
@@ -15,13 +16,18 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -41,6 +47,7 @@ public class SelectCropActivity extends Activity implements HandMessage {
 	private ArrayList<Crop> selectCrops;
 	private GFHandler<SelectCropActivity> handler = new GFHandler<SelectCropActivity>(
 			this);
+	private boolean bHave=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +57,21 @@ public class SelectCropActivity extends Activity implements HandMessage {
 		rootCrops = new ArrayList<Crop>();
 		listView = (ListView) findViewById(R.id.crop_list);
 		listView.setAdapter(adapter);
+		bHave=getIntent().hasExtra("crops");
 		selectCrops = getIntent().getParcelableArrayListExtra("crops");
 		MyTextButton cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				if(selectCrops==null || selectCrops.size()==0){
+					GFToast.show("您还没设置擅长的作物！");
+					return;
+				}
+				if(!bHave){
+					GFToast.show("请您点击确定设置擅长的作物！");
+					return;
+				}
 				setResult(RESULT_CANCELED);
 				finish();
 			}
@@ -65,7 +81,10 @@ public class SelectCropActivity extends Activity implements HandMessage {
 
 			@Override
 			public void onClick(View v) {
-
+				if(selectCrops==null || selectCrops.size()==0){
+					GFToast.show("您还没设置擅长的作物！");
+					return;
+				}
 				Intent it = getIntent();
 				it.putParcelableArrayListExtra("crops", selectCrops);
 				setResult(RESULT_OK, it);
@@ -175,6 +194,30 @@ public class SelectCropActivity extends Activity implements HandMessage {
 
 			return convertView;
 		}
+
+	}
+	
+	/***
+	 * 监听返回按键
+	 */
+    @Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+    	if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) { 
+	        if (event.getAction() == KeyEvent.ACTION_DOWN) { 
+	        	if(selectCrops==null || selectCrops.size()==0){
+					GFToast.show("您还没设置擅长的作物！");
+					return false;
+				}
+	        	if(!bHave){
+					GFToast.show("请您点击确定设置擅长的作物！");
+					return false;
+				}
+				setResult(RESULT_CANCELED);
+				finish();
+	        } 
+	    } 
+		return false;
 
 	}
 

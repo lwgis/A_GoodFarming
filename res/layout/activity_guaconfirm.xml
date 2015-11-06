@@ -18,7 +18,7 @@
             android:gravity="center"
             android:text="订单确认"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
 
     </RelativeLayout>
 
@@ -46,7 +46,7 @@
 			        android:layout_alignParentLeft="true"
 			        android:text="收货地址"
 			        android:textColor="#444444"
-			        android:textSize="15sp" />
+			        android:textSize="15dip" />
 	            <TextView
 	                android:id="@+id/setaddress_text"
 			        android:layout_width="50dip"
@@ -55,7 +55,7 @@
 			        android:gravity="right"
 			        android:text=">>"
 			        android:textColor="#444444"
-			        android:textSize="18sp" />
+			        android:textSize="18dip" />
 	        </RelativeLayout>
 	        <LinearLayout 
 	            android:layout_width="match_parent"
@@ -71,7 +71,7 @@
 		        android:layout_marginTop="2dp"
 		        android:text="姓名："
 		        android:textColor="#444444"
-		        android:textSize="15sp" />
+		        android:textSize="15dip" />
 		
 		    <TextView
 		        android:id="@+id/phone_text"
@@ -81,7 +81,7 @@
 		        android:ellipsize="end"
 		        android:text="电话："
 		        android:textColor="#808080"
-		        android:textSize="14sp" />
+		        android:textSize="14dip" />
 		    
 		    <TextView
 		        android:id="@+id/post_text"
@@ -91,7 +91,7 @@
 		        android:ellipsize="end"
 		        android:text="邮编："
 		        android:textColor="#808080"
-		        android:textSize="14sp" />
+		        android:textSize="14dip" />
 		    
 		    <TextView
 		        android:id="@+id/address_text"
@@ -101,7 +101,7 @@
 		        android:ellipsize="end"
 		        android:text="地址："
 		        android:textColor="#808080"
-		        android:textSize="14sp" />
+		        android:textSize="14dip" />
 	    </LinearLayout>
 	    <LinearLayout 
 	        android:layout_width="match_parent"
@@ -122,7 +122,7 @@
 			        android:layout_alignParentLeft="true"
 			        android:text="奖品"
 			        android:textColor="#444444"
-			        android:textSize="15sp" />
+			        android:textSize="15dip" />
 	           
 	        </RelativeLayout>
 	        <LinearLayout 
@@ -160,7 +160,7 @@
 	                   android:layout_marginTop="2dp"
 	                   android:text="用户名"
 	                   android:textColor="#444444"
-	                   android:textSize="16sp" />
+	                   android:textSize="16dip" />
 	               
 	                <TextView
 	                   android:id="@+id/des_text"
@@ -171,7 +171,7 @@
 	                   android:ellipsize="end"
 	                   android:text=""
 	                   android:textColor="#808080"
-	                   android:textSize="14sp" />
+	                   android:textSize="14dip" />
 	           </LinearLayout>
 	       </LinearLayout>
 		</LinearLayout>       
@@ -194,6 +194,6 @@
             android:background="@drawable/button_shape"
             android:text="确定"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </LinearLayout>
 </LinearLayout>

@@ -46,7 +46,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DiseaseActivity extends Activity implements HandMessage,OnClickListener {
+public class DiseaseActivity extends Activity implements HandMessage,OnClickListener,OnItemClickListener {
 	private PullToRefreshListView pullToRefreshListView;
 	private TextView titleTv;
 	private int diseaseId;
@@ -95,6 +95,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 						loadData();
 					}
 				});
+		pullToRefreshListView.setOnItemClickListener(this);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
 		loadData();
 		
@@ -303,8 +304,8 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 				holderSolution.zanLayout.setTag(disease.getSolutions().get(position-1));
 				holderSolution.zanLayout.setOnClickListener(DiseaseActivity.this);
 				holderSolution.commentTv.setText(String.valueOf(disease.getSolutions().get(position-1).getCommentCount()));
-				holderSolution.commentLayout.setTag(disease.getSolutions().get(position-1));
-				holderSolution.commentLayout.setOnClickListener(DiseaseActivity.this);
+//				holderSolution.commentLayout.setTag(disease.getSolutions().get(position-1));
+//				holderSolution.commentLayout.setOnClickListener(DiseaseActivity.this);
 			default:
 				break;
 			}
@@ -380,6 +381,10 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.miaozhao_button:
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
 			sendLayout.setVisibility(View.VISIBLE);
 			mzEditText.setFocusable(true);
 			mzEditText.setFocusableInTouchMode(true);
@@ -390,6 +395,10 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		           inputManager.showSoftInput(mzEditText, 0);  
 			break;
 		case R.id.send_meassage_button:
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
 			if(mzEditText.getText().toString().trim().isEmpty()){
 				return;
 			}
@@ -400,14 +409,18 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			sendLayout.setVisibility(View.GONE);
 			break;
 		case R.id.commentLayout:
-			Solution s = (Solution)v.getTag();
-			Intent intent = new Intent(DiseaseActivity.this, SolutionActivity.class);
-			intent.putExtra("solution", s);
-			intent.putExtra("did", disease.getId());
-			intent.putExtra("dname", disease.getName());
-			startActivity(intent);
+//			Solution s = (Solution)v.getTag();
+//			Intent intent = new Intent(DiseaseActivity.this, SolutionActivity.class);
+//			intent.putExtra("solution", s);
+//			intent.putExtra("did", disease.getId());
+//			intent.putExtra("dname", disease.getName());
+//			startActivity(intent);
 			break;
 		case R.id.zan_layout:
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
 			selectSolution = (Solution)v.getTag();
 			if(selectSolution.isLiked()){
 				cancelzan();
@@ -419,6 +432,22 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		default:
 			break;
 		}
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		if(position<2){
+			return;
+		}
+		Solution s = disease.getSolutions().get(position-2);
+		Intent intent = new Intent(DiseaseActivity.this, SolutionActivity.class);
+		intent.putExtra("solution", s);
+		intent.putExtra("did", disease.getId());
+		intent.putExtra("dname", disease.getName());
+		startActivity(intent);
+		
 	}
 
 	@Override

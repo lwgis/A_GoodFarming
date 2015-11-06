@@ -33,7 +33,7 @@
             android:maxWidth="225dp"
             android:src="@drawable/chatfrom_voice_playing"
             android:textColor="#444444"
-            android:textSize="18sp" 
+            android:textSize="18dip" 
             android:scaleType="fitStart"
             android:paddingLeft="20dp"/>
 
@@ -51,7 +51,7 @@
                 android:gravity="center"
                 android:textColor="@android:color/white"
                 android:layout_alignParentTop="true"
-                android:textSize="13sp" />
+                android:textSize="13dip" />
 
             <TextView
                 android:id="@+id/length_text"
@@ -61,7 +61,7 @@
                 android:text="12&quot;"
                 android:textColor="#808080"
                 android:layout_alignParentBottom="true"
-                android:textSize="13sp" />
+                android:textSize="13dip" />
         </RelativeLayout>
     </LinearLayout>
 

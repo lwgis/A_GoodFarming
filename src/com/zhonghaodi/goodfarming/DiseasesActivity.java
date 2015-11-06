@@ -1,6 +1,8 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -11,14 +13,17 @@ import com.zhonghaodi.goodfarming.AgrotechnicalActivity.AgroHolder;
 import com.zhonghaodi.goodfarming.ShoppingCartActivity.MyOrderAdapter;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Category_disease;
+import com.zhonghaodi.model.ComparatorSort;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Disease;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.RecipeOrder;
+import com.zhonghaodi.model.SortComparator;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.PublicHelper;
 
 import android.R.bool;
 import android.R.integer;
@@ -27,6 +32,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,16 +124,22 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 				cDiseases.add(disease.getCategory());
 			}
 		}
+		
+		Comparator comp = new ComparatorSort();  
+        Collections.sort(cDiseases,comp);
+		
 		tabLayout.removeAllViews();
 		for(int i=0;i<cDiseases.size();i++){
 			
 			TextView tabView = new TextView(this);
-			LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1);
+			int height = PublicHelper.dip2px(this, 34);
+			LayoutParams layoutParams = new LinearLayout.LayoutParams(0, height, 1);
 			tabView.setGravity(Gravity.CENTER);
 			tabView.setText(cDiseases.get(i).getName());
 			tabView.setBackgroundResource(R.drawable.topbar);
-			tabView.setPadding(9, 11, 9, 11);
-			tabView.setTextSize(16);
+			int pix = PublicHelper.dip2px(this, 8);
+			tabView.setPadding(pix, pix, pix, pix);
+			tabView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
 			tabView.setTag(cDiseases.get(i).getId());
 			tabLayout.addView(tabView, layoutParams);
 			tabView.setOnClickListener(this);

@@ -19,7 +19,7 @@
             android:background="@null"
             android:text="&lt;返回"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="20dip" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
             android:gravity="center"
             android:text="商品信息"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </RelativeLayout>
 
     <LinearLayout
@@ -63,7 +63,7 @@
                         android:layout_marginTop="2dp"
                         android:text="用户名"
                         android:textColor="#444444"
-                        android:textSize="20sp" />
+                        android:textSize="20dip" />
                 </LinearLayout>
 
                 <ImageView
@@ -82,7 +82,7 @@
                     android:singleLine="true"
                     android:text="农资店名称"
                     android:textColor="#444444"
-                    android:textSize="15sp" />
+                    android:textSize="15dip" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                         android:singleLine="true"
                         android:text="100.00"
                         android:textColor="#444444"
-                        android:textSize="15sp" />
+                        android:textSize="15dip" />
 
                     <TextView
                         android:id="@+id/newprice_text"
@@ -109,7 +109,7 @@
                         android:singleLine="true"
                         android:text="100.00"
                         android:textColor="#ffff0000"
-                        android:textSize="15sp" />
+                        android:textSize="15dip" />
                 </LinearLayout>
 
                 <TextView
@@ -121,7 +121,7 @@
                     android:singleLine="true"
                     android:text="数量：5"
                     android:textColor="#444444"
-                    android:textSize="15sp" />
+                    android:textSize="15dip" />
 
                 <TextView
                     android:id="@+id/content_text"
@@ -133,7 +133,7 @@
                     android:layout_marginTop="5dip"
                     android:text="内容"
                     android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textSize="16dip" />
             </LinearLayout>
         </ScrollView>
 
@@ -149,7 +149,7 @@
                 android:background="@drawable/button_shape"
                 android:text="抢购"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
+                android:textSize="18dip"
                 android:visibility="gone" />
 
             <com.zhonghaodi.customui.MyTextButton
@@ -160,7 +160,7 @@
                 android:background="@drawable/button_order_shape"
                 android:text="时间"
                 android:textColor="#ffffff"
-                android:textSize="18sp" />
+                android:textSize="18dip" />
         </RelativeLayout>
     </LinearLayout>
 

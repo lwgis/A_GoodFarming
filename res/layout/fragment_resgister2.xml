@@ -57,7 +57,7 @@
             android:singleLine="true"
             android:textColor="#333333" />
 
-        <com.zhonghaodi.customui.MyEditText
+       <!--  <com.zhonghaodi.customui.MyEditText
             android:id="@+id/address_edit"
             style="@style/my_edittext_style"
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
             android:hint="输入地址:例如 山东寿光"
             android:maxLength="20"
             android:singleLine="true"
-            android:textColor="#333333" />
+            android:textColor="#333333" /> -->
         
         <com.zhonghaodi.customui.MyEditText
             android:id="@+id/tjphone_edit"
@@ -91,7 +91,7 @@
             android:background="@drawable/button_shape"
             android:text="注册"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </LinearLayout>
 
 </ScrollView>

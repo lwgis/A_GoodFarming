@@ -64,7 +64,8 @@ public class PassBackActivity extends Activity implements HandMessage,OnClickLis
 			@Override
 			public void run() {
 				try {
-					String jsonString = HttpUtil.passback(phonestr);
+					String jsonString = HttpUtil.passback(phonestr,UILApplication.sendcount);
+					UILApplication.sendcount++;
 					Message msg = handler.obtainMessage();
 					msg.obj = jsonString;
 					msg.sendToTarget();

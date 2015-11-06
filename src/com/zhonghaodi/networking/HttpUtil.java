@@ -58,8 +58,8 @@ import com.zhonghaodi.model.User;
  *
  */
 public class HttpUtil {
-	public static String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage/";
+	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage8/";
 //	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
 //	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
@@ -739,8 +739,8 @@ public class HttpUtil {
 		return HttpUtil.executeHttpPost(urlString, jsonString);
 	}
 
-	public static String getSmsCheckNum(String phone) {
-		String urlString = RootURL + "users/checkcode?phone=" + phone;
+	public static String getSmsCheckNum(String phone,int n) {
+		String urlString = RootURL + "users/checkcode?phone=" + phone+"&n="+n;
 		String jsonString = HttpUtil.executeHttpGetNoHead(urlString);
 		return jsonString.trim();
 	}
@@ -1207,6 +1207,14 @@ public class HttpUtil {
 		return result;
 	}
 	
+	public static String getAgrotechnicalCates(){
+		
+		String urlString = RootURL + "agrotechnicals/cates";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
 	public static String getAgrotechnical(){
 		
 		String urlString = RootURL + "agrotechnicals";
@@ -1353,8 +1361,8 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String passback(String phone) {
-		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/passback?phone="+phone);
+	public static String passback(String phone,int n) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/passback?phone="+phone+"&n="+n);
 		return jsonString;
 	}
 	

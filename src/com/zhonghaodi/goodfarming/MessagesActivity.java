@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
-import com.easemob.chat.EMMessage.Type;
 import com.easemob.chat.TextMessageBody;
+import com.easemob.chat.EMMessage.Type;
 import com.easemob.exceptions.EaseMobException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,39 +26,45 @@ import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 
-import android.app.Fragment;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class MessageFragment extends Fragment implements OnClickListener {
+public class MessagesActivity extends Activity implements OnClickListener {
+
 	private PullToRefreshListView pullToRefreshList;
 	private ArrayList<GFMessage> messages;
 	private MessageAdapter adapter = new MessageAdapter();
-	private MessageHandle handler = new MessageHandle(this);
+	private MessageHandle handler = new MessageHandle();
 	private List<EMConversation> list;
-
+	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View view = inflater.inflate(R.layout.fragment_message, container,
-				false);
-		pullToRefreshList = (PullToRefreshListView) view
-				.findViewById(R.id.pull_refresh_list);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_messages);
+		pullToRefreshList = (PullToRefreshListView)findViewById(R.id.pull_refresh_list);
 		messages = new ArrayList<GFMessage>();
-		Button contactsBtn = (Button)view.findViewById(R.id.contacts_button);
+		Button contactsBtn = (Button)findViewById(R.id.contacts_button);
 		contactsBtn.setOnClickListener(this);
+		Button cancelBtn=(Button)findViewById(R.id.cancel_button);
+		cancelBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
 		pullToRefreshList.setAdapter(adapter);
 		pullToRefreshList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -69,15 +74,13 @@ public class MessageFragment extends Fragment implements OnClickListener {
 				GFMessage message = messages.get(position - 1);
 				if(message.getType()==null || message.getType()==""){
 					Intent it = new Intent();
-					it.setClass(getActivity(), ChatActivity.class);
+					it.setClass(MessagesActivity.this, ChatActivity.class);
 					it.putExtra("userName", message.getUser()==null?message.getTitle():message.getTitle());
 					it.putExtra("title", message.getUser()==null?message.getTitle():message.getUser().getAlias());
 					it.putExtra("thumbnail", message.getUser()==null?"":message.getUser().getThumbnail());
-					getActivity().startActivityForResult(it, 2);
+					MessagesActivity.this.startActivity(it);
 					EMConversation emConversation1 = EMChatManager.getInstance().getConversation(message.getUser().getPhone());
 					emConversation1.resetUnreadMsgCount();
-					
-					((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
 				}
 				else{
 					if(message.getType().equals("question")){
@@ -108,42 +111,34 @@ public class MessageFragment extends Fragment implements OnClickListener {
 						}
 						EMConversation emConversation1 = EMChatManager.getInstance().getConversation("种好地");
 						emConversation1.resetUnreadMsgCount();
-						((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
-						Intent intent = new Intent(getActivity(), SysMessageActivity.class);
+//						((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
+						Intent intent = new Intent(MessagesActivity.this, SysMessageActivity.class);
 						intent.putExtra("messages", (Serializable)gfMessages);
 						intent.putExtra("userName", "种好地");
-						getActivity().startActivityForResult(intent, 2);
+						MessagesActivity.this.startActivity(intent);
 						
 					}
 					else if(message.getType().equals("user")){
-						((MainActivity)getActivity()).seletFragmentIndex(3);
 						EMConversation emConversation1 = EMChatManager.getInstance().getConversation("种好地");
 						emConversation1.resetUnreadMsgCount();
-						((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
+						Intent intent = new Intent(MessagesActivity.this, MainActivity.class);
+						MessagesActivity.this.startActivity(intent);
 					}
 					
 				}
 				
 			}
 		});
-//		loadData();
-		return view;
 	}
 	
 	@Override
-	public void onClick(View v) {
+	protected void onResume() {
 		// TODO Auto-generated method stub
-		String uid = GFUserDictionary.getUserId();
-		if(uid==null){
-			Intent intent = new Intent(getActivity(), LoginActivity.class);
-			getActivity().startActivity(intent);
-		}
-		else{
-			Intent intent = new Intent(getActivity(), MyFollowsActivity.class);
-			getActivity().startActivity(intent);
-		}
-		
+		super.onResume();
+		loadData();
 	}
+
+
 
 	public void loadData() {
 		list = loadConversationsWithRecentChat();
@@ -201,15 +196,9 @@ public class MessageFragment extends Fragment implements OnClickListener {
 				}
 			}
 		}).start();
-		// getActivity().runOnUiThread(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// adapter.notifyDataSetChanged();
-		// }
-		// });
+		
 	}
-
+	
 	/**
 	 * 获取所有会话
 	 * 
@@ -225,6 +214,7 @@ public class MessageFragment extends Fragment implements OnClickListener {
 		 * 如果在排序过程中有新消息收到，lastMsgTime会发生变化 影响排序过程，Collection.sort会产生异常
 		 * 保证Conversation在Sort过程中最后一条消息的时间不变 避免并发问题
 		 */
+		
 		List<Pair<Long, EMConversation>> sortList = new ArrayList<Pair<Long, EMConversation>>();
 		synchronized (conversations) {
 			for (EMConversation conversation : conversations.values()) {
@@ -296,7 +286,7 @@ public class MessageFragment extends Fragment implements OnClickListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			HoldMessage holdMessage;
 			if (convertView == null) {
-				convertView = getActivity().getLayoutInflater().inflate(
+				convertView = MessagesActivity.this.getLayoutInflater().inflate(
 						R.layout.cell_message, parent, false);
 				holdMessage = new HoldMessage(convertView);
 				convertView.setTag(holdMessage);
@@ -333,11 +323,8 @@ public class MessageFragment extends Fragment implements OnClickListener {
 		return null;
 	}
 	
-	  class MessageHandle extends Handler{
-		 MessageFragment fragment;
-		 public MessageHandle(MessageFragment fm){
-			 fragment=fm;
-		 }
+	class MessageHandle extends Handler{
+		 
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
@@ -356,7 +343,7 @@ public class MessageFragment extends Fragment implements OnClickListener {
 						return;
 					}
 					for (GFMessage message :messages) {
-						User user = fragment.findUser(users, message.getTitle());
+						User user = findUser(users, message.getTitle());
 						if (user != null) {
 							message.setUser(user);
 						}				
@@ -365,13 +352,7 @@ public class MessageFragment extends Fragment implements OnClickListener {
 					for (GFMessage gfMessage : messages) {
 						count+=gfMessage.getCount();
 					}
-					if(getActivity()!=null){
-						((MainActivity)getActivity()).setUnreadMessageCount(count);
-						 adapter.notifyDataSetChanged();
-					}
-					else{
-//						GFToast.show("空");
-					}
+					adapter.notifyDataSetChanged();
 					
 				} else {
 					GFToast.show("获取消息失败");
@@ -380,5 +361,19 @@ public class MessageFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		String uid = GFUserDictionary.getUserId();
+		if(uid==null){
+			Intent intent = new Intent(MessagesActivity.this, LoginActivity.class);
+			this.startActivity(intent);
+		}
+		else{
+			Intent intent = new Intent(MessagesActivity.this, MyFollowsActivity.class);
+			this.startActivity(intent);
+		}
+		
+	}
+
 }

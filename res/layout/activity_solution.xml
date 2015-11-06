@@ -20,7 +20,7 @@
             android:background="@null"
             android:text="取消"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="20dip" />
 
         <TextView
             android:id="@+id/title_text"
@@ -30,7 +30,7 @@
             android:gravity="center"
             android:text="标题"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
 
     </RelativeLayout>
 
@@ -60,7 +60,7 @@
                 android:maxLength="50"
                 android:minHeight="40dp"
                 android:paddingLeft="5dp"
-                android:textSize="18sp" 
+                android:textSize="18dip" 
                 android:hint="50字以内的评论"/>
 
             <com.zhonghaodi.customui.MyTextButton
@@ -72,7 +72,7 @@
                 android:gravity="center"
                 android:text="发送"
                 android:textColor="#444444"
-                android:textSize="20sp"/>
+                android:textSize="20dip"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -82,9 +82,10 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_view"
     	android:layout_below="@id/tilte_view"
+    	android:layout_margin="5dip"
         android:cacheColorHint="#000000"
         android:divider="#eaeaea"
-        android:dividerHeight="1dp"
+        android:dividerHeight="8dp"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"

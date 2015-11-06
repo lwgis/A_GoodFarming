@@ -2,12 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:focusable="false"
     >
     <LinearLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical" 
+	    android:focusable="false"
 	    >
 	
 	    <LinearLayout
@@ -17,12 +17,14 @@
 	        android:layout_marginRight="5dp"
 	        android:background="@drawable/background_with_shadow"
 	        android:orientation="vertical" 
+	        android:focusable="false"
 	        >
 	
 	        <LinearLayout
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
 	            android:orientation="horizontal"
+	            android:focusable="false"
 	            >
 	
 	            <ImageView
@@ -44,6 +46,7 @@
 	                android:layout_weight="1"
 	                android:layout_marginLeft="5dip"
 	                android:orientation="vertical" 
+	                android:focusable="false"
 	                >
 	
 	                <TextView
@@ -53,7 +56,7 @@
 	                    android:layout_marginTop="2dp"
 	                    android:text="用户名"
 	                    android:textColor="#444444"
-	                    android:textSize="13sp" 
+	                    android:textSize="13dip" 
 	                    android:focusable="false"
 	                    />
 	
@@ -63,7 +66,7 @@
 	                    android:layout_height="wrap_content"
 	                    android:text="21:37:20"
 	                    android:textColor="#808080"
-	                    android:textSize="12sp" 
+	                    android:textSize="12dip" 
 	                    android:focusable="false"
 	                    />
 	            </LinearLayout>
@@ -72,6 +75,7 @@
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:orientation="horizontal"
+	                android:focusable="false"
 	                >
 	                <ImageView
 		                android:layout_width="20dp"
@@ -90,7 +94,7 @@
 	                    android:layout_marginTop="5dip"
 	                    android:text="10"
 	                    android:textColor="#808080"
-	                    android:textSize="14sp" 
+	                    android:textSize="14dip" 
 	                    android:focusable="false"
 	                    />
 	            </LinearLayout>
@@ -102,11 +106,12 @@
 			   android:layout_height="0.2px" 
 			   android:layout_margin="6dip"
 			   android:background="#cccccc"  
+			   android:focusable="false"
 			/> 
 	
 	        <com.zhonghaodi.customui.UrlTextView
 	            android:id="@+id/content_text"
-	            android:layout_width="match_parent"
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_marginLeft="5dp"
 	            android:layout_marginRight="5dp"
@@ -114,9 +119,7 @@
 	            android:layout_marginTop="5dip"
 	            android:text="内容"
 	            android:textColor="#333333"
-	            android:textSize="14sp" 
-	            android:focusable="false"
-	            android:clickable="false"
+	            android:textSize="14dip" 
 	            />
 	        
 	        <View  
@@ -124,12 +127,14 @@
 			   android:layout_height="0.2px" 
 			   android:layout_margin="6dip"
 			   android:background="#cccccc"  
+			   android:focusable="false"
 			/> 
 	        <LinearLayout 
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
 	            android:orientation="horizontal"
 	            android:layout_margin="5dip"
+	            android:focusable="false"
 	            >
 	            <com.zhonghaodi.customui.MyTextButton
 			        android:id="@+id/agree_button"
@@ -140,7 +145,7 @@
 			        android:background="@drawable/button_agreebtn"
 			        android:text="赞同"
 			        android:textColor="@drawable/color_agreebtn"
-			        android:textSize="16sp" 
+			        android:textSize="16dip" 
 			        android:focusable="false"/>
 	            <com.zhonghaodi.customui.MyTextButton
 			        android:id="@+id/disagree_button"
@@ -151,7 +156,7 @@
 			        android:background="@drawable/button_agreebtn"
 			        android:text="反对"
 			        android:textColor="@drawable/color_agreebtn"
-			        android:textSize="16sp"
+			        android:textSize="16dip"
 			        android:focusable="false" />
 	        </LinearLayout>
 	    </LinearLayout>	
@@ -165,9 +170,9 @@
 	    >
 	     <ImageView
               android:id="@+id/caina_image"
-              android:layout_width="60dp"
-              android:layout_height="79dp"
-              android:layout_marginRight="5dp"
+              android:layout_width="45dp"
+              android:layout_height="59dp"
+              android:layout_marginRight="50dp"
               android:layout_marginTop="5dp"
               android:layout_alignParentRight="true"
               android:padding="2dip"

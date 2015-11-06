@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:text="姓名"
         android:textColor="#444444"
-        android:textSize="18sp" 
+        android:textSize="18dip" 
         android:focusable="false"/>
     
 	<RadioButton 

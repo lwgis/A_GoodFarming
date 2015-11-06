@@ -12,7 +12,7 @@
         android:background="#38be99"
         android:gravity="center_vertical|center_horizontal"
         android:padding="3dip"
-        android:textSize="17sp" 
+        android:textSize="17dip" 
         android:text="S"
         android:textColor="#FFFFFF" />
 
@@ -25,7 +25,7 @@
         android:paddingLeft="10dip"
         android:text="深圳"
         android:textColor="#444444"
-        android:textSize="15sp" 
+        android:textSize="15dip" 
         />
 	<View  
 	   android:layout_width="match_parent"  

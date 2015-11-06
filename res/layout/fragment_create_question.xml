@@ -14,7 +14,7 @@
             android:gravity="center"
             android:text="尽量按农作物近照,远照,局部,整体,正面,反面来上传图片"
             android:textColor="#808080"
-            android:textSize="14sp" />
+            android:textSize="14dip" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -94,7 +94,7 @@
             android:gravity="center"
             android:text="为了更好的确诊请尽量完成下面的选项"
             android:textColor="#808080"
-            android:textSize="17sp" />
+            android:textSize="17dip" />
         <LinearLayout 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
 	            android:layout_marginLeft="6dip"
 	            android:text="1、病害分布规律"
 	            android:textColor="#808080"
-	            android:textSize="17sp" />
+	            android:textSize="17dip" />
             <Spinner 
 			    android:layout_width="200dip"
 			    android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
 	            android:layout_marginLeft="6dip"
 	            android:text="2、病害发生情况"
 	            android:textColor="#808080"
-	            android:textSize="17sp" />
+	            android:textSize="17dip" />
 			<Spinner 
 			    android:layout_width="200dip"
 			    android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
 	            android:layout_marginLeft="6dip"
 	            android:text="3、病害发展速度"
 	            android:textColor="#808080"
-	            android:textSize="17sp" />
+	            android:textSize="17dip" />
 			<Spinner 
 			    android:layout_width="200dip"
 			    android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
 	            android:layout_marginLeft="6dip"
 	            android:text="4、植株根系情况"
 	            android:textColor="#808080"
-	            android:textSize="17sp" />
+	            android:textSize="17dip" />
             <Spinner 
 			    android:layout_width="200dip"
 			    android:layout_height="wrap_content"

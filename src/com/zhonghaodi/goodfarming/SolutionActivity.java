@@ -76,6 +76,10 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 
 			@Override
 			public void onClick(View v) {
+				if(GFUserDictionary.getUserId()==null){
+					GFToast.show("请您先登录！");
+					return;
+				}
 				if(chatEv.getText().toString().trim().isEmpty()){
 					return;
 				}
@@ -319,6 +323,12 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 				holderCommentTextMessage.contentTv.setHtmlText(comment.getContent());
 				holderCommentTextMessage.timeTv.setText(comment.getTime());
 				holderCommentTextMessage.nameTv.setText(comment.getWriter().getAlias());
+				if(position==1){
+					holderCommentTextMessage.spcLayout.setVisibility(View.VISIBLE);
+				}
+				else{
+					holderCommentTextMessage.spcLayout.setVisibility(View.GONE);
+				}
 				ImageLoader.getInstance()
 						.displayImage(
 								HttpUtil.ImageUrl+"users/small/"
@@ -339,6 +349,10 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if(v.getId()==R.id.zan_layout){
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
 			if(solution.isLiked()){
 				cancelzan();
 			}

@@ -19,7 +19,7 @@
              android:background="@null"
              android:text="&lt;返回"
              android:textColor="#ffffff"
-             android:textSize="20sp" 
+             android:textSize="20dip" 
              android:layout_marginLeft="5dp"/>
 
          <TextView
@@ -30,7 +30,7 @@
              android:gravity="center"
              android:text="药方详细信息"
              android:textColor="#FFFFFF"
-             android:textSize="18sp" />
+             android:textSize="18dip" />
      </RelativeLayout>
      <LinearLayout 
          android:layout_width="match_parent"
@@ -77,7 +77,7 @@
 			                   android:singleLine="true"
 			                   android:text="药方名称"
 			                   android:textColor="#444444"
-			                   android:textSize="18sp" />
+			                   android:textSize="18dip" />
 			
 			               <LinearLayout
 			                   android:layout_width="match_parent"
@@ -94,7 +94,7 @@
 			                       android:singleLine="true"
 			                       android:text="原    价:"
 			                       android:textColor="#444444"
-			                       android:textSize="15sp" />
+			                       android:textSize="15dip" />
 			
 			                   <TextView
 			                       android:id="@+id/oldprice_text"
@@ -103,7 +103,7 @@
 			                       android:singleLine="true"
 			                       android:text="100.00"
 			                       android:textColor="#e4393c"
-			                       android:textSize="15sp" />
+			                       android:textSize="15dip" />
 			               </LinearLayout>
 			
 			               <LinearLayout
@@ -120,7 +120,7 @@
 			                       android:singleLine="true"
 			                       android:text="优惠价:"
 			                       android:textColor="#444444"
-			                       android:textSize="15sp" />
+			                       android:textSize="15dip" />
 			
 			                   <TextView
 			                       android:id="@+id/newprice_text"
@@ -129,7 +129,7 @@
 			                       android:singleLine="true"
 			                       android:text="100.00"
 			                       android:textColor="#e4393c"
-			                       android:textSize="15sp" />
+			                       android:textSize="15dip" />
 			               </LinearLayout>
 			
 			               <LinearLayout
@@ -147,7 +147,7 @@
 			                       android:layout_marginRight="5dp"
 			                       android:background="@drawable/remove"
 			                       android:textColor="#ffffff"
-			                       android:textSize="18sp" />
+			                       android:textSize="18dip" />
 			
 			                   <com.zhonghaodi.customui.MyEditText
 			                       android:id="@+id/recipecount_edit"
@@ -160,7 +160,7 @@
 			                       android:text="1"
 			                       android:digits="1234567890"
 			                       android:textColor="#444444"
-			                       android:textSize="18sp" />
+			                       android:textSize="18dip" />
 			
 			                   <com.zhonghaodi.customui.MyTextButton
 			                       android:id="@+id/addrecipe_button"
@@ -170,7 +170,7 @@
 			                       android:layout_marginRight="5dp"
 			                       android:background="@drawable/add"
 			                       android:textColor="#ffffff"
-			                       android:textSize="18sp" />
+			                       android:textSize="18dip" />
 			               </LinearLayout>
 			           </LinearLayout>
 			       </LinearLayout>
@@ -189,7 +189,7 @@
 				            android:gravity="center"
 				            android:text="东方誉源农资旗舰店"
 				            android:textColor="#01b281"
-				            android:textSize="18sp" />
+				            android:textSize="18dip" />
 			           <ImageView
 				           android:id="@+id/map_image"
 				           android:layout_width="30dp"
@@ -215,7 +215,7 @@
 			           android:layout_marginBottom="5dip"
 			           android:text="药方描述"
 			           android:textColor="#888888"
-			           android:textSize="18sp" />
+			           android:textSize="18dip" />
 			       <LinearLayout 
 			           android:layout_width="match_parent"
 			           android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
 			                    android:id="@+id/sumevaluate"
 			                    android:layout_width="150dip"
 			                    android:layout_height="wrap_content"
-			                    android:textSize="18sp"
+			                    android:textSize="18dip"
 			                    android:textColor="#888888"
 			                    android:text="商品评价"
 			                    />
@@ -256,7 +256,7 @@
 				                       android:singleLine="true"
 				                       android:text="好评："
 				                       android:textColor="#e4393c"
-				                       android:textSize="15sp" />
+				                       android:textSize="15dip" />
 			                       <com.zhonghaodi.customui.MyProgressBar android:id="@+id/haopro"
 								      android:layout_width="0dip"
 			                          android:layout_weight="1"
@@ -278,7 +278,7 @@
 				                       android:singleLine="true"
 				                       android:text="中评："
 				                       android:textColor="#e4393c"
-				                       android:textSize="15sp" />
+				                       android:textSize="15dip" />
 			                       <com.zhonghaodi.customui.MyProgressBar android:id="@+id/zhongpro"
 								      android:layout_width="0dip"
 			                    	  android:layout_weight="1"
@@ -300,7 +300,7 @@
 				                       android:singleLine="true"
 				                       android:text="差评："
 				                       android:textColor="#e4393c"
-				                       android:textSize="15sp" />
+				                       android:textSize="15dip" />
 			                       <com.zhonghaodi.customui.MyProgressBar android:id="@+id/chapro"
 								      android:layout_width="0dip"
 			                    	  android:layout_weight="1" 
@@ -334,7 +334,7 @@
 		                    android:layout_width="match_parent"
 		                    android:layout_height="wrap_content"
 		                    android:gravity="center"
-		                    android:textSize="18sp"
+		                    android:textSize="18dip"
 		                    android:textColor="#888888"
 		                    android:text="查看评价>>"
 		                    />
@@ -358,7 +358,7 @@
 	           android:background="@drawable/button_order_shape"
 	           android:text="购买"
 	           android:textColor="#ffffff"
-	           android:textSize="18sp" />
+	           android:textSize="18dip" />
          </LinearLayout>
      </LinearLayout>
  </LinearLayout>

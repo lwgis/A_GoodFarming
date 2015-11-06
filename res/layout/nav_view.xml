@@ -18,7 +18,7 @@
             android:background="@null"
             android:text="取消"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="20dip" />
 
         <TextView
             android:id="@+id/title_text"
@@ -28,7 +28,7 @@
             android:gravity="center"
             android:text="标题"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
 
         <com.zhonghaodi.customui.MyTextButton
             android:id="@+id/send_button"
@@ -41,7 +41,7 @@
             android:gravity="center"
             android:text="发送"
             android:textColor="#eeeeee"
-            android:textSize="20sp" 
+            android:textSize="20dip" 
             android:visibility="invisible"/>
     </RelativeLayout>
 

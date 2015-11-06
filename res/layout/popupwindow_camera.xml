@@ -13,7 +13,7 @@
         android:shadowRadius="2"
         android:text="拍照"
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="20dip" />
 
     <Button
         android:id="@+id/btnPhoto"
@@ -25,6 +25,6 @@
         android:shadowRadius="2"
         android:text="从手机相册选择"
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="20dip" />
 
 </LinearLayout>

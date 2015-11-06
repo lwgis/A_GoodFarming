@@ -48,7 +48,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class QuestionActivity extends Activity implements UrlOnClick,
-		HandMessage,OnClickListener{
+		HandMessage,OnClickListener,OnItemClickListener{
 	private PullToRefreshListView pullToRefreshListView;
 	private Question question;
 	private int questionId;
@@ -109,6 +109,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						loadData();
 					}
 				});
+		pullToRefreshListView.setOnItemClickListener(this);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
 		uid=GFUserDictionary.getUserId();
 	}
@@ -474,13 +475,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.timeTv.setText(response.getTime());
 				String rcontent = PublicHelper.TrimRight(response.getContent());
 				holderResponse.contentTv.setHtmlText(rcontent);
+				holderResponse.contentTv.setTag(response);
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
+				
 				if(question.getWriter().getId().equals(uid)){
 					holderResponse.agreebtn.setText("采纳");
 				}
 				else{
 					holderResponse.agreebtn.setText("赞同("+response.getAgree()+")");
 				}
+				
 				holderResponse.agreebtn.setTag(response);
 				holderResponse.agreebtn.setOnClickListener(QuestionActivity.this);
 				holderResponse.disagreebtn.setText("反对("+response.getDisagree()+")");
@@ -494,8 +498,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.headIv.setTag(response.getWriter());
 				holderResponse.headIv.setOnClickListener(QuestionActivity.this);
 				holderResponse.countTv.setText(String.valueOf(response.getCommentCount()));
-				holderResponse.countView.setTag(response);
-				holderResponse.countView.setOnClickListener(QuestionActivity.this);
+
 				break;
 			default:
 				break;
@@ -535,6 +538,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.head_image:
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
 			User user = (User)v.getTag();
 			if(user.getLevelID()!=1){
 				Intent it = new Intent();
@@ -546,12 +553,21 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 			break;
 		case R.id.agree_button:
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
 			if(question.getWriter().getId().equals(uid)){
 				if(adopt){
 					GFToast.show("已经采纳过了");
 					return;
 				}
+				
 				selectResponse = (Response)v.getTag();
+				if(selectResponse.getWriter().getId().equals(uid)){
+					GFToast.show("不能采纳自己的答案。");
+					return;
+				}
 				new Thread(new Runnable() {
 
 					@Override
@@ -568,6 +584,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 			else{
 				selectResponse = (Response)v.getTag();
+				if(selectResponse.getWriter().getId().equals(uid)){
+					GFToast.show("不能给自己的答案点赞。");
+					return;
+				}
 				new Thread(new Runnable() {
 
 					@Override
@@ -583,7 +603,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 			break;
 		case R.id.disagree_button:
+			if(GFUserDictionary.getUserId()==null){
+				GFToast.show("请您先登录！");
+				return;
+			}
 			selectResponse = (Response)v.getTag();
+			if(selectResponse.getWriter().getId().equals(uid)){
+				GFToast.show("不能反对自己的答案。");
+				return;
+			}
 			new Thread(new Runnable() {
 
 				@Override
@@ -598,19 +626,29 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}).start();
 			break;
 		case R.id.count_layout:
-			Response response = (Response)v.getTag();
-			Intent intent = new Intent(this, CommentActivity.class);
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("question", question);		
-			bundle.putSerializable("response", response);
-			intent.putExtras(bundle);
-			startActivity(intent);
+
 			break;
 		default:
 			break;
 		}
 		
 		
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		if(position<2){
+			return;
+		}
+		Response response = question.getResponses().get(position-2);
+		Intent intent = new Intent(this, CommentActivity.class);
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("question", question);		
+		bundle.putSerializable("response", response);
+		intent.putExtras(bundle);
+		startActivity(intent);
 	}
 
 	@Override

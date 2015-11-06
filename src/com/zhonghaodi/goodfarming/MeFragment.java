@@ -57,6 +57,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	private PullToRefreshListView pullToRefreshList;
 	private MeAdapter adapter;
 	private GFHandler<MeFragment> handler = new GFHandler<MeFragment>(this);
+	private View siginView;
 	public User getUser() {
 		return user;
 	}
@@ -139,6 +140,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				String jsonString = HttpUtil.getUser(GFUserDictionary
 						.getUserId());
 				Message msg = handler.obtainMessage();
+				msg.what=1;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 			}
@@ -218,6 +220,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.fensiView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
+				holderMeInfo.siginButton.setOnClickListener(MeFragment.this);
 				break;
 			case 1:
 				holdFunction=(HoldFunction)convertView.getTag();
@@ -232,64 +235,109 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 
 	}
 	
+	private void signin() {
+		final String  uid= GFUserDictionary.getUserId();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.signIn(uid);
+				Message msg = handler.obtainMessage();
+				msg.what = 2;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Intent intent = new Intent(getActivity(), MyFollowsActivity.class);
-		intent.putExtra("status", 1);
-		getActivity().startActivity(intent);
+		switch (v.getId()) {
+		case R.id.fensi_view:
+			Intent intent = new Intent(getActivity(), MyFollowsActivity.class);
+			intent.putExtra("status", 1);
+			getActivity().startActivity(intent);
+			break;
+		case R.id.sigin_button:
+			v.setEnabled(false);
+			siginView = v;
+			signin();
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
-		MeFragment fragment = (MeFragment) object;
-		if (msg.obj == null) {
-			Toast.makeText(fragment.getActivity(), "获取失败,请稍后再试",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-		fragment.user = (User) GsonUtil
-				.fromJson(msg.obj.toString(), User.class);
-		GFUserDictionary.saveLoginInfo(user, GFUserDictionary.getPassword(), getActivity());
-		Function cartFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
-		fragment.functions.add(cartFunction);
-		Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
-		fragment.functions.add(cropsFunction);
-		Function contactsFunction = new Function("收货地址", ContactsActivity.class,R.drawable.address);
-		fragment.functions.add(contactsFunction);
-		Function exchangeFunction = new Function("积分兑换", ExchangeActivity.class,R.drawable.exchange);
-		fragment.functions.add(exchangeFunction);
-		Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
-		fragment.functions.add(payFunction);
-		if(user.getLevel().getId()==3){
-			Function orderFunction = new Function("扫一扫", OrderScanActivity.class,R.drawable.scan);
-			fragment.functions.add(orderFunction);
-		}
-		switch (user.getLevel().getId()) {
+		switch (msg.what) {
 		case 1:
-			Function nysfuFunction = new Function("升级为农艺师", UpdateNysActivity.class,R.drawable.nysupdate);
-			fragment.functions.add(nysfuFunction);
-			Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzdupdate);
-			fragment.functions.add(nzdFunction);
-			break;	
+			MeFragment fragment = (MeFragment) object;
+			if (msg.obj == null) {
+				Toast.makeText(fragment.getActivity(), "获取失败,请稍后再试",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+			fragment.user = (User) GsonUtil
+					.fromJson(msg.obj.toString(), User.class);
+			GFUserDictionary.saveLoginInfo(user, GFUserDictionary.getPassword(), getActivity());
+			Function cartFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
+			fragment.functions.add(cartFunction);
+			Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
+			fragment.functions.add(cropsFunction);
+			Function contactsFunction = new Function("收货地址", ContactsActivity.class,R.drawable.address);
+			fragment.functions.add(contactsFunction);
+			Function exchangeFunction = new Function("积分兑换", ExchangeActivity.class,R.drawable.exchange);
+			fragment.functions.add(exchangeFunction);
+			Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
+			fragment.functions.add(payFunction);
+			if(user.getLevel().getId()==3){
+				Function orderFunction = new Function("扫一扫", OrderScanActivity.class,R.drawable.scan);
+				fragment.functions.add(orderFunction);
+			}
+			switch (user.getLevel().getId()) {
+			case 1:
+				Function nysfuFunction = new Function("升级为农艺师", UpdateNysActivity.class,R.drawable.nysupdate);
+				fragment.functions.add(nysfuFunction);
+				Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzdupdate);
+				fragment.functions.add(nzdFunction);
+				break;	
+			case 2:
+				Function zjFunction = new Function("升级为专家", UpdateZjActivity.class, R.drawable.zjupdate);
+				fragment.functions.add(zjFunction);
+			default:
+				break;
+			}
+			Function minfoFunction = new Function("修改资料", ModifyInfoActivity.class,R.drawable.me_s);
+			fragment.functions.add(minfoFunction);
+			Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
+			fragment.functions.add(modifyFunction);				
+			Function shareFunction = new Function("APP分享",null,R.drawable.weixin);
+			fragment.functions.add(shareFunction);
+			Function downFunction = new Function("推荐农友下载", AppdownActivity.class,R.drawable.appdownload);
+			fragment.functions.add(downFunction);
+			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
+			fragment.functions.add(feedbackFunction);
+			fragment.pullToRefreshList.onRefreshComplete();
+			adapter.notifyDataSetChanged();
+			break;
 		case 2:
-			Function zjFunction = new Function("升级为专家", UpdateZjActivity.class, R.drawable.zjupdate);
-			fragment.functions.add(zjFunction);
+			siginView.setEnabled(true);
+			if(msg.obj!=null){
+				GFToast.show(msg.obj.toString());
+				loadData();
+			}
+			else{
+				GFToast.show("连接服务器失败,请稍候再试!");
+			}
+			break;
+
 		default:
 			break;
 		}
-		Function minfoFunction = new Function("修改资料", ModifyInfoActivity.class,R.drawable.me_s);
-		fragment.functions.add(minfoFunction);
-		Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
-		fragment.functions.add(modifyFunction);				
-		Function shareFunction = new Function("APP分享",null,R.drawable.weixin);
-		fragment.functions.add(shareFunction);
-		Function downFunction = new Function("推荐农友下载", AppdownActivity.class,R.drawable.appdownload);
-		fragment.functions.add(downFunction);
-		Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
-		fragment.functions.add(feedbackFunction);
-		fragment.pullToRefreshList.onRefreshComplete();
-		adapter.notifyDataSetChanged();
+		
 	}
 	
 	public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {

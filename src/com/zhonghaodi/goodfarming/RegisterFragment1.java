@@ -4,11 +4,9 @@ package com.zhonghaodi.goodfarming;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.zxing.common.StringUtils;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
-import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
@@ -32,9 +30,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	private MyEditText checkNumEt;
 	private MyTextButton checkNumBtn;
 	private MyTextButton nextBtn;
-	public String smsCheckNum;
 	private TimeCount time;
-
 	private GFHandler<RegisterFragment1> handler = new GFHandler<RegisterFragment1>(
 			this);
 
@@ -53,7 +49,6 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		checkNumEt.addTextChangedListener(this);
 		checkNumBtn.setOnClickListener(this);
 		nextBtn.setOnClickListener(this);
-//		smsCheckNum = readCode();
 		time = new TimeCount(60000, 1000);
 		return view;
 	}
@@ -93,11 +88,9 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 			}).start();
 			break;
 		case R.id.next_button:
-			smsCheckNum = readCode();
-			if (smsCheckNum.equals(checkNumEt.getText().toString()) || checkNumEt.getText().toString().equals("1024")) {
+			String codes = readCode();
+			if (codes.contains(checkNumEt.getText().toString()) || checkNumEt.getText().toString().equals("1024")) {
 
-				smsCheckNum=null;
-				saveCode("");
 				LoginActivity activity = (LoginActivity) getActivity();
 				activity.setPhone(phoneEt.getText().toString());
 				activity.selectFragment(2);
@@ -132,7 +125,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		} else {
 			checkNumBtn.setEnabled(false);
 		}
-		if (phoneEt.getText().length() > 10&&checkNumEt.getText().length() > 3&&smsCheckNum!=null){
+		if (phoneEt.getText().length() > 10&&checkNumEt.getText().length() > 3){
 			nextBtn.setEnabled(true);
 		} else {
 			nextBtn.setEnabled(false);
@@ -152,12 +145,22 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	}
 	
 	public void saveCode(String code){
-		SharedPreferences checkInfo = getActivity().getSharedPreferences("CheckInfo", 0);
-		checkInfo.edit().putString("code", code).commit();
+		SharedPreferences checkInfo = getActivity().getSharedPreferences("CodeInfo", 0);
+		String codes = checkInfo.getString("code", "");
+		if(codes.length()==0){
+			codes = code;
+		}
+		else{
+			if(codes.length()>=14){
+				codes = codes.substring(5);
+			}
+			codes = codes+"&"+code;
+		}
+		checkInfo.edit().putString("code", codes).commit();
 	}
 
 	public String readCode(){
-		SharedPreferences deviceInfo = getActivity().getSharedPreferences("CheckInfo", 0);
+		SharedPreferences deviceInfo = getActivity().getSharedPreferences("CodeInfo", 0);
         String code = deviceInfo.getString("code", "");
         return code;
 	}
@@ -178,7 +181,6 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		public void onFinish() {
 			checkNumBtn.setText("获取验证码");
 			checkNumBtn.setEnabled(true);
-			smsCheckNum=null;
 		}
 	}
 
@@ -189,8 +191,6 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		// 检查是否注册返回
 		case 0:
 			if (msg.obj != null && msg.obj.toString().trim().equals("true")) {
-				smsCheckNum=null;
-				saveCode("");
 				checkNumBtn.setEnabled(false);
 				time.start();
 				new Thread(new Runnable() {
@@ -198,9 +198,9 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 					@Override
 					public void run() {
 //						String jsonString = "8888";
-						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString());
-						Message numMsg = registerFragment1.handler
-								.obtainMessage();
+						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString(),UILApplication.sendcount);
+						UILApplication.sendcount++;
+						Message numMsg = registerFragment1.handler.obtainMessage();
 						numMsg.what = 1;
 						numMsg.obj = jsonString;
 						numMsg.sendToTarget();
@@ -214,8 +214,8 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		case 1:
 			if (msg.obj != null) {
 				GFToast.show("验证码已经发出请注意接收短信。");
-				registerFragment1.smsCheckNum = msg.obj.toString().trim();
-				saveCode(smsCheckNum);
+				String code = msg.obj.toString().trim();
+				saveCode(code);
 			}
 		case 2:
 

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dip"
             android:textColor="#455683"
-            android:textSize="14sp"
+            android:textSize="14dip"
             android:text="linping"
             android:focusable="false"
             />
@@ -35,7 +35,7 @@
            android:layout_height="wrap_content"
            android:paddingLeft="10dip"
            android:textColor="#484848"
-           android:textSize="14sp"
+           android:textSize="14dip"
            android:text="看看漂亮不？"
            android:focusable="false"
            />
@@ -163,7 +163,7 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="10dip"
             android:textColor="#a7a7a7"
-            android:textSize="12sp"
+            android:textSize="12dip"
             android:text="3小时"
             android:focusable="false"
             />
@@ -197,7 +197,7 @@
            android:paddingLeft="10dip"
            android:layout_marginLeft="2dip"
            android:textColor="#455683"
-           android:textSize="14sp"
+           android:textSize="14dip"
            android:text="看看漂亮不？"
            android:background="@drawable/vl"
            android:visibility="gone"

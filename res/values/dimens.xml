@@ -5,6 +5,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 	<dimen name="topbar_height">45dip</dimen>
     <dimen name="tabbar_height">0dip</dimen>
-    <color name="transparent">#00000000</color>
+    <color name="trandiparent">#00000000</color>
     <dimen name="radio_width">90dip</dimen>
 </resources>

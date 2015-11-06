@@ -76,7 +76,7 @@
 		                android:background="@drawable/button_order_shape"
 		                android:text="开始刮"
 		                android:textColor="#ffffff"
-		                android:textSize="18sp" />
+		                android:textSize="18dip" />
 		        </LinearLayout>
 		        
 		    </LinearLayout>

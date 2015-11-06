@@ -17,7 +17,7 @@
             android:gravity="center"
             android:text="发现"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="20dip" />
     </RelativeLayout>
     <ScrollView 
         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
 		            android:layout_toRightOf="@+id/avimg3"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="农艺圈"
 		            />
 		        
@@ -86,7 +86,7 @@
 		            android:layout_toRightOf="@+id/avimg2"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="农艺师"
 		            />
 		        
@@ -115,7 +115,7 @@
 		            android:layout_toRightOf="@+id/avimg1"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="附近农资店"
 		            />
 		        
@@ -144,7 +144,7 @@
 		            android:layout_toRightOf="@+id/avimg7"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="配方团购"
 		            />
 		        
@@ -173,7 +173,7 @@
 		            android:layout_toRightOf="@+id/avimg4"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="农业技术知识"
 		            />
 		        
@@ -203,7 +203,7 @@
 		            android:layout_toRightOf="@+id/avimg9"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="植物病虫害"
 		            />
 		        
@@ -233,7 +233,7 @@
 		            android:layout_toRightOf="@+id/avimg5"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="秒杀"
 		            />
 		        
@@ -263,7 +263,7 @@
 		            android:layout_toRightOf="@+id/avimg6"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="积分商城"
 		            />
 		        
@@ -293,7 +293,7 @@
 		            android:layout_toRightOf="@+id/avimg8"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
-		            android:textSize="18sp"
+		            android:textSize="18dip"
 		            android:text="刮刮乐"
 		            />
 		        

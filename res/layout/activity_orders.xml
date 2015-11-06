@@ -18,7 +18,7 @@
             android:background="@null"
             android:text="&lt;返回"
             android:textColor="#ffffff"
-            android:textSize="20sp" 
+            android:textSize="20dip" 
             android:layout_marginLeft="5dp"/>
 
         <TextView
@@ -29,7 +29,7 @@
             android:gravity="center"
             android:text="我的订单"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </RelativeLayout>
 
     <LinearLayout 
@@ -66,7 +66,7 @@
 	            android:layout_toRightOf="@+id/avimg3"
 	            android:paddingLeft="10dip"
 	            android:textColor="#444444"
-	            android:textSize="18sp"
+	            android:textSize="18dip"
 	            android:text="配方订单"
 	            />
 	        
@@ -95,7 +95,7 @@
 	            android:layout_toRightOf="@+id/avimg2"
 	            android:paddingLeft="10dip"
 	            android:textColor="#444444"
-	            android:textSize="18sp"
+	            android:textSize="18dip"
 	            android:text="秒杀订单"
 	            />
 	        
@@ -124,7 +124,7 @@
 	            android:layout_toRightOf="@+id/avimg1"
 	            android:paddingLeft="10dip"
 	            android:textColor="#444444"
-	            android:textSize="18sp"
+	            android:textSize="18dip"
 	            android:text="积分订单"
 	            />
 	        
@@ -153,7 +153,7 @@
 	            android:layout_toRightOf="@+id/avimg4"
 	            android:paddingLeft="10dip"
 	            android:textColor="#444444"
-	            android:textSize="18sp"
+	            android:textSize="18dip"
 	            android:text="刮奖订单"
 	            />
 	        

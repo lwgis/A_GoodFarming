@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="@drawable/background_with_shadow"
     >
 
     <LinearLayout
@@ -41,7 +41,7 @@
                     android:layout_marginTop="2dp"
                     android:text="用户名"
                     android:textColor="#444444"
-                    android:textSize="13sp" />
+                    android:textSize="13dip" />
 
                 <TextView
                     android:id="@+id/time_text"
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:text="21:37:20"
                     android:textColor="#808080"
-                    android:textSize="12sp" />
+                    android:textSize="12dip" />
             </LinearLayout>
             <TextView
                 android:id="@+id/crop_text"
@@ -59,7 +59,7 @@
                 android:text="苦瓜"
                 android:gravity="center_vertical"
                 android:textColor="#38be99"
-                android:textSize="13sp" />
+                android:textSize="13dip" />
         </LinearLayout>
 
         <View  
@@ -77,7 +77,7 @@
             android:layout_marginRight="5dp"
             android:text="内容"
             android:textColor="#333333"
-            android:textSize="14sp" />
+            android:textSize="14dip" />
         <View  
 		   android:layout_width="match_parent"  
 		   android:layout_height="0.2px" 
@@ -94,7 +94,7 @@
             android:gravity="center"
             android:text="已有0个答案"
             android:textColor="#808080"
-            android:textSize="13sp" />
+            android:textSize="13dip" />
     </LinearLayout>
 
 </LinearLayout>

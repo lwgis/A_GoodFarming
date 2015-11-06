@@ -16,6 +16,7 @@ public class HolderMeInfo {
 	public TextView tjcodeTv;
 	public View guanzhuView;
 	public View fensiView;
+	public MyTextButton siginButton;
 	public HolderMeInfo(View view){
 		headIv=(ImageView)view.findViewById(R.id.head_image);
 		titleTv=(TextView)view.findViewById(R.id.title_text);
@@ -26,5 +27,6 @@ public class HolderMeInfo {
 		guanzhuView=view.findViewById(R.id.guanzhu_view);
 		fensiView=view.findViewById(R.id.fensi_view);
 		tjcodeTv = (TextView)view.findViewById(R.id.tjcode_text);
+		siginButton = (MyTextButton)view.findViewById(R.id.sigin_button);
 	}
 }

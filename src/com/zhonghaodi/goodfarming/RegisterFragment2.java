@@ -43,7 +43,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 	private MyEditText passwordEt;
 //	private MyEditText passwordEt2;
 	private MyEditText aliasEt;
-	private MyEditText addressEt;
+//	private MyEditText addressEt;
 	private MyEditText tjphoneEt;
 	private MyTextButton registerBtn;
 	private PopupWindow popupWindow;
@@ -108,14 +108,14 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 		passwordEt = (MyEditText) view.findViewById(R.id.password_edit);
 //		passwordEt2 = (MyEditText) view.findViewById(R.id.password2_edit);
 		aliasEt = (MyEditText) view.findViewById(R.id.alias_edit);
-		addressEt = (MyEditText) view.findViewById(R.id.address_edit);
+//		addressEt = (MyEditText) view.findViewById(R.id.address_edit);
 		tjphoneEt = (MyEditText)view.findViewById(R.id.tjphone_edit);
 		registerBtn = (MyTextButton) view.findViewById(R.id.register_button);
 		headGfImageButton = (GFImageButton) view.findViewById(R.id.head_image);
 		passwordEt.addTextChangedListener(this);
 //		passwordEt2.addTextChangedListener(this);
 		aliasEt.addTextChangedListener(this);
-		addressEt.addTextChangedListener(this);
+//		addressEt.addTextChangedListener(this);
 		registerBtn.setEnabled(false);
 		registerBtn.setOnClickListener(new OnClickListener() {
 
@@ -260,8 +260,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 	@Override
 	public void afterTextChanged(Editable s) {
 		if (passwordEt.getText().length() > 0
-				&& aliasEt.getText().length() > 0
-				&& addressEt.getText().length() > 0) {
+				&& aliasEt.getText().length() > 0) {
 			registerBtn.setEnabled(true);
 		} else {
 			registerBtn.setEnabled(false);
@@ -308,7 +307,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					User user = new User();
 					user.setPassword(passwordEt.getText().toString());
 					user.setPhone(activity.getPhone());
-					user.setAddress(addressEt.getText().toString());
+//					user.setAddress(addressEt.getText().toString());
 					user.setAlias(aliasEt.getText().toString());
 					user.setTjCode(tjphoneEt.getText().toString());
 					user.setThumbnail(registerFragment2.headImageName.trim());

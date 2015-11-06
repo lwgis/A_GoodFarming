@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="#808080"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
 
         <LinearLayout 
             android:id="@+id/content_view"

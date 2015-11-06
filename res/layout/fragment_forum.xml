@@ -15,23 +15,26 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="消息"
+            android:text="田间地头"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="20dip" />
         
-        <Button
-            android:id="@+id/contacts_button"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="#00000000"
-            android:gravity="center"
-            android:text="我的关注"
-            android:textColor="#ffffff"
-            android:textSize="18sp" />
     </RelativeLayout>
-
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+	        android:id="@+id/tabhost"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_vertical"
+	        android:baselineAligned="false" 
+	        android:orientation="horizontal"
+	        >
+	        
+	    </LinearLayout>
+    </ScrollView>
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pull_refresh_list"

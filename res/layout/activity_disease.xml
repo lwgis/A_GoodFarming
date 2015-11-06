@@ -18,7 +18,7 @@
             android:background="@null"
             android:text="&lt;返回"
             android:textColor="#ffffff"
-            android:textSize="20sp" 
+            android:textSize="20dip" 
             android:layout_marginLeft="5dp"/>
 
         <TextView
@@ -29,7 +29,7 @@
             android:gravity="center"
             android:text="病虫害"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </RelativeLayout>
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
@@ -41,6 +41,8 @@
         android:cacheColorHint="#000000"
         android:divider="#eaeaea"
         android:dividerHeight="8dp"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
@@ -70,11 +72,11 @@
             android:layout_weight="1"
             android:background="@null"
             android:maxLines="3"
-            android:maxLength="50"
+            android:maxLength="500"
             android:minHeight="40dp"
             android:paddingLeft="5dp"
-            android:textSize="18sp" 
-            android:hint="50字以内的评论"/>
+            android:textSize="18dip" 
+            android:hint="填写妙招"/>
 
         <com.zhonghaodi.customui.MyTextButton
             android:id="@+id/send_meassage_button"
@@ -85,7 +87,7 @@
             android:gravity="center"
             android:text="发送"
             android:textColor="#444444"
-            android:textSize="20sp"/>
+            android:textSize="20dip"/>
     </LinearLayout>
 
 </LinearLayout>

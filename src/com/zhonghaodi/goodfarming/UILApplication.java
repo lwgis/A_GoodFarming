@@ -15,60 +15,75 @@
  *******************************************************************************/
 package com.zhonghaodi.goodfarming;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import android.R.integer;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.easemob.chat.EMChat;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 /**
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  */
 public class UILApplication extends Application {
+	public static int sendcount=0;
 	public static Context applicationContext;
+
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {
-		// if (Config.DEVELOPER_MODE && Build.VERSION.SDK_INT >=
-		// Build.VERSION_CODES.GINGERBREAD) {
-		// StrictMode.setThreadPolicy(new
-		// StrictMode.ThreadPolicy.Builder().detectAll().penaltyDialog().build());
-		// StrictMode.setVmPolicy(new
-		// StrictMode.VmPolicy.Builder().detectAll().penaltyDeath().build());
-		// }
+		
 		applicationContext=this;
 		super.onCreate();
 		initImageLoader(getApplicationContext());
 		GFToast.GFContext=getApplicationContext();
 		GFUserDictionary.context=getApplicationContext();
-//		GFUserDictionary.removeUserInfo();
 		GFPointDictionary.context = getApplicationContext();
 		SDKInitializer.initialize(getApplicationContext());		
 		EMChat.getInstance().init(getApplicationContext());
 		EMChat.getInstance().setDebugMode(true);
 	}
-
+    
 	public static void initImageLoader(Context context) {
-		// This configuration tuning is custom. You can tune every option, you
-		// may tune some of them,
-		// or you can create default configuration by
-		// ImageLoaderConfiguration.createDefault(this);
-		// method.
+		
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				context).threadPriority(Thread.NORM_PRIORITY - 2)
 				.denyCacheImageMultipleSizesInMemory()
@@ -112,4 +127,5 @@ public class UILApplication extends Application {
 
             return flag;
     }
+ 
 }

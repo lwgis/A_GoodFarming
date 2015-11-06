@@ -18,7 +18,7 @@
             android:background="@null"
             android:text="&lt;返回"
             android:textColor="#ffffff"
-            android:textSize="20sp" 
+            android:textSize="20dip" 
             android:layout_marginLeft="5dp"/>
 
         <TextView
@@ -29,7 +29,7 @@
             android:gravity="center"
             android:text="刮奖订单"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </RelativeLayout>
 	<RelativeLayout 
         android:layout_width="fill_parent"

@@ -18,7 +18,7 @@
             android:background="@null"
             android:text="取消"
             android:textColor="#ffffff"
-            android:textSize="20sp" 
+            android:textSize="20dip" 
             android:layout_marginLeft="5dp"/>
 
         <TextView
@@ -29,7 +29,7 @@
             android:gravity="center"
             android:text="选择作物种类"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
 
         <com.zhonghaodi.customui.MyTextButton
             android:id="@+id/send_button"
@@ -41,7 +41,7 @@
             android:gravity="center"
             android:text="发送"
             android:textColor="#eeeeee"
-            android:textSize="20sp" 
+            android:textSize="20dip" 
             android:layout_marginRight="5dp"/>
     </RelativeLayout>
 

@@ -13,7 +13,7 @@
         android:shadowRadius="2"
         android:text="所有提问"
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="20dip" />
 
     <Button
         android:id="@+id/btnMy"
@@ -25,7 +25,7 @@
         android:shadowRadius="2"
         android:text="我的提问"
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="20dip" />
     <Button
         android:id="@+id/btnAsc"
         android:layout_width="180dp"
@@ -36,6 +36,6 @@
         android:shadowRadius="2"
         android:text="与我相关"
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="20dip" />
 
 </LinearLayout>

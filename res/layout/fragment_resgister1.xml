@@ -50,7 +50,7 @@
             android:paddingRight="5dip"
             android:text="获取验证码"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="18dip" />
     </LinearLayout>
 
     <com.zhonghaodi.customui.MyTextButton
@@ -61,6 +61,6 @@
         android:background="@drawable/button_shape"
         android:text="下一步"
         android:textColor="#ffffff"
-        android:textSize="18sp" />
+        android:textSize="18dip" />
 
 </LinearLayout>
