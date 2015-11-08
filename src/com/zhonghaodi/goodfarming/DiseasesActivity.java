@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.goodfarming.AgrotechnicalActivity.AgroHolder;
 import com.zhonghaodi.goodfarming.ShoppingCartActivity.MyOrderAdapter;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Category_disease;

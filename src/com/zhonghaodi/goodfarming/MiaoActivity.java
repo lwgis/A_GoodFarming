@@ -16,17 +16,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.customui.HolderRecipe;
-import com.zhonghaodi.goodfarming.StoreActivity.RecipeAdapter;
-import com.zhonghaodi.goodfarming.StoresActivity.StoreLocationListenner;
-import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
-
-import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;

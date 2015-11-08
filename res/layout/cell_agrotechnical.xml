@@ -13,8 +13,8 @@
 
            <ImageView
                android:id="@+id/head_image"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
+               android:layout_width="78dp"
+               android:layout_height="78dp"
                android:scaleType="centerCrop"
                android:src="@drawable/placeholder" />
 
@@ -38,8 +38,12 @@
                    android:id="@+id/time_text"
                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dip"
-                    android:maxLines="2"
+                    android:paddingLeft="4dip"
+                    android:paddingTop="4dip"
+                    android:paddingRight="2dip"
+                    android:paddingBottom="4dip"
+                    android:maxLength="75"
+                    android:lines="3"
                     android:ellipsize="end"
                     android:text="21:37:20"
                     android:textColor="#808080"

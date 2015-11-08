@@ -305,7 +305,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	 * @param count
 	 */
 	public void setUnreadMessageCount() {
-		int count=2;
+		int count=0;
 		// 获取所有会话，包括陌生人
 		Hashtable<String, EMConversation> conversations = EMChatManager
 				.getInstance().getAllConversations();

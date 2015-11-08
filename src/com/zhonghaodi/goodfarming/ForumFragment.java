@@ -23,8 +23,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldMessage;
-import com.zhonghaodi.goodfarming.AgrotechnicalActivity.AgroAdapter;
-import com.zhonghaodi.goodfarming.AgrotechnicalActivity.AgroHolder;
+import com.zhonghaodi.customui.Holder1;
+import com.zhonghaodi.customui.Holder2;
+import com.zhonghaodi.customui.Holder3;
+import com.zhonghaodi.customui.HolderResponse;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Category_disease;
 import com.zhonghaodi.model.ComparatorSort;
@@ -41,6 +43,7 @@ import com.zhonghaodi.utils.PublicHelper;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -69,6 +72,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	private List<Category_disease> categorys;
 	private AgroAdapter adapter;
 	private GFHandler<ForumFragment> handler = new GFHandler<ForumFragment>(this);
+	private int categoryid=1;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,19 +89,22 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-//				Agrotechnical agrotechnical = agrotechnicals.get(position-1);
-//				Intent intent = new Intent(AgrotechnicalActivity.this, AgroActivity.class);
-//				intent.putExtra("aid", agrotechnical.getId());
-//				AgrotechnicalActivity.this.startActivity(intent);
+				Agrotechnical agrotechnical = agrotechnicals.get(position-1);
+				Intent intent = new Intent(getActivity(), AgrotechnicalActivity.class);
+				intent.putExtra("id", agrotechnical.getId());
+				intent.putExtra("title", agrotechnical.getTitle());
+				intent.putExtra("image", agrotechnical.getThumbnail());
+				intent.putExtra("content", agrotechnical.getContent());
+				getActivity().startActivity(intent);
 			}
 		});		
-		pullToRefreshListView.setMode(Mode.PULL_FROM_END);
+		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 
 					@Override
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-
+						loadData();
 					}
 
 					@Override
@@ -138,7 +145,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getAgrotechnical();
+				String jsonString = HttpUtil.getAgrotechnical(categoryid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -154,7 +161,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getMoreAgrotechnical(fromid);
+				String jsonString = HttpUtil.getMoreAgrotechnical(fromid,categoryid);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -166,27 +173,40 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	
 	public void createTabViews(){
 		
-//		Comparator comp = new ComparatorSort();  
-//        Collections.sort(categorys,comp);
-//		
-//		tabLayout.removeAllViews();
-//		for(int i=0;i<categorys.size();i++){
-//			
-//			TextView tabView = new TextView(getActivity());
-//			int height = PublicHelper.dip2px(getActivity(), 34);
-//			LayoutParams layoutParams = new LinearLayout.LayoutParams(0, height, 1);
-//			tabView.setGravity(Gravity.CENTER);
-//			tabView.setText(cDiseases.get(i).getName());
-//			tabView.setBackgroundResource(R.drawable.topbar);
-//			int pix = PublicHelper.dip2px(this, 8);
-//			tabView.setPadding(pix, pix, pix, pix);
-//			tabView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
-//			tabView.setTag(cDiseases.get(i).getId());
-//			tabLayout.addView(tabView, layoutParams);
-//			tabView.setOnClickListener(this);
-//		}
-//		selectTextView(tabLayout.getChildAt(0));
+		Comparator comp = new ComparatorSort();  
+        Collections.sort(categorys,comp);
 		
+		tabLayout.removeAllViews();
+		for(int i=0;i<categorys.size();i++){
+			
+			TextView tabView = new TextView(getActivity());
+			int height = PublicHelper.dip2px(getActivity(), 34);
+			int width = PublicHelper.dip2px(getActivity(), 80);
+			LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
+			tabView.setGravity(Gravity.CENTER);
+			tabView.setText(categorys.get(i).getName());
+			tabView.setBackgroundResource(R.drawable.topbar);
+			int pix = PublicHelper.dip2px(getActivity(), 8);
+			tabView.setPadding(pix, pix, pix, pix);
+			tabView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
+			tabView.setTag(categorys.get(i).getId());
+			tabLayout.addView(tabView, layoutParams);
+			tabView.setOnClickListener(this);
+		}
+		selectTextView(tabLayout.getChildAt(0));
+		
+	}
+	
+	public void selectTextView(View view){
+		for (int i = 0; i < tabLayout.getChildCount(); i++) {
+			TextView textView = (TextView)tabLayout.getChildAt(i);
+			textView.setTextColor(Color.rgb(128, 128, 128));
+			textView.setBackgroundResource(R.drawable.topbar);
+		}
+		
+		TextView selectTextView = (TextView)view;
+		selectTextView.setTextColor(Color.rgb(56, 190, 153));
+		categoryid = Integer.parseInt(view.getTag().toString());
 	}
 	
 	class AgroHolder{
@@ -197,6 +217,15 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			 agroIv=(ImageView)view.findViewById(R.id.head_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
 			 timeTv=(TextView)view.findViewById(R.id.time_text);
+		 }
+	}
+	
+	class AgroFirstHolder{
+		public ImageView agroIv;
+		public TextView titleTv;
+		 public AgroFirstHolder(View view){
+			 agroIv=(ImageView)view.findViewById(R.id.head_image);
+			 titleTv=(TextView)view.findViewById(R.id.title_text);
 		 }
 	}
 	
@@ -219,25 +248,68 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			// TODO Auto-generated method stub
 			return position;
 		}
+		
+		@Override
+		public int getItemViewType(int position) {
+			if (position == 0) {
+				return 0;
+			}
+			return 1;
+		}
+
+		@Override
+		public int getViewTypeCount() {
+			// TODO Auto-generated method stub
+			return 2;
+		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			AgroHolder agroholder;;
-			if(convertView==null){
-				convertView = LayoutInflater.from(getActivity())
-						.inflate(R.layout.cell_agrotechnical, parent, false);
-				agroholder = new AgroHolder(convertView);
-				convertView.setTag(agroholder);
+			int type = getItemViewType(position);
+			AgroFirstHolder aFirstHolder;
+			AgroHolder agroholder;
+			if (convertView == null) {
+				switch (type) {
+				case 0:
+					convertView = LayoutInflater.from(getActivity())
+							.inflate(R.layout.cell_agrotechnical_first, parent, false);
+					aFirstHolder = new AgroFirstHolder(convertView);
+					convertView.setTag(aFirstHolder);
+					break;
+				case 1:
+					convertView = LayoutInflater.from(getActivity())
+							.inflate(R.layout.cell_agrotechnical, parent, false);
+					agroholder = new AgroHolder(convertView);
+					convertView.setTag(agroholder);
+					break;
+				default:
+					break;
+				}
+			}
+			Agrotechnical agrotechnical = agrotechnicals.get(position);
+			switch (type) {
+			case 0:
+				aFirstHolder = (AgroFirstHolder)convertView.getTag();
+				if (agrotechnical.getThumbnail()!=null) {
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"agrotechnicals/small/"+agrotechnical.getThumbnail(), aFirstHolder.agroIv, ImageOptions.optionsNoPlaceholder);
+				}
+				aFirstHolder.titleTv.setText(agrotechnical.getTitle());
+				break;
+			case 1:
+				agroholder=(AgroHolder)convertView.getTag();
+				
+				if (agrotechnical.getThumbnail()!=null) {
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"agrotechnicals/small/"+agrotechnical.getThumbnail(), agroholder.agroIv, ImageOptions.optionsNoPlaceholder);
+				}
+				agroholder.titleTv.setText(agrotechnical.getTitle());
+				agroholder.timeTv.setText(agrotechnical.getContent());
+				break;
+
+			default:
+				break;
 			}
 			
-			agroholder=(AgroHolder)convertView.getTag();
-			Agrotechnical agrotechnical = agrotechnicals.get(position);
-			if (agrotechnical.getThumbnail()!=null) {
-				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"agrotechnicals/small/"+agrotechnical.getThumbnail(), agroholder.agroIv, ImageOptions.optionsNoPlaceholder);
-			}
-			agroholder.titleTv.setText(agrotechnical.getTitle());
-			agroholder.timeTv.setText(agrotechnical.getTime());
 			return convertView;
 		}
 		
@@ -246,7 +318,8 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+		selectTextView(v);
+		loadData();
 	}
 
 	@Override
@@ -279,11 +352,9 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 				categorys = gson.fromJson(msg.obj.toString(),
 						new TypeToken<List<Category_disease>>() {
 						}.getType());
-				
+				createTabViews();
 			}
-			else{
-				
-			}
+			
 			break;
 
 		default:

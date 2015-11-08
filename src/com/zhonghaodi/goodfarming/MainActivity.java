@@ -107,8 +107,6 @@ public class MainActivity extends Activity implements OnClickListener,
 	private EMMessage currenEmMsg;
 	private final static String lancherActivityClassName = WelcomeActivity.class.getName();
 	
-	private static String WX_APP_ID="wx8fd908378b8ab3e5";
-	private static String QQ_APP_ID="1104653579";
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	SharePopupwindow sharePopupwindow;
@@ -142,9 +140,9 @@ public class MainActivity extends Activity implements OnClickListener,
 		seletFragmentIndex(0);
 		pageIndex = 0;
 		
-		wxApi=WXAPIFactory.createWXAPI(this,WX_APP_ID, true);
-		wxApi.registerApp(WX_APP_ID);
-		mTencent = Tencent.createInstance(QQ_APP_ID, this.getApplicationContext());
+		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
+		wxApi.registerApp(HttpUtil.WX_APP_ID);
+		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
 		
 		//检查该不该请求更新
 		SharedPreferences deviceInfo = getSharedPreferences("StartInfo", 0);
@@ -424,7 +422,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		transction.hide(discoverFragment);
 		transction.hide(meFragment);
 		homeIv.setImageResource(R.drawable.home);
-		forumIv.setImageResource(R.drawable.message);
+		forumIv.setImageResource(R.drawable.tian);
 		discoverIv.setImageResource(R.drawable.discover);
 		meIv.setImageResource(R.drawable.me);
 		homeTv.setTextColor(Color.rgb(128, 128, 128));
@@ -440,7 +438,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			break;
 		case 1:
 			transction.show(forumFragment);
-			forumIv.setImageResource(R.drawable.message_s);
+			forumIv.setImageResource(R.drawable.tian_s);
 			forumTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 2:
@@ -474,9 +472,9 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 		if (v == forumView && pageIndex != 1) {
 			seletFragmentIndex(1);
-			if (GFUserDictionary.getUserId() == null) {
-				return;
-			}
+//			if (GFUserDictionary.getUserId() == null) {
+//				return;
+//			}
 			forumFragment.loadData();
 		}
 		if (v == discoverView && pageIndex != 2) {
@@ -505,7 +503,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			msg.title = "种好地APP:让种地不再难";
 			msg.description = "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。";
 			Bitmap thumb = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg.thumbData = MeFragment.bmpToByteArray(thumb, true);
+			msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
 			
 			SendMessageToWX.Req req = new SendMessageToWX.Req();
 			req.transaction = buildTransaction("webpage");
@@ -525,7 +523,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			msg1.title = "种好地APP:让种地不再难";
 			msg1.description = "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。";
 			Bitmap thumb1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg1.thumbData = MeFragment.bmpToByteArray(thumb1, true);
+			msg1.thumbData = PublicHelper.bmpToByteArray(thumb1, true);
 			
 			SendMessageToWX.Req req1 = new SendMessageToWX.Req();
 			req1.transaction = buildTransaction("webpage");
@@ -573,7 +571,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		if (!isLogin) {
 			initEm();
 		} else {
-			forumFragment.loadData();
+			
 			if(pageIndex==3){
 				meFragment.loadData();
 			}

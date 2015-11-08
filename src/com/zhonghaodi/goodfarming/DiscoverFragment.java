@@ -20,7 +20,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	private View nzdView;
 	private View nysView;
 	private View nyqView;
-	private View nyjsView;
+//	private View nyjsView;
 	private View miaoView;
 	private View commodityView;
 	private View recipeView;
@@ -39,8 +39,8 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		nysView.setOnClickListener(this);
 		nyqView = view.findViewById(R.id.layout3);
 		nyqView.setOnClickListener(this);
-		nyjsView = view.findViewById(R.id.layout4);
-		nyjsView.setOnClickListener(this);
+//		nyjsView = view.findViewById(R.id.layout4);
+//		nyjsView.setOnClickListener(this);
 		miaoView = view.findViewById(R.id.layout5);
 		miaoView.setOnClickListener(this);
 		commodityView = view.findViewById(R.id.layout6);

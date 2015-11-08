@@ -14,7 +14,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderEvaluate;
 import com.zhonghaodi.customui.HolderRecipeInfo;
-import com.zhonghaodi.goodfarming.AgrotechnicalActivity.AgroAdapter;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.RecipeEvaluate;

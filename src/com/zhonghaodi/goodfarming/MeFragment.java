@@ -20,6 +20,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
+import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Function;
@@ -55,9 +56,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	private User user;
 	private ArrayList<Function> functions;
 	private PullToRefreshListView pullToRefreshList;
+	private MyTextButton siginButton;
 	private MeAdapter adapter;
 	private GFHandler<MeFragment> handler = new GFHandler<MeFragment>(this);
-	private View siginView;
 	public User getUser() {
 		return user;
 	}
@@ -76,6 +77,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		
 		adapter = new MeAdapter();
 		functions = new ArrayList<Function>();
+		siginButton = (MyTextButton)view.findViewById(R.id.sigin_button);
+		siginButton.setOnClickListener(this);
 		pullToRefreshList.setAdapter(adapter);
 		pullToRefreshList.setOnRefreshListener(new OnRefreshListener<ListView>() {
 
@@ -220,7 +223,6 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.fensiView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
-				holderMeInfo.siginButton.setOnClickListener(MeFragment.this);
 				break;
 			case 1:
 				holdFunction=(HoldFunction)convertView.getTag();
@@ -260,8 +262,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			getActivity().startActivity(intent);
 			break;
 		case R.id.sigin_button:
-			v.setEnabled(false);
-			siginView = v;
+			siginButton.setEnabled(false);
 			signin();
 			break;
 		default:
@@ -324,7 +325,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			adapter.notifyDataSetChanged();
 			break;
 		case 2:
-			siginView.setEnabled(true);
+			siginButton.setEnabled(true);
 			if(msg.obj!=null){
 				GFToast.show(msg.obj.toString());
 				loadData();
@@ -338,22 +339,5 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			break;
 		}
 		
-	}
-	
-	public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		bmp.compress(CompressFormat.PNG, 100, output);
-		if (needRecycle) {
-			bmp.recycle();
-		}
-		
-		byte[] result = output.toByteArray();
-		try {
-			output.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
 	}
 }
