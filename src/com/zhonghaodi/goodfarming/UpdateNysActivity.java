@@ -83,7 +83,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 		zhengmianBtn = (GFImageButton) findViewById(R.id.zhengmian_image);
 		fanmianBtn = (GFImageButton) findViewById(R.id.fanmian_image);
 		zhengmianBtn.setTitle("身份证正面");
-		fanmianBtn.setTitle("身份证反面");
+		fanmianBtn.setTitle("名片");
 		fanmianBtn.setOnClickListener(this);
 		zhengmianBtn.setOnClickListener(this);
 		fanmianBtn.setImageChangedListener(this);

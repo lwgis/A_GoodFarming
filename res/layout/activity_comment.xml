@@ -61,7 +61,7 @@
                 android:minHeight="40dp"
                 android:paddingLeft="5dp"
                 android:textSize="18dip" 
-                android:hint="50字以内的评论"/>
+                android:hint="评论"/>
 
             <com.zhonghaodi.customui.MyTextButton
                 android:id="@+id/send_meassage_button"

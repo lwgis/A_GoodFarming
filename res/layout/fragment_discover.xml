@@ -63,10 +63,39 @@
 		        
 		    </RelativeLayout>
 		    <RelativeLayout 
+	            android:id="@+id/layout9"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg9"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/disease"
+		            />
+		        <TextView 
+		            android:id="@+id/avname9"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg9"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="植物病虫害"
+		            />
+		        
+		    </RelativeLayout>
+		    <RelativeLayout 
 	            android:id="@+id/layout2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
+		        android:layout_marginTop="2dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
@@ -124,7 +153,7 @@
 	            android:id="@+id/layout7"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
+		        android:layout_marginTop="2dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
@@ -145,75 +174,18 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="配方团购"
+		            android:text="附近配方团购"
 		            />
 		        
 		    </RelativeLayout>
-		    <!-- <RelativeLayout 
-	            android:id="@+id/layout4"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg4"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/book"
-		            />
-		        <TextView 
-		            android:id="@+id/avname4"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg4"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="农业技术知识"
-		            />
-		        
-		    </RelativeLayout> -->
 		    
-		    <RelativeLayout 
-	            android:id="@+id/layout9"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg9"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/disease"
-		            />
-		        <TextView 
-		            android:id="@+id/avname9"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg9"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="植物病虫害"
-		            />
-		        
-		    </RelativeLayout>
+		    
 		    
 		    <RelativeLayout 
 	            android:id="@+id/layout5"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
+		        android:layout_marginTop="2dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
@@ -234,7 +206,7 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="秒杀"
+		            android:text="附近秒杀优惠活动"
 		            />
 		        
 		    </RelativeLayout>
@@ -273,7 +245,7 @@
 	            android:id="@+id/layout8"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
+		        android:layout_marginTop="2dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"

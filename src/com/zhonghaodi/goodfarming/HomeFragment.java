@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import com.easemob.chat.EMChatManager;
@@ -18,9 +19,11 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
+import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
+import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
@@ -666,7 +669,10 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				getActivity().startActivity(intent);
 			}
 			else if(cropids==null || cropids.isEmpty()){
-				popupDialog();
+//				popupDialog();
+				Intent it2 = new Intent(getActivity(),
+						SelectCropActivity.class);
+				getActivity().startActivityForResult(it2, 100);
 			}
 			else{
 				loadNewAscDate();

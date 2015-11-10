@@ -57,11 +57,11 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:maxLines="3"
-                android:maxLength="50"
+                android:maxLength="200"
                 android:minHeight="40dp"
                 android:paddingLeft="5dp"
                 android:textSize="18dip" 
-                android:hint="50字以内的评论"/>
+                android:hint="评论"/>
 
             <com.zhonghaodi.customui.MyTextButton
                 android:id="@+id/send_meassage_button"

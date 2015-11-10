@@ -303,11 +303,9 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 					String split = "";
 					for(int i = 0;i<orders.size();i++){
 						GuaOrder order = orders.get(i);
-						content += split+order.getTime()+"--"+
-								order.getUser().getAlias()+":"+order.getGuagua().getName();
-						split = "\n";
+						content += order.getUser().getAlias()+"刮到了"+order.getGuagua().getName()+"\n";
+
 					}
-					content+="\n……";
 					ordersTextView.setText(content);
 				}
 				

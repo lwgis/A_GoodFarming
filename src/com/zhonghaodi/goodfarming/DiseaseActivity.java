@@ -276,7 +276,8 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 							+ String.valueOf(disease.getAttachments().size())
 							+ "图片");
 				}
-				holderDisease.contentTv.setText(disease.getDescription());
+				String des = disease.getDescription().trim();
+				holderDisease.contentTv.setText(des);
 				holderDisease.mzButton.setOnClickListener(DiseaseActivity.this);
 				break;
 			case 1:
@@ -482,7 +483,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			if(msg.obj==null){
 				
 				loadData();
-				GFToast.show("操作成功");
+				GFToast.show("添加成功");
 			}
 			else{
 				GFToast.show("操作失败");
@@ -504,7 +505,6 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			}
 			else{
 				loadData();
-				GFToast.show("操作成功");
 			}
 			break;
 

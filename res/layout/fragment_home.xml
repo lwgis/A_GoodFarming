@@ -54,10 +54,11 @@
 
         <Button
             android:id="@+id/question_button"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
             android:background="#00000000"
             android:gravity="center"
             android:text="我要提问"
@@ -90,7 +91,7 @@
            android:layout_height="34dip"
            android:layout_weight="1"
            android:layout_gravity="center_horizontal"
-           android:text="与我相关"
+           android:text="俺的作物"
            android:textColor="#000000"
            android:background="@drawable/topbar_g"
            android:gravity="center"

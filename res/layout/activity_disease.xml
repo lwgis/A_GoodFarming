@@ -72,7 +72,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:maxLines="3"
-            android:maxLength="500"
+            android:maxLength="200"
             android:minHeight="40dp"
             android:paddingLeft="5dp"
             android:textSize="18dip" 

@@ -42,6 +42,8 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
         android:cacheColorHint="#000000"
         android:divider="#eaeaea"
         android:dividerHeight="5dp"

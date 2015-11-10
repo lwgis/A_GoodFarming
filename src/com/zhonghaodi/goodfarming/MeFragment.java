@@ -221,6 +221,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.youhuibiTv.setText(String.valueOf(user.getCurrency()));
 				holderMeInfo.fensiTv.setText(String.valueOf(user.getFanscount()));
 				holderMeInfo.fensiView.setOnClickListener(MeFragment.this);
+				holderMeInfo.guanzhuView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
 				break;
@@ -260,6 +261,10 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			Intent intent = new Intent(getActivity(), MyFollowsActivity.class);
 			intent.putExtra("status", 1);
 			getActivity().startActivity(intent);
+			break;
+		case R.id.guanzhu_view:
+			Intent intent1 = new Intent(getActivity(), MyFollowsActivity.class);
+			getActivity().startActivity(intent1);
 			break;
 		case R.id.sigin_button:
 			siginButton.setEnabled(false);
