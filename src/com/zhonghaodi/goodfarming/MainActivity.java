@@ -736,6 +736,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			// 提示新消息
 
 			// refreshUI();
+			homeFragment.setUnreadMessageCount();
 			break;
 		}
 		case EventOfflineMessage: {

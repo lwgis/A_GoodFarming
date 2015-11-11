@@ -169,7 +169,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 		});
         titleView.setText("提示");
-        contentView.setText("确定要删除选中的评论吗？");
+        contentView.setText("确定要删除选中的答案吗？");
         dialog.show();
 		 
 		return super.onContextItemSelected(item);
@@ -479,20 +479,23 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
 				
 				if(question.getWriter().getId().equals(uid)){
-					holderResponse.agreebtn.setText("采纳");
+					holderResponse.agreeTextView.setText("采纳("+response.getAgree()+")");
 				}
 				else{
-					holderResponse.agreebtn.setText("赞同("+response.getAgree()+")");
+					holderResponse.agreeTextView.setText("赞同("+response.getAgree()+")");
 				}
 				
-				holderResponse.agreebtn.setTag(response);
-				holderResponse.agreebtn.setOnClickListener(QuestionActivity.this);
-				holderResponse.disagreebtn.setText("反对("+response.getDisagree()+")");
-				holderResponse.disagreebtn.setTag(response);
-				holderResponse.disagreebtn.setOnClickListener(QuestionActivity.this);
+				holderResponse.agreeLayout.setTag(response);
+				holderResponse.agreeLayout.setOnClickListener(QuestionActivity.this);
+				holderResponse.disagreeTextView.setText("反对("+response.getDisagree()+")");
+				holderResponse.disagreeLayout.setTag(response);
+				holderResponse.disagreeLayout.setOnClickListener(QuestionActivity.this);
 				if(response.isAdopt()){
 					holderResponse.cainaView.setVisibility(View.VISIBLE);
 					adopt = true;
+					if(question.getWriter().getId().equals(uid)){
+						holderResponse.disagreeLayout.setEnabled(false);
+					}
 				}
 
 				holderResponse.headIv.setTag(response.getWriter());
@@ -552,7 +555,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				startActivity(it);
 			}
 			break;
-		case R.id.agree_button:
+		case R.id.zan_layout:
 			if(GFUserDictionary.getUserId()==null){
 				GFToast.show("请您先登录！");
 				return;
@@ -602,7 +605,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}).start();
 			}
 			break;
-		case R.id.disagree_button:
+		case R.id.disagreeLayout:
 			if(GFUserDictionary.getUserId()==null){
 				GFToast.show("请您先登录！");
 				return;
