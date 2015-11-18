@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class RegisterFragment1 extends Fragment implements OnClickListener,
@@ -31,6 +32,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	private MyTextButton checkNumBtn;
 	private MyTextButton nextBtn;
 	private TimeCount time;
+	private TextView loginBtn;
 	private GFHandler<RegisterFragment1> handler = new GFHandler<RegisterFragment1>(
 			this);
 
@@ -49,6 +51,8 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		checkNumEt.addTextChangedListener(this);
 		checkNumBtn.setOnClickListener(this);
 		nextBtn.setOnClickListener(this);
+		loginBtn = (TextView)view.findViewById(R.id.login_button);
+		loginBtn.setOnClickListener(this);
 		time = new TimeCount(60000, 1000);
 		return view;
 	}
@@ -99,6 +103,10 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 						.show();
 			}
 
+			break;
+		case R.id.login_button:
+			LoginActivity activity = (LoginActivity) getActivity();
+			activity.selectFragment(1);
 			break;
 		default:
 			break;

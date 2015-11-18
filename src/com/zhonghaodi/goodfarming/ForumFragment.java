@@ -41,6 +41,7 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 
+import android.R.integer;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
@@ -177,12 +178,18 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
         Collections.sort(categorys,comp);
 		
 		tabLayout.removeAllViews();
+		
+		LayoutParams layoutParams;
+		int width = PublicHelper.dip2px(getActivity(), 80);;
+		int height = PublicHelper.dip2px(getActivity(), 34);
+		int pwidth = PublicHelper.getPhoneWidth(getActivity());
+		if((categorys.size()*width)<pwidth){
+			width = pwidth/categorys.size();
+		}
+		layoutParams = new LinearLayout.LayoutParams(width, height);
 		for(int i=0;i<categorys.size();i++){
 			
 			TextView tabView = new TextView(getActivity());
-			int height = PublicHelper.dip2px(getActivity(), 34);
-			int width = PublicHelper.dip2px(getActivity(), 80);
-			LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
 			tabView.setGravity(Gravity.CENTER);
 			tabView.setText(categorys.get(i).getName());
 			tabView.setBackgroundResource(R.drawable.topbar);
@@ -292,7 +299,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			case 0:
 				aFirstHolder = (AgroFirstHolder)convertView.getTag();
 				if (agrotechnical.getThumbnail()!=null) {
-					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"agrotechnicals/small/"+agrotechnical.getThumbnail(), aFirstHolder.agroIv, ImageOptions.optionsNoPlaceholder);
+					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"agrotechnicals/big/"+agrotechnical.getThumbnail(), aFirstHolder.agroIv, ImageOptions.optionsNoPlaceholder);
 				}
 				aFirstHolder.titleTv.setText(agrotechnical.getTitle());
 				break;

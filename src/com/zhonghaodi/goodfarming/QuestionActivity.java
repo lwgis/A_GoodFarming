@@ -12,12 +12,16 @@ import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.customui.HolderResponse;
+import com.zhonghaodi.customui.MyEditText;
+import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
 import com.zhonghaodi.model.Checkobj;
+import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.User;
+import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFString;
 import com.zhonghaodi.networking.GsonUtil;
@@ -39,12 +43,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class QuestionActivity extends Activity implements UrlOnClick,
@@ -59,6 +66,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private boolean mContains=false;
 	private String uid;
 	private boolean adopt = false;
+	private LinearLayout sendLayout;
+	private LinearLayout resLayout;
+	private MyEditText mzEditText;
+	private MyTextButton sendTextButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +93,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					return;
 				}
 				if (GFUserDictionary.getUserId() != null) {
-					Intent it = new Intent(QuestionActivity.this,
-							CreateResponseActivity.class);
-					it.putExtra("questionId", questionId);
-					it.putExtra("time", question.getStime());
-					it.putExtra("contains", mContains);
-					QuestionActivity.this.startActivityForResult(it, 2);
+
+					resLayout.setVisibility(View.GONE);
+					sendLayout.setVisibility(View.VISIBLE);
+					mzEditText.setFocusable(true);
+					mzEditText.setFocusableInTouchMode(true);
+					mzEditText.requestFocus();
+					mzEditText.findFocus();
+					InputMethodManager inputManager =  
+				               (InputMethodManager)mzEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
+				    inputManager.showSoftInput(mzEditText, 0); 
 				} else {
 					Intent it = new Intent(QuestionActivity.this,
 							LoginActivity.class);
@@ -95,6 +110,11 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}
 			}
 		});
+		sendLayout = (LinearLayout)findViewById(R.id.sendlayout);
+		resLayout = (LinearLayout)findViewById(R.id.resLayout);
+		mzEditText = (MyEditText)findViewById(R.id.chat_edit);
+		sendTextButton = (MyTextButton)findViewById(R.id.send_meassage_button);
+		sendTextButton.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		questionId = getIntent().getIntExtra("questionId", 0);
 		loadData();
@@ -218,6 +238,27 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 		}).start();
 
+	}
+	
+	private void sendResponse(final Response response, final int qid) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					HttpUtil.sendResponse(response, qid);
+					Message msg = handler.obtainMessage();
+					msg.what = 7;
+					msg.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = e.getMessage().toString();
+					msg.sendToTarget();
+				}
+			}
+		}).start();
 	}
 
 	class ResponseAdapter extends BaseAdapter {
@@ -497,6 +538,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						holderResponse.disagreeLayout.setEnabled(false);
 					}
 				}
+				else{
+					holderResponse.cainaView.setVisibility(View.GONE);
+				}
 
 				holderResponse.headIv.setTag(response.getWriter());
 				holderResponse.headIv.setOnClickListener(QuestionActivity.this);
@@ -541,19 +585,19 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.head_image:
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
-				return;
-			}
-			User user = (User)v.getTag();
-			if(user.getLevelID()!=1){
-				Intent it = new Intent();
-				it.setClass(this, ChatActivity.class);
-				it.putExtra("userName", user.getPhone());
-				it.putExtra("title", user.getAlias());
-				it.putExtra("thumbnail", user.getThumbnail());
-				startActivity(it);
-			}
+//			if(GFUserDictionary.getUserId()==null){
+//				GFToast.show("请您先登录！");
+//				return;
+//			}
+//			User user = (User)v.getTag();
+//			if(user.getLevelID()!=1){
+//				Intent it = new Intent();
+//				it.setClass(this, ChatActivity.class);
+//				it.putExtra("userName", user.getPhone());
+//				it.putExtra("title", user.getAlias());
+//				it.putExtra("thumbnail", user.getThumbnail());
+//				startActivity(it);
+//			}
 			break;
 		case R.id.zan_layout:
 			if(GFUserDictionary.getUserId()==null){
@@ -628,8 +672,22 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}
 			}).start();
 			break;
-		case R.id.count_layout:
-
+		case R.id.send_meassage_button:
+			
+			if(mzEditText.getText().toString().trim().isEmpty()){
+				return;
+			}
+			Response response = new Response();
+			response.setContent(GFString.htmlToStr(mzEditText.getText().toString()));
+			User writer = new User();
+			writer.setId(GFUserDictionary.getUserId());
+			response.setWriter(writer);
+			sendResponse(response, questionId);
+			mzEditText.setText("");
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
+			sendLayout.setVisibility(View.GONE);
+			resLayout.setVisibility(View.VISIBLE);
 			break;
 		default:
 			break;
@@ -730,6 +788,30 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			else{
 				GFToast.show("操作失败");
 			}
+			break;
+		case 7:
+			loadData();
+			if(mContains){
+				GFToast.show("回复成功");
+			}
+			else{
+				boolean less = GFDate.lessTenMinutes(question.getStime());
+				int point = GFPointDictionary.getResponsePoint();
+				if(point>0){
+					if(less){
+						GFToast.show("回复成功,10分钟内回答双倍积分+"+(2*point)+" ^-^");
+					}
+					else{
+						GFToast.show("回复成功,积分+"+point+" ^-^");
+					}
+				}
+				else{
+					GFToast.show("回复成功");
+				}
+			}
+			break;
+		case 0:
+			GFToast.show(msg.obj.toString());
 			break;
 
 		default:

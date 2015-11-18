@@ -60,9 +60,9 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage8/";
-	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
+	public static String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage/";
+	public static String ViewUrl = "http://121.40.62.120:8080/dfyy/view/";
 //	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
 //	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
@@ -1387,9 +1387,37 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String buySecond(String uid,int sid){
-		String url = RootURL + "seconds/"+sid+"/buy?uid="+uid;
-		String jsonString = HttpUtil.executeHttpGet1(url);
+	public static String buySecond(final String uid,int sid){
+//		String url = RootURL + "seconds/"+sid+"/buy?uid="+uid;
+//		String jsonString = HttpUtil.executeHttpGet1(url);
+//		return jsonString;
+		
+		String jsonString = null;
+		String urlString = RootURL + "seconds/"+sid+"/buy";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair1);
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 		return jsonString;
 	}
 	

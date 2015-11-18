@@ -126,7 +126,7 @@
 	            android:layout_height="20dp"
 	            android:gravity="left"
 	            android:layout_marginLeft="6dip"
-	            android:text="2、病害发生情况"
+	            android:text="2、病害发展程度"
 	            android:textColor="#808080"
 	            android:textSize="17dip" />
 			<Spinner 
@@ -143,7 +143,7 @@
 	            android:layout_height="20dp"
 	            android:gravity="left"
 	            android:layout_marginLeft="6dip"
-	            android:text="3、病害发展速度"
+	            android:text="3、病害发生时间及速度"
 	            android:textColor="#808080"
 	            android:textSize="17dip" />
 			<Spinner 

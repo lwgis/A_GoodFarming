@@ -6,15 +6,16 @@
 	    <item>非规律性</item>  
     </string-array>
     <string-array name="qingkuangarr">
-	    <item>不清楚</item>  
-	    <item>零星少量</item>  
-	    <item>大面积</item>  
+        <item>不清楚</item>
+	    <item>几颗至数十颗</item>  
+	    <item>百颗以上</item>  
+	    <item>大面积发生</item>  
     </string-array>
     <string-array name="suduarr">
 	    <item>不清楚</item>  
-	    <item>迅速</item>  
-	    <item>缓慢</item>  
-	    <item>刚发生</item> 
+	    <item>刚刚有</item>  
+	    <item>发展慢</item>  
+	    <item>发展迅速</item> 
     </string-array>
     <string-array name="genxiarr">
 	    <item>不清楚</item>  

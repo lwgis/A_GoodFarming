@@ -197,12 +197,8 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		switch (msg.what) {
 		case 0:
 			buyBtn.setEnabled(true);
-			String jsString = msg.obj.toString();
-			if(jsString==null||jsString.isEmpty()){
-				GFToast.show("错误");
-			}
-			else if(jsString.contains("error")){
-				GFToast.show(jsString.split(":")[1].toString());
+			if(msg.obj==null){
+				GFToast.show("对不起，秒杀产品只能抢购一份");
 			}
 			else{
 				SecondOrder secondOrder = (SecondOrder) GsonUtil.fromJson(

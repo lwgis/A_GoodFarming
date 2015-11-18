@@ -731,12 +731,21 @@ public class MainActivity extends Activity implements OnClickListener,
 					}
 				}).start();
 			} else {
-				forumFragment.loadData();
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						
+						Message msg = handler.obtainMessage();
+						msg.what =7;
+						msg.sendToTarget();
+					}
+				}).start();
 			}
 			// 提示新消息
 
 			// refreshUI();
-			homeFragment.setUnreadMessageCount();
+			
 			break;
 		}
 		case EventOfflineMessage: {
@@ -1035,6 +1044,9 @@ public class MainActivity extends Activity implements OnClickListener,
 			case -1:
 				String errString = msg.obj.toString();
 				GFToast.show(errString);
+				break;
+			case 7:
+				activity.homeFragment.setUnreadMessageCount();
 				break;
 			default:
 				break;

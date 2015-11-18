@@ -51,24 +51,67 @@
         ptr:ptrHeaderBackground="@null"
         ptr:ptrHeaderSubTextColor="#00ffff"
         ptr:ptrHeaderTextColor="#868686" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff" >
-
-        <com.zhonghaodi.customui.MyTextButton
-            android:id="@+id/send_button"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/button_shape"
-            android:text="回答"
-            android:textColor="#ffffff"
-            android:textSize="18dip" />
-    </LinearLayout>
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+        android:layout_height="50dip"
+	    >
+        <LinearLayout
+	        android:id="@+id/sendlayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dip"
+	        android:background="#ffffff" 
+	    	android:visibility="gone"
+	        android:orientation="horizontal"
+	         >
+	
+	        <com.zhonghaodi.customui.MyEditText
+	            android:id="@+id/chat_edit"
+	            style="@style/my_edittext_style"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_marginBottom="5dp"
+	            android:layout_marginTop="5dp"
+	            android:layout_weight="1"
+	            android:background="@null"
+	            android:lines="5"
+	            android:maxLength="200"
+	            android:minHeight="40dp"
+	            android:paddingLeft="5dp"
+	            android:textSize="16dip" 
+	            android:hint="种植作物+病害全称+病害起因+解决方案"/>
+	
+	        <com.zhonghaodi.customui.MyTextButton
+	            android:id="@+id/send_meassage_button"
+	            android:layout_width="wrap_content"
+	            android:layout_height="32dp"
+	            android:layout_margin="5dip"
+	            android:background="@null"
+	            android:gravity="center"
+	            android:text="发送"
+	            android:textColor="#444444"
+	            android:textSize="20dip"/>
+	    </LinearLayout>
+	    <LinearLayout
+	        android:id="@+id/resLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dip"
+	        android:background="#ffffff" >
+	
+	        <com.zhonghaodi.customui.MyTextButton
+	            android:id="@+id/send_button"
+	            android:layout_width="match_parent"
+	            android:layout_height="40dp"
+	            android:layout_marginBottom="5dp"
+	            android:layout_marginLeft="20dp"
+	            android:layout_marginRight="20dp"
+	            android:layout_marginTop="5dp"
+	            android:background="@drawable/button_shape"
+	            android:text="回答"
+	            android:textColor="#ffffff"
+	            android:textSize="18dip" />
+	        
+	    </LinearLayout>
+	    
+	</RelativeLayout>
 
 </LinearLayout>

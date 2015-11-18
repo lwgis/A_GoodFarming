@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zhonghaodi.goodfarming"
-    android:versionCode="12"
-    android:versionName="1.6.5" >
+    android:versionCode="13"
+    android:versionName="1.6.6" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -90,12 +90,7 @@
         <activity
             android:name=".QuestionActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
-            android:name=".CreateResponseActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysVisible" >
+            android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".DiseaseActivity"
@@ -419,7 +414,7 @@
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="lwgis#goodfarming" />
+            android:value="lwgis#nyim" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService" />
     </application>

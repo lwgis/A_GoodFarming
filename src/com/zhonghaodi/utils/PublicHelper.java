@@ -7,10 +7,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.view.WindowManager;
 
 public class PublicHelper {
 
@@ -35,6 +37,13 @@ public class PublicHelper {
         final float scale = context.getResources().getDisplayMetrics().density; 
         return (int)(pxValue / scale + 0.5f); 
 	} 
+	
+    public static int getPhoneWidth(Context context){
+    	
+    	WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        return wm.getDefaultDisplay().getWidth();
+    }
 	
 	public static Bitmap getBitmap(String path) throws IOException{
 

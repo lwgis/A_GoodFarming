@@ -324,6 +324,27 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			countTv.setText(String.valueOf(count));
 		}
 	}
+	/**
+	 * 显示未读信息数
+	 * @param count
+	 */
+	public void setUnreadMessageCount1() {
+		int count=1;
+//		// 获取所有会话，包括陌生人
+//		Hashtable<String, EMConversation> conversations = EMChatManager
+//				.getInstance().getAllConversations();
+//		for (EMConversation conversation : conversations.values()) {
+//			if (conversation.getAllMessages().size() != 0) {
+//				count+=conversation.getUnreadMsgCount();
+//			}
+//		}
+		if (count == 0) {
+			countTv.setVisibility(View.GONE);
+		} else {
+			countTv.setVisibility(View.VISIBLE);
+			countTv.setText(String.valueOf(count));
+		}
+	}
 	
 	private void delete(final int qid){
 		new Thread(new Runnable() {
@@ -680,19 +701,19 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			}
 			break;
 		case R.id.head_image:
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
-				return;
-			}
-			User user = (User)v.getTag();
-			if(user.getLevelID()!=1){
-				Intent it2 = new Intent();
-				it2.setClass(getActivity(), ChatActivity.class);
-				it2.putExtra("userName", user.getPhone());
-				it2.putExtra("title", user.getAlias());
-				it2.putExtra("thumbnail", user.getThumbnail());
-				startActivity(it2);
-			}
+//			if(GFUserDictionary.getUserId()==null){
+//				GFToast.show("请您先登录！");
+//				return;
+//			}
+//			User user = (User)v.getTag();
+//			if(user.getLevelID()!=1){
+//				Intent it2 = new Intent();
+//				it2.setClass(getActivity(), ChatActivity.class);
+//				it2.putExtra("userName", user.getPhone());
+//				it2.putExtra("title", user.getAlias());
+//				it2.putExtra("thumbnail", user.getThumbnail());
+//				startActivity(it2);
+//			}
 			break;
 		default:
 			break;

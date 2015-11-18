@@ -1,5 +1,9 @@
 package com.zhonghaodi.goodfarming;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -8,6 +12,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.KeyEvent;
@@ -24,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.GuaGuaKa;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.goodfarming.SecondActivity.TimeCount;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Gua;
@@ -46,6 +52,8 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
     private boolean isOpen = false;
     private boolean isStart = false;
     private GFHandler<RubblerActivity> handler = new GFHandler<RubblerActivity>(this);
+    private boolean isToday = false;
+    private String serverTime;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,10 +87,9 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				msg.obj = jsonString;
 				msg.sendToTarget();	
 				
-				String uid = GFUserDictionary.getUserId();
-				String jsonString1 = HttpUtil.qian(uid);
+				String jsonString1 = HttpUtil.getServerTime();
 				Message msg1 = handler.obtainMessage();
-				msg1.what = 1;
+				msg1.what = 3;
 				msg1.obj = jsonString1;
 				msg1.sendToTarget();
 				
@@ -93,6 +100,23 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				msg2.sendToTarget();	
 				
 				
+			}
+		}).start();
+    }
+    
+    private void chouqian(){
+    	new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+
+				String uid = GFUserDictionary.getUserId();
+				String jsonString1 = HttpUtil.qian(uid);
+				Message msg1 = handler.obtainMessage();
+				msg1.what = 1;
+				msg1.obj = jsonString1;
+				msg1.sendToTarget();
+
 			}
 		}).start();
     }
@@ -116,6 +140,45 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		}).start();
     }
     
+    private void checkToday(String str){
+    	serverTime = str;
+		SharedPreferences deviceInfo = getSharedPreferences("GuaGuaLe", 0);
+        String guatime = deviceInfo.getString("guatime", "");
+        if (guatime.equals("") || guatime==null) {
+			isToday = false;
+		}
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		try {
+			Date date = dateFormat.parse(str);
+			Date guaDate = dateFormat.parse(guatime);
+			Calendar cal1 = Calendar.getInstance(); 
+		    Calendar cal2 = Calendar.getInstance(); 
+		    cal1.setTime(date); 
+		    cal2.setTime(guaDate);
+		    
+		    int yi = cal1.get(Calendar.YEAR) - cal2.get(Calendar.YEAR);
+		    if (yi>0) {
+				isToday=false;
+			}
+		    else{
+		    	int di = cal1.get(Calendar.DAY_OF_YEAR)-cal2.get(Calendar.DAY_OF_YEAR);
+		    	if (di>0) {
+					isToday = false;
+				}
+		    	else{
+		    		isToday = true;
+		    	}
+		    }
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+    
     private static void feedKeywordsFlow(KeywordsFlow keywordsFlow, String[] arr) {
 		Random random = new Random();
 		for (int i = 0; i < KeywordsFlow.MAX; i++) {
@@ -134,9 +197,9 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
     	if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) { 
 	        if (event.getAction() == KeyEvent.ACTION_DOWN) { 
 	        	if(!isStart){
-	        		if(guaResult.isSuccess()){
-	        			cancelGua();
-	        		}
+//	        		if(guaResult.isSuccess()){
+//	        			cancelGua();
+//	        		}
 	        		finish();
 	        	}
 	        	else{
@@ -198,9 +261,12 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			keywordsFlow.go2Show(KeywordsFlow.ANIMATION_IN);
 			break;
 		case R.id.start_btn:
-			startLayout.setVisibility(View.GONE);
-			guaGuaKa.setVisibility(View.VISIBLE);
-			isStart = true;
+			if(isToday){
+				GFToast.show("今天已经刮过了，明天再来哟。");
+			}
+			else{
+				chouqian();
+			}
 			break;
 
 		default:
@@ -218,28 +284,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			intent.putExtra("commodity", guaResult);
 			RubblerActivity.this.startActivity(intent);
 			RubblerActivity.this.finish();
-//			final Dialog dialog = new Dialog(this, R.style.MyDialog);
-//	        //设置它的ContentView
-//			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//	        View layout = inflater.inflate(R.layout.dialog_alert, null);
-//	        dialog.setContentView(layout);
-//	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-//	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-//	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-//	        okBtn.setText("去填写收货地址");
-//	        okBtn.setOnClickListener(new OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//			});
-//	        
-//	        titleView.setText("提示");
-//	        contentView.setText("恭喜您刮中"+guaResult.getGuagua().getName()+"，请马上去填写收货地址，否则抽奖结果将作废。");
-//	        dialog.setCancelable(false);
-//	        dialog.show();
+
 		}
 	}
 
@@ -277,6 +322,9 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			break;
 		case 1:
 			if(msg.obj!=null){
+				
+				SharedPreferences deviceInfo = getSharedPreferences("GuaGuaLe", 0);
+				deviceInfo.edit().putString("guatime", serverTime).commit();
 				Gson gson = new Gson();
 				guaResult = gson.fromJson(msg.obj.toString(),
 						new TypeToken<GuaResult>() {
@@ -287,6 +335,9 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				else{
 					guaGuaKa.setmText("谢谢参与！");
 				}
+				startLayout.setVisibility(View.GONE);
+				guaGuaKa.setVisibility(View.VISIBLE);
+				isStart = true;
 			}
 			else{
 				GFToast.show("连接服务器失败,请稍候再试!");
@@ -311,6 +362,15 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				
 			} else {
 				GFToast.show("连接服务器失败,请稍候再试!");
+			}
+			break;
+		case 3:
+			String timeString = msg.obj.toString();
+			if(timeString==null || timeString.isEmpty()){
+				GFToast.show("获取系统时间错误,不能继续刮奖。");
+			}
+			else{
+				checkToday(timeString);
 			}
 			break;
 		case -1:

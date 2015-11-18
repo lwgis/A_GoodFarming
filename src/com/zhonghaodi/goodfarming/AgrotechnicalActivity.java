@@ -119,8 +119,11 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if (bitmap==null) {
-			bitmap = agroImageView.getDrawingCache();
+			Bitmap b = agroImageView.getDrawingCache();
+			int WX_THUMB_SIZE = 60;			 			             
+			bitmap = Bitmap.createScaledBitmap(b, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
 			data = PublicHelper.bmpToByteArray(bitmap, true);
+			bitmap.recycle();
 		}
 		switch (v.getId()) {
 		case R.id.share_button:
@@ -136,8 +139,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 			WXMediaMessage msg = new WXMediaMessage(webpage);
 			msg.title = title;
 			msg.description = content;
-			Bitmap thumb = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+			msg.thumbData = data;
 			
 			SendMessageToWX.Req req = new SendMessageToWX.Req();
 			req.transaction = buildTransaction("webpage");
@@ -156,8 +158,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
 			msg1.title = title;
 			msg1.description = content;
-			Bitmap thumb1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg1.thumbData = PublicHelper.bmpToByteArray(thumb1, true);
+			msg1.thumbData = data;
 			
 			SendMessageToWX.Req req1 = new SendMessageToWX.Req();
 			req1.transaction = buildTransaction("webpage");
@@ -186,11 +187,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, HttpUtil.ViewUrl+"agrotechnical/detail?id="+id);//必填
 		    params1.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL, HttpUtil.ImageUrl+"agrotechnicals/small/"+image);
 		    ArrayList<String> urlsList = new ArrayList<String>();
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_2_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_3_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_4_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_5_1440519318/550");
+		    urlsList.add(HttpUtil.ImageUrl+"agrotechnicals/small/"+image);
 		    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urlsList);
 		    mTencent.shareToQzone(this, params1, new BaseUiListener());
 		    sharePopupwindow.dismiss();

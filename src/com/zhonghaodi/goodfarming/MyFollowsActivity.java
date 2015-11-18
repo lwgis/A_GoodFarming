@@ -7,6 +7,7 @@ import com.easemob.chat.EMChatManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Nys;
@@ -307,7 +308,12 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				}
 				nysactivity.adapter.notifyDataSetChanged();
 				if(nysactivity.nyss.size()==0){
-					popupDialog();
+					if(status==0){
+						popupDialog();
+					}
+					else{
+						GFToast.show("您目前没有粉丝");
+					}
 				}
 				
 			} else {

@@ -231,41 +231,41 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 	public String getBhzdContent(){
 		String content = "";
 		
-		if(spFenbu.getSelectedItemPosition()!=0
-				&& spQingkuang.getSelectedItemPosition()!=0){
-			content += "\n病害呈"+spFenbu.getSelectedItem().toString()+"、"+
-				spQingkuang.getSelectedItem().toString()+"分布";
-		}
-		else if(spFenbu.getSelectedItemPosition()!=0
-				&& spQingkuang.getSelectedItemPosition()==0){
+		if(spFenbu.getSelectedItemPosition()!=0){
 			content += "\n病害呈"+spFenbu.getSelectedItem().toString()+"分布";
 		}
-		else if(spFenbu.getSelectedItemPosition()==0
-				&& spQingkuang.getSelectedItemPosition()!=0){
-			content += "\n病害呈"+spQingkuang.getSelectedItem().toString()+"分布";
+		if(spQingkuang.getSelectedItemPosition()!=0){
+			String ss = "";
+			if(content.length()>0){
+				ss="、";
+			}
+			else{
+				ss="\n";
+			}
+			if(spQingkuang.getSelectedItemPosition()==1||spQingkuang.getSelectedItemPosition()==2){
+				content += ss+"已有"+spQingkuang.getSelectedItem().toString()+"发生";
+			}
+			else{
+				content += ss+spQingkuang.getSelectedItem().toString();
+			}
+			
 		}
 		
 		if(spSudu.getSelectedItemPosition()!=0){
 			String ss = "";
 			if(content.length()>0){
-				ss="，";
+				ss="、";
 			}
 			else{
-				ss="\n病害";
+				ss="\n";
 			}
-			if(spSudu.getSelectedItemPosition()==3){
-				content += ss+spSudu.getSelectedItem().toString();
-			}
-			else{
-				content += ss+"发展速度"+spSudu.getSelectedItem().toString();
-			}
-			
+			content += ss+spSudu.getSelectedItem().toString();
 		}
 		
 		if(spGenxi.getSelectedItemPosition()!=0){
 			String ss = "";
 			if(content.length()>0){
-				ss="，";
+				ss="、";
 			}
 			else{
 				ss="\n";

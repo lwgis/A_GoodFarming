@@ -62,5 +62,15 @@
         android:text="下一步"
         android:textColor="#ffffff"
         android:textSize="18dip" />
+    <TextView 
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:padding="10dip"
+        android:text="已有账号登录"
+        android:textColor="#38be99"
+        android:textSize="18dip"
+        />
 
 </LinearLayout>

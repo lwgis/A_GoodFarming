@@ -149,10 +149,10 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return;
-//			x=location.getLongitude();
-//			y=location.getLatitude();
-			x=118.7950724076489;
-			y=36.89119474385094;
+			x=location.getLongitude();
+			y=location.getLatitude();
+//			x=118.786685;
+//			y=36.992325;
 			if(progressDialog!=null){
 				progressDialog.dismiss();
 			}

@@ -50,7 +50,16 @@ public class LoginActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				selectFragment(1);
+				FragmentTransaction transaction = getFragmentManager()
+						.beginTransaction();
+				transaction.remove(resgiterFragment1);
+				transaction.remove(loginFragment);
+				transaction.remove(resgiterFragment2);
+				resgiterFragment1=null;
+				loginFragment = null;
+				resgiterFragment2 = null;
+				transaction.commit();
+				selectFragment(0);
 			}
 		});
 		selectFragment(0);
@@ -63,13 +72,14 @@ public class LoginActivity extends Activity {
 				.beginTransaction();
 		InputMethodManager im = (InputMethodManager) this
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		if (loginFragment == null) {
-			loginFragment = new LoginFragment();
-			transaction.add(R.id.content_view, loginFragment);
-		}
+		
 		if (resgiterFragment1 == null) {
 			resgiterFragment1 = new RegisterFragment1();
 			transaction.add(R.id.content_view, resgiterFragment1);
+		}
+		if (loginFragment == null) {
+			loginFragment = new LoginFragment();
+			transaction.add(R.id.content_view, loginFragment);
 		}
 		if (resgiterFragment2 == null) {
 			resgiterFragment2 = new RegisterFragment2();
@@ -77,29 +87,34 @@ public class LoginActivity extends Activity {
 		}
 		switch (index) {
 		case 0:
-			transaction.show(loginFragment);
-			transaction.hide(resgiterFragment1);
-			transaction.hide(resgiterFragment2);
+			resgisterBtn.setVisibility(View.INVISIBLE);
+			titleTv.setText("注册");
+//			transaction.setCustomAnimations(R.anim.fragment_rightin,
+//					R.anim.fragment_fadeout);
+			transaction.show(resgiterFragment1);
+			transaction.hide(loginFragment);
+			transaction.hide(resgiterFragment2);	
 			break;
 		case 1:
 			im.hideSoftInputFromWindow(findViewById(R.id.content_view)
 					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-			resgisterBtn.setVisibility(View.INVISIBLE);
-			titleTv.setText("注册");
+			resgisterBtn.setVisibility(View.VISIBLE);
+			titleTv.setText("登录");
 			transaction.setCustomAnimations(R.anim.fragment_rightin,
 					R.anim.fragment_fadeout);
-			transaction.show(resgiterFragment1);
-			transaction.hide(loginFragment);
+			transaction.hide(resgiterFragment1);
+			transaction.show(loginFragment);
 			transaction.hide(resgiterFragment2);
 			break;
 		case 2:
+			resgisterBtn.setVisibility(View.INVISIBLE);
 			im.hideSoftInputFromWindow(findViewById(R.id.content_view)
 					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			transaction.setCustomAnimations(R.anim.fragment_rightin,
 					R.anim.fragment_fadeout);
 			transaction.show(resgiterFragment2);
-			transaction.hide(loginFragment);
 			transaction.hide(resgiterFragment1);
+			transaction.hide(loginFragment);
 			break;
 		default:
 			break;
