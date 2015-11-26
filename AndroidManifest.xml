@@ -362,6 +362,16 @@
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateHidden" >
         </activity>
+        <activity
+            android:name=".PrescriptionsActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name=".PrescriptionEditActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
                 <!-- 显示下载大图页面 -->
         <activity
             android:name="com.zhonghaodi.easemob.ShowBigImage"

@@ -143,7 +143,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	public boolean isMobileNO(String mobiles) {
 
 		Pattern p = Pattern
-				.compile("^((13[0-9])|(17[0-9])|(15[0-9])|(18[0-9]))\\d{8}$");
+				.compile("^((13[0-9])|(14[0-9])|(17[0-9])|(15[0-9])|(18[0-9]))\\d{8}$");
 
 		Matcher m = p.matcher(mobiles);
 
@@ -205,8 +205,8 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 					@Override
 					public void run() {
-//						String jsonString = "8888";
-						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString(),UILApplication.sendcount);
+						String jsonString = "8888";
+//						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString(),UILApplication.sendcount);
 						UILApplication.sendcount++;
 						Message numMsg = registerFragment1.handler.obtainMessage();
 						numMsg.what = 1;
@@ -221,7 +221,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 			break;
 		case 1:
 			if (msg.obj != null) {
-				GFToast.show("验证码已经发出请注意接收短信。");
+//				GFToast.show("验证码已经发出请注意接收短信。");
 				String code = msg.obj.toString().trim();
 				saveCode(code);
 			}

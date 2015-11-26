@@ -63,6 +63,17 @@
 	    	android:visibility="gone"
 	        android:orientation="horizontal"
 	         >
+	         
+           <com.zhonghaodi.customui.MyTextButton
+	            android:id="@+id/prescription_button"
+	            android:layout_width="wrap_content"
+	            android:layout_height="32dp"
+	            android:layout_margin="5dip"
+	            android:background="@null"
+	            android:gravity="center"
+	            android:text="处方"
+	            android:textColor="#444444"
+	            android:textSize="20dip"/>
 	
 	        <com.zhonghaodi.customui.MyEditText
 	            android:id="@+id/chat_edit"

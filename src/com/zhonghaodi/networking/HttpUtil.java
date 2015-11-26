@@ -2146,6 +2146,148 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 添加个人处方
+	 * @param newpass
+	 * @param uid
+	 * @return
+	 */
+	public static String addPrescription(final String uid,
+			final String title,
+			final String content) {
+		String jsonString = null;
+		String urlString = RootURL + "prescription";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return title;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "title";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair);
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return content;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "content";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * 编辑个人处方
+	 * @param newpass
+	 * @param uid
+	 * @return
+	 */
+	public static String editPrescription(final int id,
+			final String title,
+			final String content) {
+		String jsonString = null;
+		String urlString = RootURL + "prescription/"+id;
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return title;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "title";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair);
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return content;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "content";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		try {
+			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return jsonString;
+	}
+	
+	public static String getPrescriptions(String uid){
+		
+		String urlString ="";
+		urlString = RootURL + "prescription/my?uid="+uid;
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+	}
+	
+	public static String deletePrescription(int pid){
+		String urlString = RootURL + "prescription/"+pid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	/**
 	 * 下载apk
 	 * @param path
 	 * @param pd

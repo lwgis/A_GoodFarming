@@ -16,8 +16,10 @@ import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
 import com.zhonghaodi.model.Checkobj;
+import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.Prescription;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.User;
@@ -34,9 +36,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -70,6 +75,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private LinearLayout resLayout;
 	private MyEditText mzEditText;
 	private MyTextButton sendTextButton;
+	private MyTextButton prescriptionButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +121,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		mzEditText = (MyEditText)findViewById(R.id.chat_edit);
 		sendTextButton = (MyTextButton)findViewById(R.id.send_meassage_button);
 		sendTextButton.setOnClickListener(this);
+		prescriptionButton = (MyTextButton)findViewById(R.id.prescription_button);
+		prescriptionButton.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		questionId = getIntent().getIntExtra("questionId", 0);
 		loadData();
@@ -146,6 +154,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				Response response = question.getResponses().get(info.position-2);
 				if(response.getWriter().getId().equals(uid)){
 					menu.add(0, 0, 0, "删除");
+					menu.add(0,1,0,"加入配方");
 				} 
 			}
 		}
@@ -156,41 +165,56 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
+		
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
                 .getMenuInfo();
-		selectResponse = question.getResponses().get(info.position-2);
-		final Dialog dialog = new Dialog(this, R.style.MyDialog);
-        //设置它的ContentView
-		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.dialog, null);
-        dialog.setContentView(layout);
-        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-        okBtn.setText("确定");
-        okBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
+		switch (item.getItemId()) {
+		case 0:
+			selectResponse = question.getResponses().get(info.position-2);
+			final Dialog dialog = new Dialog(this, R.style.MyDialog);
+	        //设置它的ContentView
+			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	        View layout = inflater.inflate(R.layout.dialog, null);
+	        dialog.setContentView(layout);
+	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+	        okBtn.setText("确定");
+	        okBtn.setOnClickListener(new OnClickListener() {
 				
-				delete(question.getId(),selectResponse.getId());
-			}
-		});
-        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
-        cancelButton.setText("取消");
-        cancelButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
-			}
-		});
-        titleView.setText("提示");
-        contentView.setText("确定要删除选中的答案吗？");
-        dialog.show();
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					
+					delete(question.getId(),selectResponse.getId());
+				}
+			});
+	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+	        cancelButton.setText("取消");
+	        cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+	        titleView.setText("提示");
+	        contentView.setText("确定要删除选中的答案吗？");
+	        dialog.show();
+			break;
+		case 1:
+			selectResponse = question.getResponses().get(info.position-2);
+			Intent intent2 = new Intent(this,PrescriptionEditActivity.class);
+			intent2.putExtra("content", selectResponse.getContent());
+			startActivity(intent2);
+			break;
+
+		default:
+			break;
+		}
+		
 		 
 		return super.onContextItemSelected(item);
 	}
@@ -221,6 +245,12 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					loadData();
 				}
 			}, 1000);
+		}
+		if (resultCode == RESULT_OK && requestCode == 100) {
+			String content = data.getStringExtra("content");
+			if(content!=null&&content.length()>0){
+				mzEditText.setText(content);
+			}
 		}
 	}
 
@@ -580,6 +610,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		unregisterForContextMenu(pullToRefreshListView.getRefreshableView());
 	}
 	
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -688,6 +719,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
 			sendLayout.setVisibility(View.GONE);
 			resLayout.setVisibility(View.VISIBLE);
+			break;
+		case R.id.prescription_button:
+			Intent intent = new Intent(this,PrescriptionsActivity.class);
+			this.startActivityForResult(intent, 100);
 			break;
 		default:
 			break;
