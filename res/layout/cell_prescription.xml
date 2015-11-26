@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/background_with_shadow" 
+    android:padding="5dip"
+    android:gravity="center_vertical"
+    >
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+	        android:id="@+id/name_text"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:layout_marginTop="2dp"
+	        android:text="姓名"
+	        android:textColor="#444444"
+	        android:textSize="16dip" 
+	        android:focusable="false"/>
+	
+	    <TextView
+            android:id="@+id/edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="编辑"
+            android:gravity="center_vertical"
+            android:textColor="#38be99"
+            android:textSize="16dip" />
+    </LinearLayout>
+	<View  
+	   android:layout_width="match_parent"  
+	   android:layout_height="0.2px" 
+	   android:layout_margin="6dip"
+	   android:background="#cccccc"  
+	/> 
+	<TextView
+        android:id="@+id/content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dip"
+        android:text="内容"
+        android:textColor="#333333"
+        android:textSize="15dip" />
+</LinearLayout>
