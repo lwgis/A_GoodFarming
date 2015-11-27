@@ -7,6 +7,7 @@ import com.zhonghaodi.model.Commodity;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Gua;
 import com.zhonghaodi.model.GuaOrder;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PointOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -143,10 +144,16 @@ public class GuaOrderActivity extends Activity implements OnClickListener,HandMe
 					public void run() {
 						try {
 							String uid = GFUserDictionary.getUserId();
-							String result = HttpUtil.guaOrderConfirm(uid,mGuaOrder.getId());
+							NetResponse netResponse = HttpUtil.guaOrderConfirm(uid,mGuaOrder.getId());
 							Message msg = handler.obtainMessage();
-							msg.what = 0;
-							msg.obj = result;
+							if(netResponse.getStatus()==1){
+								msg.what = 0;
+								msg.obj = netResponse.getResult();
+							}
+							else{
+								msg.what = -1;
+								msg.obj = netResponse.getMessage();
+							}
 							msg.sendToTarget();
 						} catch (Throwable e) {
 							// TODO Auto-generated catch block
@@ -191,18 +198,28 @@ public class GuaOrderActivity extends Activity implements OnClickListener,HandMe
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		if (msg.obj != null) {
-			String result = msg.obj.toString();
-			if(result!=""){
-				GFToast.show(result);
+		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
 			}
-			else{
-				this.finish();
-			}
-			
-		} else {
-			Toast.makeText(this, "连接服务器失败,请稍候再试!",
-					Toast.LENGTH_SHORT).show();
+			break;
+		case 0:
+			if (msg.obj != null) {
+				String result = msg.obj.toString();
+				if(result!=""){
+					GFToast.show(result);
+				}
+				else{
+					this.finish();
+				}
+				
+			} 
+			break;
+
+		default:
+			break;
 		}
 	}
 

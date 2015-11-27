@@ -21,6 +21,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldMessage;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.HttpUtil;
@@ -182,10 +183,17 @@ public class MessagesActivity extends Activity implements OnClickListener {
 			@Override
 			public void run() {
 				try {
-					String jsonString = HttpUtil.getUsers(messages);
+					NetResponse netResponse = HttpUtil.getUsers(messages);
 					Message msg = handler.obtainMessage();
-					msg.what = 1;
-					msg.obj = jsonString;
+					if(netResponse.getStatus()==1){
+						msg.what = 1;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = 0;
+						msg.obj = netResponse.getMessage();
+					}
+					
 					msg.sendToTarget();
 				} catch (Exception e) {
 					// TODO: handle exception

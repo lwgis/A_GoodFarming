@@ -14,6 +14,7 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
@@ -166,11 +167,18 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 
 			@Override
 			public void run() {
-				String jsonString= HttpUtil.checkAlias(aliasEt.getText().toString());
+				NetResponse netResponse= HttpUtil.checkAlias(aliasEt.getText().toString());
 				Message numMsg = handler
 						.obtainMessage();
-				numMsg.what = 3;
-				numMsg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					numMsg.what = 3;
+					numMsg.obj = netResponse.getResult();
+				}
+				else{
+					numMsg.what = -1;
+					numMsg.obj = netResponse.getMessage();
+				}
+				
 				numMsg.sendToTarget();
 			}
 		}).start();
@@ -219,15 +227,23 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 				user.setAlias(aliasEt.getText().toString());
 				user.setDescription(descEt.getText().toString());
 				try {
+					NetResponse netResponse = HttpUtil.modifyUser(user);
 					Message msgUser = handler.obtainMessage();
-					msgUser.what = 2;
-					msgUser.obj = HttpUtil.modifyUser(user);
+					if(netResponse.getStatus()==1){
+						msgUser.what = 2;
+						msgUser.obj = netResponse.getResult();
+					}
+					else{
+						msgUser.what = -1;
+						msgUser.obj = netResponse.getMessage();
+					}
 					msgUser.sendToTarget();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					Message msgUser = handler.obtainMessage();
-					msgUser.what = 0;
+					msgUser.what = -1;
+					msgUser.obj = e.getMessage();
 					msgUser.sendToTarget();
 				}
 			}
@@ -296,6 +312,12 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		// 注册失败
 		case 0:
 			GFToast.show("操作失败");

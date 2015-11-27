@@ -35,6 +35,7 @@ import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Gua;
 import com.zhonghaodi.model.GuaOrder;
 import com.zhonghaodi.model.GuaResult;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.onWipeListener;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -111,10 +112,16 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			public void run() {
 
 				String uid = GFUserDictionary.getUserId();
-				String jsonString1 = HttpUtil.qian(uid);
+				NetResponse netResponse = HttpUtil.qian(uid);
 				Message msg1 = handler.obtainMessage();
-				msg1.what = 1;
-				msg1.obj = jsonString1;
+				if(netResponse.getStatus()==1){
+					msg1.what = 1;
+					msg1.obj = netResponse.getResult();
+				}
+				else{
+					msg1.what = -1;
+					msg1.obj = netResponse.getMessage();
+				}
 				msg1.sendToTarget();
 
 			}
@@ -134,6 +141,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 					// TODO Auto-generated catch block
 					Message msg = handler.obtainMessage();
 					msg.what = -1;
+					msg.obj="刮奖取消错误";
 					msg.sendToTarget();
 				}
 			}
@@ -292,6 +300,12 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
@@ -373,9 +387,9 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				checkToday(timeString);
 			}
 			break;
-		case -1:
-			GFToast.show("刮奖取消错误!");
-			break;
+//		case -1:
+//			GFToast.show("刮奖取消错误!");
+//			break;
 
 		default:
 			break;

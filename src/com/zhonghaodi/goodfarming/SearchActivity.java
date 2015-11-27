@@ -31,6 +31,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.goodfarming.NyssActivity.NysHolder;
 import com.zhonghaodi.model.Follow;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Store;
 import com.zhonghaodi.model.User;
@@ -142,11 +143,16 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 			@Override
 			public void run() {
 				
-				String jsonString;
-				jsonString= HttpUtil.getUserByPhone(phone);
+				NetResponse netResponse = HttpUtil.getUserByPhone(phone);
 				Message msg = handler.obtainMessage();
-				msg.what =1;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 1;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 				
 			}
@@ -159,10 +165,16 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.follow(uid,user);
+				NetResponse netResponse = HttpUtil.follow(uid,user);
 				Message msg = handler.obtainMessage();
-				msg.what = 2;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 2;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 
 			}
@@ -304,6 +316,12 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			if (msg.obj != null) {
 				Gson gson = new Gson();

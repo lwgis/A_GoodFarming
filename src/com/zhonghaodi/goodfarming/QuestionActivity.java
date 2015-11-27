@@ -19,6 +19,7 @@ import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Prescription;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
@@ -276,7 +277,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			@Override
 			public void run() {
 				try {
-					HttpUtil.sendResponse(response, qid);
+					NetResponse netResponse = HttpUtil.sendResponse(response, qid);
 					Message msg = handler.obtainMessage();
 					msg.what = 7;
 					msg.sendToTarget();
@@ -651,10 +652,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						String jsonString = HttpUtil.adoptResponse(questionId,selectResponse.getId(),question.getWriter().getId());
+						NetResponse netResponse = HttpUtil.adoptResponse(questionId,selectResponse.getId(),question.getWriter().getId());
 						Message msg = handler.obtainMessage();
-						msg.what = 6;
-						msg.obj = jsonString;
+						if(netResponse.getStatus()==1){
+							msg.what = 6;
+							msg.obj = netResponse.getResult();
+						}
+						else{
+							msg.what = 0;
+							msg.obj = netResponse.getMessage();
+						}
 						msg.sendToTarget();
 					}
 				}).start();
@@ -671,10 +678,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						String jsonString = HttpUtil.agreeResponse(questionId,selectResponse.getId(),uid);
+						NetResponse netResponse = HttpUtil.agreeResponse(questionId,selectResponse.getId(),uid);
 						Message msg = handler.obtainMessage();
-						msg.what = 4;
-						msg.obj = jsonString;
+						if(netResponse.getStatus()==1){
+							msg.what = 4;
+							msg.obj = netResponse.getResult();
+						}
+						else{
+							msg.what = 0;
+							msg.obj = netResponse.getMessage();
+						}
 						msg.sendToTarget();
 					}
 				}).start();
@@ -695,10 +708,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					String jsonString = HttpUtil.disagreeResponse(questionId,selectResponse.getId(),uid);
+					NetResponse netResponse = HttpUtil.disagreeResponse(questionId,selectResponse.getId(),uid);
 					Message msg = handler.obtainMessage();
-					msg.what = 5;
-					msg.obj = jsonString;
+					if(netResponse.getStatus()==1){
+						msg.what = 5;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = 0;
+						msg.obj = netResponse.getMessage();
+					}
 					msg.sendToTarget();
 				}
 			}).start();
@@ -846,7 +865,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 			break;
 		case 0:
-			GFToast.show(msg.obj.toString());
+			if(msg.obj!=null){
+				GFToast.show(msg.obj.toString());
+			}
 			break;
 
 		default:

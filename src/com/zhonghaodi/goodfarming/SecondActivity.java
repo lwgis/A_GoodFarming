@@ -9,6 +9,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.goodfarming.RegisterFragment1.TimeCount;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.model.SecondOrder;
@@ -131,10 +132,16 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.buySecond(uid,second.getId());
+				NetResponse netResponse = HttpUtil.buySecond(uid,second.getId());
 				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 0;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 				
 			}
@@ -195,6 +202,12 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			buyBtn.setEnabled(true);
 			if(msg.obj==null){

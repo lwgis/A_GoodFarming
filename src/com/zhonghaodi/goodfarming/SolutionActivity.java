@@ -29,6 +29,7 @@ import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.SolutionHolder;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.RComment;
 import com.zhonghaodi.model.Solution;
 import com.zhonghaodi.networking.GFHandler;
@@ -178,10 +179,16 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			public void run() {
 				// TODO Auto-generated method stub
 				String uid = GFUserDictionary.getUserId();
-				String jsonString = HttpUtil.commentSolution(did,sid,uid,content);
+				NetResponse netResponse = HttpUtil.commentSolution(did,sid,uid,content);
 				Message msg = handler.obtainMessage();
-				msg.what = 2;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 2;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 			}
 		}).start();
@@ -208,10 +215,16 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			public void run() {
 				// TODO Auto-generated method stub
 				String uid = GFUserDictionary.getUserId();
-				String jsonString = HttpUtil.zanSolution(did, solution.getId(), uid);
+				NetResponse netResponse = HttpUtil.zanSolution(did, solution.getId(), uid);
 				Message msg = handler.obtainMessage();
-				msg.what = 4;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 4;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 			}
 		}).start();
@@ -223,10 +236,16 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			public void run() {
 				// TODO Auto-generated method stub
 				String uid = GFUserDictionary.getUserId();
-				String jsonString = HttpUtil.cancelZanSolution(did, solution.getId(), uid);
+				NetResponse netResponse = HttpUtil.cancelZanSolution(did, solution.getId(), uid);
 				Message msg = handler.obtainMessage();
-				msg.what = 4;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 4;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 			}
 		}).start();
@@ -366,6 +385,12 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 1:
 			if(msg.obj!=null){
 				Gson gson = new Gson();

@@ -13,6 +13,7 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.LoginUser;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -131,6 +132,11 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 							Toast.LENGTH_LONG).show();
 					return;
 				}
+				if (passwordEt.getText().toString().length()<8) {
+					Toast.makeText(getActivity(), "密码不足8位",
+							Toast.LENGTH_LONG).show();
+					return;
+				}
 				if (!headGfImageButton.isHasImage()) {
 					Toast.makeText(getActivity(), "请上传头像", Toast.LENGTH_LONG)
 							.show();
@@ -140,11 +146,17 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 
 					@Override
 					public void run() {
-						String jsonString= HttpUtil.checkAlias(aliasEt.getText().toString());
+						NetResponse netResponse = HttpUtil.checkAlias(aliasEt.getText().toString());
 						Message numMsg = handler
 								.obtainMessage();
-						numMsg.what = 3;
-						numMsg.obj = jsonString;
+						if(netResponse.getStatus()==1){
+							numMsg.what = 3;
+							numMsg.obj = netResponse.getResult();
+						}
+						else{
+							numMsg.what = -1;
+							numMsg.obj = netResponse.getMessage();
+						}
 						numMsg.sendToTarget();
 					}
 				}).start();
@@ -219,7 +231,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			public void run() {
 				isSending = true;
 				try {
-					headImageName = ImageUtil.uploadImage(
+					headImageName = ImageUtil.uploadHead(
 							headGfImageButton.getBitmap(), "users");
 					if(headImageName==null || headImageName.isEmpty() || headImageName.equals("error")){
 						Message msg = handler.obtainMessage();
@@ -283,10 +295,17 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 	public void handleMessage(Message msg, Object object) {
 		final RegisterFragment2 registerFragment2 = (RegisterFragment2) object;
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		// 注册失败
 		case 0:
 			if(msg.obj!=null){
-				GFToast.show(msg.obj.toString());
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
 			}
 			else{
 				GFToast.show("操作失败");
@@ -312,9 +331,16 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					user.setTjCode(tjphoneEt.getText().toString());
 					user.setThumbnail(registerFragment2.headImageName.trim());
 					try {
+						NetResponse netResponse = HttpUtil.registerUser(user);
 						Message msgUser = handler.obtainMessage();
-						msgUser.what = 2;
-						msgUser.obj = HttpUtil.registerUser(user);
+						if(netResponse.getStatus()==1){
+							msgUser.what = 2;
+							msgUser.obj = netResponse.getResult();
+						}
+						else{
+							msgUser.what = -1;
+							msgUser.obj = netResponse.getMessage();
+						}
 						msgUser.sendToTarget();
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
@@ -337,7 +363,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 				registerFragment2.getActivity().finish();
 				GFToast.show("注册成功");
 			} else {
-				GFToast.show("注册失败");
+				GFToast.show(loginUser.getMessage());
 			}
 			isSending = false;
 			registerFragment2.registerBtn.setEnabled(true);
@@ -352,11 +378,11 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					updateImage();
 				}
 				else{
-					GFToast.show("别名已经存在！");
+					GFToast.show("昵称已经存在！");
 				}
 			}
 			else{
-				GFToast.show("别名验证失败");
+				GFToast.show("昵称验证失败");
 			}
 			break;
 		default:

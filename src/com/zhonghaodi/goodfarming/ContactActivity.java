@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -70,14 +71,20 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 			@Override
 			public void run() {
 				try {
-					String jsonString = HttpUtil.addContact(uid,name,phone,post,address);
+					NetResponse netResponse = HttpUtil.addContact(uid,name,phone,post,address);
 					Message msg = handler.obtainMessage();
-					msg.obj = jsonString;
+					if(netResponse.getStatus()==1){
+						msg.what = 1;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = 0;
+						msg.obj = netResponse.getMessage();
+					}
 					msg.sendToTarget();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					GFToast.show("添加收货地址错误");
 				}
 			}
 		}).start();
@@ -102,21 +109,33 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		if (msg.obj != null) {
-			try {
-				Gson gson = new Gson();
-				Contact contact = gson.fromJson(msg.obj.toString(),
-						new TypeToken<Contact>() {
-						}.getType());
-				ContactActivity.this.finish();
-			} catch (Exception e) {
-				// TODO: handle exception
-				GFToast.show(msg.obj.toString());
+		switch (msg.what) {
+		case 0:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
 			}
-			
-		} else {
-			GFToast.show("连接服务器失败,请稍候再试!");
+			break;
+		case 1:
+			if (msg.obj != null) {
+				try {
+					Gson gson = new Gson();
+					Contact contact = gson.fromJson(msg.obj.toString(),
+							new TypeToken<Contact>() {
+							}.getType());
+					ContactActivity.this.finish();
+				} catch (Exception e) {
+					// TODO: handle exception
+					GFToast.show(msg.obj.toString());
+				}
+				
+			}
+			break;
+
+		default:
+			break;
 		}
+		 
 	}	
 	
 }

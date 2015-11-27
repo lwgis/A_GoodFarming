@@ -14,6 +14,7 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.SolutionHolder;
 import com.zhonghaodi.model.Disease;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.Solution;
 import com.zhonghaodi.model.User;
@@ -174,10 +175,16 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			public void run() {
 				// TODO Auto-generated method stub
 				String uid = GFUserDictionary.getUserId();
-				String jsonString = HttpUtil.zanSolution(disease.getId(), selectSolution.getId(), uid);
+				NetResponse netResponse = HttpUtil.zanSolution(disease.getId(), selectSolution.getId(), uid);
 				Message msg = handler.obtainMessage();
-				msg.what = 4;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 4;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = 0;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 			}
 		}).start();
@@ -189,10 +196,16 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			public void run() {
 				// TODO Auto-generated method stub
 				String uid = GFUserDictionary.getUserId();
-				String jsonString = HttpUtil.cancelZanSolution(disease.getId(), selectSolution.getId(), uid);
+				NetResponse netResponse = HttpUtil.cancelZanSolution(disease.getId(), selectSolution.getId(), uid);
 				Message msg = handler.obtainMessage();
-				msg.what = 4;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 4;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = 0;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 			}
 		}).start();

@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.LoginUser;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
@@ -101,9 +102,16 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 			@Override
 			public void run() {
 				try {
-					String jsonString = HttpUtil.modifyPass(newpass,uid);
+					NetResponse netResponse = HttpUtil.modifyPass(newpass,uid);
 					Message msg = handler.obtainMessage();
-					msg.obj = jsonString;
+					if(netResponse.getStatus()==1){
+						msg.what = 1;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = -1;
+						msg.obj = netResponse.getMessage();
+					}
 					msg.sendToTarget();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
@@ -117,22 +125,36 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		String bstr = msg.obj.toString();
-		if (bstr.equals("true")) {
-			User user = new User();
-			user.setPhone(GFUserDictionary.getPhone());
-			user.setPassword(newpass);
-			user.setAlias(GFUserDictionary.getAlias());
-			user.setThumbnail(GFUserDictionary.getThumbnail());
-			user.setId(GFUserDictionary.getUserId());
-			GFUserDictionary.saveLoginInfo(user, newpass, this);
-			this.setResult(4);
-			this.finish();
-			GFToast.show("密码修改成功");
+		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
+		case 1:
+			String bstr = msg.obj.toString();
+			if (bstr.equals("true")) {
+				User user = new User();
+				user.setPhone(GFUserDictionary.getPhone());
+				user.setPassword(newpass);
+				user.setAlias(GFUserDictionary.getAlias());
+				user.setThumbnail(GFUserDictionary.getThumbnail());
+				user.setId(GFUserDictionary.getUserId());
+				GFUserDictionary.saveLoginInfo(user, newpass, this);
+				this.setResult(4);
+				this.finish();
+				GFToast.show("密码修改成功");
+			}
+			else {
+				GFToast.show("密码修改失败");
+			}
+			break;
+
+		default:
+			break;
 		}
-		else {
-			GFToast.show("密码修改失败");
-		}
+		
 	}
 
 }

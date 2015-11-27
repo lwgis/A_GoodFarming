@@ -25,6 +25,7 @@ import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.RComment;
 import com.zhonghaodi.model.Response;
@@ -111,10 +112,17 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			public void run() {
 				// TODO Auto-generated method stub
 				String uid = GFUserDictionary.getUserId();
-				String jsonString = HttpUtil.commentResponse(question.getId(),response.getId(),uid,content);
+				String c = content;
+				NetResponse netResponse = HttpUtil.commentResponse(question.getId(),response.getId(),uid,c);
 				Message msg = handler.obtainMessage();
-				msg.what = 2;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 2;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = 0;
+					msg.obj = netResponse.getMessage();
+				}				
 				msg.sendToTarget();
 			}
 		}).start();
@@ -249,6 +257,12 @@ public class CommentActivity extends Activity implements UrlOnClick,
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case 0:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 1:
 			if(msg.obj!=null){
 				Gson gson = new Gson();
@@ -267,13 +281,8 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			}
 			break;
 		case 2:
-			if(msg.obj==null){
-				GFToast.show("操作失败");
-			}
-			else{
-				loadData();
-				GFToast.show("评论成功");
-			}
+			loadData();
+			GFToast.show("评论成功");
 			break;
 		
 		default:

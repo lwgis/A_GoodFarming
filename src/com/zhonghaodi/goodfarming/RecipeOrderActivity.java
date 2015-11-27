@@ -4,6 +4,8 @@ package com.zhonghaodi.goodfarming;
 
 import org.jivesoftware.smack.util.StringUtils;
 
+import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.RecipeOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
@@ -73,11 +75,17 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.orderRecipe(nzdId, recipeId,
+				NetResponse netResponse = HttpUtil.orderRecipe(nzdId, recipeId,
 						userId, count);
 				Message msg = handler.obtainMessage();
-				msg.what = ORDER;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = ORDER;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 			}
 		}).start();
@@ -87,6 +95,11 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 	public void handleMessage(Message msg, Object object) {
 		RecipeOrderActivity activity = (RecipeOrderActivity) object;
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				GFToast.show(msg.obj.toString());
+			}
+			break;
 		case ORDER:
 			if (msg.obj != null) {
 				RecipeOrder recipeOrder = (RecipeOrder) GsonUtil.fromJson(

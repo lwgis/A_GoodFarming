@@ -42,6 +42,7 @@ import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PointDic;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
@@ -680,15 +681,22 @@ public class MainActivity extends Activity implements OnClickListener,
 			public void run() {
 				
 				try {
+					NetResponse netResponse = HttpUtil.modifyUser(user);
 					Message msgUser = handler.obtainMessage();
-					msgUser.what = 2;
-					msgUser.obj = HttpUtil.modifyUser(user);
+					if(netResponse.getStatus()==1){
+						msgUser.what = 2;
+						msgUser.obj = netResponse.getResult();
+					}
+					else{
+						msgUser.what = -1;
+						msgUser.obj = netResponse.getMessage();
+					}
 					msgUser.sendToTarget();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
 					Message msgUser = handler.obtainMessage();
-					msgUser.what = 0;
+					msgUser.what = -1;
+					msgUser.obj = e.getMessage();
 					msgUser.sendToTarget();
 				}
 			}
@@ -720,8 +728,9 @@ public class MainActivity extends Activity implements OnClickListener,
 							jsonString=sGson.toJson(users);
 						}
 						else{
-							jsonString= HttpUtil.getUserByPhone(message
+							NetResponse netResponse= HttpUtil.getUserByPhone(message
 									.getFrom());
+							jsonString = netResponse.getResult();
 						}
 						
 						Message msg = handler.obtainMessage();
@@ -1042,8 +1051,11 @@ public class MainActivity extends Activity implements OnClickListener,
 				activity.installApk(file);
 				break;
 			case -1:
-				String errString = msg.obj.toString();
-				GFToast.show(errString);
+				if(msg.obj!=null){
+					String errString = msg.obj.toString();
+					GFToast.show(errString);
+				}
+				
 				break;
 			case 7:
 				activity.homeFragment.setUnreadMessageCount();

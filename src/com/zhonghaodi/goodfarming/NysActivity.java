@@ -21,6 +21,7 @@ import com.zhonghaodi.model.Comment;
 import com.zhonghaodi.model.Follow;
 import com.zhonghaodi.model.Function;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.OnSizeChangedListener;
 import com.zhonghaodi.model.Quan;
@@ -198,10 +199,16 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.follow(mid,user);
+				NetResponse netResponse = HttpUtil.follow(mid,user);
 				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 1;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 
 			}
@@ -904,6 +911,12 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		// TODO Auto-generated method stub
 		NysActivity nysactivity = (NysActivity) object;
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			if (msg.obj == null) {
 				Toast.makeText(this, "获取失败,请稍后再试",

@@ -17,6 +17,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.model.Follow;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Recipe;
@@ -219,10 +220,16 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.follow(uid,nys);
+				NetResponse netResponse = HttpUtil.follow(uid,nys);
 				Message msg = handler.obtainMessage();
-				msg.what = 2;
-				msg.obj = jsonString;
+				if(netResponse.getStatus()==1){
+					msg.what = 2;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 
 			}
@@ -341,6 +348,12 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		// TODO Auto-generated method stub
 		final NyssActivity nysactivity =(NyssActivity)object;
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			if (msg.obj != null) {
 				Gson gson = new Gson();

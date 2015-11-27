@@ -10,6 +10,7 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.GuaResult;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -107,15 +108,20 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 			public void run() {
 				try {
 					String uid = GFUserDictionary.getUserId();
-					String jsonString = HttpUtil.guaConfirm(uid,mContact.getId(),mGuaResult.getOid());
+					NetResponse netResponse = HttpUtil.guaConfirm(uid,mContact.getId(),mGuaResult.getOid());
 					Message msg = handler.obtainMessage();
-					msg.what = 1;
-					msg.obj = jsonString;
+					if(netResponse.getStatus()==1){
+						msg.what = 1;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = -1;
+						msg.obj = netResponse.getMessage();
+					}
 					msg.sendToTarget();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					GFToast.show("错误");
 				}
 			}
 		}).start();
@@ -223,6 +229,12 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
@@ -239,13 +251,8 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 			}
 			break;
 		case 1:
-			if(msg.obj!=null&&msg.obj.toString().equals("错误")){
-				GFToast.show("刮奖确认失败！");
-			}
-			else{
-				GFToast.show("订单提交成功。可在我的订单里查看。");
-				this.finish();
-			}
+			GFToast.show("订单提交成功。可在我的订单里查看。");
+			this.finish();
 			break;
 		default:
 			break;

@@ -45,6 +45,7 @@ import com.zhonghaodi.model.Comment;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Quan;
 import com.zhonghaodi.model.Question;
@@ -60,9 +61,9 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-	public static String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage/";
-	public static String ViewUrl = "http://121.40.62.120:8080/dfyy/view/";
+	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage8/";
+	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 //	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
 //	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
@@ -228,8 +229,9 @@ public class HttpUtil {
 		return null;
 	}
 
-	public static String executeHttpPost(String serviceUrl, String informjson)
+	public static NetResponse executeHttpPost(String serviceUrl, String informjson)
 			throws Throwable {
+		NetResponse netResponse = new NetResponse();
 		StringBuffer sb = new StringBuffer();
 		StringEntity entity = new StringEntity(informjson, "UTF-8");
 		entity.setContentType("application/json;charset=UTF-8");
@@ -252,14 +254,27 @@ public class HttpUtil {
 				sb.append(line);
 			}
 			inputStream.close();
-			return sb.toString();
+			netResponse.setStatus(1);
+			netResponse.setResult(sb.toString());
+			return netResponse;
 		} else {
-			return "错误";
+			InputStream inputStream = response.getEntity().getContent();
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(
+					inputStream, Charset.forName("utf-8")));
+			String line = null;
+			while ((line = buffer.readLine()) != null) {
+				sb.append(line);
+			}
+			inputStream.close();
+			netResponse.setStatus(0);
+			netResponse.setMessage(sb.toString());
+			return netResponse;
 		}
 	}
 
-	public static String executeHttpPost(String serviceUrl,
+	public static NetResponse executeHttpPost(String serviceUrl,
 			List<NameValuePair> paramList) throws Throwable {
+		NetResponse netResponse = new NetResponse();
 		StringBuffer sb = new StringBuffer();
 		HttpPost post = new HttpPost(serviceUrl);
 		post.setEntity(new UrlEncodedFormEntity(paramList, HTTP.UTF_8));
@@ -277,9 +292,21 @@ public class HttpUtil {
 				sb.append(line);
 			}
 			inputStream.close();
-			return sb.toString();
+			netResponse.setStatus(1);
+			netResponse.setResult(sb.toString());
+			return netResponse;
 		} else {
-			throw new Exception("错误");
+			InputStream inputStream = response.getEntity().getContent();
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(
+					inputStream, Charset.forName("utf-8")));
+			String line = null;
+			while ((line = buffer.readLine()) != null) {
+				sb.append(line);
+			}
+			inputStream.close();
+			netResponse.setStatus(0);
+			netResponse.setMessage(sb.toString());
+			return netResponse;
 		}
 	}
 
@@ -515,14 +542,14 @@ public class HttpUtil {
 		HttpUtil.executeHttpPost(RootURL + "questions", jsonString);
 	}
 
-	public static void sendResponse(Response response, int qid)
+	public static NetResponse sendResponse(Response response, int qid)
 			throws Throwable {
 		String urlString = RootURL + "questions/" + String.valueOf(qid)
 				+ "/reply";
 		String jsonString = JsonUtil.convertObjectToJson(response,
 				"yyyy-MM-dd HH:mm:ss",
 				new String[] { Response.class.toString(), });
-		HttpUtil.executeHttpPost(urlString, jsonString);
+		return HttpUtil.executeHttpPost(urlString, jsonString);
 	}
 
 	public static String getDisease(int diseaseId,String uid) {
@@ -531,7 +558,7 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String sendSolution(Solution solution, int did)
+	public static NetResponse sendSolution(Solution solution, int did)
 			throws Throwable {
 		String urlString = RootURL + "diseases/" + String.valueOf(did)
 				+ "/advise";
@@ -541,8 +568,7 @@ public class HttpUtil {
 		return HttpUtil.executeHttpPost(urlString, jsonString);
 	}
 	
-	public static String commentSolution(int did,int sid,final String uid,final String content) {
-		String jsonString = null;
+	public static NetResponse commentSolution(int did,int sid,final String uid,final String content) {
 		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/comment";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		NameValuePair uidValuePair1 = new NameValuePair() {
@@ -580,13 +606,14 @@ public class HttpUtil {
 		nameValuePairs.add(cotentValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	public static String deleteSolution(int did,int sid){
@@ -595,7 +622,7 @@ public class HttpUtil {
 		return result;
 	}
 	
-	public static String zanSolution(int did,int sid,final String uid) {
+	public static NetResponse zanSolution(int did,int sid,final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/zan";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -617,16 +644,17 @@ public class HttpUtil {
 		nameValuePairs.add(uidValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
-	public static String cancelZanSolution(int did,int sid,final String uid) {
+	public static NetResponse cancelZanSolution(int did,int sid,final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "diseases/"+did+"/advice/"+sid+"/cancelzan";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -648,13 +676,14 @@ public class HttpUtil {
 		nameValuePairs.add(uidValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	public static String getSingleSolution(int did,int sid,String uid) {
@@ -678,7 +707,7 @@ public class HttpUtil {
 		return resultString;
 	}
 
-	public static String login(String phone, String password) throws Throwable {
+	public static NetResponse login(String phone, String password) throws Throwable {
 		User user = new User();
 		user.setPhone(phone);
 		user.setPassword(password);
@@ -692,7 +721,7 @@ public class HttpUtil {
 	 * @param alias
 	 * @return
 	 */
-	public static String checkAlias(final String alias) {
+	public static NetResponse checkAlias(final String alias) {
 		String jsonString = null;
 		String urlString = RootURL + "users/checkname";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -714,13 +743,14 @@ public class HttpUtil {
 		nameValuePairs.add(uidValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 
 	/**
@@ -728,14 +758,14 @@ public class HttpUtil {
 	 * @return
 	 * @throws Throwable
 	 */
-	public static String registerUser(User user) throws Throwable {
+	public static NetResponse registerUser(User user) throws Throwable {
 		String urlString = RootURL + "users";
 		String jsonString = JsonUtil.convertObjectToJson(user,
 				"yyyy-MM-dd HH:mm:ss", new String[] { User.class.toString() });
 		return HttpUtil.executeHttpPost(urlString, jsonString);
 	}
 	
-	public static String modifyUser(User user) throws Throwable {
+	public static NetResponse modifyUser(User user) throws Throwable {
 		String urlString = RootURL + "users/"+user.getId();
 		String jsonString = JsonUtil.convertObjectToJson(user,
 				"yyyy-MM-dd HH:mm:ss", new String[] { User.class.toString() });
@@ -779,7 +809,7 @@ public class HttpUtil {
 	 * @param rid
 	 * @return
 	 */
-	public static String agreeResponse(int qid,int rid,final String uid) {
+	public static NetResponse agreeResponse(int qid,int rid,final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/agree";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -801,13 +831,14 @@ public class HttpUtil {
 		nameValuePairs.add(uidValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -816,7 +847,7 @@ public class HttpUtil {
 	 * @param rid
 	 * @return
 	 */
-	public static String disagreeResponse(int qid,int rid,final String uid) {
+	public static NetResponse disagreeResponse(int qid,int rid,final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/disagree";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -838,13 +869,14 @@ public class HttpUtil {
 		nameValuePairs.add(uidValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -853,7 +885,7 @@ public class HttpUtil {
 	 * @param rid
 	 * @return
 	 */
-	public static String adoptResponse(int qid,int rid,final String uid) {
+	public static NetResponse adoptResponse(int qid,int rid,final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/adopt";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -875,13 +907,14 @@ public class HttpUtil {
 		nameValuePairs.add(uidValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -890,7 +923,7 @@ public class HttpUtil {
 	 * @param rid
 	 * @return
 	 */
-	public static String commentResponse(int qid,int rid,final String uid,final String content) {
+	public static NetResponse commentResponse(int qid,int rid,final String uid,final String content) {
 		String jsonString = null;
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/comment";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -929,13 +962,14 @@ public class HttpUtil {
 		nameValuePairs.add(cotentValuePair1);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 
 	public static String getRecipe(String nzdCode, int rid) {
@@ -951,7 +985,7 @@ public class HttpUtil {
 	 * @param count 数量
 	 * @return 返回订单
 	 */
-	public static String orderRecipe(String nzdid, int rid, final String uid, final int count) {
+	public static NetResponse orderRecipe(String nzdid, int rid, final String uid, final int count) {
 		String jsonString = null;
 		String urlString = RootURL + "users/" + nzdid
 				+ "/recipes/" + String.valueOf(rid) + "/order";
@@ -987,13 +1021,14 @@ public class HttpUtil {
 		nameValuePairs.add(nameValuePair1);
 		nameValuePairs.add(nameValuePair2);
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 
 	public static Bitmap getRecipeQRCode(String nzdId, int recipeId, String userId,
@@ -1028,7 +1063,7 @@ public class HttpUtil {
 		}		
 	}
 
-	public static String getUsers(List<GFMessage> messages) {
+	public static NetResponse getUsers(List<GFMessage> messages) {
 		String jsonString="[ ";
 		for (GFMessage emMessage : messages) {
 			jsonString=jsonString+"\""+emMessage.getTitle()+"\",";
@@ -1040,18 +1075,22 @@ public class HttpUtil {
 			return HttpUtil.executeHttpPost(RootURL+"users/inphones", jsonString);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
 	}
-	public static String getUserByPhone(String phone) {
+	public static NetResponse getUserByPhone(String phone) {
 		String jsonString="[ \""+phone+"\" ]";
 		try {
 			return HttpUtil.executeHttpPost(RootURL+"users/inphones", jsonString);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
 	}
 	
@@ -1172,7 +1211,7 @@ public class HttpUtil {
 		
 	}
 	
-	public static String follow(String uid,Nys nys){
+	public static NetResponse follow(String uid,Nys nys){
 		String urlString = RootURL + "users/"+uid+"/follow";
 		Gson sGson=new Gson();
 		String jsonString=sGson.toJson(nys);
@@ -1180,12 +1219,14 @@ public class HttpUtil {
 			return HttpUtil.executeHttpPost(urlString, jsonString);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
 	}
 	
-	public static String follow(String uid,User user){
+	public static NetResponse follow(String uid,User user){
 		String urlString = RootURL + "users/"+uid+"/follow";
 		Gson sGson=new Gson();
 		String jsonString=sGson.toJson(user);
@@ -1193,8 +1234,10 @@ public class HttpUtil {
 			return HttpUtil.executeHttpPost(urlString, jsonString);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
 	}
 	
@@ -1276,8 +1319,7 @@ public class HttpUtil {
 		String jsonString = JsonUtil.convertObjectToJson(comment,
 				"yyyy-MM-dd HH:mm:ss", new String[] {
 						Comment.class.toString(), NetImage.class.toString() });
-		String ssString = HttpUtil.executeHttpPost(RootURL + "users/"+uid+"/quans/"+qid+"/comment", jsonString);
-		String kkString = "dd";
+		HttpUtil.executeHttpPost(RootURL + "users/"+uid+"/quans/"+qid+"/comment", jsonString);
 	}
 	
 	public static Bitmap getPayQRCode(String uid,int currency) {
@@ -1333,7 +1375,7 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String modifyPass(final String newpass,String uid) {
+	public static NetResponse modifyPass(final String newpass,String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "users/" + uid
 				+ "/modifypass";
@@ -1355,13 +1397,14 @@ public class HttpUtil {
 		
 		nameValuePairs.add(nameValuePair1);
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	public static String passback(String phone,int n) {
@@ -1387,7 +1430,7 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String buySecond(final String uid,int sid){
+	public static NetResponse buySecond(final String uid,int sid){
 //		String url = RootURL + "seconds/"+sid+"/buy?uid="+uid;
 //		String jsonString = HttpUtil.executeHttpGet1(url);
 //		return jsonString;
@@ -1412,13 +1455,14 @@ public class HttpUtil {
 		
 		nameValuePairs.add(nameValuePair1);
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	public static Bitmap getSecondQRCode(int sid,String qrCode) {
@@ -1494,7 +1538,7 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String exchange(final int points,String uid) {
+	public static NetResponse exchange(final int points,String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "users/" + uid
 				+ "/ptoc";
@@ -1516,20 +1560,21 @@ public class HttpUtil {
 		
 		nameValuePairs.add(nameValuePair1);
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
 	 * 订单评价
 	 * @return
 	 */
-	public static String sendEvaluate(String nzdid,final int urid,int rid,final int scoring,final String evaluate) {
+	public static NetResponse sendEvaluate(String nzdid,final int urid,int rid,final int scoring,final String evaluate) {
 		String jsonString = null;
 		String urlString = RootURL + "users/" + nzdid
 				+ "/recipes/"+rid+"/order/evaluate";
@@ -1580,13 +1625,14 @@ public class HttpUtil {
 		};
 		nameValuePairs.add(nameValuePair3);
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -1638,7 +1684,7 @@ public class HttpUtil {
 	 * @param uid
 	 * @return
 	 */
-	public static String addContact(final String uid,
+	public static NetResponse addContact(final String uid,
 			final String name,
 			final String phone,
 			final String post,
@@ -1730,13 +1776,14 @@ public class HttpUtil {
 		
 		nameValuePairs.add(postValuePair);
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -1745,7 +1792,7 @@ public class HttpUtil {
 	 * @param contact
 	 * @return
 	 */
-	public static String exChangeCommodity(final String uid,
+	public static NetResponse exChangeCommodity(final String uid,
 			final int contact,
 			final int commodityid) {
 		String jsonString = null;
@@ -1802,13 +1849,14 @@ public class HttpUtil {
 		nameValuePairs.add(phoneValuePair);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -1835,7 +1883,7 @@ public class HttpUtil {
 	/**
 	 * 意见反馈
 	 */
-	public static String feedBack(final String uid,
+	public static NetResponse feedBack(final String uid,
 			final String content) {
 		String jsonString = null;
 		String urlString = RootURL + "feedback";
@@ -1875,13 +1923,14 @@ public class HttpUtil {
 		nameValuePairs.add(nameValuePair);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -1899,7 +1948,7 @@ public class HttpUtil {
 	/**
 	 * 抽签
 	 */
-	public static String qian(final String uid) {
+	public static NetResponse qian(final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "guagua/qiang";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -1920,13 +1969,14 @@ public class HttpUtil {
 		
 		nameValuePairs.add(uidValuePair1);
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -1935,7 +1985,7 @@ public class HttpUtil {
 	 * @param contact
 	 * @return
 	 */
-	public static String guaConfirm(final String uid,
+	public static NetResponse guaConfirm(final String uid,
 			final int contact,
 			final int oid) {
 		String jsonString = null;
@@ -1992,13 +2042,14 @@ public class HttpUtil {
 		nameValuePairs.add(phoneValuePair);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -2007,7 +2058,7 @@ public class HttpUtil {
 	 * @param contact
 	 * @return
 	 */
-	public static String guaCancel(final String uid,
+	public static NetResponse guaCancel(final String uid,
 			final int oid) {
 		String jsonString = null;
 		String urlString = RootURL + "guagua/guaCancel";
@@ -2047,13 +2098,14 @@ public class HttpUtil {
 		nameValuePairs.add(phoneValuePair);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -2073,7 +2125,7 @@ public class HttpUtil {
 	 * @param contact
 	 * @return
 	 */
-	public static String guaOrderConfirm(final String uid,
+	public static NetResponse guaOrderConfirm(final String uid,
 			final int oid) {
 		String jsonString = null;
 		String urlString = RootURL + "guagua/orderConfirm";
@@ -2113,13 +2165,14 @@ public class HttpUtil {
 		nameValuePairs.add(phoneValuePair);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -2151,7 +2204,7 @@ public class HttpUtil {
 	 * @param uid
 	 * @return
 	 */
-	public static String addPrescription(final String uid,
+	public static NetResponse addPrescription(final String uid,
 			final String title,
 			final String content) {
 		String jsonString = null;
@@ -2208,13 +2261,14 @@ public class HttpUtil {
 		nameValuePairs.add(phoneValuePair);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	/**
@@ -2223,7 +2277,7 @@ public class HttpUtil {
 	 * @param uid
 	 * @return
 	 */
-	public static String editPrescription(final int id,
+	public static NetResponse editPrescription(final int id,
 			final String title,
 			final String content) {
 		String jsonString = null;
@@ -2264,13 +2318,14 @@ public class HttpUtil {
 		nameValuePairs.add(phoneValuePair);
 		
 		try {
-			jsonString = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
 		}
-		return jsonString;
 	}
 	
 	public static String getPrescriptions(String uid){

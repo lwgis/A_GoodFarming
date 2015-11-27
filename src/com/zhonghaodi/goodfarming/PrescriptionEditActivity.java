@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Prescription;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -69,17 +70,29 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 			public void run() {
 				try {
 					if(id==0){
-						String jsonString = HttpUtil.addPrescription(uid, title, content);
+						NetResponse netResponse = HttpUtil.addPrescription(uid, title, content);
 						Message msg = handler.obtainMessage();
-						msg.what = 0;
-						msg.obj = jsonString;
+						if(netResponse.getStatus()==1){
+							msg.what = 0;
+							msg.obj = netResponse.getResult();
+						}
+						else{
+							msg.what = -1;
+							msg.obj = netResponse.getMessage();
+						}
 						msg.sendToTarget();
 					}
 					else{
-						String jsonString = HttpUtil.editPrescription(id, title, content);
+						NetResponse netResponse = HttpUtil.editPrescription(id, title, content);
 						Message msg = handler.obtainMessage();
-						msg.what = 1;
-						msg.obj = jsonString;
+						if(netResponse.getStatus()==1){
+							msg.what = 1;
+							msg.obj = netResponse.getResult();
+						}
+						else{
+							msg.what = -1;
+							msg.obj = netResponse.getMessage();
+						}
 						msg.sendToTarget();
 					}
 					
@@ -111,6 +124,12 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			if(msg.obj!=null && msg.obj.toString().isEmpty()){
 				GFToast.show("处方创建成功");

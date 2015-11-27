@@ -10,6 +10,7 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Commodity;
 import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PointOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -115,15 +116,20 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 			public void run() {
 				try {
 					String uid = GFUserDictionary.getUserId();
-					String jsonString = HttpUtil.exChangeCommodity(uid,mContact.getId(),mCommodity.getId());
+					NetResponse netResponse = HttpUtil.exChangeCommodity(uid,mContact.getId(),mCommodity.getId());
 					Message msg = handler.obtainMessage();
-					msg.what = 1;
-					msg.obj = jsonString;
+					if(netResponse.getStatus()==1){
+						msg.what = 1;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = -1;
+						msg.obj = netResponse.getMessage();
+					}
 					msg.sendToTarget();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-					GFToast.show("错误");
+					
 				}
 			}
 		}).start();
@@ -168,6 +174,12 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
 		case 0:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
@@ -197,9 +209,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 					this.finish();
 				}
 			}
-			else{
-				GFToast.show("连接服务器失败,请稍候再试!");
-			}
+			
 			break;
 		default:
 			break;

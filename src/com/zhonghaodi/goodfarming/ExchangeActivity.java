@@ -4,6 +4,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -68,10 +69,16 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 				{
 					String uid = GFUserDictionary.getUserId();
 					int count = Integer.parseInt(countstr);
-					String jsonString = HttpUtil.exchange(count,uid);
+					NetResponse netResponse = HttpUtil.exchange(count,uid);
 					Message msg = handler.obtainMessage();
-					msg.what=1;
-					msg.obj = jsonString;
+					if(netResponse.getStatus()==1){
+						msg.what = 1;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = -1;
+						msg.obj = netResponse.getMessage();
+					}
 					msg.sendToTarget();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
@@ -106,7 +113,10 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		switch (msg.what) {
 		case -1:
-			GFToast.show(msg.obj.toString());
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
 			break;
 		case 0:
 			try {

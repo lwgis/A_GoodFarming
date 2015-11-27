@@ -1,9 +1,11 @@
 package com.zhonghaodi.goodfarming;
 
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.LoginUser;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.GsonUtil;
@@ -49,11 +51,18 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 					@Override
 					public void run() {
 						try {
-							String jsonString = HttpUtil.login(phoneEt
+							NetResponse netResponse = HttpUtil.login(phoneEt
 									.getText().toString(), passwordEt.getText()
 									.toString());
 							Message msg = handler.obtainMessage();
-							msg.obj = jsonString;
+							if(netResponse.getStatus()==1){
+								msg.what = 1;
+								msg.obj = netResponse.getResult();
+							}
+							else{
+								msg.what = -1;
+								msg.obj = netResponse.getMessage();
+							}
 							msg.sendToTarget();
 						} catch (Throwable e) {
 							// TODO Auto-generated catch block
@@ -104,17 +113,31 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
-		LoginFragment loginFragment = (LoginFragment) object;
-		LoginUser loginUser = (LoginUser) GsonUtil.fromJson(msg.obj.toString(), LoginUser.class);
-		if (loginUser.getCode()==1) {
-			GFUserDictionary.saveLoginInfo(loginUser.getUser(),loginFragment.passwordEt.getText().toString(),loginFragment.getActivity());
-			loginFragment.getActivity().setResult(3);
-			loginFragment.getActivity().finish();
-			Toast.makeText(loginFragment.getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
+		switch (msg.what) {
+		case -1:
+			if(msg.obj!=null){
+				if(msg.obj.toString().trim().length()>=1)
+					GFToast.show(msg.obj.toString());
+			}
+			break;
+		case 1:
+			LoginFragment loginFragment = (LoginFragment) object;
+			LoginUser loginUser = (LoginUser) GsonUtil.fromJson(msg.obj.toString(), LoginUser.class);
+			if (loginUser.getCode()==1) {
+				GFUserDictionary.saveLoginInfo(loginUser.getUser(),loginFragment.passwordEt.getText().toString(),loginFragment.getActivity());
+				loginFragment.getActivity().setResult(3);
+				loginFragment.getActivity().finish();
+				Toast.makeText(loginFragment.getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
+			}
+			else {
+				Toast.makeText(loginFragment.getActivity(), "用户名和密码错误", Toast.LENGTH_SHORT).show();
+			}
+			break;
+
+		default:
+			break;
 		}
-		else {
-			Toast.makeText(loginFragment.getActivity(), "用户名和密码错误", Toast.LENGTH_SHORT).show();
-		}
+		
 	}
 
 }
