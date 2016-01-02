@@ -123,7 +123,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	}
 	
 	public void buy(){
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null){
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
@@ -205,13 +205,13 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
 			buyBtn.setEnabled(true);
 			if(msg.obj==null){
-				GFToast.show("对不起，秒杀产品只能抢购一份");
+				GFToast.show(getApplicationContext(),"对不起，秒杀产品只能抢购一份");
 			}
 			else{
 				SecondOrder secondOrder = (SecondOrder) GsonUtil.fromJson(
@@ -230,7 +230,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		case 1:
 			String timeString = msg.obj.toString();
 			if(timeString==null || timeString.isEmpty()){
-				GFToast.show("获取系统时间错误");
+				GFToast.show(getApplicationContext(),"获取系统时间错误");
 				timeBtn.setVisibility(View.VISIBLE);
 				buyBtn.setVisibility(View.GONE);
 			}

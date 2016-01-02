@@ -1,41 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    android:padding="0.5dip"
+    >
     <Button
-        android:id="@+id/btnAll"
+        android:id="@+id/btn_question"
         android:layout_width="180dp"
         android:layout_height="50dp"
         android:background="@drawable/menu_item_bg"
         android:shadowColor="#222222"
         android:shadowDy="-2"
         android:shadowRadius="2"
-        android:text="所有提问"
+        android:text="病虫害问题"
         android:textColor="#ffffff"
         android:textSize="20dip" />
-
     <Button
-        android:id="@+id/btnMy"
+        android:id="@+id/btn_gossip"
         android:layout_width="180dp"
         android:layout_height="50dp"
         android:background="@drawable/menu_item_bg"
         android:shadowColor="#222222"
         android:shadowDy="-2"
         android:shadowRadius="2"
-        android:text="我的提问"
+        android:text="拉拉呱"
         android:textColor="#ffffff"
         android:textSize="20dip" />
-    <Button
-        android:id="@+id/btnAsc"
-        android:layout_width="180dp"
-        android:layout_height="50dp"
-        android:background="@drawable/menu_item_bg"
-        android:shadowColor="#222222"
-        android:shadowDy="-2"
-        android:shadowRadius="2"
-        android:text="与我相关"
-        android:textColor="#ffffff"
-        android:textSize="20dip" />
-
+   
 </LinearLayout>

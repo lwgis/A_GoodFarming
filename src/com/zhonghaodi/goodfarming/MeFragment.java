@@ -103,7 +103,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				}
 				Intent it=new Intent();
 				it.setClass(getActivity(), function.getActivityClass());
-				if(function.getName().equals("当面付") || function.getName().equals("修改资料")){
+				if(function.getName().equals("我的拉拉呱")){
+					it.putExtra("status", 1);
+					getActivity().startActivity(it);
+				}
+				else if(function.getName().equals("当面付") || function.getName().equals("修改资料")){
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("user", user);
 					it.putExtras(bundle);
@@ -141,7 +145,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			@Override
 			public void run() {
 				String jsonString = HttpUtil.getUser(GFUserDictionary
-						.getUserId());
+						.getUserId(getActivity()));
 				Message msg = handler.obtainMessage();
 				msg.what=1;
 				msg.obj = jsonString;
@@ -239,7 +243,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	}
 	
 	private void signin() {
-		final String  uid= GFUserDictionary.getUserId();
+		final String  uid= GFUserDictionary.getUserId(getActivity());
 		new Thread(new Runnable() {
 
 			@Override
@@ -288,7 +292,13 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			}
 			fragment.user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
-			GFUserDictionary.saveLoginInfo(user, GFUserDictionary.getPassword(), getActivity());
+			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());
+			Function shareFunction = new Function("APP分享",null,R.drawable.appshare);
+			fragment.functions.add(shareFunction);
+			Function questionFunction = new Function("我的问题", MyQuestionsActivity.class,R.drawable.myquestions);
+			fragment.functions.add(questionFunction);
+			Function mylalaguaFunction = new Function("我的拉拉呱", MyQuestionsActivity.class,R.drawable.mylalagua);
+			fragment.functions.add(mylalaguaFunction);
 			Function cartFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
 			fragment.functions.add(cartFunction);
 			Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
@@ -305,7 +315,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			}
 			switch (user.getLevel().getId()) {
 			case 1:
-				Function nysfuFunction = new Function("升级为农艺师", UpdateNysActivity.class,R.drawable.nysupdate);
+				Function nysfuFunction = new Function("升级为农技达人", UpdateNysActivity.class,R.drawable.nysupdate);
 				fragment.functions.add(nysfuFunction);
 				Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzdupdate);
 				fragment.functions.add(nzdFunction);
@@ -320,8 +330,6 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			fragment.functions.add(minfoFunction);
 			Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
 			fragment.functions.add(modifyFunction);				
-			Function shareFunction = new Function("APP分享",null,R.drawable.weixin);
-			fragment.functions.add(shareFunction);
 			Function downFunction = new Function("推荐农友下载", AppdownActivity.class,R.drawable.appdownload);
 			fragment.functions.add(downFunction);
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
@@ -332,11 +340,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		case 2:
 			siginButton.setEnabled(true);
 			if(msg.obj!=null){
-				GFToast.show(msg.obj.toString());
+				GFToast.show(getActivity().getApplicationContext(),msg.obj.toString());
 				loadData();
 			}
 			else{
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getActivity().getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 

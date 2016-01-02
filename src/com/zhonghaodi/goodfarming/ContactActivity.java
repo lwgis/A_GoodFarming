@@ -44,25 +44,25 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 	}
 	
 	public void add(){
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		final String name = nameEditText.getText().toString();
 		final String phone = phoneEditText.getText().toString();
 		final String post = postEditText.getText().toString();
 		final String address = addressEditText.getText().toString();
 		if(name.isEmpty()){
-			GFToast.show("请输入收货人姓名");
+			GFToast.show(getApplicationContext(),"请输入收货人姓名");
 			return;
 		}
 		if(phone.isEmpty()){
-			GFToast.show("请输入收货人电话");
+			GFToast.show(getApplicationContext(),"请输入收货人电话");
 			return;
 		}
 		if(post.isEmpty()){
-			GFToast.show("请输入邮编");
+			GFToast.show(getApplicationContext(),"请输入邮编");
 			return;
 		}
 		if(address.isEmpty()){
-			GFToast.show("请输入详细地址");
+			GFToast.show(getApplicationContext(),"请输入详细地址");
 			return;
 		}
 
@@ -113,7 +113,7 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 		case 0:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 1:
@@ -126,7 +126,7 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 					ContactActivity.this.finish();
 				} catch (Exception e) {
 					// TODO: handle exception
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 				}
 				
 			}

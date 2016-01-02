@@ -72,29 +72,29 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 	}
 	
 	public void modify(){
-		final String uid = GFUserDictionary.getUserId();
-		String pass = GFUserDictionary.getPassword();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
+		String pass = GFUserDictionary.getPassword(getApplicationContext());
 		String oldpass = oldPassEt.getText().toString();
 		newpass = newPassEt.getText().toString();
 		String confirmpass = confirmPassEt.getText().toString();
 		if(oldpass.isEmpty()){
-			GFToast.show("请输入目前的密码");
+			GFToast.show(getApplicationContext(),"请输入目前的密码");
 			return;
 		}
 		if(newpass.isEmpty()){
-			GFToast.show("请输入新的密码");
+			GFToast.show(getApplicationContext(),"请输入新的密码");
 			return;
 		}
 		if(confirmpass.isEmpty()){
-			GFToast.show("请确认输入新的密码");
+			GFToast.show(getApplicationContext(),"请确认输入新的密码");
 			return;
 		}
 		if(!pass.equals(oldpass)){
-			GFToast.show("密码错误");
+			GFToast.show(getApplicationContext(),"密码错误");
 			return;
 		}
 		if(!newpass.equals(confirmpass)){
-			GFToast.show("两次输入的新密码不一致");
+			GFToast.show(getApplicationContext(),"两次输入的新密码不一致");
 			return;
 		}
 		new Thread(new Runnable() {
@@ -116,7 +116,7 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					GFToast.show("修改密码错误");
+					GFToast.show(getApplicationContext(),"修改密码错误");
 				}
 			}
 		}).start();
@@ -129,25 +129,25 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 1:
 			String bstr = msg.obj.toString();
 			if (bstr.equals("true")) {
 				User user = new User();
-				user.setPhone(GFUserDictionary.getPhone());
+				user.setPhone(GFUserDictionary.getPhone(getApplicationContext()));
 				user.setPassword(newpass);
-				user.setAlias(GFUserDictionary.getAlias());
-				user.setThumbnail(GFUserDictionary.getThumbnail());
-				user.setId(GFUserDictionary.getUserId());
-				GFUserDictionary.saveLoginInfo(user, newpass, this);
+				user.setAlias(GFUserDictionary.getAlias(getApplicationContext()));
+				user.setThumbnail(GFUserDictionary.getThumbnail(getApplicationContext()));
+				user.setId(GFUserDictionary.getUserId(getApplicationContext()));
+				GFUserDictionary.saveLoginInfo(getApplicationContext(),user, newpass, this);
 				this.setResult(4);
 				this.finish();
-				GFToast.show("密码修改成功");
+				GFToast.show(getApplicationContext(),"密码修改成功");
 			}
 			else {
-				GFToast.show("密码修改失败");
+				GFToast.show(getApplicationContext(),"密码修改失败");
 			}
 			break;
 

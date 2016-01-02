@@ -1,5 +1,6 @@
 package com.zhonghaodi.customui;
 
+import com.makeramen.RoundedImageView;
 import com.zhonghaodi.goodfarming.R;
 
 import android.view.View;
@@ -7,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class HolderMeInfo {
-	public ImageView headIv;
+	public RoundedImageView headIv;
 	public TextView titleTv;
 	public TextView jifenTv;
 	public TextView youhuibiTv;
@@ -17,7 +18,7 @@ public class HolderMeInfo {
 	public View guanzhuView;
 	public View fensiView;
 	public HolderMeInfo(View view){
-		headIv=(ImageView)view.findViewById(R.id.head_image);
+		headIv=(RoundedImageView)view.findViewById(R.id.head_image);
 		titleTv=(TextView)view.findViewById(R.id.title_text);
 		jifenTv=(TextView)view.findViewById(R.id.jifen_text);
 		youhuibiTv=(TextView)view.findViewById(R.id.youhuibi_text);

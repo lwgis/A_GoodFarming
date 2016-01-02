@@ -73,7 +73,7 @@ public class PointOrdersActivity extends Activity implements OnItemClickListener
 
 	public void loadData(){
 		
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override

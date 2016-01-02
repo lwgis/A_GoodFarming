@@ -78,7 +78,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 			
 			@Override
 			public void run() {
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				String jsonString = HttpUtil.getContacts(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -99,7 +99,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 	
 	public void confirmOrder(){
 		if(mContact==null){
-			GFToast.show("请选择收货地址");
+			GFToast.show(getApplicationContext(),"请选择收货地址");
 			return;
 		}
 		new Thread(new Runnable() {
@@ -107,7 +107,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 			@Override
 			public void run() {
 				try {
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					NetResponse netResponse = HttpUtil.guaConfirm(uid,mContact.getId(),mGuaResult.getOid());
 					Message msg = handler.obtainMessage();
 					if(netResponse.getStatus()==1){
@@ -133,7 +133,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 			@Override
 			public void run() {
 				try {
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					HttpUtil.guaCancel(uid,mGuaResult.getOid());
 					
 				} catch (Throwable e) {
@@ -232,7 +232,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -247,11 +247,11 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 				}
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		case 1:
-			GFToast.show("订单提交成功。可在我的订单里查看。");
+			GFToast.show(getApplicationContext(),"订单提交成功。可在我的订单里查看。");
 			this.finish();
 			break;
 		default:

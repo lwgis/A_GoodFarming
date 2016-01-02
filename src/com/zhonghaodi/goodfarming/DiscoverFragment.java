@@ -57,7 +57,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		String uid = GFUserDictionary.getUserId();
+		String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 		if(uid==null){
 			Intent intent = new Intent(getActivity(), LoginActivity.class);
 			getActivity().startActivity(intent);
@@ -93,14 +93,14 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 			startActivity(intent6);
 			break;
 		case R.id.layout8:
-			int point = GFUserDictionary.getPoint();
-			int guagua = GFPointDictionary.getGuaguaPoint();
+			int point = GFUserDictionary.getPoint(getActivity().getApplicationContext());
+			int guagua = GFPointDictionary.getGuaguaPoint(getActivity());
 			if(point>=guagua){
 				Intent intent7 = new Intent(getActivity(), RubblerActivity.class);
 				startActivity(intent7);
 			}
 			else{
-				GFToast.show("您的积分不足！");
+				GFToast.show(getActivity().getApplicationContext(),"您的积分不足！");
 			}
 			break;
 		case R.id.layout9:

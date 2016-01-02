@@ -242,11 +242,11 @@ public class RecipesActivity extends Activity implements HandMessage,OnClickList
 			recipesactivity.adapter.notifyDataSetChanged();
 			
 		} else {
-			GFToast.show("连接服务器失败,请稍候再试!");
+			GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 		}
 		pullToRefreshListView.onRefreshComplete();
 		if(recipes.size()==0){
-			GFToast.show("附近没有配方！");
+			GFToast.show(getApplicationContext(),"附近没有配方！");
 		}
 	}
 

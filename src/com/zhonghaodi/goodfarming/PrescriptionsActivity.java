@@ -144,7 +144,7 @@ public class PrescriptionsActivity extends Activity implements OnClickListener,O
 			
 			@Override
 			public void run() {
-				uid=GFUserDictionary.getUserId();
+				uid=GFUserDictionary.getUserId(getApplicationContext());
 				String jsonString = HttpUtil.getPrescriptions(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -282,7 +282,7 @@ public class PrescriptionsActivity extends Activity implements OnClickListener,O
 		case 3:
 			String strerr = msg.obj.toString();
 			if(!strerr.isEmpty()){
-				GFToast.show(strerr);
+				GFToast.show(getApplicationContext(),strerr);
 			}
 			else{
 				prescriptions.remove(selePrescription);

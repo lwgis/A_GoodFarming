@@ -111,7 +111,7 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 						Toast.LENGTH_SHORT).show();
 			}
 			else{
-				GFToast.show("交易成功");
+				GFToast.show(getApplicationContext(),"交易成功");
 			}
 			
 		} else {

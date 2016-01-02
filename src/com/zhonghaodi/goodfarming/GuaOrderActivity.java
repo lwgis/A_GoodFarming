@@ -143,7 +143,7 @@ public class GuaOrderActivity extends Activity implements OnClickListener,HandMe
 					@Override
 					public void run() {
 						try {
-							String uid = GFUserDictionary.getUserId();
+							String uid = GFUserDictionary.getUserId(getApplicationContext());
 							NetResponse netResponse = HttpUtil.guaOrderConfirm(uid,mGuaOrder.getId());
 							Message msg = handler.obtainMessage();
 							if(netResponse.getStatus()==1){
@@ -202,14 +202,14 @@ public class GuaOrderActivity extends Activity implements OnClickListener,HandMe
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
 			if (msg.obj != null) {
 				String result = msg.obj.toString();
 				if(result!=""){
-					GFToast.show(result);
+					GFToast.show(getApplicationContext(),result);
 				}
 				else{
 					this.finish();

@@ -146,7 +146,7 @@ public class OrderConfirmActivity extends Activity implements HandMessage {
 						Toast.LENGTH_SHORT).show();
 			}
 			else{
-				GFToast.show("交易成功");
+				GFToast.show(getApplicationContext(),"交易成功");
 			}
 			
 		} else {

@@ -303,7 +303,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 	public void onClick(View v) {
 		if(v.getId()==R.id.nyscate_select){
 			SpinnerPopupwindow spinnerPopupwindow = new SpinnerPopupwindow(this, cateTextView.getText().toString(), 
-					cates, cateTextView,"农艺师类别");
+					cates, cateTextView,"农技达人类别");
 			spinnerPopupwindow.showAtLocation(findViewById(R.id.main), 
 					Gravity.CENTER, 0, 0);
 			return;
@@ -335,7 +335,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 		case TypeImage:
 			final UpdateUser updateUser = new UpdateUser();
 			User user = new User();
-			user.setId(GFUserDictionary.getUserId());
+			user.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			updateUser.setUser(user);
 			updateUser.setDescription(activity.descriptionEv.getText()
 					.toString());
@@ -394,7 +394,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 				}
 				
 			} else {
-				GFToast.show("获取省份数据失败!");
+				GFToast.show(getApplicationContext(),"获取省份数据失败!");
 			}
 			break;
 		case 4:
@@ -413,7 +413,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 				}
 				
 			} else {
-				GFToast.show("获取农艺师类别失败!");
+				GFToast.show(getApplicationContext(),"获取农技达人类别失败!");
 			}
 			break;
 		default:

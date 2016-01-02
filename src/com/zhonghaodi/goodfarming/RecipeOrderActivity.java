@@ -97,7 +97,7 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 		switch (msg.what) {
 		case -1:
 			if(msg.obj!=null){
-				GFToast.show(msg.obj.toString());
+				GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case ORDER:

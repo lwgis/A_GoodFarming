@@ -148,19 +148,19 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 	
 	private void clickOkButton(){
 		if(aliasEt.getText().toString().isEmpty()){
-			GFToast.show("别名不能为空");
+			GFToast.show(getApplicationContext(),"别名不能为空");
 			return;
 		}
 		if(addressEt.getText().toString().isEmpty()){
-			GFToast.show("地址不能为空");
+			GFToast.show(getApplicationContext(),"地址不能为空");
 			return;
 		}
 		if(descEt.getText().toString().isEmpty()){
-			GFToast.show("描述不能为空");
+			GFToast.show(getApplicationContext(),"描述不能为空");
 			return;
 		}
 		if(!bitUpdate&&user.getThumbnail()==null&&!headGfImageButton.isHasImage()){
-			GFToast.show("请上传头像");
+			GFToast.show(getApplicationContext(),"请上传头像");
 			return;
 		}
 		new Thread(new Runnable() {
@@ -315,12 +315,12 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		// 注册失败
 		case 0:
-			GFToast.show("操作失败");
+			GFToast.show(getApplicationContext(),"操作失败");
 			okBtn.setEnabled(true);
 			break;
 		// 上传图片
@@ -334,16 +334,16 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 				User user1 = (User) GsonUtil.fromJson(msg.obj.toString(),
 						User.class);
 				if(user1!=null){
-					GFToast.show("更新成功");
-					GFUserDictionary.saveLoginInfo(user1, GFUserDictionary.getPassword(), this);
+					GFToast.show(getApplicationContext(),"更新成功");
+					GFUserDictionary.saveLoginInfo(getApplicationContext(),user1, GFUserDictionary.getPassword(getApplicationContext()), this);
 					this.finish();
 				}
 				else{
-					GFToast.show("更新失败");
+					GFToast.show(getApplicationContext(),"更新失败");
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
-				GFToast.show("更新失败");
+				GFToast.show(getApplicationContext(),"更新失败");
 			}
 			break;
 		case 3:
@@ -355,11 +355,11 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 					uploadImage();
 				}
 				else{
-					GFToast.show("别名已经存在！");
+					GFToast.show(getApplicationContext(),"别名已经存在！");
 				}
 			}
 			else{
-				GFToast.show("别名验证失败");
+				GFToast.show(getApplicationContext(),"别名验证失败");
 			}
 			break;
 		default:

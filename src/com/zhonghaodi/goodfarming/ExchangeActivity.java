@@ -57,7 +57,7 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 		
 		final String countstr = countExt.getText().toString();
 		if(countstr==null || countstr.isEmpty()){
-			GFToast.show("请输入兑换的积分数");
+			GFToast.show(getApplicationContext(),"请输入兑换的积分数");
 			return;
 		}
 		
@@ -67,7 +67,7 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 			public void run() {
 				try 
 				{
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					int count = Integer.parseInt(countstr);
 					NetResponse netResponse = HttpUtil.exchange(count,uid);
 					Message msg = handler.obtainMessage();
@@ -115,7 +115,7 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -125,18 +125,18 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 				keyTextView.setText("当前兑换比例为："+k);
 			} catch (Exception e) {
 				// TODO: handle exception
-				GFToast.show("获取兑换比例失败");
+				GFToast.show(getApplicationContext(),"获取兑换比例失败");
 			}
 			break;
 		case 1:
 			try {
 				String keyString = msg.obj.toString();
 				int k2 = Integer.parseInt(keyString);
-				GFToast.show("成功兑换为"+k2+"个优惠币");
+				GFToast.show(getApplicationContext(),"成功兑换为"+k2+"个优惠币");
 				ExchangeActivity.this.finish();
 			} catch (Exception e) {
 				// TODO: handle exception
-				GFToast.show("兑换失败");
+				GFToast.show(getApplicationContext(),"兑换失败");
 			}
 			break;
 

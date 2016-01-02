@@ -22,7 +22,6 @@ import com.zhonghaodi.customui.QuanHolder;
 import com.zhonghaodi.customui.QuanHolder3;
 import com.zhonghaodi.customui.QuanHolder6;
 import com.zhonghaodi.customui.QuanHolder9;
-import com.zhonghaodi.goodfarming.HomeFragment.QuestionAdpter;
 import com.zhonghaodi.model.Comment;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.OnSizeChangedListener;
@@ -151,7 +150,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		uid = GFUserDictionary.getUserId();
+		uid = GFUserDictionary.getUserId(getApplicationContext());
 		registerReceiver(receiver, filter);
 		if(uid==null || uid.isEmpty()){
 			
@@ -172,7 +171,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			ContextMenuInfo menuInfo) {
 		// TODO Auto-generated method stub
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-		String uid = GFUserDictionary.getUserId();
+		String uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid!=null){		
 			Quan quan = allQuans.get(info.position-1);
 			if(quan.getWriter().getId().equals(uid)){
@@ -253,7 +252,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				String jsonString = HttpUtil.deleteQuan(uid,qid);
 				Message msg = handler.obtainMessage();
 				msg.what = 3;
@@ -832,7 +831,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 			if(clickView!=null){
 				clickView.setVisibility(View.VISIBLE);
 			}
-			GFToast.show("连接服务器失败,请稍候再试!");
+			GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			break;
 			
 		case 0:
@@ -877,7 +876,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		case 3:
 			String strerr = msg.obj.toString();
 			if(!strerr.isEmpty()){
-				GFToast.show(strerr);
+				GFToast.show(getApplicationContext(),strerr);
 			}
 			else{
 				allQuans.remove(selectQuan);

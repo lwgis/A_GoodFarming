@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Commodity;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.Level;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
@@ -30,6 +32,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -37,7 +41,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CommoditiesActivity extends Activity implements OnClickListener,HandMessage {
+public class CommoditiesActivity extends Activity implements HandMessage,OnItemClickListener {
 
 	private PullToRefreshGridView pullToRefreshGridView;
 	private List<Commodity> commodities;
@@ -76,6 +80,7 @@ public class CommoditiesActivity extends Activity implements OnClickListener,Han
 					}
 
 				});
+		pullToRefreshGridView.setOnItemClickListener(this);
 		commodities = new ArrayList<Commodity>();
 		adapter = new CommodityAdapter();
 		pullToRefreshGridView.getRefreshableView().setAdapter(adapter);
@@ -124,39 +129,17 @@ public class CommoditiesActivity extends Activity implements OnClickListener,Han
 		
 	}
 	
-	public void loadUserData() {
-		
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String jsonString = HttpUtil.getUser(GFUserDictionary
-						.getUserId());
-				Message msg = handler.obtainMessage();
-				msg.what = 2;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
-	
-	public void exchange(final Commodity commodity){
-		
-		Intent intent = new Intent(CommoditiesActivity.this, ConfirmOrderActivity.class);
-		intent.putExtra("commodity", commodity);
-		CommoditiesActivity.this.startActivity(intent);
-		
-	}
-	
 	class CommodityHolder{
 		public ImageView imageView;
 		public TextView nameTextView;
 		public TextView pointTextView;
+		public TextView levelTextView;
 		public Button exButton;
 		public CommodityHolder(View view){
 			imageView = (ImageView)view.findViewById(R.id.cImg);
 			nameTextView = (TextView)view.findViewById(R.id.cName);
 			pointTextView = (TextView)view.findViewById(R.id.cPoint);
-			exButton = (Button)view.findViewById(R.id.exchange_btn);
+			levelTextView = (TextView)view.findViewById(R.id.cLevels);
 		}
 	}
 	
@@ -199,26 +182,33 @@ public class CommoditiesActivity extends Activity implements OnClickListener,Han
 			commdityHolder.nameTextView.setText(commodity.getName());
 			commdityHolder.pointTextView.setText("积分："+String.valueOf(commodity.getPoint()));
 			
-			commdityHolder.exButton.setTag(commodity);
-			commdityHolder.exButton.setOnClickListener(CommoditiesActivity.this);
+			if(commodity.getLevels()!=null && commodity.getLevels().size()>0){
+				String levelsStr = "";
+				for (Iterator iterator = commodity.getLevels().iterator(); iterator
+						.hasNext();) {
+					Level level = (Level) iterator.next();
+					levelsStr = levelsStr+level.getName()+"、";
+				}
+				levelsStr = levelsStr.substring(0, levelsStr.length()-1);
+				levelsStr+="可换";
+				commdityHolder.levelTextView.setText(levelsStr);
+			}
 			
 			return convertView;
 		}
 		
 	}
 	
+	
 	@Override
-	public void onClick(View v) {
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
 		// TODO Auto-generated method stub
-		switch (v.getId()) {
-		case R.id.exchange_btn:
-			selCommodity = (Commodity)v.getTag();
-			loadUserData();
-			break;
+		selCommodity = commodities.get(position);
+		Intent intent = new Intent(CommoditiesActivity.this, CommodityActivity.class);
+		intent.putExtra("cid", selCommodity.getId());
+		this.startActivity(intent);
 
-		default:
-			break;
-		}
 	}
 
 	@Override
@@ -239,7 +229,7 @@ public class CommoditiesActivity extends Activity implements OnClickListener,Han
 				adapter.notifyDataSetChanged();
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			pullToRefreshGridView.onRefreshComplete();
 			break;
@@ -254,29 +244,14 @@ public class CommoditiesActivity extends Activity implements OnClickListener,Han
 				}
 				adapter.notifyDataSetChanged();
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			pullToRefreshGridView.onRefreshComplete();
-			break;
-		case 2:
-			if (msg.obj == null) {
-				GFToast.show("获取用户信息失败");
-				return;
-			}
-			User user = (User) GsonUtil
-					.fromJson(msg.obj.toString(), User.class);
-			if(user.getPoint()<selCommodity.getPoint()){
-				GFToast.show("您的积分不够，继续努力哟。");
-			}
-			else{
-				exchange(selCommodity);
-			}
 			break;
 
 		default:
 			break;
 		}
 		
-	}
-		
+	}	
 }

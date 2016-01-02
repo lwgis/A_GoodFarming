@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#38be99" 
@@ -11,13 +12,18 @@
         android:orientation="horizontal"
         android:gravity="center"
         >
-        <ImageView
+        <com.makeramen.RoundedImageView
             android:id="@+id/head_image"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_margin="5dp"
             android:scaleType="centerCrop"
             android:src="@drawable/user_head"
+            app:border_color="#38be99"
+	        app:border_width="1dip"
+	        app:corner_radius="10dp"
+	        app:mutate_background="true"
+	        app:oval="false"
              />
     </LinearLayout>
     

@@ -111,7 +111,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			@Override
 			public void run() {
 
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				NetResponse netResponse = HttpUtil.qian(uid);
 				Message msg1 = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
@@ -134,7 +134,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			@Override
 			public void run() {
 				try {
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					HttpUtil.guaCancel(uid,guaResult.getOid());
 					
 				} catch (Throwable e) {
@@ -270,7 +270,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			break;
 		case R.id.start_btn:
 			if(isToday){
-				GFToast.show("今天已经刮过了，明天再来哟。");
+				GFToast.show(getApplicationContext(),"今天已经刮过了，明天再来哟。");
 			}
 			else{
 				chouqian();
@@ -287,7 +287,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		// TODO Auto-generated method stub
 		isOpen = true;
 		if(guaResult.isSuccess()){
-			GFToast.show("恭喜您刮中"+guaResult.getGuagua().getName()+"，请您填写收货地址。");
+			GFToast.show(getApplicationContext(),"恭喜您刮中"+guaResult.getGuagua().getName()+"，请您填写收货地址。");
 			Intent intent = new Intent(RubblerActivity.this, GuaConfirmActivity.class);
 			intent.putExtra("commodity", guaResult);
 			RubblerActivity.this.startActivity(intent);
@@ -303,7 +303,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -331,7 +331,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				}
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		case 1:
@@ -354,7 +354,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				isStart = true;
 			}
 			else{
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		case 2:
@@ -375,13 +375,13 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				}
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		case 3:
 			String timeString = msg.obj.toString();
 			if(timeString==null || timeString.isEmpty()){
-				GFToast.show("获取系统时间错误,不能继续刮奖。");
+				GFToast.show(getApplicationContext(),"获取系统时间错误,不能继续刮奖。");
 			}
 			else{
 				checkToday(timeString);

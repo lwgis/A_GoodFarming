@@ -68,7 +68,7 @@ public class ShoppingCartActivity extends Activity implements HandMessage,OnClic
 				finish();
 			}
 		});
-		userid = GFUserDictionary.getUserId();
+		userid = GFUserDictionary.getUserId(getApplicationContext());
 		pullToRefreshListView = (ListView) findViewById(R.id.pull_refresh_list);
 		
 		pullToRefreshListView.setOnItemClickListener(new OnItemClickListener() {
@@ -336,7 +336,7 @@ public class ShoppingCartActivity extends Activity implements HandMessage,OnClic
 			}
 			
 		} else {
-			GFToast.show("连接服务器失败,请稍候再试!");
+			GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 		}
 	}
 	

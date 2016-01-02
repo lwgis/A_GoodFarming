@@ -13,7 +13,6 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class GFUserDictionary {
-	public static Context context;
 
 	/**
 	 * 保存用户信息
@@ -23,7 +22,7 @@ public class GFUserDictionary {
 	 * @param alias
 	 *            用户昵称
 	 */
-	public static void saveLoginInfo(final User user,String password,final Activity activity) {
+	public static void saveLoginInfo(Context context,final User user,String password,final Activity activity) {
 		// 获取SharedPreferences对象
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
@@ -77,7 +76,7 @@ public class GFUserDictionary {
 		});
 	}
 
-	public static void removeUserInfo() {
+	public static void removeUserInfo(Context context) {
 		// 获取SharedPreferences对象
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
@@ -93,42 +92,42 @@ public class GFUserDictionary {
 		editor.commit();
 	}
 
-	public static String getUserId() {
+	public static String getUserId(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		String userid = sharedPre.getString("userid", null);
 		return userid;
 	}
 	
-	public static String getAlias() {
+	public static String getAlias(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("alias", null);
 	}
 	
-	public static String getPassword() {
+	public static String getPassword(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("password", null);
 	}
-	public static String getPhone() {
+	public static String getPhone(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("phone", null);
 	}
-	public static String getThumbnail() {
+	public static String getThumbnail(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("thumbnail", null);
 	}
 	
-	public static String getCroids() {
+	public static String getCroids(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("croids", null);
 	}
 	
-	public static int getPoint() {
+	public static int getPoint(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getInt("point", 0);

@@ -131,7 +131,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.img_share_weixin:
 			if(!wxApi.isWXAppInstalled()){
-				GFToast.show("您还未安装微信客户端");
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
 				return;
 			}
 			WXWebpageObject webpage = new WXWebpageObject();
@@ -150,7 +150,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.img_share_circlefriends:
 			if(!wxApi.isWXAppInstalled()){
-				GFToast.show("您还未安装微信客户端");
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
 				return;
 			}
 			WXWebpageObject webpage1 = new WXWebpageObject();

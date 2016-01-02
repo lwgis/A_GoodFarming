@@ -381,12 +381,12 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 			break;
 		case TypeImage:
 			if(x<73||x>136||y<3||y>54){
-				GFToast.show("定位错误。申请不能提交");
+				GFToast.show(getApplicationContext(),"定位错误。申请不能提交");
 				return;
 			}
 			final UpdateUser updateUser = new UpdateUser();
 			User user = new User();
-			user.setId(GFUserDictionary.getUserId());
+			user.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			updateUser.setUser(user);
 			updateUser.setName(activity.nameEv.getText().toString());
 			updateUser.setDescription(activity.descriptionEv.getText()

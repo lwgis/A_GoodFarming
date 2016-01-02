@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
@@ -12,27 +13,30 @@
         android:background="@drawable/background_with_shadow"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
-
-            <ImageView
+            <com.makeramen.RoundedImageView
                 android:id="@+id/head_image"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:scaleType="centerCrop"
-                android:padding="2dip"
                 android:src="@drawable/placeholder" 
-                android:background="@drawable/head_img_back"/>
+                app:border_color="#FFFFFF"
+		        app:border_width="1dip"
+		        app:corner_radius="100dp"
+		        app:mutate_background="true"
+		        app:oval="false"
+                />
             
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginLeft="5dip"
+                android:layout_marginLeft="38dip"
+                android:layout_marginTop="5dip"
                 android:orientation="vertical" >
 
                 <TextView
@@ -40,25 +44,46 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
+                    android:layout_marginLeft="10dip"
                     android:text="用户名"
                     android:textColor="#444444"
                     android:textSize="13dip" />
-
-                <TextView
-                    android:id="@+id/time_text"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="21:37:20"
-                    android:textColor="#808080"
-                    android:textSize="12dip" />
+                    android:orientation="horizontal" 
+                    >
+                    <TextView
+	                    android:id="@+id/level_text"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_marginRight="3dip"
+	                    android:paddingLeft="2dip"
+	                    android:paddingRight="2dip"
+	                    android:gravity="center"
+	                    android:text="农友"
+	                    android:textColor="#ffffff"
+	                    android:textSize="11dip"
+	                    android:background="@drawable/button_shape"
+	                     />
+                    <TextView
+	                    android:id="@+id/time_text"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:text="21:37:20"
+	                    android:textColor="#808080"
+	                    android:textSize="12dip"
+	                     />                
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout 
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="4dip"
-                android:orientation="vertical"
+                android:layout_alignParentRight="true"
                 android:gravity="right"
+                android:orientation="vertical"
                 >
                 <TextView
 	                android:id="@+id/crop_text"
@@ -76,7 +101,7 @@
                     android:textColor="#808080"
                     android:textSize="12dip" />
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
 
         <View  
 		   android:layout_width="match_parent"  

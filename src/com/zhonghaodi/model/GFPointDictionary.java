@@ -14,7 +14,6 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class GFPointDictionary {
-	public static Context context;
 	
 	/**
 	 * 保存积分字典
@@ -24,7 +23,7 @@ public class GFPointDictionary {
 	 * @param alias
 	 *            用户昵称
 	 */
-	public static void savePointDics(List<PointDic> dics) {
+	public static void savePointDics(Context context,List<PointDic> dics) {
 		// 获取SharedPreferences对象
 		SharedPreferences sharedPre = context.getSharedPreferences("dics",
 				Context.MODE_PRIVATE);
@@ -39,42 +38,42 @@ public class GFPointDictionary {
 		editor.commit();
 	}
 	
-	public static int getResponsePoint() {
+	public static int getResponsePoint(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("dics",
 				Context.MODE_PRIVATE);
 		int point = sharedPre.getInt("response", 0);
 		return point;
 	}
 	
-	public static int getSigninPoint() {
+	public static int getSigninPoint(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("dics",
 				Context.MODE_PRIVATE);
 		int point = sharedPre.getInt("signin", 0);
 		return point;
 	}
 	
-	public static int getZanPoint() {
+	public static int getZanPoint(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("dics",
 				Context.MODE_PRIVATE);
 		int point = sharedPre.getInt("zan", 0);
 		return point;
 	}
 	
-	public static int getRegPoint() {
+	public static int getRegPoint(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("dics",
 				Context.MODE_PRIVATE);
 		int point = sharedPre.getInt("reg", 0);
 		return point;
 	}
 	
-	public static int getScoringPoint() {
+	public static int getScoringPoint(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("dics",
 				Context.MODE_PRIVATE);
 		int point = sharedPre.getInt("scoring", 0);
 		return point;
 	}
 	
-	public static int getGuaguaPoint() {
+	public static int getGuaguaPoint(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("dics",
 				Context.MODE_PRIVATE);
 		int point = sharedPre.getInt("guagua", 0);

@@ -254,7 +254,7 @@ public class UpdateZjActivity extends Activity implements OnClickListener,
 		case TypeImage:
 			final UpdateUser updateUser = new UpdateUser();
 			User user = new User();
-			user.setId(GFUserDictionary.getUserId());
+			user.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			updateUser.setUser(user);
 			updateUser.setDescription(activity.descriptionEv.getText()
 					.toString());

@@ -62,14 +62,14 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.checknum_button:
+			
 			if (!isMobileNO(phoneEt.getText().toString())) {
-				Toast.makeText(this.getActivity(), "不是有效的手机号码",
-						Toast.LENGTH_SHORT).show();
+				GFToast.show(getActivity().getApplicationContext(),"不是有效的手机号码");
 				return;
 			}
 			
 			if(!UILApplication.checkNetworkState()){
-				GFToast.show("没有有效的网络连接！");
+				GFToast.show(getActivity().getApplicationContext(),"没有有效的网络连接！");
 				return;
 			}
 			
@@ -77,6 +77,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 				@Override
 				public void run() {
+					
 					try {
 						String result = HttpUtil.checkUserIsExist(phoneEt
 								.getText().toString());
@@ -84,16 +85,16 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 						msg.what = 0;
 						msg.obj = result;
 						msg.sendToTarget();
+						
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 				}
-			}).start();
+			}).start();	
 			break;
 		case R.id.next_button:
 			String codes = readCode();
-			if (codes.contains(checkNumEt.getText().toString()) || checkNumEt.getText().toString().equals("1024")) {
+			if (codes.contains(checkNumEt.getText().toString())) {
 
 				LoginActivity activity = (LoginActivity) getActivity();
 				activity.setPhone(phoneEt.getText().toString());
@@ -147,10 +148,20 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 		Matcher m = p.matcher(mobiles);
 
-		System.out.println(m.matches() + "---");
-
 		return m.matches();
 	}
+	
+	public boolean isNumeric(String str){    
+		Pattern pattern = Pattern.compile("[0-9]*");    
+		
+		Matcher isNum = pattern.matcher(str);   
+		
+		if( !isNum.matches() ){   
+		
+		    return false;    
+		}    
+		return true;    
+	}   
 	
 	public void saveCode(String code){
 		SharedPreferences checkInfo = getActivity().getSharedPreferences("CodeInfo", 0);
@@ -194,7 +205,6 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
-		final RegisterFragment1 registerFragment1 = (RegisterFragment1) object;
 		switch (msg.what) {
 		// 检查是否注册返回
 		case 0:
@@ -205,27 +215,41 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 
 					@Override
 					public void run() {
-//						String jsonString = "8888";
-						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString(),UILApplication.sendcount);
+//						String jsonString = "0325";
+						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString(),1);
 						UILApplication.sendcount++;
-						Message numMsg = registerFragment1.handler.obtainMessage();
-						numMsg.what = 1;
-						numMsg.obj = jsonString;
+						Message numMsg = handler.obtainMessage();
+						if(jsonString!=null){
+							
+							if(isNumeric(jsonString)){
+								numMsg.what = 1;
+								numMsg.obj = jsonString;
+							}
+							else{
+								numMsg.what = 2;
+								numMsg.obj = jsonString;
+							}
+						}
+						else{
+							numMsg.what = 2;
+							numMsg.obj = "验证码发送失败";
+						}						
 						numMsg.sendToTarget();
 					}
 				}).start();
-			} else {
-				
-				GFToast.show("您的手机号码已经注册");
+			} else {			
+				GFToast.show(getActivity().getApplicationContext(),"您的手机号码已经注册");
 			}
 			break;
 		case 1:
 			if (msg.obj != null) {
-				GFToast.show("验证码已经发出请注意接收短信。");
+				GFToast.show(getActivity().getApplicationContext(),"验证码已经发出请注意接收短信。");
 				String code = msg.obj.toString().trim();
 				saveCode(code);
 			}
 		case 2:
+			GFToast.show(getActivity().getApplicationContext(),msg.obj.toString());
+			break;
 
 		default:
 			break;

@@ -2,9 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.google.gson.Gson;
@@ -13,24 +11,14 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhonghaodi.adapter.QuestionAdpter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.customui.Holder1;
-import com.zhonghaodi.customui.Holder2;
-import com.zhonghaodi.customui.Holder3;
-import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.User;
-import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
-import com.zhonghaodi.networking.ImageOptions;
-import com.zhonghaodi.utils.PublicHelper;
-
-import android.R.integer;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -38,9 +26,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Pair;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,8 +36,6 @@ import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -70,9 +54,9 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	private ImageView messageIv;
 	private View messageView;
 	private TextView countTv;
+	private Question selectQuestion;
 	private PopupWindow popupWindow;
 	private View popView;
-	private Question selectQuestion;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +66,14 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		Button questionButton = (Button) view
 				.findViewById(R.id.question_button);
 		questionButton.setOnClickListener(this);
+		popView = inflater.inflate(R.layout.popupwindow_question, container,
+				false);
+		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
+				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
+		Button newQueBtn = (Button)popView.findViewById(R.id.btn_question);
+		newQueBtn.setOnClickListener(this);
+		Button newGossipBtn = (Button)popView.findViewById(R.id.btn_gossip);
+		newGossipBtn.setOnClickListener(this);
 		allTextView = (TextView)view.findViewById(R.id.all_text);
 		allTextView.setOnClickListener(this);
 		ascTextView = (TextView)view.findViewById(R.id.asc_text);
@@ -92,10 +84,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		messageView.setOnClickListener(this);
 		messageIv = (ImageView) view.findViewById(R.id.message_image);
 		countTv = (TextView) view.findViewById(R.id.count_text);
-		popView = inflater.inflate(R.layout.popupwindow_camera, container,
-				false);
-		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
-				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
 		
 		pullToRefreshListView = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
@@ -109,7 +97,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						if(bAll==0)
 							loadNewDate();
 						else if(bAll==1){
-							loadNewMyDate();
+							loadNewGossips();
 						}
 						else if(bAll==2){
 							loadNewAscDate();
@@ -127,7 +115,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						if(bAll==0)
 							loadMoreData(question.getId());
 						else if(bAll==1){
-							loadMoreMyData(question.getId());
+							loadMoreGossips(question.getId());
 						}
 						else if(bAll==2){
 							loadMoreAscData(question.getId());
@@ -136,7 +124,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 				});
 		allQuestions = new ArrayList<Question>();
-		adapter = new HomeFragment.QuestionAdpter();
+		adapter = new QuestionAdpter(allQuestions,getActivity(),HomeFragment.this);
 		HomeFragment.this.pullToRefreshListView.getRefreshableView()
 				.setAdapter(adapter);
 		loadNewDate();
@@ -151,6 +139,9 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 								QuestionActivity.class);
 						it.putExtra("questionId", allQuestions
 								.get(position - 1).getId());
+						if(bAll==1){
+							it.putExtra("status", 1);
+						}
 						getActivity().startActivity(it);
 					}
 				});
@@ -163,7 +154,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		// TODO Auto-generated method stub
-		String uid = GFUserDictionary.getUserId();
+		String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 		if(uid!=null){
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 			Question question = allQuestions.get(info.position-1);
@@ -243,13 +234,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 	
-	private void loadNewMyDate() {
-		final String  uid= GFUserDictionary.getUserId();
+	private void loadNewGossips() {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getMyQuestionsString(uid);
+				String jsonString = HttpUtil.getGossipsString();
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -258,13 +248,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 
-	private void loadMoreMyData(final int qid) {
-		final String  uid= GFUserDictionary.getUserId();
+	private void loadMoreGossips(final int qid) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getMyQuestionsString(uid,qid);
+				String jsonString = HttpUtil.getGossipsString(qid);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -274,7 +263,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	}
 	
 	private void loadNewAscDate() {
-		final String  uid= GFUserDictionary.getUserId();
+		final String  uid= GFUserDictionary.getUserId(getActivity().getApplicationContext());
 		new Thread(new Runnable() {
 
 			@Override
@@ -289,7 +278,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	}
 
 	private void loadMoreAscData(final int qid) {
-		final String  uid= GFUserDictionary.getUserId();
+		final String  uid= GFUserDictionary.getUserId(getActivity().getApplicationContext());
 		new Thread(new Runnable() {
 
 			@Override
@@ -330,14 +319,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	 */
 	public void setUnreadMessageCount1() {
 		int count=1;
-//		// 获取所有会话，包括陌生人
-//		Hashtable<String, EMConversation> conversations = EMChatManager
-//				.getInstance().getAllConversations();
-//		for (EMConversation conversation : conversations.values()) {
-//			if (conversation.getAllMessages().size() != 0) {
-//				count+=conversation.getUnreadMsgCount();
-//			}
-//		}
+
 		if (count == 0) {
 			countTv.setVisibility(View.GONE);
 		} else {
@@ -351,7 +333,13 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.deleteQuestion(qid);
+				String jsonString;
+				if(bAll!=1){
+					jsonString = HttpUtil.deleteQuestion(qid);
+				}
+				else{
+					jsonString = HttpUtil.deleteGossip(qid);
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 3;
 				msg.obj = jsonString;
@@ -360,296 +348,22 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 	
-	/**
-	 * 弹出设置作物对话框
-	 */
-	private void popupDialog(){
-		final Dialog dialog = new Dialog(getActivity(), R.style.MyDialog);
-        //设置它的ContentView
-		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.dialog, null);
-        dialog.setContentView(layout);
-        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-        okBtn.setText("现在就去");
-        okBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
-				MainActivity mainActivity = (MainActivity)getActivity();
-				mainActivity.seletFragmentIndex(3);
-			}
-		});
-        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
-        cancelButton.setText("先不去");
-        cancelButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				dialog.dismiss();
-				allQuestions.clear();
-				adapter.notifyDataSetChanged();
-			}
-		});
-        titleView.setText("提示");
-        contentView.setText("您还没有设置自己擅长或种植的作物，现在要设置吗？");
-        dialog.show();
-	}
-
-	class QuestionAdpter extends BaseAdapter {
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return allQuestions.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return allQuestions.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return position;
-		}
-
-		@Override
-		public int getViewTypeCount() {
-			// TODO Auto-generated method stub
-			return 3;
-		}
-
-		@Override
-		public int getItemViewType(int position) {
-			// TODO Auto-generated method stub
-			Question question = allQuestions.get(position);
-			if (question.getAttachments().size() == 0) {
-				return 0;
-			}
-			if (question.getAttachments().size() > 0
-					&& question.getAttachments().size() < 4) {
-				return 1;
-			}
-			if (question.getAttachments().size() > 3) {
-				return 2;
-			}
-			return super.getItemViewType(position);
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Question question = allQuestions.get(position);
-			int type = getItemViewType(position);
-			Holder1 holder1 = null;
-			Holder2 holder2 = null;
-			Holder3 holder3 = null;
-			if (convertView == null) {
-				switch (type) {
-				case 0:
-					convertView = LayoutInflater.from(
-							HomeFragment.this.getActivity()).inflate(
-							R.layout.cell_question, parent, false);
-					holder1 = new Holder1(convertView);
-					convertView.setTag(holder1);
-					break;
-				case 1:
-					convertView = LayoutInflater.from(
-							HomeFragment.this.getActivity()).inflate(
-							R.layout.cell_question_3_image, parent, false);
-					holder2 = new Holder2(convertView);			
-					convertView.setTag(holder2);
-					break;
-				case 2:
-					convertView = LayoutInflater.from(
-							HomeFragment.this.getActivity()).inflate(
-							R.layout.cell_question_6_image, parent, false);
-					holder3 = new Holder3(convertView);
-					convertView.setTag(holder3);
-					break;
-				default:
-					break;
-				}
-			}
-			String content = PublicHelper.TrimRight(question.getContent());
-			
-			switch (type) {
-			case 0:
-				holder1 = (Holder1) convertView.getTag();
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"users/small/"
-								+ question.getWriter().getThumbnail(),
-						holder1.headIv, ImageOptions.options);
-				holder1.nameTv.setText(question.getWriter().getAlias());
-				holder1.timeTv.setText(question.getTime());
-				holder1.contentTv.setText(content);
-				
-				holder1.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
-				holder1.cropTv.setText(question.getCrop().getName());
-				holder1.headIv.setTag(question.getWriter());
-				holder1.headIv.setOnClickListener(HomeFragment.this);
-				if(question.getAddress()!=null){
-					holder1.addressTextView.setText(question.getAddress());
-				}
-				break;
-			case 1:
-				holder2 = (Holder2) convertView.getTag();
-				holder2.reSetImageViews();
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"users/small/"
-								+ question.getWriter().getThumbnail(),
-						holder2.headIv, ImageOptions.options);
-				holder2.nameTv.setText(question.getWriter().getAlias());
-				holder2.contentTv.setText(content);
-				
-				holder2.timeTv.setText(question.getTime());
-				holder2.cropTv.setText(question.getCrop().getName());
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"questions/small/"
-								+ question.getAttachments().get(0).getUrl(),
-						holder2.imageView1, ImageOptions.options);
-				holder2.imageView1.setVisibility(View.VISIBLE);
-				holder2.imageView1.setIndex(0);
-				holder2.imageView1.setImages(question.getAttachments(),"questions");
-				if (question.getAttachments().size() > 1) {
-					ImageLoader.getInstance()
-							.displayImage(
-									HttpUtil.ImageUrl+"questions/small/"
-											+ question.getAttachments().get(1)
-													.getUrl(),
-									holder2.imageView2, ImageOptions.options);
-					holder2.imageView2.setVisibility(View.VISIBLE);
-					holder2.imageView2.setIndex(1);
-					holder2.imageView2.setImages(question.getAttachments(),"questions");
-				}
-				if (question.getAttachments().size() > 2) {
-					ImageLoader.getInstance()
-							.displayImage(
-									HttpUtil.ImageUrl+"questions/small/"
-											+ question.getAttachments().get(2)
-													.getUrl(),
-									holder2.imageView3, ImageOptions.options);
-					holder2.imageView3.setVisibility(View.VISIBLE);
-					holder2.imageView3.setIndex(2);
-					holder2.imageView3.setImages(question.getAttachments(),"questions");
-				}
-				holder2.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
-				holder2.headIv.setTag(question.getWriter());
-				holder2.headIv.setOnClickListener(HomeFragment.this);
-				if(question.getAddress()!=null){
-					holder2.addressTextView.setText(question.getAddress());
-				}
-				break;
-			case 2:
-				holder3 = (Holder3) convertView.getTag();
-				holder3.reSetImageViews();
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"users/small/"
-								+ question.getWriter().getThumbnail(),
-						holder3.headIv, ImageOptions.options);
-				holder3.nameTv.setText(question.getWriter().getAlias());
-				holder3.timeTv.setText(question.getTime());
-				holder3.contentTv.setText(content);
-				
-				holder3.cropTv.setText(question.getCrop().getName());
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"users/small/"
-								+ question.getWriter().getThumbnail(),
-						holder3.headIv, ImageOptions.options);
-				holder3.nameTv.setText(question.getWriter().getAlias());
-				holder3.timeTv.setText(question.getTime());
-				holder3.contentTv.setText(question.getContent());
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"questions/small/"
-								+ question.getAttachments().get(0).getUrl(),
-						holder3.imageView1, ImageOptions.options);
-				holder3.imageView1.setVisibility(View.VISIBLE);
-				holder3.imageView1.setIndex(0);
-				holder3.imageView1.setImages(question.getAttachments(),"questions");
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"questions/small/"
-								+ question.getAttachments().get(1).getUrl(),
-						holder3.imageView2, ImageOptions.options);
-				holder3.imageView2.setVisibility(View.VISIBLE);
-				holder3.imageView2.setIndex(1);
-				holder3.imageView2.setImages(question.getAttachments(),"questions");
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"questions/small/"
-								+ question.getAttachments().get(2).getUrl(),
-						holder3.imageView3, ImageOptions.options);
-				holder3.imageView3.setVisibility(View.VISIBLE);
-				holder3.imageView3.setIndex(2);
-				holder3.imageView3.setImages(question.getAttachments(),"questions");
-				ImageLoader.getInstance().displayImage(
-						HttpUtil.ImageUrl+"questions/small/"
-								+ question.getAttachments().get(3).getUrl(),
-						holder3.imageView4, ImageOptions.options);
-				holder3.imageView4.setVisibility(View.VISIBLE);
-				holder3.imageView4.setIndex(3);
-				holder3.imageView4.setImages(question.getAttachments(),"questions");
-				if (question.getAttachments().size() > 4) {
-					ImageLoader.getInstance()
-							.displayImage(
-									HttpUtil.ImageUrl+"questions/small/"
-											+ question.getAttachments().get(4)
-													.getUrl(),
-									holder3.imageView5, ImageOptions.options);
-					holder3.imageView5.setVisibility(View.VISIBLE);
-					holder3.imageView5.setIndex(4);
-					holder3.imageView5.setImages(question.getAttachments(),"questions");
-				}
-				if (question.getAttachments().size() > 5) {
-					ImageLoader.getInstance()
-							.displayImage(
-									HttpUtil.ImageUrl+"questions/small/"
-											+ question.getAttachments().get(5)
-													.getUrl(),
-									holder3.imageView6, ImageOptions.options);
-					holder3.imageView6.setVisibility(View.VISIBLE);
-					holder3.imageView6.setIndex(5);
-					holder3.imageView6.setImages(question.getAttachments(),"questions");
-				}
-				holder3.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
-				holder3.headIv.setTag(question.getWriter());
-				holder3.headIv.setOnClickListener(HomeFragment.this);
-				if(question.getAddress()!=null){
-					holder3.addressTextView.setText(question.getAddress());
-				}
-				break;
-			default:
-				break;
-			}
-
-			return convertView;
-		}
-	}
-	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.question_button:
-			Intent it = new Intent();
-			if (GFUserDictionary.getUserId()==null) {
-				it.setClass(getActivity(), LoginActivity.class);
+			if (popupWindow.isShowing()) {
+				popupWindow.dismiss();
+			} else {
+				popupWindow.showAsDropDown(v,
+						-DpTransform.dip2px(getActivity(), -50),
+						DpTransform.dip2px(getActivity(), 0));
 			}
-			else {
-				it.setClass(getActivity(), CreateQuestionActivity.class);
-			}
-			getActivity().startActivity(it);
 			break;
 		case R.id.message_layout:
 			Intent it1 = new Intent();
-			if (GFUserDictionary.getUserId()==null) {
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
 				it1.setClass(getActivity(), LoginActivity.class);
 				
 			}
@@ -669,13 +383,13 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			break;
 		case R.id.my_text:
 			selectTextView(v);
-			String uid = GFUserDictionary.getUserId();
+			String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 			if(uid==null){
 				Intent intent = new Intent(getActivity(),LoginActivity.class);
 				getActivity().startActivity(intent);
 			}
 			else{
-				loadNewMyDate();
+				loadNewGossips();
 				
 				bAll = 1;
 			}
@@ -683,8 +397,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			break;
 		case R.id.asc_text:
 			selectTextView(v);
-			String uid1 = GFUserDictionary.getUserId();
-			String cropids = GFUserDictionary.getCroids();
+			String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
+			String cropids = GFUserDictionary.getCroids(getActivity().getApplicationContext());
 			if(uid1==null){
 				Intent intent = new Intent(getActivity(),LoginActivity.class);
 				getActivity().startActivity(intent);
@@ -714,6 +428,29 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 //				it2.putExtra("thumbnail", user.getThumbnail());
 //				startActivity(it2);
 //			}
+			break;
+		case R.id.btn_question:
+			popupWindow.dismiss();
+			Intent it = new Intent();
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
+				it.setClass(getActivity(), LoginActivity.class);
+			}
+			else {
+				it.setClass(getActivity(), CreateQuestionActivity.class);
+			}
+			getActivity().startActivity(it);
+			break;
+		case R.id.btn_gossip:
+			popupWindow.dismiss();
+			Intent intent = new Intent();
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
+				intent.setClass(getActivity(), LoginActivity.class);
+			}
+			else {
+				intent.setClass(getActivity(), CreateQuestionActivity.class);
+				intent.putExtra("status", 1);
+			}
+			getActivity().startActivity(intent);
 			break;
 		default:
 			break;
@@ -748,11 +485,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					if (msg.what == 0) {
 						fragment.allQuestions.clear();
 					}
-					if(bAll==1){
-						if(questions==null || questions.size()==0){
-							GFToast.show("您还没有提问过。");
-						}
-					}
+
 					for (Question question : questions) {
 						fragment.allQuestions.add(question);
 					}
@@ -767,7 +500,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				
 				String str = msg.obj.toString();
 				if(!str.isEmpty()){
-					GFToast.show(str);
+					GFToast.show(getActivity().getApplicationContext(),str);
 				}
 				else{
 					allQuestions.remove(selectQuestion);

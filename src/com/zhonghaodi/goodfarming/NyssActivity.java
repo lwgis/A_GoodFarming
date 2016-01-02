@@ -12,6 +12,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
@@ -136,7 +137,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		uid = GFUserDictionary.getUserId();
+		uid = GFUserDictionary.getUserId(getApplicationContext());
 		
 		if(status==0){
 			loadNyss(0);
@@ -157,7 +158,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	}
 	
 	/**
-	 * 获取农艺师
+	 * 获取农技达人
 	 */
 	private void loadNyss(final int position){
 		
@@ -237,12 +238,12 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	}
 
 	class NysHolder{
-		public ImageView imageView;
+		public RoundedImageView imageView;
 		public TextView nameTextView;
 		public TextView pointTextView;
 		public Button followButton;
 		public NysHolder(View view){
-			imageView = (ImageView)view.findViewById(R.id.head_image);
+			imageView = (RoundedImageView)view.findViewById(R.id.head_image);
 			nameTextView = (TextView)view.findViewById(R.id.name_text);
 			pointTextView = (TextView)view.findViewById(R.id.point_text);
 			followButton = (Button)view.findViewById(R.id.follow_btn);
@@ -351,7 +352,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -406,7 +407,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 				
 			}
 			else{
-				Toast.makeText(this, "关注农艺师失败!",
+				Toast.makeText(this, "关注农技达人失败!",
 						Toast.LENGTH_SHORT).show();
 			}
 			break;
@@ -422,7 +423,7 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 				nysactivity.adapter.notifyDataSetChanged();
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			gridView.onRefreshComplete();
 			break;

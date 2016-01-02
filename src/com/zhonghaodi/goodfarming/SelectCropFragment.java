@@ -41,6 +41,7 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 	private CropListAdapter adapter;
 	private String[] sections;  
     private Integer[] counts;
+    private int status;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +53,17 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		cropListView.setOnItemClickListener(this);
 		childCrops = new ArrayList<Crop>();
 		
+		status = getActivity().getIntent().getIntExtra("status", 0);
+		if(status==0){
+			loadCrops();
+		}
+		else{
+			loadGossipCate();
+		}
+		return view;
+	}
+	
+	private void loadCrops(){
 		new Thread(new Runnable() {
 
 			@Override
@@ -74,7 +86,31 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 				
 			}
 		}).start();
-		return view;
+	}
+	
+	private void loadGossipCate(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getGossipCropsString();
+				if(jsonString!=null){
+					if (!jsonString.equals("")) {
+						Message msg = handler.obtainMessage();
+						msg.what = 2;
+						msg.obj = jsonString;
+						msg.sendToTarget();
+					}
+				}
+				else{
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = "链接服务器错误，请稍后再试！";
+					msg.sendToTarget();
+				}
+				
+			}
+		}).start();
 	}
 	
 	class CropListAdapter extends BaseAdapter implements PinnedHeaderAdapter,OnScrollListener{
@@ -197,73 +233,16 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
 				.getActivity();
 		activity.setCropId(crop.getId());
-		activity.showFragment(1);
-		activity.setTitle(crop.getName()
-				+ "问题");
+		activity.showFragment(2);
+		if(status==0){
+			activity.setTitle(crop.getName()
+					+ "问题");
+		}
+		else{
+			activity.setTitle(crop.getName()
+					+ "话题");
+		}
 	}
-//
-//	class CropAdapter extends BaseAdapter {
-//
-//		@Override
-//		public int getCount() {
-//			// TODO Auto-generated method stub
-//			return rootCrops.size();
-//		}
-//
-//		@Override
-//		public Object getItem(int position) {
-//			// TODO Auto-generated method stub
-//			return rootCrops.get(position);
-//		}
-//
-//		@Override
-//		public long getItemId(int position) {
-//			// TODO Auto-generated method stub
-//			return position;
-//		}
-//
-//		@Override
-//		public View getView(int position, View convertView, ViewGroup parent) {
-//			convertView = SelectCropFragment.this.getActivity().getLayoutInflater().inflate(
-//					R.layout.cell_select_crop, parent, false);
-//			Crop crop = rootCrops.get(position);
-//			TextView cropTv = (TextView) convertView
-//					.findViewById(R.id.crop_text);
-//			cropTv.setText(crop.getName());
-//			LinearLayout childContentView = (LinearLayout) convertView
-//					.findViewById(R.id.content_view);
-//			for (Crop childCrop : childCrops) {
-//				if (childCrop.getCategory() == crop.getId()) {
-//					View childView = SelectCropFragment.this.getActivity()
-//							.getLayoutInflater().inflate(
-//									R.layout.cell_singleselect_crop, parent,
-//									false);
-//					TextView nameView = (TextView)childView.findViewById(R.id.cropname_txt);
-//					nameView.setText(childCrop.getName());
-//					nameView.setTag(childCrop);
-//					nameView.setOnClickListener(new OnClickListener() {
-//						
-//						@Override
-//						public void onClick(View v) {
-//							// TODO Auto-generated method stub
-//							Crop crop = (Crop)v.getTag();
-//							CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
-//									.getActivity();
-//							activity.setCropId(crop.getId());
-//							activity.showFragment(1);
-//							activity.setTitle(crop.getName()
-//									+ "问题");
-//						}
-//					});
-//					childContentView.addView(childView);
-//
-//				}
-//			}
-//
-//			return convertView;
-//		}
-//
-//	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -312,13 +291,46 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 			      //設置頂部固定頭部  
 			        cropListView.setPinnedHeaderView(LayoutInflater.from(getActivity()).inflate(    
                             R.layout.cell_group_crop, cropListView, false)); 
-				} 
-		        
+				} 	        
+
+			}
+			break;
+		case 2:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Crop> crops = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Crop>>() {
+						}.getType());
+				childCrops.clear();
+				List<String> secList = new ArrayList<String>();
+				List<Integer> intList = new ArrayList<Integer>();
+				if(crops!=null && crops.size()>0){
+			        int k = 0;
+			        int index = -1;
+			        Crop secCrop = new Crop();
+			        secCrop.setId(100);
+			        secCrop.setName("话题类");
+			        keyMap.put(secCrop.getId(), secCrop.getName());
+					secList.add(secCrop.getName());
+					for (Crop crop : crops) {
+						childCrops.add(crop);
+					}
+					intList.add(childCrops.size());
+					sections = (String[])secList.toArray(new String[secList.size()]);
+			        counts = (Integer[])intList.toArray(new Integer[intList.size()]);
+			        MySectionIndexer indexer = new MySectionIndexer(sections, counts);
+			        adapter = new CropListAdapter(indexer, this.getActivity());
+			        cropListView.setAdapter(adapter);
+			        cropListView.setOnScrollListener(adapter);
+			      //設置頂部固定頭部  
+			        cropListView.setPinnedHeaderView(LayoutInflater.from(getActivity()).inflate(    
+                            R.layout.cell_group_crop, cropListView, false)); 
+				} 	        
 
 			}
 			break;
 		case 0:
-			GFToast.show(msg.obj.toString());
+			GFToast.show(getActivity().getApplicationContext(),msg.obj.toString());
 			break;
 
 		default:

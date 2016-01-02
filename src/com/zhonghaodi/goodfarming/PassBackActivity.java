@@ -55,7 +55,7 @@ public class PassBackActivity extends Activity implements HandMessage,OnClickLis
 	public void modify(){
 		final String phonestr = phoneEt.getText().toString();
 		if(phonestr.isEmpty()){
-			GFToast.show("请输入你的手机号");
+			GFToast.show(getApplicationContext(),"请输入你的手机号");
 			return;
 		}
 		
@@ -72,7 +72,7 @@ public class PassBackActivity extends Activity implements HandMessage,OnClickLis
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					GFToast.show("找回密码错误");
+					GFToast.show(getApplicationContext(),"找回密码错误");
 				}
 			}
 		}).start();
@@ -84,11 +84,11 @@ public class PassBackActivity extends Activity implements HandMessage,OnClickLis
 		try {
 			String bstr = msg.obj.toString();
 			int code = Integer.parseInt(bstr);
-			GFToast.show("操作成功，新密码将以短信的形式发送");
+			GFToast.show(getApplicationContext(),"操作成功，新密码将以短信的形式发送");
 			this.finish();
 		} catch (Exception e) {
 			// TODO: handle exception
-			GFToast.show("找回密码错误");
+			GFToast.show(getApplicationContext(),"找回密码错误");
 		}
 		
 	}

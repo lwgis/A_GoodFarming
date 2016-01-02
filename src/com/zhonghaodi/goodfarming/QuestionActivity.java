@@ -77,6 +77,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private MyEditText mzEditText;
 	private MyTextButton sendTextButton;
 	private MyTextButton prescriptionButton;
+	private int status;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				if (questionId == 0) {
 					return;
 				}
-				if (GFUserDictionary.getUserId() != null) {
+				if (GFUserDictionary.getUserId(getApplicationContext()) != null) {
 
 					resLayout.setVisibility(View.GONE);
 					sendLayout.setVisibility(View.VISIBLE);
@@ -126,6 +127,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		prescriptionButton.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		questionId = getIntent().getIntExtra("questionId", 0);
+		status = getIntent().getIntExtra("status", 0);
 		loadData();
 		adapter = new ResponseAdapter();
 		pullToRefreshListView.setAdapter(adapter);
@@ -140,7 +142,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				});
 		pullToRefreshListView.setOnItemClickListener(this);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
-		uid=GFUserDictionary.getUserId();
+		uid=GFUserDictionary.getUserId(getApplicationContext());
 	}
 	
 	@Override
@@ -149,7 +151,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 		if(info.position>1){
-			String uid = GFUserDictionary.getUserId();
+			String uid = GFUserDictionary.getUserId(getApplicationContext());
 			if(uid!=null){
 				
 				Response response = question.getResponses().get(info.position-2);
@@ -226,6 +228,12 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			@Override
 			public void run() {
 				String jsonString = HttpUtil.deleteResponse(qid,rid);
+				if(status==0){
+					jsonString = HttpUtil.deleteResponse(qid,rid);
+				}
+				else{
+					jsonString = HttpUtil.deleteResponseForGossip(qid,rid);
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 3;
 				msg.obj = jsonString;
@@ -261,7 +269,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String jsonString = HttpUtil.getSingleQuestion(questionId);
+				String jsonString;
+				if(status==0){
+					jsonString = HttpUtil.getSingleQuestion(questionId);
+				}
+				else{
+					jsonString = HttpUtil.getSingleGossip(questionId);
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -277,7 +291,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			@Override
 			public void run() {
 				try {
-					NetResponse netResponse = HttpUtil.sendResponse(response, qid);
+					NetResponse netResponse;
+					if(status==0){
+						netResponse = HttpUtil.sendResponse(response, qid);
+					}
+					else{
+						netResponse = HttpUtil.sendResponseForGossip(response, qid);
+					}
 					Message msg = handler.obtainMessage();
 					msg.what = 7;
 					msg.sendToTarget();
@@ -391,11 +411,41 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holder1.contentTv.setText(content);
 				holder1.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
-				holder1.cropTv.setText(question.getCrop().getName());
+				if(question.getCrop()!=null){
+					holder1.cropTv.setVisibility(View.VISIBLE);
+					holder1.cropTv.setText(question.getCrop().getName());
+				}
+				else{
+					holder1.cropTv.setVisibility(View.GONE);
+				}
 				holder1.headIv.setTag(question.getWriter());
 				holder1.headIv.setOnClickListener(QuestionActivity.this);
 				if(question.getAddress()!=null){
 					holder1.addressTextView.setText(question.getAddress());
+				}
+				switch (question.getWriter().getLevelID()) {
+				case 1:
+					holder1.levelTextView.setText("农友");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_ny);
+					break;
+				case 2:
+					holder1.levelTextView.setText("达人");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
+					break;
+				case 3:
+					holder1.levelTextView.setText("农资店");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_dp);
+					break;
+				case 4:
+					holder1.levelTextView.setText("专家");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_zj);
+					break;
+				case 5:
+					holder1.levelTextView.setText("官方");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_gf);
+					break;
+				default:
+					break;
 				}
 				break;
 			case 1:
@@ -442,11 +492,41 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}
 				holder2.countTv.setText("已有" + question.getResponsecount()
 						+ "个答案");
-				holder2.cropTv.setText(question.getCrop().getName());
+				if(question.getCrop()!=null){
+					holder2.cropTv.setVisibility(View.VISIBLE);
+					holder2.cropTv.setText(question.getCrop().getName());
+				}
+				else{
+					holder2.cropTv.setVisibility(View.GONE);
+				}
 				holder2.headIv.setTag(question.getWriter());
 				holder2.headIv.setOnClickListener(QuestionActivity.this);
 				if(question.getAddress()!=null){
 					holder2.addressTextView.setText(question.getAddress());
+				}
+				switch (question.getWriter().getLevelID()) {
+				case 1:
+					holder2.levelTextView.setText("农友");
+					holder2.levelTextView.setBackgroundResource(R.drawable.back_ny);
+					break;
+				case 2:
+					holder2.levelTextView.setText("达人");
+					holder2.levelTextView.setBackgroundResource(R.drawable.back_dr);
+					break;
+				case 3:
+					holder2.levelTextView.setText("农资店");
+					holder2.levelTextView.setBackgroundResource(R.drawable.back_dp);
+					break;
+				case 4:
+					holder2.levelTextView.setText("专家");
+					holder2.levelTextView.setBackgroundResource(R.drawable.back_zj);
+					break;
+				case 5:
+					holder2.levelTextView.setText("官方");
+					holder2.levelTextView.setBackgroundResource(R.drawable.back_gf);
+					break;
+				default:
+					break;
 				}
 				break;
 			case 2:
@@ -522,13 +602,42 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					holder3.imageView6.setImages(question.getAttachments(),
 							"questions");
 				}
-				holder3.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
+				if(question.getCrop()!=null){
+					holder3.cropTv.setVisibility(View.VISIBLE);
+					holder3.cropTv.setText(question.getCrop().getName());
+				}
+				else{
+					holder3.cropTv.setVisibility(View.GONE);
+				}
 				holder3.cropTv.setText(question.getCrop().getName());
 				holder3.headIv.setTag(question.getWriter());
 				holder3.headIv.setOnClickListener(QuestionActivity.this);
 				if(question.getAddress()!=null){
 					holder3.addressTextView.setText(question.getAddress());
+				}
+				switch (question.getWriter().getLevelID()) {
+				case 1:
+					holder3.levelTextView.setText("农友");
+					holder3.levelTextView.setBackgroundResource(R.drawable.back_ny);
+					break;
+				case 2:
+					holder3.levelTextView.setText("达人");
+					holder3.levelTextView.setBackgroundResource(R.drawable.back_dr);
+					break;
+				case 3:
+					holder3.levelTextView.setText("农资店");
+					holder3.levelTextView.setBackgroundResource(R.drawable.back_dp);
+					break;
+				case 4:
+					holder3.levelTextView.setText("专家");
+					holder3.levelTextView.setBackgroundResource(R.drawable.back_zj);
+					break;
+				case 5:
+					holder3.levelTextView.setText("官方");
+					holder3.levelTextView.setBackgroundResource(R.drawable.back_gf);
+					break;
+				default:
+					break;
 				}
 				break;
 			case 3:
@@ -550,33 +659,62 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.contentTv.setTag(response);
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
 				
-				if(question.getWriter().getId().equals(uid)){
-					holderResponse.agreeTextView.setText("采纳("+response.getAgree()+")");
-				}
-				else{
-					holderResponse.agreeTextView.setText("赞同("+response.getAgree()+")");
-				}
-				
-				holderResponse.agreeLayout.setTag(response);
-				holderResponse.agreeLayout.setOnClickListener(QuestionActivity.this);
-				holderResponse.disagreeTextView.setText("反对("+response.getDisagree()+")");
-				holderResponse.disagreeLayout.setTag(response);
-				holderResponse.disagreeLayout.setOnClickListener(QuestionActivity.this);
-				if(response.isAdopt()){
-					holderResponse.cainaView.setVisibility(View.VISIBLE);
-					adopt = true;
+				if(status==0){
+					holderResponse.bottomLayout.setVisibility(View.VISIBLE);
+					holderResponse.bottomLine.setVisibility(View.VISIBLE);
+					holderResponse.countTv.setText("评论("+response.getCommentCount()+")");
 					if(question.getWriter().getId().equals(uid)){
-						holderResponse.disagreeLayout.setEnabled(false);
+						holderResponse.agreeTextView.setText("采纳("+response.getAgree()+")");
+					}
+					else{
+						holderResponse.agreeTextView.setText("赞同("+response.getAgree()+")");
+					}
+					
+					holderResponse.agreeLayout.setTag(response);
+					holderResponse.agreeLayout.setOnClickListener(QuestionActivity.this);
+					holderResponse.countLayout.setTag(response);
+					holderResponse.countLayout.setOnClickListener(QuestionActivity.this);
+					if(response.isAdopt()){
+						holderResponse.cainaView.setVisibility(View.VISIBLE);
+						adopt = true;
+						
+					}
+					else{
+						holderResponse.cainaView.setVisibility(View.GONE);
 					}
 				}
 				else{
-					holderResponse.cainaView.setVisibility(View.GONE);
-				}
+					holderResponse.bottomLayout.setVisibility(View.GONE);
+					holderResponse.bottomLine.setVisibility(View.GONE);
+				}								
 
 				holderResponse.headIv.setTag(response.getWriter());
 				holderResponse.headIv.setOnClickListener(QuestionActivity.this);
-				holderResponse.countTv.setText(String.valueOf(response.getCommentCount()));
-
+				
+				switch (response.getWriter().getLevelID()) {
+				case 1:
+					holderResponse.levelTextView.setText("农友");
+					holderResponse.levelTextView.setBackgroundResource(R.drawable.back_ny);
+					break;
+				case 2:
+					holderResponse.levelTextView.setText("达人");
+					holderResponse.levelTextView.setBackgroundResource(R.drawable.back_dr);
+					break;
+				case 3:
+					holderResponse.levelTextView.setText("农资店");
+					holderResponse.levelTextView.setBackgroundResource(R.drawable.back_dp);
+					break;
+				case 4:
+					holderResponse.levelTextView.setText("专家");
+					holderResponse.levelTextView.setBackgroundResource(R.drawable.back_zj);
+					break;
+				case 5:
+					holderResponse.levelTextView.setText("官方");
+					holderResponse.levelTextView.setBackgroundResource(R.drawable.back_gf);
+					break;
+				default:
+					break;
+				}
 				break;
 			default:
 				break;
@@ -632,19 +770,19 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 //			}
 			break;
 		case R.id.zan_layout:
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
+			if(GFUserDictionary.getUserId(getApplicationContext())==null){
+				GFToast.show(getApplicationContext(),"请您先登录！");
 				return;
 			}
 			if(question.getWriter().getId().equals(uid)){
 				if(adopt){
-					GFToast.show("已经采纳过了");
+					GFToast.show(getApplicationContext(),"已经采纳过了");
 					return;
 				}
 				
 				selectResponse = (Response)v.getTag();
 				if(selectResponse.getWriter().getId().equals(uid)){
-					GFToast.show("不能采纳自己的答案。");
+					GFToast.show(getApplicationContext(),"不能采纳自己的答案。");
 					return;
 				}
 				new Thread(new Runnable() {
@@ -652,7 +790,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						NetResponse netResponse = HttpUtil.adoptResponse(questionId,selectResponse.getId(),question.getWriter().getId());
+						NetResponse netResponse;
+						if(status==0){
+							netResponse = HttpUtil.adoptResponse(questionId,selectResponse.getId(),question.getWriter().getId());
+						}
+						else{
+							netResponse = HttpUtil.adoptResponseForGossip(questionId,selectResponse.getId(),question.getWriter().getId());
+						}
 						Message msg = handler.obtainMessage();
 						if(netResponse.getStatus()==1){
 							msg.what = 6;
@@ -670,7 +814,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			else{
 				selectResponse = (Response)v.getTag();
 				if(selectResponse.getWriter().getId().equals(uid)){
-					GFToast.show("不能给自己的答案点赞。");
+					GFToast.show(getApplicationContext(),"不能给自己的答案点赞。");
 					return;
 				}
 				new Thread(new Runnable() {
@@ -678,7 +822,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						NetResponse netResponse = HttpUtil.agreeResponse(questionId,selectResponse.getId(),uid);
+						NetResponse netResponse;
+						if(status==0){
+							netResponse = HttpUtil.agreeResponse(questionId,selectResponse.getId(),uid);
+						}
+						else{
+							netResponse = HttpUtil.agreeResponseForGossip(questionId,selectResponse.getId(),uid);
+						}
 						Message msg = handler.obtainMessage();
 						if(netResponse.getStatus()==1){
 							msg.what = 4;
@@ -693,34 +843,51 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}).start();
 			}
 			break;
-		case R.id.disagreeLayout:
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
-				return;
-			}
-			selectResponse = (Response)v.getTag();
-			if(selectResponse.getWriter().getId().equals(uid)){
-				GFToast.show("不能反对自己的答案。");
-				return;
-			}
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					NetResponse netResponse = HttpUtil.disagreeResponse(questionId,selectResponse.getId(),uid);
-					Message msg = handler.obtainMessage();
-					if(netResponse.getStatus()==1){
-						msg.what = 5;
-						msg.obj = netResponse.getResult();
-					}
-					else{
-						msg.what = 0;
-						msg.obj = netResponse.getMessage();
-					}
-					msg.sendToTarget();
-				}
-			}).start();
+//		case R.id.disagreeLayout:
+//			if(GFUserDictionary.getUserId()==null){
+//				GFToast.show("请您先登录！");
+//				return;
+//			}
+//			selectResponse = (Response)v.getTag();
+//			if(selectResponse.getWriter().getId().equals(uid)){
+//				GFToast.show("不能反对自己的答案。");
+//				return;
+//			}
+//			new Thread(new Runnable() {
+//
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					NetResponse netResponse;
+//					if(status==0){
+//						netResponse = HttpUtil.disagreeResponse(questionId,selectResponse.getId(),uid);
+//					}
+//					else{
+//						netResponse = HttpUtil.disagreeResponseForGossip(questionId,selectResponse.getId(),uid);
+//					}
+//					Message msg = handler.obtainMessage();
+//					if(netResponse.getStatus()==1){
+//						msg.what = 5;
+//						msg.obj = netResponse.getResult();
+//					}
+//					else{
+//						msg.what = 0;
+//						msg.obj = netResponse.getMessage();
+//					}
+//					msg.sendToTarget();
+//				}
+//			}).start();
+//			break;
+		case R.id.count_layout:
+			
+			Response res = (Response)v.getTag();
+			Intent it = new Intent(this, CommentActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("question", question);		
+			bundle.putSerializable("response", res);
+			it.putExtras(bundle);
+			startActivity(it);
+			
 			break;
 		case R.id.send_meassage_button:
 			
@@ -730,7 +897,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			Response response = new Response();
 			response.setContent(GFString.htmlToStr(mzEditText.getText().toString()));
 			User writer = new User();
-			writer.setId(GFUserDictionary.getUserId());
+			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			response.setWriter(writer);
 			sendResponse(response, questionId);
 			mzEditText.setText("");
@@ -757,13 +924,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		if(position<2){
 			return;
 		}
-		Response response = question.getResponses().get(position-2);
-		Intent intent = new Intent(this, CommentActivity.class);
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("question", question);		
-		bundle.putSerializable("response", response);
-		intent.putExtras(bundle);
-		startActivity(intent);
+		if(status==0){
+			Response response = question.getResponses().get(position-2);
+			Intent intent = new Intent(this, CommentActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("question", question);		
+			bundle.putSerializable("response", response);
+			intent.putExtras(bundle);
+			startActivity(intent);
+		}
 	}
 
 	@Override
@@ -774,21 +943,25 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			Gson gson = new Gson();
 			String jsonString = (String) msg.obj;
 			activity.question = gson.fromJson(jsonString, Question.class);
-			if(question.getStatus()!=1){
+			if(question==null){
+				GFToast.show(getApplicationContext(),"问题不存在");
+				finish();
+			}
+			else if(question.getStatus()!=1){
 				if(question.getWriter().getId().equals(uid)){
 					mContains=true;
 				}
 				activity.adapter.notifyDataSetChanged();
 			}
 			else{
-				GFToast.show("问题已删除");
+				GFToast.show(getApplicationContext(),"问题已删除");
 			}
 			activity.pullToRefreshListView.onRefreshComplete();
 			break;
 		case 3:
 			String strerr = msg.obj.toString();
 			if(!strerr.isEmpty()){
-				GFToast.show(strerr);
+				GFToast.show(getApplicationContext(),strerr);
 			}
 			else{
 				question.getResponses().remove(selectResponse);
@@ -804,11 +977,11 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					adapter.notifyDataSetChanged();
 				}
 				else{
-					GFToast.show(checkobj.getMessage());
+					GFToast.show(getApplicationContext(),checkobj.getMessage());
 				}
 			}
 			else{
-				GFToast.show("操作失败");
+				GFToast.show(getApplicationContext(),"操作失败");
 			}
 			break;
 		case 5:
@@ -820,11 +993,11 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					adapter.notifyDataSetChanged();
 				}
 				else{
-					GFToast.show(checkobj.getMessage());
+					GFToast.show(getApplicationContext(),checkobj.getMessage());
 				}
 			}
 			else{
-				GFToast.show("操作失败");
+				GFToast.show(getApplicationContext(),"操作失败");
 			}
 			break;
 		case 6:
@@ -836,37 +1009,37 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					adapter.notifyDataSetChanged();
 				}
 				else{
-					GFToast.show(checkobj.getMessage());
+					GFToast.show(getApplicationContext(),checkobj.getMessage());
 				}
 			}
 			else{
-				GFToast.show("操作失败");
+				GFToast.show(getApplicationContext(),"操作失败");
 			}
 			break;
 		case 7:
 			loadData();
 			if(mContains){
-				GFToast.show("回复成功");
+				GFToast.show(getApplicationContext(),"回复成功");
 			}
 			else{
 				boolean less = GFDate.lessTenMinutes(question.getStime());
-				int point = GFPointDictionary.getResponsePoint();
+				int point = GFPointDictionary.getResponsePoint(getApplicationContext());
 				if(point>0){
 					if(less){
-						GFToast.show("回复成功,10分钟内回答双倍积分+"+(2*point)+" ^-^");
+						GFToast.show(getApplicationContext(),"回复成功,10分钟内回答双倍积分+"+(2*point)+" ^-^");
 					}
 					else{
-						GFToast.show("回复成功,积分+"+point+" ^-^");
+						GFToast.show(getApplicationContext(),"回复成功,积分+"+point+" ^-^");
 					}
 				}
 				else{
-					GFToast.show("回复成功");
+					GFToast.show(getApplicationContext(),"回复成功");
 				}
 			}
 			break;
 		case 0:
 			if(msg.obj!=null){
-				GFToast.show(msg.obj.toString());
+				GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 

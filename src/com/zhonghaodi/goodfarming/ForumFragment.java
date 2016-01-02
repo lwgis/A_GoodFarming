@@ -349,7 +349,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 				adapter.notifyDataSetChanged();
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getActivity().getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			pullToRefreshListView.onRefreshComplete();
 			break;

@@ -173,17 +173,17 @@ public class MainActivity extends Activity implements OnClickListener,
 	 * 初始化环信
 	 */
 	public void initEm() {
-		if (GFUserDictionary.getUserId() == null)
+		if (GFUserDictionary.getUserId(getApplicationContext()) == null)
 			return;
-		EMChatManager.getInstance().login(GFUserDictionary.getPhone(),
-				GFUserDictionary.getPassword(), new EMCallBack() {
+		EMChatManager.getInstance().login(GFUserDictionary.getPhone(getApplicationContext()),
+				GFUserDictionary.getPassword(getApplicationContext()), new EMCallBack() {
 
 					@Override
 					public void onSuccess() {
 						EMGroupManager.getInstance().loadAllGroups();
 						EMChatManager.getInstance().loadAllConversations();
 						EMChatManager.getInstance().updateCurrentUserNick(
-								GFUserDictionary.getAlias());
+								GFUserDictionary.getAlias(getApplicationContext()));
 						EMChatManager.getInstance().addConnectionListener(
 								new MyConnectionListener());
 						EMChatManager
@@ -483,7 +483,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			seletFragmentIndex(2);
 		}
 		if (v == meView && pageIndex != 3) {
-			if (GFUserDictionary.getUserId() == null) {
+			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
 				Intent it = new Intent();
 				it.setClass(this, LoginActivity.class);
 				startActivityForResult(it, 0);
@@ -495,14 +495,14 @@ public class MainActivity extends Activity implements OnClickListener,
 		switch (v.getId()) {
 		case R.id.img_share_weixin:
 			if(!wxApi.isWXAppInstalled()){
-				GFToast.show("您还未安装微信客户端");
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
 				return;
 			}
 			WXWebpageObject webpage = new WXWebpageObject();
 			webpage.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+meFragment.getUser().getTjCode();
 			WXMediaMessage msg = new WXMediaMessage(webpage);
 			msg.title = "种好地APP:让种地不再难";
-			msg.description = "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。";
+			msg.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
 			Bitmap thumb = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
 			msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
 			
@@ -515,14 +515,14 @@ public class MainActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.img_share_circlefriends:
 			if(!wxApi.isWXAppInstalled()){
-				GFToast.show("您还未安装微信客户端");
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
 				return;
 			}
 			WXWebpageObject webpage1 = new WXWebpageObject();
 			webpage1.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+meFragment.getUser().getTjCode();
 			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
 			msg1.title = "种好地APP:让种地不再难";
-			msg1.description = "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。";
+			msg1.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
 			Bitmap thumb1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
 			msg1.thumbData = PublicHelper.bmpToByteArray(thumb1, true);
 			
@@ -537,7 +537,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			Bundle params = new Bundle();
 		    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
 		    params.putString(QQShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");
-		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。");
+		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");
 		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  HttpUtil.ViewUrl+"appshare?code="+meFragment.getUser().getTjCode());
 		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://121.40.62.120/appimage/apps/appicon.png");
 		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
@@ -549,7 +549,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			Bundle params1 = new Bundle();
 			params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
 		    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");//必填
-		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "下载APP，享受优惠农资产品，众多专家，农艺师为您解决病虫害问题，让您种地更科学，丰收更简单。");//选填
+		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");//选填
 		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, HttpUtil.ViewUrl+"appshare?code="+meFragment.getUser().getTjCode());//必填
 		    ArrayList<String> urlsList = new ArrayList<String>();
 		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
@@ -650,7 +650,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				dialog.dismiss();
-				GFUserDictionary.removeUserInfo();
+				GFUserDictionary.removeUserInfo(getApplicationContext());
 				EMChatManager.getInstance().logout();
 				seletFragmentIndex(0);
 			}
@@ -998,15 +998,15 @@ public class MainActivity extends Activity implements OnClickListener,
 					User user1 = (User) GsonUtil.fromJson(msg.obj.toString(),
 							User.class);
 					if(user1!=null){
-						GFToast.show("更新成功");
-						GFUserDictionary.saveLoginInfo(user1, GFUserDictionary.getPassword(), activity);
+						GFToast.show(activity,"更新成功");
+						GFUserDictionary.saveLoginInfo(activity,user1, GFUserDictionary.getPassword(activity), activity);
 					}
 					else{
-						GFToast.show("更新失败");
+						GFToast.show(activity,"更新失败");
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
-					GFToast.show("更新失败");
+					GFToast.show(activity,"更新失败");
 				}
 				break;
 				
@@ -1017,7 +1017,7 @@ public class MainActivity extends Activity implements OnClickListener,
 							new TypeToken<List<PointDic>>() {
 							}.getType());
 					if (pointdics != null && pointdics.size()>0) {
-						GFPointDictionary.savePointDics(pointdics);
+						GFPointDictionary.savePointDics(activity,pointdics);
 					}
 				}
 				break;
@@ -1053,7 +1053,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			case -1:
 				if(msg.obj!=null){
 					String errString = msg.obj.toString();
-					GFToast.show(errString);
+					GFToast.show(activity,errString);
 				}
 				
 				break;

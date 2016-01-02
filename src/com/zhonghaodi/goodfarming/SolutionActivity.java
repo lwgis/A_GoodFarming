@@ -77,8 +77,8 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 
 			@Override
 			public void onClick(View v) {
-				if(GFUserDictionary.getUserId()==null){
-					GFToast.show("请您先登录！");
+				if(GFUserDictionary.getUserId(getApplicationContext())==null){
+					GFToast.show(getApplicationContext(),"请您先登录！");
 					return;
 				}
 				if(chatEv.getText().toString().trim().isEmpty()){
@@ -102,7 +102,7 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 		if(info.position>0){
-			String uid = GFUserDictionary.getUserId();
+			String uid = GFUserDictionary.getUserId(getApplicationContext());
 			if(uid!=null){
 				
 				RComment comment = comments.get(info.position-1);
@@ -162,7 +162,7 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				String jsonString = HttpUtil.getSingleSolution(did,sid,uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
@@ -178,7 +178,7 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				NetResponse netResponse = HttpUtil.commentSolution(did,sid,uid,content);
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
@@ -214,7 +214,7 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				NetResponse netResponse = HttpUtil.zanSolution(did, solution.getId(), uid);
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
@@ -235,7 +235,7 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				NetResponse netResponse = HttpUtil.cancelZanSolution(did, solution.getId(), uid);
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
@@ -368,8 +368,8 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if(v.getId()==R.id.zan_layout){
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
+			if(GFUserDictionary.getUserId(getApplicationContext())==null){
+				GFToast.show(getApplicationContext(),"请您先登录！");
 				return;
 			}
 			if(solution.isLiked()){
@@ -388,7 +388,7 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 1:
@@ -405,22 +405,22 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 				adapter.notifyDataSetChanged();
 			}
 			else{
-				GFToast.show("获取评论失败");
+				GFToast.show(getApplicationContext(),"获取评论失败");
 			}
 			break;
 		case 2:
 			if(msg.obj==null){
-				GFToast.show("操作失败");
+				GFToast.show(getApplicationContext(),"操作失败");
 			}
 			else{
 				loadData();
-				GFToast.show("评论成功");
+				GFToast.show(getApplicationContext(),"评论成功");
 			}
 			break;
 		case 3:
 			String strerr = msg.obj.toString();
 			if(!strerr.isEmpty()){
-				GFToast.show(strerr);
+				GFToast.show(getApplicationContext(),strerr);
 			}
 			else{
 				comments.remove(selectComment);
@@ -430,11 +430,11 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 			break;
 		case 4:
 			if(msg.obj==null){
-				GFToast.show("操作失败");
+				GFToast.show(getApplicationContext(),"操作失败");
 			}
 			else{
 				loadData();
-				GFToast.show("操作成功");
+				GFToast.show(getApplicationContext(),"操作成功");
 			}
 			break;
 		

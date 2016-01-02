@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.goodfarming.ShoppingCartActivity.MyOrderAdapter;
@@ -173,11 +174,11 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 	}
 	
 	class DiseaseHolder{
-		public ImageView agroIv;
+		public RoundedImageView agroIv;
 		public TextView titleTv;
 		public TextView timeTv;
 		 public DiseaseHolder(View view){
-			 agroIv=(ImageView)view.findViewById(R.id.head_image);
+			 agroIv=(RoundedImageView)view.findViewById(R.id.head_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
 			 timeTv=(TextView)view.findViewById(R.id.time_text);
 		 }
@@ -257,7 +258,7 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 				displayData();
 			}
 			else{
-				GFToast.show("获取病害失败");
+				GFToast.show(getApplicationContext(),"获取病害失败");
 			}
 			
 			break;

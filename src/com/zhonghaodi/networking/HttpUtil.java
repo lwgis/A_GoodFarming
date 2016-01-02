@@ -495,12 +495,24 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/questions");
 		return jsonString;
 	}
+	
+	public static String getMyGossipsString(String uid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/gossips");
+		return jsonString;
+	}
 
 	public static String getMyQuestionsString(String uid,int qid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL
 				+ "users/"+uid+"/questions?fromid=" + qid);
 		return jsonString;
 	}
+	
+	public static String getMyGossipsString(String uid,int qid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL
+				+ "users/"+uid+"/gossips?fromid=" + qid);
+		return jsonString;
+	}
+	
 	
 	public static String getAscQuestionsString(String uid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/ascquestions");
@@ -512,9 +524,26 @@ public class HttpUtil {
 				+ "users/"+uid+"/ascquestions?fromid=" + qid);
 		return jsonString;
 	}
+	
+	public static String getGossipsString() {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "gossips");
+		return jsonString;
+	}
+
+	public static String getGossipsString(int qid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL
+				+ "gossips?fromid=" + qid);
+		return jsonString;
+	}
 
 	public static String getSingleQuestion(int qid) {
 		String urlString = RootURL + "questions/" + String.valueOf(qid);
+		String jsonString = HttpUtil.executeHttpGet(urlString);
+		return jsonString;
+	}
+	
+	public static String getSingleGossip(int qid) {
+		String urlString = RootURL + "gossips/" + String.valueOf(qid);
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}
@@ -530,6 +559,11 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
+	public static String getGossipCropsString() {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "gossips/cate");
+		return jsonString;
+	}
+	
 	public static String getAllCropsHasDisease() {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "crops/hasDisease");
 		return jsonString;
@@ -541,10 +575,26 @@ public class HttpUtil {
 						Question.class.toString(), NetImage.class.toString() });
 		HttpUtil.executeHttpPost(RootURL + "questions", jsonString);
 	}
+	public static void sendGossip(Question question) throws Throwable {
+		String jsonString = JsonUtil.convertObjectToJson(question,
+				"yyyy-MM-dd HH:mm:ss", new String[] {
+						Question.class.toString(), NetImage.class.toString() });
+		HttpUtil.executeHttpPost(RootURL + "gossips", jsonString);
+	}
 
 	public static NetResponse sendResponse(Response response, int qid)
 			throws Throwable {
 		String urlString = RootURL + "questions/" + String.valueOf(qid)
+				+ "/reply";
+		String jsonString = JsonUtil.convertObjectToJson(response,
+				"yyyy-MM-dd HH:mm:ss",
+				new String[] { Response.class.toString(), });
+		return HttpUtil.executeHttpPost(urlString, jsonString);
+	}
+	
+	public static NetResponse sendResponseForGossip(Response response, int qid)
+			throws Throwable {
+		String urlString = RootURL + "gossips/" + String.valueOf(qid)
 				+ "/reply";
 		String jsonString = JsonUtil.convertObjectToJson(response,
 				"yyyy-MM-dd HH:mm:ss",
@@ -775,14 +825,19 @@ public class HttpUtil {
 	public static String getSmsCheckNum(String phone,int n) {
 		String urlString = RootURL + "users/checkcode?phone=" + phone+"&n="+n;
 		String jsonString = HttpUtil.executeHttpGetNoHead(urlString);
-		return jsonString.trim();
+		if(jsonString!=null){
+			return jsonString.trim();
+		}
+		else{
+			return null;
+		}
 	}
 
-	public static void zanResponse(int qid, int rid) {
+	public static void zanResponse(String uid,int qid, int rid) {
 		String urlString = RootURL + "questions/" + String.valueOf(qid)
 				+ "/responses/" + String.valueOf(rid) + "/zan";
 		String jsonString = "{\"id\":\""
-				+ String.valueOf(GFUserDictionary.getUserId()) + "\"}";
+				+ uid + "\"}";
 		try {
 			HttpUtil.executeHttpPut(urlString, jsonString);
 		} catch (Throwable e) {
@@ -791,10 +846,10 @@ public class HttpUtil {
 		}
 	}
 
-	public static void cancelZanResponse(int qid, int rid) {
+	public static void cancelZanResponse(String uid,int qid, int rid) {
 		String urlString = RootURL + "questions/" + String.valueOf(qid)
 				+ "/responses/" + String.valueOf(rid) + "/cancelzan?uid="
-				+ String.valueOf(GFUserDictionary.getUserId());
+				+ uid;
 		try {
 			HttpUtil.executeHttpDelete(urlString);
 		} catch (Throwable e) {
@@ -812,6 +867,44 @@ public class HttpUtil {
 	public static NetResponse agreeResponse(int qid,int rid,final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/agree";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
+	 * 赞同回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static NetResponse agreeResponseForGossip(int qid,int rid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "gossips/"+qid+"/responses/"+rid+"/agree";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		NameValuePair uidValuePair1 = new NameValuePair() {
 
@@ -880,6 +973,44 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 反对回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static NetResponse disagreeResponseForGossip(int qid,int rid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "gossips/"+qid+"/responses/"+rid+"/disagree";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
 	 * 采纳回复
 	 * @param qid
 	 * @param rid
@@ -888,6 +1019,44 @@ public class HttpUtil {
 	public static NetResponse adoptResponse(int qid,int rid,final String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/adopt";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
+	 * 采纳回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static NetResponse adoptResponseForGossip(int qid,int rid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "gossips/"+qid+"/responses/"+rid+"/adopt";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		NameValuePair uidValuePair1 = new NameValuePair() {
 
@@ -1513,9 +1682,20 @@ public class HttpUtil {
 		String result =HttpUtil.executeHttpDelete(urlString);
 		return result;
 	}
+	public static String deleteGossip(int qid){
+		String urlString = RootURL + "gossips/"+qid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
 	
 	public static String deleteResponse(int qid,int rid){
 		String urlString = RootURL + "questions/"+qid+"/responses/"+rid+"/delete";
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
+	}
+	
+	public static String deleteResponseForGossip(int qid,int rid){
+		String urlString = RootURL + "gossips/"+qid+"/responses/"+rid+"/delete";
 		String result =HttpUtil.executeHttpDelete(urlString);
 		return result;
 	}
@@ -1660,6 +1840,19 @@ public class HttpUtil {
 	public static String getCommodities(int position){
 		
 		String urlString = RootURL + "commodities?position="+position;
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
+	/**
+	 * 获取积分商品信息
+	 * @param cid
+	 * @return
+	 */
+	public static String getCommodity(int cid){
+		
+		String urlString = RootURL + "commodities/"+cid;
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		

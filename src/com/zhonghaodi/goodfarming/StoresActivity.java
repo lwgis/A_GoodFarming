@@ -15,6 +15,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
@@ -251,14 +252,14 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 	}
 	
 	class StoreHolder{
-		public ImageView imageView;
+		public RoundedImageView imageView;
 		public TextView nameTextView;
 		public TextView disTextView;
 		public ImageView locationView;
 		public RatingBar ratingBar;
 		public TextView recipeTextView;
 		public StoreHolder(View view){
-			imageView = (ImageView)view.findViewById(R.id.head_image);
+			imageView = (RoundedImageView)view.findViewById(R.id.head_image);
 			nameTextView = (TextView)view.findViewById(R.id.name_text);
 			disTextView = (TextView)view.findViewById(R.id.dis_text);
 			locationView = (ImageView)view.findViewById(R.id.map_image);
@@ -387,11 +388,11 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 			}
 			
 		} else {
-			GFToast.show("连接服务器失败,请稍候再试!");
+			GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 		}
 		storeactivity.pullToRefreshListView.onRefreshComplete();
 		if(storeactivity.stores.size()==0){
-			GFToast.show("附近没有农资店");
+			GFToast.show(getApplicationContext(),"附近没有农资店");
 		}
 	}
 

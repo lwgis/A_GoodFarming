@@ -52,15 +52,15 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 	}
 	
 	public void edit(){
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		title = titleEditText.getText().toString();
 		content = contentEditText.getText().toString();
 		if(title.isEmpty()){
-			GFToast.show("请输入处方标题");
+			GFToast.show(getApplicationContext(),"请输入处方标题");
 			return;
 		}
 		if(content.isEmpty()){
-			GFToast.show("请输入处方内容");
+			GFToast.show(getApplicationContext(),"请输入处方内容");
 			return;
 		}
 
@@ -127,16 +127,16 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
 			if(msg.obj!=null && msg.obj.toString().isEmpty()){
-				GFToast.show("处方创建成功");
+				GFToast.show(getApplicationContext(),"处方创建成功");
 				finish();
 			}
 			else{
-				GFToast.show("处方创建失败");
+				GFToast.show(getApplicationContext(),"处方创建失败");
 			}
 			break;
 		case 1:
@@ -147,15 +147,15 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 						new TypeToken<Prescription>() {
 						}.getType());
 				if(pre1!=null){
-					GFToast.show("处方编辑成功");
+					GFToast.show(getApplicationContext(),"处方编辑成功");
 					finish();
 				}
 				else{
-					GFToast.show("处方编辑失败");
+					GFToast.show(getApplicationContext(),"处方编辑失败");
 				}
 			}
 			else{
-				GFToast.show("处方编辑失败");
+				GFToast.show(getApplicationContext(),"处方编辑失败");
 			}
 			
 			break;

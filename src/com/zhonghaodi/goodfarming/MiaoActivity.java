@@ -271,11 +271,11 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			miaoactivity.adapter.notifyDataSetChanged();
 			
 		} else {
-			GFToast.show("连接服务器失败,请稍候再试!");
+			GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 		}
 		pullToRefreshListView.onRefreshComplete();
 		if(seconds.size()==0){
-			GFToast.show("附近没有秒杀活动！");
+			GFToast.show(getApplicationContext(),"附近没有秒杀活动！");
 		}
 	}
 

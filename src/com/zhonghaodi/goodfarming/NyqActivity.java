@@ -98,7 +98,7 @@ public class NyqActivity extends Activity implements HandMessage {
 						}
 					}
 					else{
-						GFToast.show("最多添加9张图片！");
+						GFToast.show(getApplicationContext(),"最多添加9张图片！");
 					}
 					
 				}
@@ -157,7 +157,7 @@ public class NyqActivity extends Activity implements HandMessage {
 				// TODO Auto-generated method stub
 				String str = nyqEditText.getText().toString();
 				if(projectImages.size()==0&&str.trim().isEmpty()){
-					GFToast.show("没有任何内容");
+					GFToast.show(getApplicationContext(),"没有任何内容");
 					return;
 				}
 				NyqActivity.this.nyqSend.setEnabled(false);
@@ -233,7 +233,7 @@ public class NyqActivity extends Activity implements HandMessage {
 			@Override
 			public void run() {
 				try {
-					HttpUtil.sendQuan(GFUserDictionary.getUserId(),quan);
+					HttpUtil.sendQuan(GFUserDictionary.getUserId(getApplicationContext()),quan);
 					Message msg = handler.obtainMessage();
 					msg.what = TypeQuan;
 					msg.sendToTarget();
@@ -329,7 +329,7 @@ public class NyqActivity extends Activity implements HandMessage {
 		switch (msg.what) {
 		case TypeError:
 			nyqSend.setEnabled(true);
-			GFToast.show("发送失败");
+			GFToast.show(getApplicationContext(),"发送失败");
 			break;
 		case TypeImage:
 			imageCount++;
@@ -338,7 +338,7 @@ public class NyqActivity extends Activity implements HandMessage {
 			}	
 			break;		
 		case TypeQuan:
-			GFToast.show("发送成功");
+			GFToast.show(getApplicationContext(),"发送成功");
 			SendRefreshBroadcase();
 			break;
 		default:

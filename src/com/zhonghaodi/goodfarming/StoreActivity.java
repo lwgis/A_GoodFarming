@@ -11,6 +11,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
@@ -113,7 +114,7 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 				msg.obj = jsonString;
 				msg.sendToTarget();
 				
-				String myid = GFUserDictionary.getUserId();
+				String myid = GFUserDictionary.getUserId(getApplicationContext());
 				String jsString = HttpUtil.getFollowids(myid);
 				Message msg1 = handler.obtainMessage();
 				msg1.what = 3;
@@ -129,7 +130,7 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 	 * 关注
 	 */
 	public void follow(){
-		final String mid = GFUserDictionary.getUserId();
+		final String mid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -154,7 +155,7 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 	 * 取消关注
 	 */
 	public void cancelfollow(){
-		final String mid = GFUserDictionary.getUserId();
+		final String mid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -170,13 +171,13 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 	}
 	
 	class NzdInfoHolder{
-		public ImageView headIv;
+		public RoundedImageView headIv;
 		public TextView titleTv;
 		public TextView desTv;
 		public Button chatButton;
 		public Button followButton;
 		public NzdInfoHolder(View view){
-			headIv=(ImageView)view.findViewById(R.id.head_image);
+			headIv=(RoundedImageView)view.findViewById(R.id.head_image);
 			titleTv=(TextView)view.findViewById(R.id.nzdname);
 			desTv=(TextView)view.findViewById(R.id.nzddes);
 			chatButton = (Button)view.findViewById(R.id.chat_btn);
@@ -359,7 +360,7 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -377,7 +378,7 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 				storeactivity.adapter.notifyDataSetChanged();
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		case 1:
@@ -398,7 +399,7 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 				
 			}
 			else{
-				Toast.makeText(this, "关注农艺师失败!",
+				Toast.makeText(this, "关注农技达人失败!",
 						Toast.LENGTH_SHORT).show();
 			}
 			break;

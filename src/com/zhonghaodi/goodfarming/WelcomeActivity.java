@@ -57,7 +57,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_welcome);
 		if(!UILApplication.checkNetworkState()){
-			GFToast.show("没有有效的网络连接");
+			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
 		 
 	}
@@ -151,7 +151,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 
 		case -1:
 			String errString = msg.obj.toString();
-			GFToast.show(errString);
+			GFToast.show(getApplicationContext(),errString);
 			tomain();
 			break;
 

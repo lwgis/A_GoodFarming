@@ -116,7 +116,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		uid = GFUserDictionary.getUserId();
+		uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null || uid.isEmpty()){
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
@@ -203,7 +203,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 			}
 		});
         titleView.setText("提示");
-        contentView.setText("您还没有关注的农艺师，现在就去关注吧？");
+        contentView.setText("您还没有关注的农技达人，现在就去关注吧？");
         dialog.show();
 	}
 	
@@ -312,7 +312,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 						popupDialog();
 					}
 					else{
-						GFToast.show("您目前没有粉丝");
+						GFToast.show(getApplicationContext(),"您目前没有粉丝");
 					}
 				}
 				

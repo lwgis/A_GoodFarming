@@ -193,7 +193,7 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 		 playBeepSoundAndVibrate();
 		
 		String codeString=obj.getText();
-		String uid = GFUserDictionary.getUserId();
+		String uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(codeString.contains("order:")){
 			
 			RequestOrder(uid,codeString.split(":")[1]);
@@ -334,7 +334,7 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 		case 1:
 			if (msg.obj != null) {
 				
-				GFToast.show(msg.obj.toString());
+				GFToast.show(getApplicationContext(),msg.obj.toString());
 				this.finish();
 				
 			} else {

@@ -86,7 +86,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 			
 			@Override
 			public void run() {
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				String jsonString = HttpUtil.getContacts(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -107,7 +107,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 	
 	public void exchange(){
 		if(mContact==null){
-			GFToast.show("请选择收货地址");
+			GFToast.show(getApplicationContext(),"请选择收货地址");
 			return;
 		}
 		new Thread(new Runnable() {
@@ -115,7 +115,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 			@Override
 			public void run() {
 				try {
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					NetResponse netResponse = HttpUtil.exChangeCommodity(uid,mContact.getId(),mCommodity.getId());
 					Message msg = handler.obtainMessage();
 					if(netResponse.getStatus()==1){
@@ -177,7 +177,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -192,7 +192,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 				}
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		case 1:
@@ -202,7 +202,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 						new TypeToken<PointOrder>() {
 						}.getType());
 				if(pointOrder!=null){
-					GFToast.show("兑换成功");
+					GFToast.show(getApplicationContext(),"兑换成功");
 					Intent intent = new Intent(this, PointOrderActivity.class);
 					intent.putExtra("order", pointOrder);
 					startActivity(intent);

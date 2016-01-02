@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="升级为农艺师"
+                android:text="升级为农技达人"
                 android:textColor="#FFFFFF"
                 android:textSize="18dip" />
 
@@ -53,7 +53,7 @@
             android:layout_height="20dp"
             android:gravity="center"
             android:layout_marginLeft="6dip"
-            android:text="农艺师类别："
+            android:text="农技达人类别："
             android:textColor="#808080"
             android:textSize="17dip" />
 		<TextView
@@ -63,7 +63,7 @@
             android:gravity="left|center_vertical"
             android:layout_margin="5dip"
             android:padding="5dip"
-            android:text="农艺师"
+            android:text="农技达人"
             android:textColor="#333333"
             android:textSize="18dip" 
             android:background="@drawable/spinner_back"/>

@@ -199,7 +199,7 @@ public class PointOrderActivity extends Activity implements OnClickListener,Hand
 		if (msg.obj != null) {
 			String result = msg.obj.toString();
 			if(result!=""){
-				GFToast.show(result);
+				GFToast.show(getApplicationContext(),result);
 			}
 			else{
 				this.finish();

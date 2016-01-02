@@ -9,6 +9,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.CustomRelativeLayout;
 import com.zhonghaodi.customui.GFToast;
@@ -77,7 +78,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		setContentView(R.layout.activity_nys);
 		titleView = (TextView)findViewById(R.id.title_text);
 		uid = getIntent().getStringExtra("uid");
-		mid = GFUserDictionary.getUserId();
+		mid = GFUserDictionary.getUserId(getApplicationContext());
 		bfollow = getIntent().getBooleanExtra("bfollow", false);
 		cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
@@ -138,7 +139,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		}
 	}
 	/**
-	 * 读取农艺师信息
+	 * 读取农技达人信息
 	 */
 	public void loadData() {
 		allQuans.clear();
@@ -155,7 +156,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	}
 	
 	/**
-	 * 读取农艺师的朋友圈文章最新20条
+	 * 读取农技达人的朋友圈文章最新20条
 	 */
 	private void loadNewDate() {
 		new Thread(new Runnable() {
@@ -173,7 +174,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	}
 	
 	/**
-	 * 读取更多的农艺师朋友圈文章
+	 * 读取更多的农技达人朋友圈文章
 	 * @param qid
 	 */
 	private void loadMoreData(final int qid) {
@@ -191,10 +192,10 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		}).start();
 	}
 	/**
-	 * 关注农艺师
+	 * 关注农技达人
 	 */
 	public void follow(){
-		final String mid = GFUserDictionary.getUserId();
+		final String mid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -219,7 +220,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	 * 取消关注
 	 */
 	public void cancelfollow(){
-		final String mid = GFUserDictionary.getUserId();
+		final String mid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -235,14 +236,14 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	}
 	
 	class NysInfoHolder{
-		public ImageView headIv;
+		public RoundedImageView headIv;
 		public TextView titleTv;
 		public TextView jifenTv;
 		public TextView youhuibiTv;
 		public Button followButton;
 		public Button chatButton;
 		public NysInfoHolder(View view){
-			headIv=(ImageView)view.findViewById(R.id.head_image);
+			headIv=(RoundedImageView)view.findViewById(R.id.head_image);
 			titleTv=(TextView)view.findViewById(R.id.title_text);
 			jifenTv=(TextView)view.findViewById(R.id.jifen_text);
 			youhuibiTv=(TextView)view.findViewById(R.id.youhuibi_text);
@@ -830,7 +831,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				displayInput();	
 			}
 			else{
-				GFToast.show("未关注不能评论");
+				GFToast.show(getApplicationContext(),"未关注不能评论");
 			}
 			break;
 		case R.id.zan_img:
@@ -840,7 +841,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				v.setEnabled(false);
 			}
 			else{
-				GFToast.show("未关注不能点赞");
+				GFToast.show(getApplicationContext(),"未关注不能点赞");
 			}
 			break;
 		case R.id.send_pinglun_button:
@@ -914,7 +915,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -948,7 +949,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				
 			}
 			else{
-				Toast.makeText(this, "关注农艺师失败!",
+				Toast.makeText(this, "关注农技达人失败!",
 						Toast.LENGTH_SHORT).show();
 			}
 			break;

@@ -554,7 +554,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				ImageLoader.getInstance()
 						.displayImage(
 								HttpUtil.ImageUrl+"users/small/"
-										+ GFUserDictionary.getThumbnail(),
+										+ GFUserDictionary.getThumbnail(getApplicationContext()),
 								holdRightText.headIv,
 								ImageOptions.optionsNoPlaceholder);
 				break;
@@ -578,7 +578,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 						holdRightVoice.readedTv, message));
 				ImageLoader.getInstance().displayImage(
 						HttpUtil.ImageUrl+"users/small/"
-								+ GFUserDictionary.getThumbnail(),
+								+ GFUserDictionary.getThumbnail(getApplicationContext()),
 						holdRightVoice.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				break;
@@ -606,7 +606,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 				holdRightPhoto = (HoldChatPhoto) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
 						HttpUtil.ImageUrl+"users/small/"
-								+ GFUserDictionary.getThumbnail(),
+								+ GFUserDictionary.getThumbnail(getApplicationContext()),
 						holdRightPhoto.headIv,
 						ImageOptions.optionsNoPlaceholder);
 				holdRightPhoto.photoIv.setImageResource(R.drawable.placeholder_chat);
@@ -1056,7 +1056,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 	 */
 	public void selectPicFromCamera() {
 		cameraFile = new File(PathUtil.getInstance().getImagePath(),
-				GFUserDictionary.getPhone() + System.currentTimeMillis()
+				GFUserDictionary.getPhone(getApplicationContext()) + System.currentTimeMillis()
 						+ ".jpg");
 		cameraFile.getParentFile().mkdirs();
 		startActivityForResult(

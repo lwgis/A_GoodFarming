@@ -178,7 +178,7 @@ public class FarmCropsActivity extends Activity implements HandMessage,OnItemCli
 			}
 			break;
 		case 0:
-			GFToast.show(msg.obj.toString());
+			GFToast.show(getApplicationContext(),msg.obj.toString());
 			break;
 
 		default:

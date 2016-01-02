@@ -175,4 +175,16 @@ public class GFDate {
 		}
 
 	}
+	
+	/**
+	 * 将日期类型转为字符串
+	 * 
+	 * @param sdate
+	 * @return
+	 */
+	public static String toString(Date date) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        String t=format.format(date);
+        return t;
+	}
 }

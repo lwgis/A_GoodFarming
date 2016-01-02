@@ -84,8 +84,7 @@ public class MessagesActivity extends Activity implements OnClickListener {
 					emConversation1.resetUnreadMsgCount();
 				}
 				else{
-					if(message.getType().equals("question")){
-
+					if(message.getType().equals("question") || message.getType().equals("gossip")){
 						EMConversation emConversation = list.get(position-1);
 						List<GFMessage> gfMessages = new ArrayList<GFMessage>();
 						List<EMMessage> emMessages = emConversation.getAllMessages();
@@ -112,7 +111,6 @@ public class MessagesActivity extends Activity implements OnClickListener {
 						}
 						EMConversation emConversation1 = EMChatManager.getInstance().getConversation("种好地");
 						emConversation1.resetUnreadMsgCount();
-//						((MainActivity)getActivity()).setUnreadMessageCount(emConversation1.getUnreadMsgCount());
 						Intent intent = new Intent(MessagesActivity.this, SysMessageActivity.class);
 						intent.putExtra("messages", (Serializable)gfMessages);
 						intent.putExtra("userName", "种好地");
@@ -347,7 +345,7 @@ public class MessagesActivity extends Activity implements OnClickListener {
 							new TypeToken<List<User>>() {
 							}.getType());
 					if (users==null) {
-						GFToast.show("获取消息失败");
+						GFToast.show(getApplicationContext(),"获取消息失败");
 						return;
 					}
 					for (GFMessage message :messages) {
@@ -363,7 +361,7 @@ public class MessagesActivity extends Activity implements OnClickListener {
 					adapter.notifyDataSetChanged();
 					
 				} else {
-					GFToast.show("获取消息失败");
+					GFToast.show(getApplicationContext(),"获取消息失败");
 				}
 			}
 		}
@@ -372,7 +370,7 @@ public class MessagesActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		String uid = GFUserDictionary.getUserId();
+		String uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null){
 			Intent intent = new Intent(MessagesActivity.this, LoginActivity.class);
 			this.startActivity(intent);

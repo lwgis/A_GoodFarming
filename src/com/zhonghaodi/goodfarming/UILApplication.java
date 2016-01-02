@@ -17,11 +17,13 @@ package com.zhonghaodi.goodfarming;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import android.R.integer;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -64,6 +66,7 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  */
 public class UILApplication extends Application {
+	ArrayList<Activity> list = new ArrayList<Activity>(); 
 	public static int sendcount=0;
 	public static Context applicationContext;
 
@@ -73,14 +76,15 @@ public class UILApplication extends Application {
 		
 		applicationContext=this;
 		super.onCreate();
+		ErrorReport catchExcep = new ErrorReport(this);  
+        Thread.setDefaultUncaughtExceptionHandler(catchExcep);
 		initImageLoader(getApplicationContext());
-		GFToast.GFContext=getApplicationContext();
-		GFUserDictionary.context=getApplicationContext();
-		GFPointDictionary.context = getApplicationContext();
 		SDKInitializer.initialize(getApplicationContext());		
 		EMChat.getInstance().init(getApplicationContext());
-		EMChat.getInstance().setDebugMode(true);
+		EMChat.getInstance().setDebugMode(true); 
 	}
+	
+	
     
 	public static void initImageLoader(Context context) {
 		
@@ -97,6 +101,31 @@ public class UILApplication extends Application {
 				.build();
 		ImageLoader.getInstance().init(config);
 	}
+	
+	/** 
+     * Activity关闭时，删除Activity列表中的Activity对象*/  
+    public void removeActivity(Activity a){  
+        list.remove(a);  
+    }  
+      
+    /** 
+     * 向Activity列表中添加Activity对象*/  
+    public void addActivity(Activity a){  
+        list.add(a);  
+    }  
+      
+    /** 
+     * 关闭Activity列表中的所有Activity*/  
+    public void finishActivity(){  
+        for (Activity activity : list) {    
+            if (null != activity) {    
+                activity.finish();    
+            }    
+        }  
+        //杀死该应用进程  
+       android.os.Process.killProcess(android.os.Process.myPid());    
+    }  
+	
 	public static boolean isBackground(Context context) {
 	    ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 	    List<RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
@@ -118,11 +147,17 @@ public class UILApplication extends Application {
      */
     public static boolean checkNetworkState() {
             boolean flag = false;
+            if(applicationContext==null){
+            	return true;
+            }
             //得到网络连接信息
             ConnectivityManager manager = (ConnectivityManager) applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE);
             //去进行判断网络是否连接
-            if (manager.getActiveNetworkInfo() != null) {
+            if (manager!=null && manager.getActiveNetworkInfo() != null) {
                     flag = manager.getActiveNetworkInfo().isAvailable();
+            }
+            else{
+            	flag = false;
             }
 
             return flag;

@@ -74,7 +74,7 @@ public class GuaOrdersActivity extends Activity implements OnItemClickListener,H
 	
 	public void loadData(){
 		
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override

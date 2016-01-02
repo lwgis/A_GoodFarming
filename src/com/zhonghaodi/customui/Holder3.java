@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.makeramen.RoundedImageView;
 import com.zhonghaodi.goodfarming.R;
 
 public class Holder3  {
@@ -13,7 +14,7 @@ public class Holder3  {
 	public	TextView contentTv;
 	public	TextView countTv;
 	public  TextView cropTv;
-	public	ImageView headIv;
+	public	RoundedImageView headIv;
 	public	GFImageView imageView1;
 	public	GFImageView imageView2;
 	public	GFImageView imageView3;
@@ -21,12 +22,13 @@ public class Holder3  {
 	public	GFImageView imageView5;
 	public	GFImageView imageView6;
 	public TextView addressTextView;
+	public TextView levelTextView;
 	public	Holder3(View view) {
 		nameTv = (TextView) view.findViewById(R.id.name_text);
 		timeTv = (TextView) view.findViewById(R.id.time_text);
 		contentTv = (TextView) view.findViewById(R.id.content_text);
 		countTv = (TextView) view.findViewById(R.id.count_text);
-		headIv = (ImageView) view.findViewById(R.id.head_image);
+		headIv = (RoundedImageView) view.findViewById(R.id.head_image);
 		imageView1 = (GFImageView) view.findViewById(R.id.image1);
 		imageView2 = (GFImageView) view.findViewById(R.id.image2);
 		imageView3 = (GFImageView) view.findViewById(R.id.image3);
@@ -35,6 +37,7 @@ public class Holder3  {
 		imageView6 = (GFImageView) view.findViewById(R.id.image6);
 		cropTv = (TextView)view.findViewById(R.id.crop_text);
 		addressTextView = (TextView)view.findViewById(R.id.address_text);
+		levelTextView = (TextView)view.findViewById(R.id.level_text);
 		reSetImageViews();
 	}
 

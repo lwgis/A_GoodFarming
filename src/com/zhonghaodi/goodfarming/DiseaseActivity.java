@@ -108,7 +108,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			@Override
 			public void run() {
 				try {
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					String jsonString = HttpUtil.getDisease(diseaseId,uid);
 					Message msg = handler.obtainMessage();
 					msg.what = 1;
@@ -134,7 +134,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 					Solution solution = new Solution();
 					solution.setContent(content);
 					User user = new User();
-					user.setId(GFUserDictionary.getUserId());
+					user.setId(GFUserDictionary.getUserId(getApplicationContext()));
 					solution.setWriter(user);
 					HttpUtil.sendSolution(solution, disease.getId());
 					Message msg = handler.obtainMessage();
@@ -174,7 +174,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				NetResponse netResponse = HttpUtil.zanSolution(disease.getId(), selectSolution.getId(), uid);
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
@@ -195,7 +195,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				NetResponse netResponse = HttpUtil.cancelZanSolution(disease.getId(), selectSolution.getId(), uid);
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
@@ -306,6 +306,30 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 					holderSolution.solcountTv.setVisibility(View.GONE);
 				}
 				holderSolution.nameTv.setText(disease.getSolutions().get(position-1).getWriter().getAlias());
+				switch (disease.getSolutions().get(position-1).getWriter().getLevelID()) {
+				case 1:
+					holderSolution.levelTextView.setText("农友");
+					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_ny);
+					break;
+				case 2:
+					holderSolution.levelTextView.setText("达人");
+					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_dr);
+					break;
+				case 3:
+					holderSolution.levelTextView.setText("农资店");
+					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_dp);
+					break;
+				case 4:
+					holderSolution.levelTextView.setText("专家");
+					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_zj);
+					break;
+				case 5:
+					holderSolution.levelTextView.setText("官方");
+					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_gf);
+					break;
+				default:
+					break;
+				}
 				holderSolution.timeTv.setText(disease.getSolutions().get(position-1).getTime());
 				holderSolution.contentTv.setText(disease.getSolutions().get(position-1).getContent());
 				holderSolution.zancountTv.setText(String.valueOf(disease.getSolutions().get(position-1).getZan()));
@@ -336,7 +360,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		// TODO Auto-generated method stub
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 		if(info.position>1){
-			String uid = GFUserDictionary.getUserId();
+			String uid = GFUserDictionary.getUserId(getApplicationContext());
 			if(uid!=null){
 				
 				Solution solution = disease.getSolutions().get(info.position-2);
@@ -395,8 +419,8 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.miaozhao_button:
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
+			if(GFUserDictionary.getUserId(getApplicationContext())==null){
+				GFToast.show(getApplicationContext(),"请您先登录！");
 				return;
 			}
 			sendLayout.setVisibility(View.VISIBLE);
@@ -409,8 +433,8 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		           inputManager.showSoftInput(mzEditText, 0);  
 			break;
 		case R.id.send_meassage_button:
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
+			if(GFUserDictionary.getUserId(getApplicationContext())==null){
+				GFToast.show(getApplicationContext(),"请您先登录！");
 				return;
 			}
 			if(mzEditText.getText().toString().trim().isEmpty()){
@@ -431,8 +455,8 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 //			startActivity(intent);
 			break;
 		case R.id.zan_layout:
-			if(GFUserDictionary.getUserId()==null){
-				GFToast.show("请您先登录！");
+			if(GFUserDictionary.getUserId(getApplicationContext())==null){
+				GFToast.show(getApplicationContext(),"请您先登录！");
 				return;
 			}
 			selectSolution = (Solution)v.getTag();
@@ -469,7 +493,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		switch (msg.what) {
 		case 0:
 			if(msg.obj!=null){
-				GFToast.show(msg.obj.toString());
+				GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 1:
@@ -496,16 +520,16 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			if(msg.obj==null){
 				
 				loadData();
-				GFToast.show("添加成功");
+				GFToast.show(getApplicationContext(),"添加成功");
 			}
 			else{
-				GFToast.show("操作失败");
+				GFToast.show(getApplicationContext(),"操作失败");
 			}
 			break;
 		case 3:
 			String strerr = msg.obj.toString();
 			if(!strerr.isEmpty()){
-				GFToast.show(strerr);
+				GFToast.show(getApplicationContext(),strerr);
 			}
 			else{
 				disease.getSolutions().remove(selectSolution);
@@ -514,7 +538,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			break;
 		case 4:
 			if(msg.obj==null){
-				GFToast.show("操作失败");
+				GFToast.show(getApplicationContext(),"操作失败");
 			}
 			else{
 				loadData();

@@ -116,7 +116,7 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="农艺师"
+		            android:text="专家和农技达人"
 		            />
 		        
 		    </RelativeLayout>

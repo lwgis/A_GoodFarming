@@ -65,11 +65,11 @@ public class SelectCropActivity extends Activity implements HandMessage {
 			@Override
 			public void onClick(View v) {
 				if(selectCrops==null || selectCrops.size()==0){
-					GFToast.show("您还没设置擅长的作物！");
+					GFToast.show(getApplicationContext(),"您还没设置擅长的作物！");
 					return;
 				}
 				if(!bHave){
-					GFToast.show("请您点击确定设置擅长的作物！");
+					GFToast.show(getApplicationContext(),"请您点击确定设置擅长的作物！");
 					return;
 				}
 				setResult(RESULT_CANCELED);
@@ -82,7 +82,7 @@ public class SelectCropActivity extends Activity implements HandMessage {
 			@Override
 			public void onClick(View v) {
 				if(selectCrops==null || selectCrops.size()==0){
-					GFToast.show("您还没设置擅长的作物！");
+					GFToast.show(getApplicationContext(),"您还没设置擅长的作物！");
 					return;
 				}
 				Intent it = getIntent();
@@ -206,11 +206,11 @@ public class SelectCropActivity extends Activity implements HandMessage {
     	if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) { 
 	        if (event.getAction() == KeyEvent.ACTION_DOWN) { 
 	        	if(selectCrops==null || selectCrops.size()==0){
-					GFToast.show("您还没设置擅长的作物！");
+					GFToast.show(getApplicationContext(),"您还没设置擅长的作物！");
 					return false;
 				}
 	        	if(!bHave){
-					GFToast.show("请您点击确定设置擅长的作物！");
+					GFToast.show(getApplicationContext(),"请您点击确定设置擅长的作物！");
 					return false;
 				}
 				setResult(RESULT_CANCELED);

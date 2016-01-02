@@ -84,27 +84,27 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 		String count = countExt.getText().toString();
 		String pass = passExt.getText().toString();
 		if(count.isEmpty()){
-			GFToast.show("请输入金额");
+			GFToast.show(getApplicationContext(),"请输入金额");
 			confirmBtn.setEnabled(true);
 			return;
 		}
 		if(pass.isEmpty()){
-			GFToast.show("请输入密码");
+			GFToast.show(getApplicationContext(),"请输入密码");
 			confirmBtn.setEnabled(true);
 			return;
 		}
-		if(!pass.equals(GFUserDictionary.getPassword())){
-			GFToast.show("密码错误");
+		if(!pass.equals(GFUserDictionary.getPassword(getApplicationContext()))){
+			GFToast.show(getApplicationContext(),"密码错误");
 			confirmBtn.setEnabled(true);
 			return;
 		}
 		final int price = Integer.parseInt(count);
 		if(price>user.getCurrency()){
-			GFToast.show("余额不足");
+			GFToast.show(getApplicationContext(),"余额不足");
 			confirmBtn.setEnabled(true);
 			return;
 		}
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 
 			@Override
@@ -122,7 +122,7 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 	
 	private void cancelPay(){
 		
-		final String mid = GFUserDictionary.getUserId();
+		final String mid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -139,7 +139,7 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 	}
 	
 	private void okpay(){
-		final String mid = GFUserDictionary.getUserId();
+		final String mid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -189,14 +189,14 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 			     hideSoftInputFromWindow(passExt.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS); 
 				codeImageView.setImageBitmap((Bitmap)msg.obj);
 			} else {
-				GFToast.show("错误");
+				GFToast.show(getApplicationContext(),"错误");
 			}
 			break;
 		case CANCELCODE:
 			if (msg.obj != null) {
 				String jsString = msg.obj.toString();
 				if(jsString!=""){
-					GFToast.show("操作错误！");
+					GFToast.show(getApplicationContext(),"操作错误！");
 				}
 				else{
 					codeLayout.setVisibility(View.GONE);
@@ -205,7 +205,7 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 				
 			} else {
 				
-				GFToast.show("操作错误！");
+				GFToast.show(getApplicationContext(),"操作错误！");
 			}
 			break;
 		case CHECKPAY:
@@ -215,10 +215,10 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 					this.finish();
 				}
 				else{
-					GFToast.show("支付尚未完成。");
+					GFToast.show(getApplicationContext(),"支付尚未完成。");
 				}
 			} else {
-				GFToast.show("错误");
+				GFToast.show(getApplicationContext(),"错误");
 			}
 			break;
 

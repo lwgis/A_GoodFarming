@@ -98,7 +98,7 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 			
 			@Override
 			public void run() {
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				String jsonString = HttpUtil.getContacts(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -190,7 +190,7 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 			break;
 		case R.id.ok_button:
 			if(contacts==null||contacts.size()==0){
-				GFToast.show("请添加收货地址");
+				GFToast.show(getApplicationContext(),"请添加收货地址");
 			}
 			else{
 				Intent it = getIntent();
@@ -231,7 +231,7 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 				adapter.notifyDataSetChanged();
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		default:

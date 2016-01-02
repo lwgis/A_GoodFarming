@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.net.wifi.WifiConfiguration.Status;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Message;
@@ -69,6 +70,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	// 定位相关
 	LocationClient mLocClient;
 	public QuestionLocationListenner myListener = new QuestionLocationListenner();
+	private int status;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +144,13 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		});
 		location();
 		sendBtn.setEnabled(false);
-		showFragment(0);
+		status = getIntent().getIntExtra("status", 0);
+		if(status==0){
+			showFragment(0);
+		}
+		else{
+			showFragment(1);
+		}
 	}
 
 	public void showFragment(int index) {
@@ -163,10 +171,17 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			transation.hide(createQuestionFragment);
 			break;
 		case 1:
+			transation.show(selectCropFragment);
+			setTitle("选择话题");
+			transation.hide(createQuestionFragment);
+			break;
+		case 2:
 			transation.setCustomAnimations(R.anim.fragment_rightin,
 					R.anim.fragment_fadeout);
 			transation.show(createQuestionFragment);
 			transation.hide(selectCropFragment);
+			break;
+			
 		default:
 			break;
 		}
@@ -299,11 +314,13 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				}
 				question.setContent(content);
 				User writer = new User();
-				writer.setId(GFUserDictionary.getUserId());
+				writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 				question.setWriter(writer);
+				
 				Crop crop = new Crop();
 				crop.setId(activity.cropId);
 				question.setCrop(crop);
+				
 				question.setInform("0");
 				question.setTime("2015-04-08 00:00:00");
 				question.setAttachments(activity.netImages);
@@ -318,7 +335,13 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					@Override
 					public void run() {
 						try {
-							HttpUtil.sendQuestion(question);
+							if(status==0){
+								HttpUtil.sendQuestion(question);
+							}
+							else{
+								HttpUtil.sendGossip(question);
+							}
+							
 							Message msg = activity.handler.obtainMessage();
 							msg.what = TypeQuestion;
 							msg.sendToTarget();
@@ -342,7 +365,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			}
 			question.setContent(content);
 			User writer = new User();
-			writer.setId(GFUserDictionary.getUserId());
+			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			question.setWriter(writer);
 			Crop crop = new Crop();
 			crop.setId(activity.cropId);
@@ -360,7 +383,12 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				@Override
 				public void run() {
 					try {
-						HttpUtil.sendQuestion(question);
+						if(status==0){
+							HttpUtil.sendQuestion(question);
+						}
+						else{
+							HttpUtil.sendGossip(question);
+						}
 						Message msg = activity.handler.obtainMessage();
 						msg.what = TypeQuestion;
 						msg.sendToTarget();
@@ -374,7 +402,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			break;
 		case TypeQuestion:
 			activity.isSending = false;
-			GFToast.show("发送成功");
+			GFToast.show(getApplicationContext(),"发送成功");
 			break;
 		case TypeError:
 			if(msg.obj==null){
@@ -383,7 +411,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			else{
 				Log.d("uploadimageError", msg.obj.toString());
 			}
-			GFToast.show("发送失败");
+			GFToast.show(getApplicationContext(),"发送失败");
 			break;
 		default:
 			break;

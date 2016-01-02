@@ -44,7 +44,7 @@ public class FeedBackActivity extends Activity implements HandMessage,OnClickLis
 			@Override
 			public void run() {
 				try {
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					String content = contentEt.getText().toString();
 					HttpUtil.feedBack(uid, content);
 					Message msg = handler.obtainMessage();
@@ -105,11 +105,11 @@ public class FeedBackActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		switch (msg.what) {
 		case 0:
-			GFToast.show("发送成功");
+			GFToast.show(getApplicationContext(),"发送成功");
 			this.finish();
 			break;
 		case -1:
-			GFToast.show(msg.obj.toString());
+			GFToast.show(getApplicationContext(),msg.obj.toString());
 			
 			break;
 

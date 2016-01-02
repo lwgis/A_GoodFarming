@@ -120,7 +120,7 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 	 */
 	private void loadMyFollows(){
 		
-		final String uid=GFUserDictionary.getUserId();
+		final String uid=GFUserDictionary.getUserId(getApplicationContext());
 		
 		new Thread(new Runnable() {
 			
@@ -160,7 +160,7 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 	}
 	
 	private void follow(final User user) {
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -319,7 +319,7 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -335,7 +335,7 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 				adapter.notifyDataSetChanged();
 				
 			} else {
-				GFToast.show("获取关注列表失败!");
+				GFToast.show(getApplicationContext(),"获取关注列表失败!");
 			}
 			break;
 		case 1:
@@ -352,7 +352,7 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 					}
 				}
 				else{
-					GFToast.show("用户不存在");
+					GFToast.show(getApplicationContext(),"用户不存在");
 				}
 				adapter.notifyDataSetChanged();
 			}
@@ -369,12 +369,12 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 				if(follow!=null){
 					fuids.add(follow.getUser().getId());
 					adapter.notifyDataSetChanged();
-					GFToast.show("关注成功!");
+					GFToast.show(getApplicationContext(),"关注成功!");
 				}
 				
 			}
 			else{
-				GFToast.show("关注失败!");
+				GFToast.show(getApplicationContext(),"关注失败!");
 			}
 			break;
 		default:

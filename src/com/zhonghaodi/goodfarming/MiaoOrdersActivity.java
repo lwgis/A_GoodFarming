@@ -59,7 +59,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 	}
 	
 	private void loadData(){
-		final String uid = GFUserDictionary.getUserId();
+		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		new Thread(new Runnable() {
 			
 			@Override
@@ -159,7 +159,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 		SecondOrder secondOrder = secondOrders.get(position);
 		if(secondOrder!=null){
 			if(secondOrder.getStatus()==1){
-				GFToast.show("交易已经完成！");
+				GFToast.show(getApplicationContext(),"交易已经完成！");
 				return;
 			}
 			Intent intent = new Intent(this, SecondCodeActivity.class);

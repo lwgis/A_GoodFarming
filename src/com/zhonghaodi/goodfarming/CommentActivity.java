@@ -72,8 +72,8 @@ public class CommentActivity extends Activity implements UrlOnClick,
 
 			@Override
 			public void onClick(View v) {
-				if(GFUserDictionary.getUserId()==null){
-					GFToast.show("请您先登录！");
+				if(GFUserDictionary.getUserId(getApplicationContext())==null){
+					GFToast.show(getApplicationContext(),"请您先登录！");
 					return;
 				}
 				if(chatEv.getText().toString().trim().isEmpty()){
@@ -111,7 +111,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String uid = GFUserDictionary.getUserId();
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
 				String c = content;
 				NetResponse netResponse = HttpUtil.commentResponse(question.getId(),response.getId(),uid,c);
 				Message msg = handler.obtainMessage();
@@ -206,6 +206,30 @@ public class CommentActivity extends Activity implements UrlOnClick,
 						HttpUtil.ImageUrl+"users/small/"
 								+ response.getWriter().getThumbnail(), holder1.headIv,
 						ImageOptions.optionsNoPlaceholder);
+				switch (response.getWriter().getLevelID()) {
+				case 1:
+					holder1.levelTextView.setText("农友");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_ny);
+					break;
+				case 2:
+					holder1.levelTextView.setText("达人");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
+					break;
+				case 3:
+					holder1.levelTextView.setText("店铺");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_dp);
+					break;
+				case 4:
+					holder1.levelTextView.setText("专家");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_zj);
+					break;
+				case 5:
+					holder1.levelTextView.setText("官方");
+					holder1.levelTextView.setBackgroundResource(R.drawable.back_gf);
+					break;
+				default:
+					break;
+				}
 				break;
 			case 1:
 				RComment comment = comments.get(position-1);
@@ -226,6 +250,30 @@ public class CommentActivity extends Activity implements UrlOnClick,
 										+ comment.getWriter().getThumbnail(),
 										holderCommentTextMessage.headIv,
 								ImageOptions.optionsNoPlaceholder);
+				switch (comment.getWriter().getLevelID()) {
+				case 1:
+					holderCommentTextMessage.levelTextView.setText("农友");
+					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_ny);
+					break;
+				case 2:
+					holderCommentTextMessage.levelTextView.setText("达人");
+					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_dr);
+					break;
+				case 3:
+					holderCommentTextMessage.levelTextView.setText("店铺");
+					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_dp);
+					break;
+				case 4:
+					holderCommentTextMessage.levelTextView.setText("专家");
+					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_zj);
+					break;
+				case 5:
+					holderCommentTextMessage.levelTextView.setText("官方");
+					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_gf);
+					break;
+				default:
+					break;
+				}
 				break;
 			
 			default:
@@ -260,7 +308,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		case 0:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 1:
@@ -277,12 +325,12 @@ public class CommentActivity extends Activity implements UrlOnClick,
 				adapter.notifyDataSetChanged();
 			}
 			else{
-				GFToast.show("获取评论失败");
+				GFToast.show(getApplicationContext(),"获取评论失败");
 			}
 			break;
 		case 2:
 			loadData();
-			GFToast.show("评论成功");
+			GFToast.show(getApplicationContext(),"评论成功");
 			break;
 		
 		default:

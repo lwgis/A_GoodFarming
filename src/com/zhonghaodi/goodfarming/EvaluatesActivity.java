@@ -275,7 +275,7 @@ public class EvaluatesActivity extends Activity implements HandMessage,OnClickLi
 				}
 				displayDatas();
 			} else {
-				GFToast.show("请求失败，请检查网络状态稍后再试。");
+				GFToast.show(getApplicationContext(),"请求失败，请检查网络状态稍后再试。");
 			}
 			pullToRefreshListView.onRefreshComplete();
 			break;
@@ -290,7 +290,7 @@ public class EvaluatesActivity extends Activity implements HandMessage,OnClickLi
 				}
 				displayDatas();
 			} else {
-				GFToast.show("请求失败，请检查网络状态稍后再试。");
+				GFToast.show(getApplicationContext(),"请求失败，请检查网络状态稍后再试。");
 			}
 			pullToRefreshListView.onRefreshComplete();
 			break;

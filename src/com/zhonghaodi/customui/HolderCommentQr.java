@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.makeramen.RoundedImageView;
 import com.zhonghaodi.goodfarming.R;
 
 public class HolderCommentQr {
@@ -13,14 +14,16 @@ public class HolderCommentQr {
 	public	UrlTextView contentTv;
 	public	TextView countTv;
 	public  TextView cropTv;
-	public	ImageView headIv;
+	public	RoundedImageView headIv;
+	public TextView levelTextView;
 
 		public HolderCommentQr(View view) {
 			nameTv = (TextView) view.findViewById(R.id.name_text);
 			timeTv = (TextView) view.findViewById(R.id.time_text);
 			contentTv = (UrlTextView) view.findViewById(R.id.content_text);
 			countTv = (TextView) view.findViewById(R.id.count_text);
-			headIv = (ImageView) view.findViewById(R.id.head_image);
+			headIv = (RoundedImageView) view.findViewById(R.id.head_image);
 			cropTv = (TextView)view.findViewById(R.id.crop_text);
+			levelTextView = (TextView)view.findViewById(R.id.level_text);
 		}
 }

@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -58,6 +59,38 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 	private Spinner spQingkuang;
 	private Spinner spSudu;
 	private Spinner spGenxi;
+	private TextView tv1;
+	private TextView tv2;
+	private LinearLayout spinnerLayout;
+	private int status;
+
+	public void setStatus(int status) {
+		
+		if(status==0){
+			jinzhaoBtn.setTitle("近照");
+			yuanzhaoBtn.setTitle("远照");
+			zhengtiBtn.setTitle("整体照");
+			jubuBtn.setTitle("局部照");
+			zhengmianBtn.setTitle("正面照");
+			fanmianBtn.setTitle("反面照");
+			tv1.setVisibility(View.VISIBLE);
+			tv2.setVisibility(View.VISIBLE);
+			spinnerLayout.setVisibility(View.VISIBLE);
+			contentEt.setHint("病虫害的详细描述...(200字以内)");
+		}
+		else{
+			jinzhaoBtn.setTitle("照片1");
+			yuanzhaoBtn.setTitle("照片2");
+			zhengtiBtn.setTitle("照片3");
+			jubuBtn.setTitle("照片4");
+			zhengmianBtn.setTitle("照片5");
+			fanmianBtn.setTitle("照片6");
+			tv1.setVisibility(View.GONE);
+			tv2.setVisibility(View.GONE);
+			spinnerLayout.setVisibility(View.GONE);
+			contentEt.setHint("说点啥吧...(200字以内)");
+		}
+	}
 
 	public File getCurrentfile() {
 		return currentfile;
@@ -82,23 +115,20 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 		jubuBtn = (GFImageButton) view.findViewById(R.id.jubu_image);
 		zhengmianBtn = (GFImageButton) view.findViewById(R.id.zhengmian_image);
 		fanmianBtn = (GFImageButton) view.findViewById(R.id.fanmian_image);
-		jinzhaoBtn.setTitle("近照");
-		yuanzhaoBtn.setTitle("远照");
-		zhengtiBtn.setTitle("整体照");
-		jubuBtn.setTitle("局部照");
-		zhengmianBtn.setTitle("正面照");
-		fanmianBtn.setTitle("反面照");
+		
 		spFenbu = (Spinner)view.findViewById(R.id.spFenbu);
 		spQingkuang = (Spinner)view.findViewById(R.id.spQingkuang);
 		spSudu = (Spinner)view.findViewById(R.id.spSudu);
 		spGenxi = (Spinner)view.findViewById(R.id.spGenxi);
-//		spNongshi = (Spinner)view.findViewById(R.id.spNongshi);
 		jinzhaoBtn.setOnClickListener(this);
 		yuanzhaoBtn.setOnClickListener(this);
 		zhengtiBtn.setOnClickListener(this);
 		jubuBtn.setOnClickListener(this);
 		zhengmianBtn.setOnClickListener(this);
 		fanmianBtn.setOnClickListener(this);
+		tv1 = (TextView)view.findViewById(R.id.label1);
+		tv2 = (TextView)view.findViewById(R.id.label2);
+		spinnerLayout = (LinearLayout)view.findViewById(R.id.spinnerLayout);
 		contentEt = (MyEditText) view.findViewById(R.id.content_edit);
 		contentEt.addTextChangedListener(new TextWatcher() {
 
@@ -126,6 +156,8 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 				}
 			}
 		});
+		status = getActivity().getIntent().getIntExtra("status", 0);
+		setStatus(status);
 		// 相机按钮
 		Button btnCamera = (Button) popView.findViewById(R.id.btnCamera);
 		btnCamera.setOnClickListener(new OnClickListener() {

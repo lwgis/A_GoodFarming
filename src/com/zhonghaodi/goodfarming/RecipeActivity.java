@@ -177,7 +177,7 @@ public class RecipeActivity extends Activity implements HandMessage,OnClickListe
 			recipeCountEt.setText(String.valueOf(recipeCount));
 			break;
 		case R.id.order_button:
-			if (GFUserDictionary.getUserId()==null) {
+			if (GFUserDictionary.getUserId(getApplicationContext())==null) {
 				Intent it=new Intent();
 				it.setClass(RecipeActivity.this, LoginActivity.class);
 				startActivity(it);
@@ -187,7 +187,7 @@ public class RecipeActivity extends Activity implements HandMessage,OnClickListe
 			it.setClass(RecipeActivity.this, RecipeOrderActivity.class);
 			it.putExtra("nzdId", recipe.getNzd().getId());
 			it.putExtra("recipeId", recipe.getId());
-			it.putExtra("userId", GFUserDictionary.getUserId());
+			it.putExtra("userId", GFUserDictionary.getUserId(getApplicationContext()));
 			it.putExtra("count", recipeCount);
 			it.putExtra("recipeName", recipe.getTitle());
 			RecipeActivity.this.startActivity(it);
@@ -255,7 +255,7 @@ public class RecipeActivity extends Activity implements HandMessage,OnClickListe
 
 			}
 			else{
-				GFToast.show("请求失败，请检查网络状态稍后再试。");
+				GFToast.show(getApplicationContext(),"请求失败，请检查网络状态稍后再试。");
 			}
 			break;
 

@@ -66,7 +66,7 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 			if (msg.obj != null) {
 				qrCodeIv.setImageBitmap((Bitmap)msg.obj);
 			} else {
-				GFToast.show("获取二维码失败！");
+				GFToast.show(getApplicationContext(),"获取二维码失败！");
 			}
 		}
 	}

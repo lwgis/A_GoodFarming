@@ -18,6 +18,7 @@ public class SolutionHolder {
 	public ImageView zanIv;
 	public LinearLayout commentLayout;
 	public LinearLayout zanLayout;
+	public TextView levelTextView;
 	 public SolutionHolder(View view){
 		 headIv  = (ImageView)view.findViewById(R.id.head_image);
 		 solcountTv = (TextView)view.findViewById(R.id.solcount_text);
@@ -29,5 +30,6 @@ public class SolutionHolder {
 		 zanIv = (ImageView)view.findViewById(R.id.zanIv);
 		 commentLayout = (LinearLayout)view.findViewById(R.id.commentLayout);
 		 zanLayout = (LinearLayout)view.findViewById(R.id.zan_layout);
+		 levelTextView = (TextView)view.findViewById(R.id.level_text);
 	 }
 }

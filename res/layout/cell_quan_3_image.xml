@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
      android:padding="5dip"
     android:background="@drawable/item_background_default"
     android:orientation="horizontal" 
     >
-    <ImageView 
+    <com.makeramen.RoundedImageView
           android:id="@+id/head_img"
           android:layout_width="50dip"
           android:layout_height="50dip"
           android:scaleType="centerCrop"
           android:focusable="false"
+          app:border_color="#FFFFFF"
+          app:border_width="1dip"
+          app:corner_radius="100dp"
+          app:mutate_background="true"
+          app:oval="false"
           />
       <LinearLayout 
           android:layout_width="match_parent"

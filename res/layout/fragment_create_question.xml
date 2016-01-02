@@ -6,11 +6,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical" 
+        android:paddingTop="6dip"
+        >
 
         <TextView
+            android:id="@+id/label1"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="尽量按农作物近照,远照,局部,整体,正面,反面来上传图片"
             android:textColor="#808080"
@@ -88,6 +91,7 @@
             </LinearLayout>
         </RelativeLayout>
         <TextView
+            android:id="@+id/label2"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginBottom="10dip"
@@ -96,6 +100,7 @@
             android:textColor="#808080"
             android:textSize="17dip" />
         <LinearLayout 
+            android:id="@+id/spinnerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dip"

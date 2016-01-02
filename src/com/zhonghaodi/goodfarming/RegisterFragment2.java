@@ -123,7 +123,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			@Override
 			public void onClick(View v) {
 				if(aliasEt.getText().toString().isEmpty()){
-					GFToast.show("别名不能为空");
+					GFToast.show(getActivity().getApplicationContext(),"别名不能为空");
 					return;
 				}
 
@@ -298,17 +298,17 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getActivity(),msg.obj.toString());
 			}
 			break;
 		// 注册失败
 		case 0:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getActivity(),msg.obj.toString());
 			}
 			else{
-				GFToast.show("操作失败");
+				GFToast.show(getActivity(),"操作失败");
 			}
 			isSending = false;
 			registerBtn.setEnabled(true);
@@ -358,12 +358,12 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			LoginUser loginUser = (LoginUser) GsonUtil.fromJson(
 					msg.obj.toString(), LoginUser.class);
 			if (loginUser.getCode() == 1) {
-				GFUserDictionary.saveLoginInfo(loginUser.getUser(),registerFragment2.passwordEt.getText().toString(),registerFragment2.getActivity());
+				GFUserDictionary.saveLoginInfo(getActivity(),loginUser.getUser(),registerFragment2.passwordEt.getText().toString(),registerFragment2.getActivity());
 				registerFragment2.getActivity().setResult(4);
 				registerFragment2.getActivity().finish();
-				GFToast.show("注册成功");
+				GFToast.show(getActivity(),"注册成功");
 			} else {
-				GFToast.show(loginUser.getMessage());
+				GFToast.show(getActivity(),loginUser.getMessage());
 			}
 			isSending = false;
 			registerFragment2.registerBtn.setEnabled(true);
@@ -378,11 +378,11 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					updateImage();
 				}
 				else{
-					GFToast.show("昵称已经存在！");
+					GFToast.show(getActivity(),"昵称已经存在！");
 				}
 			}
 			else{
-				GFToast.show("昵称验证失败");
+				GFToast.show(getActivity(),"昵称验证失败");
 			}
 			break;
 		default:

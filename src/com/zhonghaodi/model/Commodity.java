@@ -1,6 +1,7 @@
 package com.zhonghaodi.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 public class Commodity implements Serializable {
@@ -21,6 +22,8 @@ public class Commodity implements Serializable {
 	private String description;
 	
 	private Integer status;
+	
+	private List<Level> levels;
 	
 	public Commodity(){
 		
@@ -72,6 +75,14 @@ public class Commodity implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	
+	public List<Level> getLevels() {
+		return levels;
+	}
+
+	public void setLevels(List<Level> levels) {
+		this.levels = levels;
 	}
 
 	@Override

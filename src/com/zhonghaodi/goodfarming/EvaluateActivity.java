@@ -114,11 +114,11 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 		RadioButton radioButton = (RadioButton)radioGroup.findViewById(scoring);
 		final String evaluate =radioButton.getText()+"。"+evaluateEditText.getText().toString();
 		if(evaluate.isEmpty()){
-			GFToast.show("请输入评价意见");
+			GFToast.show(getApplicationContext(),"请输入评价意见");
 			return;
 		}
 		if(nzdid.equals("") || urid==0 || rid==0){
-			GFToast.show("id值有错误");
+			GFToast.show(getApplicationContext(),"id值有错误");
 			return;
 		}
 		sendButton.setEnabled(false);
@@ -128,7 +128,7 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 			public void run() {
 				try 
 				{
-					String uid = GFUserDictionary.getUserId();
+					String uid = GFUserDictionary.getUserId(getApplicationContext());
 					NetResponse netResponse = HttpUtil.sendEvaluate(nzdid, urid, rid, scoring, evaluate);
 					Message msg = handler.obtainMessage();
 					if(netResponse.getStatus()==1){
@@ -177,7 +177,7 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 			sendButton.setEnabled(true);
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
 		case 0:
@@ -189,14 +189,14 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 				displayDics(dics);
 				
 			} else {
-				GFToast.show("连接服务器失败,请稍候再试!");
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
 			break;
 		case 1:
 			sendButton.setEnabled(true);
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(msg.obj.toString());
+					GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			this.finish();
 //			if(msg.obj!=null&&!msg.obj.toString().isEmpty()){
