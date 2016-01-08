@@ -2,15 +2,26 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.google.gson.Gson;
@@ -40,6 +51,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 	private TextView titleTv;
 	private MyEditText chatEv;
 	private MyTextButton sendMessageBtn;
+	private MyTextButton prescriptionButton;
 	private ListView pullToRefreshList;
 	public CommentAdapter adapter;
 	private GFHandler<CommentActivity> handler = new GFHandler<CommentActivity>(this);
@@ -47,6 +59,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 	private Response response;
 	private List<RComment> comments;
 	private String rContent;
+	private int status;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -81,13 +94,60 @@ public class CommentActivity extends Activity implements UrlOnClick,
 				}
 				sendText(chatEv.getText().toString());
 				chatEv.setText("");
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+	 			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
 			}
 		});
+		prescriptionButton = (MyTextButton)findViewById(R.id.prescription_button);
+		prescriptionButton.setOnClickListener(this);
 		question = (Question)getIntent().getSerializableExtra("question");
 		response = (Response)getIntent().getSerializableExtra("response");
+		status = getIntent().getIntExtra("status", 0);
 		rContent = response.getContent();
 		titleTv.setText(question.getWriter().getAlias()+"的提问");
+		registerForContextMenu(pullToRefreshList);
 		loadData();
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		if(info.position>1){
+			String uid = GFUserDictionary.getUserId(getApplicationContext());
+			if(uid!=null){
+				
+				RComment comment = comments.get(info.position-1);
+				if(comment.getWriter().getId().equals(uid)){
+					menu.add(0, 0, 0, "加入配方");
+				} 
+			}
+		}
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
+                .getMenuInfo();
+		switch (item.getItemId()) {
+		case 0:
+			RComment comment = comments.get(info.position-1);
+			Intent intent2 = new Intent(this,PrescriptionEditActivity.class);
+			intent2.putExtra("content", comment.getContent());
+			startActivity(intent2);
+			break;
+
+		default:
+			break;
+		}
+		
+		 
+		return super.onContextItemSelected(item);
 	}
 	
 	private void loadData(){
@@ -96,7 +156,13 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String jsonString = HttpUtil.getSingleResponse(question.getId(),response.getId());
+				String jsonString;
+				if(status==0){
+					jsonString = HttpUtil.getSingleResponse(question.getId(),response.getId());
+				}
+				else{
+					jsonString = HttpUtil.getGossipsResponse(question.getId(),response.getId());
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -112,8 +178,13 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			public void run() {
 				// TODO Auto-generated method stub
 				String uid = GFUserDictionary.getUserId(getApplicationContext());
-				String c = content;
-				NetResponse netResponse = HttpUtil.commentResponse(question.getId(),response.getId(),uid,c);
+				NetResponse netResponse;
+				if(status==0){
+					netResponse = HttpUtil.commentResponse(question.getId(),response.getId(),uid,content);
+				}
+				else{
+					netResponse = HttpUtil.commentGossipResponse(question.getId(),response.getId(),uid,content);
+				}
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
 					msg.what = 2;
@@ -212,7 +283,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holder1.levelTextView.setText("达人");
+					holder1.levelTextView.setText("农技达人");
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
@@ -256,7 +327,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holderCommentTextMessage.levelTextView.setText("达人");
+					holderCommentTextMessage.levelTextView.setText("农技达人");
 					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
@@ -287,7 +358,17 @@ public class CommentActivity extends Activity implements UrlOnClick,
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+		switch (v.getId()) {
+		case R.id.prescription_button:
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
+			Intent intent = new Intent(this,PrescriptionsActivity.class);
+			this.startActivityForResult(intent, 100);
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -301,6 +382,31 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		startActivity(it);
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK && requestCode == 100) {
+			String content = data.getStringExtra("content");
+			if(content!=null&&content.length()>0){
+				chatEv.setText(content);
+				chatEv.setSelection(content.length());
+				Timer timer = new Timer();  
+			     timer.schedule(new TimerTask()  
+			     {  
+			           
+			         public void run()  
+			         {  
+			             InputMethodManager inputManager =  
+			                 (InputMethodManager)chatEv.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
+			             inputManager.showSoftInput(chatEv, 0);  
+			         }  
+			           
+			     },  998);  
+			}
+		}
+	}
+
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub

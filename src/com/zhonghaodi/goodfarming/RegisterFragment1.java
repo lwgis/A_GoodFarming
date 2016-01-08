@@ -216,7 +216,7 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 					@Override
 					public void run() {
 //						String jsonString = "0325";
-						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString(),1);
+						String jsonString= HttpUtil.getSmsCheckNum(phoneEt.getText().toString(),UILApplication.sendcount);
 						UILApplication.sendcount++;
 						Message numMsg = handler.obtainMessage();
 						if(jsonString!=null){

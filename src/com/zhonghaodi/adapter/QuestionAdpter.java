@@ -153,7 +153,7 @@ public class QuestionAdpter extends BaseAdapter {
 				holder1.levelTextView.setBackgroundResource(R.drawable.back_ny);
 				break;
 			case 2:
-				holder1.levelTextView.setText("达人");
+				holder1.levelTextView.setText("农技达人");
 				holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
 				break;
 			case 3:
@@ -232,7 +232,7 @@ public class QuestionAdpter extends BaseAdapter {
 				holder2.levelTextView.setBackgroundResource(R.drawable.back_ny);
 				break;
 			case 2:
-				holder2.levelTextView.setText("达人");
+				holder2.levelTextView.setText("农技达人");
 				holder2.levelTextView.setBackgroundResource(R.drawable.back_dr);
 				break;
 			case 3:
@@ -338,7 +338,7 @@ public class QuestionAdpter extends BaseAdapter {
 				holder3.levelTextView.setBackgroundResource(R.drawable.back_ny);
 				break;
 			case 2:
-				holder3.levelTextView.setText("达人");
+				holder3.levelTextView.setText("农技达人");
 				holder3.levelTextView.setBackgroundResource(R.drawable.back_dr);
 				break;
 			case 3:

@@ -322,7 +322,10 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 				holder.recipeTextView.setText(recipeStr);
 			}
 			else{
-				holder.recipeTextView.setText(store.getDescription());
+				String des = store.getDescription().replace("\r", "");
+				des = des.replace("\n", "");
+				des = des.replace("\t", "");
+				holder.recipeTextView.setText(des);
 			}
 			holder.locationView.setTag(store);
 			holder.locationView.setOnClickListener(StoresActivity.this);

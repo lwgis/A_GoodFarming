@@ -96,38 +96,15 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					return;
 				}
 				Function function = functions.get(position-2);
-				if (function.getName().equals("APP分享")) {
-					MainActivity mainActivity = (MainActivity)getActivity();
-					mainActivity.popwindow();
-					return;
-				}
+
 				Intent it=new Intent();
 				it.setClass(getActivity(), function.getActivityClass());
-				if(function.getName().equals("我的拉拉呱")){
-					it.putExtra("status", 1);
-					getActivity().startActivity(it);
-				}
-				else if(function.getName().equals("当面付") || function.getName().equals("修改资料")){
+				if(function.getName().equals("我的交易") || function.getName().equals("我的资料") 
+						|| function.getName().equals("APP分享")){
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("user", user);
 					it.putExtras(bundle);
 					getActivity().startActivity(it);
-				}
-				else if(function.getName().contains("作物")){
-					Intent it1 = new Intent(getActivity(),
-							SelectCropActivity.class);
-					ArrayList<Crop> selectCrops = null;
-					if(user.getCrops()!=null && user.getCrops().size()>0){
-						selectCrops = new ArrayList<Crop>();
-						for (Iterator iterator = user.getCrops().iterator(); iterator.hasNext();) {
-							UserCrop userCrop = (UserCrop) iterator.next();
-							selectCrops.add(userCrop.getCrop());
-						}
-					}
-					if (selectCrops != null) {
-						it1.putParcelableArrayListExtra("crops", selectCrops);
-					}
-					getActivity().startActivityForResult(it1, 100);
 				}
 				else{
 					getActivity().startActivity(it);
@@ -292,46 +269,15 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			}
 			fragment.user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
-			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());
-			Function shareFunction = new Function("APP分享",null,R.drawable.appshare);
-			fragment.functions.add(shareFunction);
-			Function questionFunction = new Function("我的问题", MyQuestionsActivity.class,R.drawable.myquestions);
+			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());			
+			Function questionFunction = new Function("我的提问", QuestionsActivity.class,R.drawable.myquestions);
 			fragment.functions.add(questionFunction);
-			Function mylalaguaFunction = new Function("我的拉拉呱", MyQuestionsActivity.class,R.drawable.mylalagua);
-			fragment.functions.add(mylalaguaFunction);
-			Function cartFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
+			Function cartFunction = new Function("我的交易", MyTransactionActivity.class,R.drawable.store);
 			fragment.functions.add(cartFunction);
-			Function cropsFunction = new Function("我的作物", SelectCropActivity.class,R.drawable.crop);
-			fragment.functions.add(cropsFunction);
-			Function contactsFunction = new Function("收货地址", ContactsActivity.class,R.drawable.address);
-			fragment.functions.add(contactsFunction);
-			Function exchangeFunction = new Function("积分兑换", ExchangeActivity.class,R.drawable.exchange);
-			fragment.functions.add(exchangeFunction);
-			Function payFunction = new Function("当面付", PayActivity.class,R.drawable.pay);
-			fragment.functions.add(payFunction);
-			if(user.getLevel().getId()==3){
-				Function orderFunction = new Function("扫一扫", OrderScanActivity.class,R.drawable.scan);
-				fragment.functions.add(orderFunction);
-			}
-			switch (user.getLevel().getId()) {
-			case 1:
-				Function nysfuFunction = new Function("升级为农技达人", UpdateNysActivity.class,R.drawable.nysupdate);
-				fragment.functions.add(nysfuFunction);
-				Function nzdFunction = new Function("升级为农资店", UpdateNzdActivity.class,R.drawable.nzdupdate);
-				fragment.functions.add(nzdFunction);
-				break;	
-			case 2:
-				Function zjFunction = new Function("升级为专家", UpdateZjActivity.class, R.drawable.zjupdate);
-				fragment.functions.add(zjFunction);
-			default:
-				break;
-			}
-			Function minfoFunction = new Function("修改资料", ModifyInfoActivity.class,R.drawable.me_s);
-			fragment.functions.add(minfoFunction);
-			Function modifyFunction = new Function("修改密码", ModifyPassActivity.class,R.drawable.password);
-			fragment.functions.add(modifyFunction);				
-			Function downFunction = new Function("推荐农友下载", AppdownActivity.class,R.drawable.appdownload);
-			fragment.functions.add(downFunction);
+			Function shareFunction = new Function("APP分享",AppShareActivity.class,R.drawable.appshare);
+			fragment.functions.add(shareFunction);
+			Function minfoFunction = new Function("我的资料", InformationActivity.class,R.drawable.me_s);
+			fragment.functions.add(minfoFunction);				
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
 			fragment.functions.add(feedbackFunction);
 			fragment.pullToRefreshList.onRefreshComplete();

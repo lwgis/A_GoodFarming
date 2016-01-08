@@ -110,7 +110,7 @@
             android:layout_marginTop="5dip"
             android:text="内容"
             android:textColor="#333333"
-            android:textSize="14dip" 
+            android:textSize="15dip" 
             android:focusable="false"
             android:clickable="false"
             />

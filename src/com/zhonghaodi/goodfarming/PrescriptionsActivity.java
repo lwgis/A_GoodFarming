@@ -2,6 +2,8 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -29,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -85,6 +88,7 @@ public class PrescriptionsActivity extends Activity implements OnClickListener,O
 		// TODO Auto-generated method stub
 		super.onResume();
 		loadData();
+		
 	}
 	
 	@Override
@@ -268,6 +272,10 @@ public class PrescriptionsActivity extends Activity implements OnClickListener,O
 						new TypeToken<List<Prescription>>() {
 						}.getType());
 				prescriptions.clear();
+				if(pres==null || pres.size()==0){
+					GFToast.show(getApplicationContext(), "您还没有保存处方，可在右上角添加。");
+					return;
+				}
 				for (Prescription prescription : pres) {
 					prescriptions.add(prescription);
 				}

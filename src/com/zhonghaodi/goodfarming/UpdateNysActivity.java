@@ -59,6 +59,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 	private static final int TypeImage = 2;
 	private MyTextButton selectCropBtn;
 	private MyEditText descriptionEv;
+	private MyEditText namEditText;
 	private ArrayList<Crop> selectCrops;
 	private GFImageButton zhengmianBtn;
 	private GFImageButton fanmianBtn;
@@ -90,6 +91,8 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 		zhengmianBtn.setImageChangedListener(this);
 		descriptionEv = (MyEditText) findViewById(R.id.description_edit);
 		descriptionEv.addTextChangedListener(this);
+		namEditText = (MyEditText)findViewById(R.id.name_edit);
+		namEditText.addTextChangedListener(this);
 		selectCropTv = (TextView) findViewById(R.id.select_crop_text);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -257,7 +260,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 	}
 
 	private void checkUi() {
-		if (descriptionEv.getText().length() > 0 && zhengmianBtn.isHasImage()
+		if (descriptionEv.getText().length() > 0 && zhengmianBtn.isHasImage()&&namEditText.getText().length()>0
 				&& fanmianBtn.isHasImage()&&selectCrops!=null&&selectCrops.size()>0) {
 			sendBtn.setEnabled(true);
 		} else {
@@ -339,6 +342,7 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 			updateUser.setUser(user);
 			updateUser.setDescription(activity.descriptionEv.getText()
 					.toString());
+			updateUser.setName(activity.namEditText.getText().toString());
 			Level level = new Level();
 			level.setId(2);
 			updateUser.setLevel(level);

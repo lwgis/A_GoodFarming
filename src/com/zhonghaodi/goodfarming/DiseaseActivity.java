@@ -312,7 +312,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holderSolution.levelTextView.setText("达人");
+					holderSolution.levelTextView.setText("农技达人");
 					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:

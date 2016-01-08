@@ -9,13 +9,23 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="#38be99" >
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            android:text="&lt;返回"
+            android:textColor="#ffffff"
+            android:textSize="20dip" 
+            android:layout_marginLeft="5dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="发现"
+            android:text="我的资料"
             android:textColor="#FFFFFF"
             android:textSize="20dip" />
     </RelativeLayout>
@@ -26,15 +36,13 @@
         <LinearLayout 
 	          android:layout_width="match_parent"
 	          android:layout_height="wrap_content"
-	          android:layout_below="@+id/topbar"
 	          android:layout_marginLeft="5dip"
 	          android:layout_marginRight="5dip"
-	          android:layout_alignParentBottom="true"
 	          android:orientation="vertical"
 	          android:background="#e6e7eb"
 	          >
 		    <RelativeLayout 
-	            android:id="@+id/layout3"
+	            android:id="@+id/layout1"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginTop="10dip"
@@ -43,51 +51,22 @@
 		        android:clickable="true"
 		        >
 		        <ImageView 
-		            android:id="@+id/avimg3"
+		            android:id="@+id/avimg1"
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/quan"
+		            android:src="@drawable/crop"
 		            />
 		        <TextView 
-		            android:id="@+id/avname3"
+		            android:id="@+id/avname1"
 		            android:layout_width="wrap_content"
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg3"
+		            android:layout_toRightOf="@+id/avimg1"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="农艺圈"
-		            />
-		        
-		    </RelativeLayout>
-		    <RelativeLayout 
-	            android:id="@+id/layout9"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg9"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/disease"
-		            />
-		        <TextView 
-		            android:id="@+id/avname9"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg9"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="作物病害图谱"
+		            android:text="我的作物"
 		            />
 		        
 		    </RelativeLayout>
@@ -105,7 +84,7 @@
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/nys"
+		            android:src="@drawable/nysupdate"
 		            />
 		        <TextView 
 		            android:id="@+id/avname2"
@@ -116,41 +95,12 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="专家和农技达人"
+		            android:text="升级为农技达人"
 		            />
 		        
 		    </RelativeLayout>
 		    <RelativeLayout 
-	            android:id="@+id/layout1"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg1"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/store"
-		            />
-		        <TextView 
-		            android:id="@+id/avname1"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg1"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="附近农资店"
-		            />
-		        
-		    </RelativeLayout>
-		    <RelativeLayout 
-	            android:id="@+id/layout7"
+	            android:id="@+id/layout3"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginTop="2dip"
@@ -159,28 +109,83 @@
 		        android:clickable="true"
 		        >
 		        <ImageView 
-		            android:id="@+id/avimg7"
+		            android:id="@+id/avimg3"
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/yaofang"
+		            android:src="@drawable/nzdupdate"
 		            />
 		        <TextView 
-		            android:id="@+id/avname7"
+		            android:id="@+id/avname3"
 		            android:layout_width="wrap_content"
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg7"
+		            android:layout_toRightOf="@+id/avimg3"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="附近配方团购"
+		            android:text="升级为农资店"
 		            />
 		        
 		    </RelativeLayout>
-		    
-		    
-		    
+		    <RelativeLayout 
+	            android:id="@+id/layout6"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg6"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/zjupdate"
+		            />
+		        <TextView 
+		            android:id="@+id/avname6"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg6"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="升级为专家"
+		            />
+		        
+		    </RelativeLayout>
+		    <RelativeLayout 
+	            android:id="@+id/layout4"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg4"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/me_s"
+		            />
+		        <TextView 
+		            android:id="@+id/avname4"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg4"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="修改资料"
+		            />
+		        
+		    </RelativeLayout>
 		    <RelativeLayout 
 	            android:id="@+id/layout5"
 		        android:layout_width="match_parent"
@@ -195,7 +200,7 @@
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/second"
+		            android:src="@drawable/password"
 		            />
 		        <TextView 
 		            android:id="@+id/avname5"
@@ -206,71 +211,10 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="附近秒杀优惠活动"
+		            android:text="修改密码"
 		            />
 		        
 		    </RelativeLayout>
-		    
-		    <RelativeLayout 
-	            android:id="@+id/layout6"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg6"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/scorestore"
-		            />
-		        <TextView 
-		            android:id="@+id/avname6"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg6"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="积分商城"
-		            />
-		        
-		    </RelativeLayout>
-		    
-		    <RelativeLayout 
-	            android:id="@+id/layout8"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg8"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/guaguale"
-		            />
-		        <TextView 
-		            android:id="@+id/avname8"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg8"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="刮刮乐"
-		            />
-		        
-		    </RelativeLayout>
-		    
 	       </LinearLayout>
     </ScrollView>
 

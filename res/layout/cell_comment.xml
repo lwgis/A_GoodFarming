@@ -88,7 +88,7 @@
 	            android:layout_marginTop="5dip"
 	            android:text="内容"
 	            android:textColor="#808080"
-	            android:textSize="13dip" 
+	            android:textSize="15dip" 
 	            android:focusable="false"
 	            android:clickable="false"
 	            />

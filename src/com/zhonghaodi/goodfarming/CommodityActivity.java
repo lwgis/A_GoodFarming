@@ -162,7 +162,16 @@ public class CommodityActivity extends Activity implements OnClickListener,HandM
 			User user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
 			if(commodity.getLevels()!=null && commodity.getLevels().size()>0){
-				if(!commodity.getLevels().contains(user.getLevel())){
+				boolean b = false;
+				for (Iterator iterator = commodity.getLevels().iterator(); iterator
+						.hasNext();) {
+					Level level = (Level) iterator.next();
+					if(level.getId()==user.getLevel().getId()){
+						b=true;
+						break;
+					}
+				}
+				if(!b){
 					GFToast.show(getApplicationContext(),"对不起，您的等级不够。");
 					return;
 				}

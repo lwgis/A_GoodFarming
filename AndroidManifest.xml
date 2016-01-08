@@ -382,6 +382,27 @@
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateHidden" >
         </activity>
+        
+        <activity
+            android:name=".QuestionsActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name=".MyTransactionActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name=".InformationActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name=".AppShareActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
                 <!-- 显示下载大图页面 -->
         <activity
             android:name="com.zhonghaodi.easemob.ShowBigImage"
@@ -434,7 +455,7 @@
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="lwgis#goodfarming" />
+            android:value="lwgis#nyim" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService" />
     </application>

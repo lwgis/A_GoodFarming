@@ -53,7 +53,7 @@
             android:layout_height="20dp"
             android:gravity="center"
             android:layout_marginLeft="6dip"
-            android:text="农技达人类别："
+            android:text="达人类别："
             android:textColor="#808080"
             android:textSize="17dip" />
 		<TextView
@@ -86,14 +86,16 @@
             android:textColor="#333333"
             android:textSize="18dip" 
             android:background="@drawable/spinner_back"/>
-		<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:gravity="center"
-            android:layout_marginLeft="6dip"
-            android:text="自我介绍："
-            android:textColor="#808080"
-            android:textSize="17dip" />
+		<com.zhonghaodi.customui.MyEditText
+            android:id="@+id/name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="5dip"
+            android:hint="真实姓名"
+            android:maxLength="10"
+            android:singleLine="true"
+            android:background="@drawable/inputback"
+            android:textColor="#333333" />
         <com.zhonghaodi.customui.MyEditText
             android:id="@+id/description_edit"
             android:layout_width="match_parent"

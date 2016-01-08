@@ -1,6 +1,8 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,10 +15,12 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -112,7 +116,10 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 			finish();
 			break;
 		case R.id.ok_button:
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
 			edit();
+			
 			break;
 
 		default:

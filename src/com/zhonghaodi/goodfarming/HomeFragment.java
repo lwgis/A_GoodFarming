@@ -24,15 +24,18 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -70,6 +73,9 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				false);
 		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
 				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		popupWindow.setFocusable(true);
+
 		Button newQueBtn = (Button)popView.findViewById(R.id.btn_question);
 		newQueBtn.setOnClickListener(this);
 		Button newGossipBtn = (Button)popView.findViewById(R.id.btn_gossip);

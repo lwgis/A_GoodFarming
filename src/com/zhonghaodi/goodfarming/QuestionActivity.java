@@ -1,5 +1,8 @@
 package com.zhonghaodi.goodfarming;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.sdp.Info;
 
 import com.google.gson.Gson;
@@ -259,6 +262,19 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			String content = data.getStringExtra("content");
 			if(content!=null&&content.length()>0){
 				mzEditText.setText(content);
+				mzEditText.setSelection(content.length());
+				Timer timer = new Timer();  
+			     timer.schedule(new TimerTask()  
+			     {  
+			           
+			         public void run()  
+			         {  
+			             InputMethodManager inputManager =  
+			                 (InputMethodManager)mzEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
+			             inputManager.showSoftInput(mzEditText, 0);  
+			         }  
+			           
+			     },  998);  
 			}
 		}
 	}
@@ -429,7 +445,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holder1.levelTextView.setText("达人");
+					holder1.levelTextView.setText("农技达人");
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
@@ -510,7 +526,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					holder2.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holder2.levelTextView.setText("达人");
+					holder2.levelTextView.setText("农技达人");
 					holder2.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
@@ -621,7 +637,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					holder3.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holder3.levelTextView.setText("达人");
+					holder3.levelTextView.setText("农技达人");
 					holder3.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
@@ -659,33 +675,27 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.contentTv.setTag(response);
 				holderResponse.contentTv.setUrlOnClick(QuestionActivity.this);
 				
-				if(status==0){
-					holderResponse.bottomLayout.setVisibility(View.VISIBLE);
-					holderResponse.bottomLine.setVisibility(View.VISIBLE);
-					holderResponse.countTv.setText("评论("+response.getCommentCount()+")");
-					if(question.getWriter().getId().equals(uid)){
-						holderResponse.agreeTextView.setText("采纳("+response.getAgree()+")");
-					}
-					else{
-						holderResponse.agreeTextView.setText("赞同("+response.getAgree()+")");
-					}
-					
-					holderResponse.agreeLayout.setTag(response);
-					holderResponse.agreeLayout.setOnClickListener(QuestionActivity.this);
-					holderResponse.countLayout.setTag(response);
-					holderResponse.countLayout.setOnClickListener(QuestionActivity.this);
-					if(response.isAdopt()){
-						holderResponse.cainaView.setVisibility(View.VISIBLE);
-						adopt = true;
-						
-					}
-					else{
-						holderResponse.cainaView.setVisibility(View.GONE);
-					}
+				holderResponse.bottomLayout.setVisibility(View.VISIBLE);
+				holderResponse.bottomLine.setVisibility(View.VISIBLE);
+				holderResponse.countTv.setText("评论("+response.getCommentCount()+")");
+				if(question.getWriter().getId().equals(uid)){
+					holderResponse.agreeTextView.setText("采纳("+response.getAgree()+")");
 				}
 				else{
-					holderResponse.bottomLayout.setVisibility(View.GONE);
-					holderResponse.bottomLine.setVisibility(View.GONE);
+					holderResponse.agreeTextView.setText("赞同("+response.getAgree()+")");
+				}
+				
+				holderResponse.agreeLayout.setTag(response);
+				holderResponse.agreeLayout.setOnClickListener(QuestionActivity.this);
+				holderResponse.countLayout.setTag(response);
+				holderResponse.countLayout.setOnClickListener(QuestionActivity.this);
+				if(response.isAdopt()){
+					holderResponse.cainaView.setVisibility(View.VISIBLE);
+					adopt = true;
+					
+				}
+				else{
+					holderResponse.cainaView.setVisibility(View.GONE);
 				}								
 
 				holderResponse.headIv.setTag(response.getWriter());
@@ -697,7 +707,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					holderResponse.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holderResponse.levelTextView.setText("达人");
+					holderResponse.levelTextView.setText("农技达人");
 					holderResponse.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
@@ -886,6 +896,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			bundle.putSerializable("question", question);		
 			bundle.putSerializable("response", res);
 			it.putExtras(bundle);
+			if(status==1){
+				it.putExtra("status", 1);
+			}
 			startActivity(it);
 			
 			break;
@@ -901,12 +914,25 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			response.setWriter(writer);
 			sendResponse(response, questionId);
 			mzEditText.setText("");
-			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
-			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
+			mzEditText.setFocusable(false);
+			
+			Timer timer = new Timer();  
+		     timer.schedule(new TimerTask()  
+		     {  
+		           
+		         public void run()  
+		         {  
+		        	 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+		 			 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
+		         }  
+		           
+		     },  998);
 			sendLayout.setVisibility(View.GONE);
 			resLayout.setVisibility(View.VISIBLE);
 			break;
 		case R.id.prescription_button:
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
 			Intent intent = new Intent(this,PrescriptionsActivity.class);
 			this.startActivityForResult(intent, 100);
 			break;
@@ -924,15 +950,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		if(position<2){
 			return;
 		}
-		if(status==0){
-			Response response = question.getResponses().get(position-2);
-			Intent intent = new Intent(this, CommentActivity.class);
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("question", question);		
-			bundle.putSerializable("response", response);
-			intent.putExtras(bundle);
-			startActivity(intent);
+		Response response = question.getResponses().get(position-2);
+		Intent intent = new Intent(this, CommentActivity.class);
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("question", question);		
+		bundle.putSerializable("response", response);
+		intent.putExtras(bundle);
+		if(status==1){
+			intent.putExtra("status", 1);
 		}
+		startActivity(intent);
 	}
 
 	@Override

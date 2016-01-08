@@ -66,7 +66,7 @@
                     android:singleLine="true"
                     android:text="商品名称"
                     android:textColor="#444444"
-                    android:textSize="15dip" />
+                    android:textSize="17dip" />
 
                 <TextView
                     android:id="@+id/point_text"
@@ -77,7 +77,7 @@
                     android:singleLine="true"
                     android:text="积分："
                     android:textColor="#ffff0000"
-                    android:textSize="13dip" />
+                    android:textSize="15dip" />
 
                 <TextView
                     android:id="@+id/level_text"
@@ -88,7 +88,7 @@
                     android:singleLine="true"
                     android:text="  "
                     android:textColor="#ffff0000"
-                    android:textSize="13dip" />
+                    android:textSize="15dip" />
 
                 <TextView
                     android:id="@+id/content_text"
@@ -100,7 +100,7 @@
                     android:layout_marginTop="5dip"
                     android:text="内容"
                     android:textColor="#808080"
-                    android:textSize="13dip" />
+                    android:textSize="15dip" />
             </LinearLayout>
         </ScrollView>
 		<com.zhonghaodi.customui.MyTextButton

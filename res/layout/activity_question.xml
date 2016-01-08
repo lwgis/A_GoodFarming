@@ -53,12 +53,12 @@
         ptr:ptrHeaderTextColor="#868686" />
 	<RelativeLayout 
 	    android:layout_width="match_parent"
-        android:layout_height="50dip"
+        android:layout_height="wrap_content"
 	    >
         <LinearLayout
 	        android:id="@+id/sendlayout"
 	        android:layout_width="match_parent"
-	        android:layout_height="50dip"
+	        android:layout_height="wrap_content"
 	        android:background="#ffffff" 
 	    	android:visibility="gone"
 	        android:orientation="horizontal"
@@ -84,7 +84,7 @@
 	            android:layout_marginTop="5dp"
 	            android:layout_weight="1"
 	            android:background="@null"
-	            android:lines="5"
+	            android:lines="2"
 	            android:maxLength="200"
 	            android:minHeight="40dp"
 	            android:paddingLeft="5dp"
