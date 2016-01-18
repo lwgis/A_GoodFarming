@@ -904,7 +904,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			break;
 		case R.id.send_meassage_button:
 			
-			if(mzEditText.getText().toString().trim().isEmpty()){
+			if(mzEditText.getText().toString().trim().length()<5){
+				GFToast.show(this, "回复应不少于5个字");
 				return;
 			}
 			Response response = new Response();

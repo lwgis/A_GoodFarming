@@ -274,7 +274,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			fragment.functions.add(questionFunction);
 			Function cartFunction = new Function("我的交易", MyTransactionActivity.class,R.drawable.store);
 			fragment.functions.add(cartFunction);
-			Function shareFunction = new Function("APP分享",AppShareActivity.class,R.drawable.appshare);
+			Function shareFunction = new Function("邀请好友下载",AppShareActivity.class,R.drawable.appshare);
 			fragment.functions.add(shareFunction);
 			Function minfoFunction = new Function("我的资料", InformationActivity.class,R.drawable.me_s);
 			fragment.functions.add(minfoFunction);				

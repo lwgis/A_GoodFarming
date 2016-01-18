@@ -23,7 +23,6 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 //	private View nyjsView;
 	private View miaoView;
 	private View commodityView;
-	private View recipeView;
 	private View rubblerView;
 	private View bchView;
 
@@ -45,8 +44,6 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		miaoView.setOnClickListener(this);
 		commodityView = view.findViewById(R.id.layout6);
 		commodityView.setOnClickListener(this);
-		recipeView = view.findViewById(R.id.layout7);
-		recipeView.setOnClickListener(this);
 		rubblerView = view.findViewById(R.id.layout8);
 		rubblerView.setOnClickListener(this);
 		bchView = view.findViewById(R.id.layout9);
@@ -65,7 +62,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		}
 		switch (v.getId()) {
 		case R.id.layout1:
-			Intent intent = new Intent(getActivity(), StoresActivity.class);
+			Intent intent = new Intent(getActivity(), NzdsActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.layout2:
@@ -87,10 +84,6 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		case R.id.layout6:
 			Intent intent5 = new Intent(getActivity(), CommoditiesActivity.class);
 			startActivity(intent5);
-			break;
-		case R.id.layout7:
-			Intent intent6 = new Intent(getActivity(), RecipesActivity.class);
-			startActivity(intent6);
 			break;
 		case R.id.layout8:
 			int point = GFUserDictionary.getPoint(getActivity().getApplicationContext());

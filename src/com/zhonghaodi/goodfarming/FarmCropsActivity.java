@@ -60,7 +60,7 @@ public class FarmCropsActivity extends Activity implements HandMessage,OnItemCli
 		crops = new ArrayList<Crop>();
 		adapter = new FCropAdapter();
 		gridView.getRefreshableView().setAdapter(adapter);
-		titleView.setText("植物病虫害");
+		titleView.setText("蔬菜瓜果病害");
 		loaddata();
 	}
 	

@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="测试版1.2"
+            android:text="种好地"
             android:textColor="#FFFFFF"
             android:textSize="18dip" />
 

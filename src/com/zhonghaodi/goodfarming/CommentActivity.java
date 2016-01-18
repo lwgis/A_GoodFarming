@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -104,7 +105,12 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		response = (Response)getIntent().getSerializableExtra("response");
 		status = getIntent().getIntExtra("status", 0);
 		rContent = response.getContent();
-		titleTv.setText(question.getWriter().getAlias()+"的提问");
+		String aliaString = question.getWriter().getAlias();
+		if(aliaString.length()>6){
+			aliaString = aliaString.substring(0,5);
+			aliaString = aliaString + "……";
+		}
+ 		titleTv.setText(aliaString+"的提问");
 		registerForContextMenu(pullToRefreshList);
 		loadData();
 	}
