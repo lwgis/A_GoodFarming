@@ -6,6 +6,7 @@ import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
+import android.R.integer;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 	private ImageView qrCodeIv;
 	private GFHandler<SecondCodeActivity> handler = new GFHandler<SecondCodeActivity>(this);
 	private SecondOrder secondOrder;
+	private int status;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -43,6 +45,7 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 			orderinfoView.setText(secondOrder.getSecond().getTitle()+"---1份");
 			loadQR(secondOrder.getSecond().getId(),secondOrder.getUsid());
 		}
+		status = getIntent().getIntExtra("status", 0);
 	}
 	
 	private void loadQR(final int sid,final String qrCode) {
@@ -50,7 +53,13 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 
 			@Override
 			public void run() {
-				Bitmap bitmap= HttpUtil.getSecondQRCode(sid, qrCode);
+				Bitmap bitmap;
+				if(status==0){
+					bitmap= HttpUtil.getSecondQRCode(sid, qrCode);
+				}
+				else{
+					bitmap= HttpUtil.getZfbtQRCode(sid, qrCode);
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = bitmap;

@@ -61,9 +61,9 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-	public static String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage/";
-	public static String ViewUrl = "http://121.40.62.120:8080/dfyy/view/";
+	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage8/";
+	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 //	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
 //	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
@@ -1605,6 +1605,11 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
+	public static String getMyrepliedquestions(String uid,int page){
+		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid + "/repliedquestions?page="+page);
+		return jsonString;
+	}
+	
 	public static NetResponse modifyPass(final String newpass,String uid) {
 		String jsonString = null;
 		String urlString = RootURL + "users/" + uid
@@ -1648,6 +1653,12 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
+	public static String getZfbt(double x,double y,int page){
+		String url = RootURL + "zfbt?x="+x+"&y="+y+"&page="+page;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
 	public static String getRecipes(double x,double y,int position){
 		String url = RootURL + "users/around/recipes?x="+x+"&y="+y+"&position="+position;
 		String jsonString = HttpUtil.executeHttpGet(url);
@@ -1661,9 +1672,6 @@ public class HttpUtil {
 	}
 	
 	public static NetResponse buySecond(final String uid,int sid){
-//		String url = RootURL + "seconds/"+sid+"/buy?uid="+uid;
-//		String jsonString = HttpUtil.executeHttpGet1(url);
-//		return jsonString;
 		
 		String jsonString = null;
 		String urlString = RootURL + "seconds/"+sid+"/buy";
@@ -1684,6 +1692,88 @@ public class HttpUtil {
 		};
 		
 		nameValuePairs.add(nameValuePair1);
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	public static NetResponse buyZfbt(final String uid,int sid){
+		
+		String jsonString = null;
+		String urlString = RootURL + "zfbt/"+sid+"/buy";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair1);
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	public static NetResponse confirmZfbtOrder(final String uid,int mid,final int oid){
+		
+		String jsonString = null;
+		String urlString = RootURL + "zfbt/"+mid+"/order/confirm";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair1);
+		
+		NameValuePair nameValuePair2 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(oid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "oid";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair1);
+		nameValuePairs.add(nameValuePair2);
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
@@ -1718,6 +1808,19 @@ public class HttpUtil {
 		String urlString = RootURL + "seconds/" + secondid + "/order/"+String.valueOf(orderid)+"/delete";
 		String result =HttpUtil.executeHttpDelete(urlString);
 		return result;
+	}
+	
+	public static Bitmap getZfbtQRCode(int sid,String qrCode) {
+		Bitmap bitmap = null;
+		String urlString = RootURL + "zfbt/"+sid+"/order/"+qrCode+"/QR";
+		bitmap=HttpUtil.getBitmap(urlString);
+		return bitmap;
+	}
+	
+	public static String getMyZfbts(String uid){
+		String url = RootURL + "users/"+uid+"/myzfbt";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
 	}
 	
 	public static String getServerTime(){

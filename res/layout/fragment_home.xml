@@ -78,7 +78,7 @@
            android:layout_height="34dip"
            android:layout_weight="1"
            android:layout_gravity="center_horizontal"
-           android:text="病虫害问题"
+           android:text="病害问答"
            android:textColor="#38be99"
            android:background="@drawable/topbar"
            android:gravity="center"

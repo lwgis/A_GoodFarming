@@ -1,6 +1,8 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -53,6 +55,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	private ArrayList<NetImage> netImages;
 	private GFHandler<CreateQuestionActivity> handler = new GFHandler<CreateQuestionActivity>(
 			this);
+	private ExecutorService executorService = Executors.newFixedThreadPool(4);
 	private int imageCount;
 	private boolean isSending;
 
@@ -99,13 +102,42 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					imageCount = 0;
 					for (int i = 0; i < createQuestionFragment.getImages()
 							.size(); i++) {
-						// netImage.setUrl(createQuestionFragment.getImages().get(i));
 						final int index = i;
-						new Thread(new Runnable() {
-
-							@Override
-							public void run() {
-								try {
+//						new Thread(new Runnable() {
+//
+//							@Override
+//							public void run() {
+//								try {
+//									String imageName = ImageUtil.uploadImage(
+//											createQuestionFragment.getImages()
+//													.get(index), "questions");
+//									if(imageName==null || imageName.isEmpty() || imageName.equals("error")){
+//										Message msg = handler.obtainMessage();
+//										msg.what = TypeError;
+//										msg.sendToTarget();
+//										return;
+//									}
+//									NetImage netImage = new NetImage();
+//									netImage.setUrl(imageName.trim());
+//									netImages.add(netImage);
+//									Message msg = handler.obtainMessage();
+//									msg.what = TypeImage;
+//									msg.obj = imageName.trim();
+//									msg.sendToTarget();
+//								} catch (Throwable e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//									isSending = false;
+//									Message msg = handler.obtainMessage();
+//									msg.what = TypeError;
+//									msg.obj = e.getMessage();
+//									msg.sendToTarget();
+//								}
+//							}
+//						}).start();
+						executorService.submit(new Runnable() {
+	                        public void run() {
+	                        	try {
 									String imageName = ImageUtil.uploadImage(
 											createQuestionFragment.getImages()
 													.get(index), "questions");
@@ -131,8 +163,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 									msg.obj = e.getMessage();
 									msg.sendToTarget();
 								}
-							}
-						}).start();
+	                        }
+	                });
 					}
 				} else {
 					Message msg = handler.obtainMessage();

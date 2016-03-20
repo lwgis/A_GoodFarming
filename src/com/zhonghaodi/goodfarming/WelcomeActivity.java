@@ -71,12 +71,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 //		    	 popupwindow();
 //		     }  
 //		  }, 1000); 
-//		if(bUpdate){
-//			((UILApplication)getApplicationContext()).tryUpdate();
-//		}
-//		else{
-//			sleep();
-//		}
+		
 		sleep();
 	}
 	
@@ -105,6 +100,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 				// 提交
 				editor.commit();
 				settingPopupwindow.dismiss();
+				sleep();
 			}
 		};
 		settingPopupwindow.setlistener(clickListener);

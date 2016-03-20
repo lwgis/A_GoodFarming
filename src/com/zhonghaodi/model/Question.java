@@ -19,6 +19,7 @@ public class Question implements Serializable {
 	private double x;
 	private double y;
 	private String address;
+	private Response myResponse;
 	public List<Response> getResponses() {
 		return responses;
 	}
@@ -124,6 +125,14 @@ public class Question implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public Response getMyResponse() {
+		return myResponse;
+	}
+
+	public void setMyResponse(Response myResponse) {
+		this.myResponse = myResponse;
 	}
 	
 }

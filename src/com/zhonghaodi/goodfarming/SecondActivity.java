@@ -42,6 +42,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	private TextView countTextView;
 	private TextView contentTextView;
 	private Second second;
+	private int status;
 	private MyTextButton buyBtn;
 	private MyTextButton timeBtn;
 	private GFHandler<SecondActivity> handler = new GFHandler<SecondActivity>(this);
@@ -74,6 +75,8 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			countTextView.setText("数量："+String.valueOf(second.getCount()));
 			contentTextView.setText(second.getContent());
 		}
+		status = getIntent().getIntExtra("status", 0);
+		
 	}
 
 	@Override
@@ -132,7 +135,13 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			
 			@Override
 			public void run() {
-				NetResponse netResponse = HttpUtil.buySecond(uid,second.getId());
+				
+				NetResponse netResponse;
+				if(status==0){
+					netResponse = HttpUtil.buySecond(uid,second.getId());
+				}else{
+					netResponse = HttpUtil.buyZfbt(uid,second.getId());
+				}
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
 					msg.what = 0;
@@ -221,6 +230,9 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("order", secondOrder);
 					intent.putExtras(bundle);
+					if(status==1){
+						intent.putExtra("status", status);
+					}
 					startActivity(intent);
 					this.finish();
 				}

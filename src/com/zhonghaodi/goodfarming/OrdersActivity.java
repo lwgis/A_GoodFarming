@@ -13,6 +13,7 @@ public class OrdersActivity extends Activity implements OnClickListener {
 	private View miaoView;
 	private View pointView;
 	private View guaguaView;
+	private View zfbtView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -26,6 +27,8 @@ public class OrdersActivity extends Activity implements OnClickListener {
 		recipeView.setOnClickListener(this);
 		guaguaView = findViewById(R.id.layout4);
 		guaguaView.setOnClickListener(this);
+		zfbtView = findViewById(R.id.layout5);
+		zfbtView.setOnClickListener(this);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -55,6 +58,11 @@ public class OrdersActivity extends Activity implements OnClickListener {
 		case R.id.layout4:
 			Intent intent3 = new Intent(this, GuaOrdersActivity.class);
 			startActivity(intent3);
+			break;
+		case R.id.layout5:
+			Intent intent4 = new Intent(this, MiaoOrdersActivity.class);
+			intent4.putExtra("status", 1);
+			startActivity(intent4);
 			break;
 		default:
 			break;

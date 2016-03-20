@@ -56,6 +56,7 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 	private static final float BEEP_VOLUME = 0.10f;
 	private boolean vibrate;
 	private GFHandler<OrderScanActivity> handler1 = new GFHandler<OrderScanActivity>(this);
+	private int miaostatus=0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -202,6 +203,11 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 			income(uid, codeString.split(":")[1]);
 		}
 		else if(codeString.contains("second:")){
+			miaostatus = 0;
+			RequestSecondOrder(uid,codeString.split(":")[1]);
+		}
+		else if(codeString.contains("zfbt:")){
+			miaostatus = 1;
 			RequestSecondOrder(uid,codeString.split(":")[1]);
 		}
 		
@@ -356,6 +362,9 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 				Bundle bundle = new Bundle();
 				bundle.putSerializable("order", secondOrder);
 				intent.putExtras(bundle);
+				if(miaostatus ==1){
+					intent.putExtra("status", miaostatus);
+				}
 				OrderScanActivity.this.startActivityForResult(intent, 2);
 				
 			} else {

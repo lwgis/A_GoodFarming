@@ -22,6 +22,7 @@ public class User implements Serializable {
 	private String tjCode;
 	private List<UserCrop> crops;
 	private int levelID;
+	private String identifier;
 	
 	public User() {
 		// TODO Auto-generated constructor stub
@@ -160,6 +161,14 @@ public class User implements Serializable {
 
 	public void setLevelID(int levelID) {
 		this.levelID = levelID;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 	
 }

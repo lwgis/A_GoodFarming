@@ -100,7 +100,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				Intent it=new Intent();
 				it.setClass(getActivity(), function.getActivityClass());
 				if(function.getName().equals("我的交易") || function.getName().equals("我的资料") 
-						|| function.getName().equals("APP分享")){
+						|| function.getName().equals("邀请好友下载")){
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("user", user);
 					it.putExtras(bundle);

@@ -42,6 +42,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 	private SecondOrderAdapter adapter;
 	private LinearLayout emptyLayout;
 	private GFHandler<MiaoOrdersActivity> handler = new GFHandler<MiaoOrdersActivity>(this);
+	int status;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -54,7 +55,12 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 		emptyLayout = (LinearLayout)findViewById(R.id.empty_layout);
 		secondOrders = new ArrayList<SecondOrder>();
 		adapter = new SecondOrderAdapter();
-		pullToRefreshListView.setAdapter(adapter);	
+		pullToRefreshListView.setAdapter(adapter);
+		status = getIntent().getIntExtra("status", 0);
+		if(status==1){
+			TextView titleTextView = (TextView)findViewById(R.id.title_text);
+			titleTextView.setText("政府补贴产品订单");
+		}
 		loadData();
 	}
 	
@@ -64,7 +70,13 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getMySeconds(uid);
+				String jsonString;
+				if(status==0){
+					jsonString = HttpUtil.getMySeconds(uid);
+				}
+				else{
+					jsonString = HttpUtil.getMyZfbts(uid);
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -166,6 +178,9 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("order", secondOrder);
 			intent.putExtras(bundle);
+			if(status==1){
+				intent.putExtra("status", status);
+			}
 			startActivity(intent);
 		}
 	}

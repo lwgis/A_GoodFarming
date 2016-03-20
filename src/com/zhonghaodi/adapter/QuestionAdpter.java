@@ -149,15 +149,15 @@ public class QuestionAdpter extends BaseAdapter {
 			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
-				holder1.levelTextView.setText("农友");
+				holder1.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
 				holder1.levelTextView.setBackgroundResource(R.drawable.back_ny);
 				break;
 			case 2:
-				holder1.levelTextView.setText("农技达人");
+				holder1.levelTextView.setText(question.getWriter().getIdentifier()+"农技达人");
 				holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
 				break;
 			case 3:
-				holder1.levelTextView.setText("农资店");
+				holder1.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
 				holder1.levelTextView.setBackgroundResource(R.drawable.back_dp);
 				break;
 			case 4:
@@ -228,15 +228,15 @@ public class QuestionAdpter extends BaseAdapter {
 			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
-				holder2.levelTextView.setText("农友");
+				holder2.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
 				holder2.levelTextView.setBackgroundResource(R.drawable.back_ny);
 				break;
 			case 2:
-				holder2.levelTextView.setText("农技达人");
+				holder2.levelTextView.setText(question.getWriter().getIdentifier()+"农技达人");
 				holder2.levelTextView.setBackgroundResource(R.drawable.back_dr);
 				break;
 			case 3:
-				holder2.levelTextView.setText("农资店");
+				holder2.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
 				holder2.levelTextView.setBackgroundResource(R.drawable.back_dp);
 				break;
 			case 4:
@@ -334,15 +334,15 @@ public class QuestionAdpter extends BaseAdapter {
 			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
-				holder3.levelTextView.setText("农友");
+				holder3.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
 				holder3.levelTextView.setBackgroundResource(R.drawable.back_ny);
 				break;
 			case 2:
-				holder3.levelTextView.setText("农技达人");
+				holder3.levelTextView.setText(question.getWriter().getIdentifier()+"农技达人");
 				holder3.levelTextView.setBackgroundResource(R.drawable.back_dr);
 				break;
 			case 3:
-				holder3.levelTextView.setText("农资店");
+				holder3.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
 				holder3.levelTextView.setBackgroundResource(R.drawable.back_dp);
 				break;
 			case 4:

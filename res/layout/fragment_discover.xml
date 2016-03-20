@@ -181,6 +181,36 @@
 		    </RelativeLayout>
 		    
 		    <RelativeLayout 
+	            android:id="@+id/layout7"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg7"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/youhui"
+		            />
+		        <TextView 
+		            android:id="@+id/avname7"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg7"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="种好地补贴商品抢购"
+		            />
+		        
+		    </RelativeLayout>
+		    
+		    <RelativeLayout 
 	            android:id="@+id/layout6"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"

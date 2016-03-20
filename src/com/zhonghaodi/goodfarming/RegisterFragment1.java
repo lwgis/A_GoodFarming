@@ -247,6 +247,10 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 				String code = msg.obj.toString().trim();
 				saveCode(code);
 			}
+			else{
+				GFToast.show(getActivity().getApplicationContext(),"验证码发送错误。");
+			}
+			break;
 		case 2:
 			GFToast.show(getActivity().getApplicationContext(),msg.obj.toString());
 			break;

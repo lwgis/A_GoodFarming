@@ -308,15 +308,15 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 				holderSolution.nameTv.setText(disease.getSolutions().get(position-1).getWriter().getAlias());
 				switch (disease.getSolutions().get(position-1).getWriter().getLevelID()) {
 				case 1:
-					holderSolution.levelTextView.setText("农友");
+					holderSolution.levelTextView.setText(disease.getSolutions().get(position-1).getWriter().getIdentifier()+"农友");
 					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_ny);
 					break;
 				case 2:
-					holderSolution.levelTextView.setText("农技达人");
+					holderSolution.levelTextView.setText(disease.getSolutions().get(position-1).getWriter().getIdentifier()+"农技达人");
 					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holderSolution.levelTextView.setText("农资店");
+					holderSolution.levelTextView.setText(disease.getSolutions().get(position-1).getWriter().getIdentifier()+"农资店");
 					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:

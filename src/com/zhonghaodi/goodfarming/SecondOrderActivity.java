@@ -3,6 +3,8 @@ package com.zhonghaodi.goodfarming;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -31,6 +33,7 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 	private MyTextButton okButton;
 	private GFHandler<SecondOrderActivity> handler = new GFHandler<SecondOrderActivity>(this);
 	private SecondOrder secondOrder;
+	private int status;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 			timeTextView.setText("时间："+secondOrder.getTime());
 			contentTextView.setText(secondOrder.getSecond().getContent());
 		}
+		status = getIntent().getIntExtra("status", 0);
 	}
 
 	@Override
@@ -67,7 +71,12 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 			this.finish();
 			break;
 		case R.id.buy_button:
-			confirmOrder();
+			if(status==0){
+				confirmOrder();
+			}
+			else{
+				confirmZfbtOrder();
+			}
 			break;
 
 		default:
@@ -84,6 +93,27 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+	}
+	
+	public void confirmZfbtOrder(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				NetResponse netResponse = HttpUtil.confirmZfbtOrder(GFUserDictionary.getUserId(SecondOrderActivity.this),secondOrder.getSecond().getId(), secondOrder.getId());
+				Message msg = handler.obtainMessage();
+				if(netResponse.getStatus()==1){
+					msg.what = 0;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = -1;
+					msg.obj = netResponse.getMessage();
+				}
 				msg.sendToTarget();
 				
 			}
