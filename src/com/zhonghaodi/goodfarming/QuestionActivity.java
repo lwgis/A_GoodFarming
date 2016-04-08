@@ -1,23 +1,39 @@
 package com.zhonghaodi.goodfarming;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.sdp.Info;
+
+import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tencent.connect.share.QQShare;
+import com.tencent.connect.share.QzoneShare;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
 import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.customui.HolderResponse;
+import com.zhonghaodi.customui.MorePopupWindow;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
+import com.zhonghaodi.goodfarming.AppShareActivity.BaseUiListener;
 import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFPointDictionary;
@@ -36,17 +52,22 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,12 +102,20 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private MyTextButton sendTextButton;
 	private MyTextButton prescriptionButton;
 	private int status;
+	private MorePopupWindow morePopupWindow;
+	public IWXAPI wxApi;
+	public Tencent mTencent;
+	private int rid;
+	private User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_question);
+		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
+		wxApi.registerApp(HttpUtil.WX_APP_ID);
+		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -146,6 +175,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		pullToRefreshListView.setOnItemClickListener(this);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
 		uid=GFUserDictionary.getUserId(getApplicationContext());
+		loadUser();
 	}
 	
 	@Override
@@ -278,6 +308,21 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 		}
 	}
+	
+	public void loadUser() {
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getUser(GFUserDictionary
+						.getUserId(QuestionActivity.this));
+				Message msg = handler.obtainMessage();
+				msg.what=8;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
 
 	private void loadData() {
 		new Thread(new Runnable() {
@@ -326,6 +371,20 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				}
 			}
 		}).start();
+	}
+	
+	public void popwindow(){
+		morePopupWindow = new MorePopupWindow(this,this);
+		morePopupWindow.setFocusable(true);
+		morePopupWindow.setOutsideTouchable(true);
+		morePopupWindow.update();
+    	ColorDrawable dw = new ColorDrawable(0xb0000000);
+    	morePopupWindow.setBackgroundDrawable(dw);
+    	morePopupWindow.showAtLocation(findViewById(R.id.main), 
+				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+	private String buildTransaction(final String type) {
+		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
 	}
 
 	class ResponseAdapter extends BaseAdapter {
@@ -689,6 +748,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				holderResponse.agreeLayout.setOnClickListener(QuestionActivity.this);
 				holderResponse.countLayout.setTag(response);
 				holderResponse.countLayout.setOnClickListener(QuestionActivity.this);
+				holderResponse.moreImage.setTag(response.getId());
+				holderResponse.moreImage.setOnClickListener(QuestionActivity.this);
 				if(response.isAdopt()){
 					holderResponse.cainaView.setVisibility(View.VISIBLE);
 					adopt = true;
@@ -937,6 +998,86 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			Intent intent = new Intent(this,PrescriptionsActivity.class);
 			this.startActivityForResult(intent, 100);
 			break;
+		case R.id.more_image:
+			rid = Integer.parseInt(v.getTag().toString());
+			popwindow();
+			break;
+		case R.id.img_more_report:
+			Intent it1 = new Intent(this, ReportActivity.class);
+			it1.putExtra("status", status);
+			it1.putExtra("qid", questionId);
+			it1.putExtra("rid", rid);
+			startActivity(it1);
+			morePopupWindow.dismiss();
+			break;
+		case R.id.img_share_weixin:
+			if(!wxApi.isWXAppInstalled()){
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
+				return;
+			}
+			WXWebpageObject webpage = new WXWebpageObject();
+			webpage.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+			WXMediaMessage msg = new WXMediaMessage(webpage);
+			msg.title = "种好地APP:让种地不再难";
+			msg.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
+			Bitmap thumb = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
+			msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+			
+			SendMessageToWX.Req req = new SendMessageToWX.Req();
+			req.transaction = buildTransaction("webpage");
+			req.message = msg;
+			req.scene=SendMessageToWX.Req.WXSceneSession;
+			wxApi.sendReq(req);
+			morePopupWindow.dismiss();
+			break;
+		case R.id.img_share_circlefriends:
+			if(!wxApi.isWXAppInstalled()){
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
+				return;
+			}
+			WXWebpageObject webpage1 = new WXWebpageObject();
+			webpage1.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
+			msg1.title = "种好地APP:让种地不再难";
+			msg1.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
+			Bitmap thumb1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
+			msg1.thumbData = PublicHelper.bmpToByteArray(thumb1, true);
+			
+			SendMessageToWX.Req req1 = new SendMessageToWX.Req();
+			req1.transaction = buildTransaction("webpage");
+			req1.message = msg1;
+			req1.scene=SendMessageToWX.Req.WXSceneTimeline;
+			wxApi.sendReq(req1);
+			morePopupWindow.dismiss();
+			break;
+		case R.id.img_share_qq:
+			Bundle params = new Bundle();
+		    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+		    params.putString(QQShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");
+		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");
+		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());
+		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://121.40.62.120/appimage/apps/appicon.png");
+		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
+		    mTencent.shareToQQ(this, params, new BaseUiListener());
+		    morePopupWindow.dismiss();
+			
+			break;
+		case R.id.img_share_qzone:
+			Bundle params1 = new Bundle();
+			params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
+		    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");//必填
+		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");//选填
+		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());//必填
+		    ArrayList<String> urlsList = new ArrayList<String>();
+		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
+		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_2_1440519318/550");
+		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_3_1440519318/550");
+		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_4_1440519318/550");
+		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_5_1440519318/550");
+		    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urlsList);
+		    mTencent.shareToQzone(this, params1, new BaseUiListener());
+		    morePopupWindow.dismiss();
+			break;
 		default:
 			break;
 		}
@@ -1070,9 +1211,36 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				GFToast.show(getApplicationContext(),msg.obj.toString());
 			}
 			break;
+		case 8:
+			if (msg.obj == null) {
+				Toast.makeText(this, "获取失败,请稍后再试",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+			user = (User) GsonUtil
+					.fromJson(msg.obj.toString(), User.class);
+			break;
 
 		default:
 			break;
+		}
+		
+	}
+	
+	class BaseUiListener implements IUiListener {
+		
+		protected void doComplete(JSONObject values) {
+			
+		}
+		@Override
+		public void onError(UiError e) {
+		}
+		@Override
+		public void onCancel() {
+		}
+		@Override
+		public void onComplete(Object arg0) {
+			// TODO Auto-generated method stub
 		}
 		
 	}

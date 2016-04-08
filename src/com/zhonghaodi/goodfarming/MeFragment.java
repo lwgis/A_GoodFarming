@@ -205,6 +205,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.guanzhuView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
+				holderMeInfo.qrImageView.setOnClickListener(MeFragment.this);
 				break;
 			case 1:
 				holdFunction=(HoldFunction)convertView.getTag();
@@ -251,6 +252,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			siginButton.setEnabled(false);
 			signin();
 			break;
+		case R.id.qrcode_img:
+			Intent intent2 = new Intent(getActivity(), AppdownActivity.class);
+			intent2.putExtra("content", HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());
+			getActivity().startActivity(intent2);
+			break;
 		default:
 			break;
 		}
@@ -280,6 +286,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			fragment.functions.add(minfoFunction);				
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
 			fragment.functions.add(feedbackFunction);
+//			Function pointruleFunction = new Function("积分规则", PointruleActivity.class,R.drawable.report);
+//			fragment.functions.add(pointruleFunction);
 			fragment.pullToRefreshList.onRefreshComplete();
 			adapter.notifyDataSetChanged();
 			break;

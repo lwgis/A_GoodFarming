@@ -25,6 +25,7 @@ public class Holder_r1 {
 	public TextView lelTextView;
 	public TextView countTextView;
 	public TextView agreeTextView;
+	public View cainaView;
 
 		public Holder_r1(View view) {
 			nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -43,5 +44,6 @@ public class Holder_r1 {
 			lelTextView = (TextView)view.findViewById(R.id.lel_text);
 			countTextView = (TextView)view.findViewById(R.id.count_tv);
 			agreeTextView = (TextView)view.findViewById(R.id.zancount_tv);
+			cainaView = view.findViewById(R.id.cainalayout);
 		}
 }

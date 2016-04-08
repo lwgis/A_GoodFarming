@@ -28,6 +28,8 @@ public class Holder_r2 {
 	public	UrlTextView ctTv;
 	public	RoundedImageView hdIv;
 	public TextView lelTextView;
+	public View cainaView;
+	
 	public Holder_r2(View view) {
 		nameTv = (TextView) view.findViewById(R.id.name_text);
 		timeTv = (TextView) view.findViewById(R.id.time_text);
@@ -48,6 +50,7 @@ public class Holder_r2 {
 		lelTextView = (TextView)view.findViewById(R.id.lel_text);
 		countTextView = (TextView)view.findViewById(R.id.count_tv);
 		agreeTextView = (TextView)view.findViewById(R.id.zancount_tv);
+		cainaView = view.findViewById(R.id.cainalayout);
 		
 		reSetImageViews();
 	}

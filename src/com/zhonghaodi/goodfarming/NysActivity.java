@@ -56,6 +56,8 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,7 +66,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NysActivity extends Activity implements HandMessage,OnClickListener,OnSizeChangedListener {
+public class NysActivity extends Activity implements HandMessage,OnClickListener,OnSizeChangedListener,OnItemClickListener {
 
 	private String uid;
 	private String mid;
@@ -137,6 +139,8 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		adapter = new NysAdapter();
 		allQuestions = new ArrayList<Question>();
 		pullToRefreshList.getRefreshableView().setAdapter(adapter);
+		pullToRefreshList.setOnItemClickListener(this);
+		loadData();
 		
 	}
 	
@@ -144,7 +148,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		loadData();
+		
 	}
 	
 	@Override
@@ -379,8 +383,8 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder1.timeTv.setText(question.getTime());
 				holder1.contentTv.setText(question.getContent());
 				
-				holder1.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
+				holder1.countTv.setText(user.getLevel().getName()
+						+ "给出的答案是：");
 				if(question.getCrop()!=null){
 					holder1.cropTv.setVisibility(View.VISIBLE);
 					holder1.cropTv.setText(question.getCrop().getName());
@@ -426,7 +430,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder1.ctTv.setHtmlText(PublicHelper.TrimRight(response.getContent()));
 				holder1.countTextView.setText("评论("+response.getCommentCount()+")");
 				holder1.agreeTextView.setText("赞同("+response.getAgree()+")");
-				switch (user.getLevelID()) {
+				switch (user.getLevel().getId()) {
 				case 1:
 					holder1.lelTextView.setText(user.getIdentifier()+"农友");
 					holder1.lelTextView.setBackgroundResource(R.drawable.back_ny);
@@ -449,6 +453,13 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					break;
 				default:
 					break;
+				}
+				if(response.isAdopt()){
+					holder1.cainaView.setVisibility(View.VISIBLE);
+					
+				}
+				else{
+					holder1.cainaView.setVisibility(View.GONE);
 				}
 				break;
 			case 1:
@@ -498,8 +509,8 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder2.imageView3.setIndex(2);
 					holder2.imageView3.setImages(question.getAttachments(),"questions");
 				}
-				holder2.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
+				holder2.countTv.setText(user.getLevel().getName()
+						+ "给出的答案是：");
 				holder2.headIv.setTag(question.getWriter());
 				if(question.getAddress()!=null){
 					holder2.addressTextView.setText(question.getAddress());
@@ -537,7 +548,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder2.ctTv.setHtmlText(PublicHelper.TrimRight(response.getContent()));	
 				holder2.countTextView.setText("评论("+response.getCommentCount()+")");
 				holder2.agreeTextView.setText("赞同("+response.getAgree()+")");
-				switch (user.getLevelID()) {
+				switch (user.getLevel().getId()) {
 				case 1:
 					holder2.lelTextView.setText(user.getIdentifier()+"农友");
 					holder2.lelTextView.setBackgroundResource(R.drawable.back_ny);
@@ -560,6 +571,13 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					break;
 				default:
 					break;
+				}
+				if(response.isAdopt()){
+					holder2.cainaView.setVisibility(View.VISIBLE);
+					
+				}
+				else{
+					holder2.cainaView.setVisibility(View.GONE);
 				}
 				break;
 			case 2:
@@ -636,8 +654,8 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder3.imageView6.setIndex(5);
 					holder3.imageView6.setImages(question.getAttachments(),"questions");
 				}
-				holder3.countTv.setText("已有" + question.getResponsecount()
-						+ "个答案");
+				holder3.countTv.setText(user.getLevel().getName()
+						+ "给出的答案是：");
 				holder3.headIv.setTag(question.getWriter());
 				if(question.getAddress()!=null){
 					holder3.addressTextView.setText(question.getAddress());
@@ -675,7 +693,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				holder3.ctTv.setHtmlText(PublicHelper.TrimRight(response.getContent()));
 				holder3.countTextView.setText("评论("+response.getCommentCount()+")");
 				holder3.agreeTextView.setText("赞同("+response.getAgree()+")");
-				switch (user.getLevelID()) {
+				switch (user.getLevel().getId()) {
 				case 1:
 					holder3.lelTextView.setText(user.getIdentifier()+"农友");
 					holder3.lelTextView.setBackgroundResource(R.drawable.back_ny);
@@ -699,6 +717,13 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 				default:
 					break;
 				}
+				if(response.isAdopt()){
+					holder3.cainaView.setVisibility(View.VISIBLE);
+					
+				}
+				else{
+					holder3.cainaView.setVisibility(View.GONE);
+				}
 				break;
 			case 3:
 				holderNysInfo = (NysInfoHolder) convertView.getTag();
@@ -708,20 +733,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 						ImageOptions.optionsNoPlaceholder);
 				holderNysInfo.titleTv.setText(user.getAlias());
 				holderNysInfo.jifenTv.setText(user.getDescription());
-//				if(user.getLevel().getId()==2){
-//					List<UserCrop> userCrops = user.getCrops();
-//					String str = "";
-//					for (Iterator iterator = userCrops.iterator(); iterator
-//							.hasNext();) {
-//						UserCrop userCrop = (UserCrop) iterator.next();
-//						str+=userCrop.getCrop().getName()+" ";
-//					}
-//					str = str.trim();
-//					holderNysInfo.jifenTv.setText(str);
-//				}
-//				else{
-//					holderNysInfo.jifenTv.setText(user.getDescription());
-//				}
+
 				if(bfollow){
 					holderNysInfo.followButton.setText("取消关注");
 				}
@@ -822,6 +834,18 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		default:
 			break;
 		}
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		if(position<2){
+			return;
+		}
+		Intent it = new Intent(this,QuestionActivity.class);
+		it.putExtra("questionId", allQuestions.get(position - 2).getId());
+		startActivity(it);
 	}
 	
 	private void displayInput(){

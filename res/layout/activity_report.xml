@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            android:text="取消"
+            android:textColor="#ffffff"
+            android:textSize="20dip" 
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="举报"
+            android:textColor="#FFFFFF"
+            android:textSize="18dip" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+		<RadioGroup android:id="@+id/radioGroup"  
+		    android:layout_width="match_parent" 
+		    android:layout_height="wrap_content"
+		    android:layout_margin="10dip"
+		    android:orientation="horizontal"
+		    android:gravity="center_horizontal"
+		    >
+
+		</RadioGroup>
+        
+        
+        <com.zhonghaodi.customui.MyEditText
+            android:id="@+id/desc_edit"
+            style="@style/my_edittext_style"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="输入举报内容（50字以内）"
+            android:maxLength="50"
+            android:singleLine="false"
+            android:gravity="top|left"
+            android:textColor="#333333" />
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/ok_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_shape"
+            android:text="举报"
+            android:textColor="#ffffff"
+            android:textSize="18dip" />
+    </LinearLayout>
+
+</LinearLayout>

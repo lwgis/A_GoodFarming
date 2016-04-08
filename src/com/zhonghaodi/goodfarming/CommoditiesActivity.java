@@ -62,6 +62,16 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 				finish();
 			}
 		});
+		Button gzBtn = (Button)findViewById(R.id.gz_button);
+		gzBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(CommoditiesActivity.this, PointruleActivity.class);
+				startActivity(intent);
+			}
+		});
 		pullToRefreshGridView = (PullToRefreshGridView)findViewById(R.id.pull_refresh_grid);
 		pullToRefreshGridView.setMode(Mode.BOTH);
 		pullToRefreshGridView.setOnRefreshListener(new OnRefreshListener2<GridView>() {

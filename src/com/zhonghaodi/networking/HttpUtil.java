@@ -1527,6 +1527,14 @@ public class HttpUtil {
 		return result;	
 	}
 	
+	public static String getPointrule(){
+		
+		String urlString = HttpUtil.RootURL+"dics/pointrule";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
+	}
+	
 	public static String getQuansString(String uid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/"+uid + "/quans/timeline");
 		return jsonString;
@@ -1968,6 +1976,63 @@ public class HttpUtil {
 			}
 		};
 		nameValuePairs.add(nameValuePair3);
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
+	 * 举报
+	 * @return
+	 */
+	public static NetResponse sendReport(int status,final String uid,final int qid,int rid,final String report) {
+		String urlString;
+		if (status==0) {
+			urlString = RootURL + "questions/" + qid + "/responses/" + rid
+					+ "/report";
+		}
+		else{
+			urlString = RootURL + "gossips/" + qid + "/responses/" + rid
+					+ "/report";
+		}
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		nameValuePairs.add(nameValuePair1);
+		NameValuePair nameValuePair2 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return report;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "reason";
+			}
+		};
+		nameValuePairs.add(nameValuePair2);
+		
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {

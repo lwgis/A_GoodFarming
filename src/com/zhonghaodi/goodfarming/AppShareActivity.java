@@ -18,6 +18,7 @@ import com.tencent.tauth.UiError;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.HttpUtil;
@@ -100,6 +101,7 @@ public class AppShareActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.layout2:
 			intent = new Intent(this, AppdownActivity.class);
+			intent.putExtra("content", HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());
 			startActivity(intent);
 			break;
 			
@@ -122,6 +124,7 @@ public class AppShareActivity extends Activity implements OnClickListener {
 			req.scene=SendMessageToWX.Req.WXSceneSession;
 			wxApi.sendReq(req);
 			sharePopupwindow.dismiss();
+			
 			break;
 		case R.id.img_share_circlefriends:
 			if(!wxApi.isWXAppInstalled()){

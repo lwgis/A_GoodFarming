@@ -88,7 +88,19 @@
 		                    android:textSize="12dip"
 		                     />                
 	                </LinearLayout>
-	            </LinearLayout>				
+	            </LinearLayout>	
+	            <ImageView
+	                android:id="@+id/more_image"
+	                android:layout_width="25dp"
+	                android:layout_height="25dp"
+	                android:layout_marginRight="10dp"
+	                android:layout_marginBottom="10dp"
+	                android:layout_alignParentRight="true"
+	                android:layout_alignParentBottom="true"
+	                android:scaleType="centerCrop"
+	                android:src="@drawable/more1" 
+	                android:focusable="false"
+	                />			
 	      </RelativeLayout>
 	
 	      <View  
@@ -132,6 +144,44 @@
 	            android:focusable="false"
 	            >
 	            <LinearLayout 
+	                android:id="@+id/count_layout"
+	                android:layout_width="0dip"
+                	android:layout_height="wrap_content"
+                	android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal"
+	                >
+	                <ImageView
+		                android:layout_width="20dp"
+		                android:layout_height="20dp"
+		                android:layout_margin="5dip"
+		                android:padding="2dip"
+		                android:scaleType="centerCrop"
+		                android:src="@drawable/comment" 
+		                android:focusable="false"
+		                />
+	                <TextView
+	                    android:id="@+id/count_tv"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="20dip"
+	                    android:gravity="center_vertical"
+	                    android:layout_marginTop="5dip"
+	                    android:text="10"
+	                    android:textColor="#808080"
+	                    android:textSize="14dip" 
+	                    android:focusable="false"
+	                    />
+	            </LinearLayout>
+                <View  
+				   android:layout_width="0.2px"  
+				   android:layout_height="match_parent" 
+				   android:layout_marginLeft="6dip"
+				   android:layout_marginTop="0dip"
+				   android:layout_marginBottom="0dip"
+				   android:layout_marginRight="6dip"
+				   android:background="#cccccc"  
+				/> 
+				<LinearLayout 
                     android:id="@+id/zan_layout"
                     android:layout_width="0dip"
                 	android:layout_height="wrap_content"
@@ -164,44 +214,6 @@
 	                    android:focusable="false"
 	                    />
                 </LinearLayout>
-                <View  
-				   android:layout_width="0.2px"  
-				   android:layout_height="match_parent" 
-				   android:layout_marginLeft="6dip"
-				   android:layout_marginTop="0dip"
-				   android:layout_marginBottom="0dip"
-				   android:layout_marginRight="6dip"
-				   android:background="#cccccc"  
-				/> 
-				<LinearLayout 
-	                android:id="@+id/count_layout"
-	                android:layout_width="0dip"
-                	android:layout_height="wrap_content"
-                	android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal"
-	                >
-	                <ImageView
-		                android:layout_width="20dp"
-		                android:layout_height="20dp"
-		                android:layout_margin="5dip"
-		                android:padding="2dip"
-		                android:scaleType="centerCrop"
-		                android:src="@drawable/comment" 
-		                android:focusable="false"
-		                />
-	                <TextView
-	                    android:id="@+id/count_tv"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="20dip"
-	                    android:gravity="center_vertical"
-	                    android:layout_marginTop="5dip"
-	                    android:text="10"
-	                    android:textColor="#808080"
-	                    android:textSize="14dip" 
-	                    android:focusable="false"
-	                    />
-	            </LinearLayout>
 	           
 	        </LinearLayout>
 	    </LinearLayout>	
