@@ -71,6 +71,34 @@
 		        
 		    </RelativeLayout>
 		    <RelativeLayout 
+	            android:id="@+id/layout3"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg3"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/crop"
+		            />
+		        <TextView 
+		            android:id="@+id/avname3"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg3"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="俺的作物"
+		            />		        
+		    </RelativeLayout>
+		    <RelativeLayout 
 	            android:id="@+id/layout2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -98,6 +126,35 @@
 		            android:text="我的拉拉呱"
 		            />
 		        
+		    </RelativeLayout>
+		    
+		    <RelativeLayout 
+	            android:id="@+id/layout4"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg4"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/crop"
+		            />
+		        <TextView 
+		            android:id="@+id/avname4"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg4"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="我的种植分享"
+		            />		        
 		    </RelativeLayout>
 	       </LinearLayout>
     </ScrollView>

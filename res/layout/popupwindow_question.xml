@@ -27,5 +27,15 @@
         android:text="拉拉呱"
         android:textColor="#ffffff"
         android:textSize="20dip" />
-   
+    <Button
+        android:id="@+id/btn_plantinfo"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:background="@drawable/menu_item_bg"
+        android:shadowColor="#222222"
+        android:shadowDy="-2"
+        android:shadowRadius="2"
+        android:text="种植分享"
+        android:textColor="#ffffff"
+        android:textSize="20dip" />
 </LinearLayout>

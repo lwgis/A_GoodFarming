@@ -91,8 +91,7 @@ public class Crop implements Parcelable,Serializable {
 
 	@Override
 	public String toString() {
-		return "Crop [id=" + id + ", category=" + category + ", name=" + name
-				+ "]";
+		return name;
 	}
 
 

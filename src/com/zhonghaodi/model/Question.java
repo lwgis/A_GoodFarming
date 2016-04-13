@@ -20,6 +20,8 @@ public class Question implements Serializable {
 	private double y;
 	private String address;
 	private Response myResponse;
+	private Crop cate;
+	private int agree;
 	public List<Response> getResponses() {
 		return responses;
 	}
@@ -133,6 +135,22 @@ public class Question implements Serializable {
 
 	public void setMyResponse(Response myResponse) {
 		this.myResponse = myResponse;
+	}
+
+	public Crop getCate() {
+		return cate;
+	}
+
+	public void setCate(Crop cate) {
+		this.cate = cate;
+	}
+
+	public int getAgree() {
+		return agree;
+	}
+
+	public void setAgree(int agree) {
+		this.agree = agree;
 	}
 	
 }

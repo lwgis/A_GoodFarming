@@ -6,7 +6,7 @@ import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
-import com.zhonghaodi.model.ReportResponse;
+import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.model.Solution;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -195,7 +195,7 @@ public class ReportActivity extends Activity implements HandMessage,OnClickListe
 			if(msg.obj!=null){
 				Gson gson = new Gson();
 				String jsonString = (String) msg.obj;
-				ReportResponse reportResponse = gson.fromJson(jsonString, ReportResponse.class);
+				PostResponse reportResponse = gson.fromJson(jsonString, PostResponse.class);
 				if(reportResponse == null){
 					GFToast.show(getApplicationContext(),"举报错误");
 				}

@@ -293,7 +293,12 @@ public class CommentActivity extends Activity implements UrlOnClick,
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holder1.levelTextView.setText(response.getWriter().getIdentifier()+"农资店");
+					if(response.getWriter().isTeamwork()){
+						holder1.levelTextView.setText(response.getWriter().getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holder1.levelTextView.setText(response.getWriter().getIdentifier()+"农资店");
+					}
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:
@@ -337,7 +342,12 @@ public class CommentActivity extends Activity implements UrlOnClick,
 					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holderCommentTextMessage.levelTextView.setText(comment.getWriter().getIdentifier()+"农资店");
+					if(comment.getWriter().isTeamwork()){
+						holderCommentTextMessage.levelTextView.setText(comment.getWriter().getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holderCommentTextMessage.levelTextView.setText(comment.getWriter().getIdentifier()+"农资店");
+					}					
 					holderCommentTextMessage.levelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:

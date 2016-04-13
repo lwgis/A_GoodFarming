@@ -103,44 +103,18 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					for (int i = 0; i < createQuestionFragment.getImages()
 							.size(); i++) {
 						final int index = i;
-//						new Thread(new Runnable() {
-//
-//							@Override
-//							public void run() {
-//								try {
-//									String imageName = ImageUtil.uploadImage(
-//											createQuestionFragment.getImages()
-//													.get(index), "questions");
-//									if(imageName==null || imageName.isEmpty() || imageName.equals("error")){
-//										Message msg = handler.obtainMessage();
-//										msg.what = TypeError;
-//										msg.sendToTarget();
-//										return;
-//									}
-//									NetImage netImage = new NetImage();
-//									netImage.setUrl(imageName.trim());
-//									netImages.add(netImage);
-//									Message msg = handler.obtainMessage();
-//									msg.what = TypeImage;
-//									msg.obj = imageName.trim();
-//									msg.sendToTarget();
-//								} catch (Throwable e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//									isSending = false;
-//									Message msg = handler.obtainMessage();
-//									msg.what = TypeError;
-//									msg.obj = e.getMessage();
-//									msg.sendToTarget();
-//								}
-//							}
-//						}).start();
 						executorService.submit(new Runnable() {
 	                        public void run() {
 	                        	try {
-									String imageName = ImageUtil.uploadImage(
-											createQuestionFragment.getImages()
-													.get(index), "questions");
+									String imageName;
+									if (status==0||status==1) {
+										imageName = ImageUtil.uploadImage(createQuestionFragment.getImages().get(index),
+												"questions");
+									}
+									else{
+										imageName = ImageUtil.uploadImage(createQuestionFragment.getImages().get(index),
+												"plant");
+									}
 									if(imageName==null || imageName.isEmpty() || imageName.equals("error")){
 										Message msg = handler.obtainMessage();
 										msg.what = TypeError;
@@ -180,8 +154,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		if(status==0){
 			showFragment(0);
 		}
-		else{
+		else if(status==1){
 			showFragment(1);
+		}
+		else{
+			showFragment(2);
 		}
 	}
 
@@ -208,6 +185,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			transation.hide(createQuestionFragment);
 			break;
 		case 2:
+			transation.show(selectCropFragment);
+			setTitle("选择农作物种类");
+			transation.hide(createQuestionFragment);
+			break;
+		case 3:
 			transation.setCustomAnimations(R.anim.fragment_rightin,
 					R.anim.fragment_fadeout);
 			transation.show(createQuestionFragment);
@@ -351,7 +333,16 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				
 				Crop crop = new Crop();
 				crop.setId(activity.cropId);
-				question.setCrop(crop);
+				if(status==0||status==1){
+					question.setCrop(crop);
+				}
+				else{
+					//设置分享类别
+					Crop crop2 = (Crop)activity.createQuestionFragment.getCropTextView().getTag();
+					question.setCate(crop2);					
+					//设置作物类别
+					question.setCrop(crop);
+				}
 				
 				question.setInform("0");
 				question.setTime("2015-04-08 00:00:00");
@@ -370,10 +361,12 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 							if(status==0){
 								HttpUtil.sendQuestion(question);
 							}
-							else{
+							else if(status==1){
 								HttpUtil.sendGossip(question);
 							}
-							
+							else{
+								HttpUtil.sendPlant(question);
+							}
 							Message msg = activity.handler.obtainMessage();
 							msg.what = TypeQuestion;
 							msg.sendToTarget();
@@ -401,7 +394,16 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			question.setWriter(writer);
 			Crop crop = new Crop();
 			crop.setId(activity.cropId);
-			question.setCrop(crop);
+			if(status==0||status==1){
+				question.setCrop(crop);
+			}
+			else{
+				//设置分享类别
+				Crop crop2 = (Crop)activity.createQuestionFragment.getCropTextView().getTag();
+				question.setCate(crop2);			
+				//设置作物类别
+				question.setCrop(crop);
+			}
 			question.setInform("0");
 			question.setTime("2015-04-08 00:00:00");
 			if(x>=73&&x<=136){
@@ -418,8 +420,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 						if(status==0){
 							HttpUtil.sendQuestion(question);
 						}
-						else{
+						else if(status==1){
 							HttpUtil.sendGossip(question);
+						}
+						else{
+							HttpUtil.sendPlant(question);
 						}
 						Message msg = activity.handler.obtainMessage();
 						msg.what = TypeQuestion;

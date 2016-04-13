@@ -84,7 +84,7 @@ public class MessagesActivity extends Activity implements OnClickListener {
 					emConversation1.resetUnreadMsgCount();
 				}
 				else{
-					if(message.getType().equals("question") || message.getType().equals("gossip")){
+					if(message.getType().equals("question") || message.getType().equals("gossip")|| message.getType().equals("plant")){
 						EMConversation emConversation = list.get(position-1);
 						List<GFMessage> gfMessages = new ArrayList<GFMessage>();
 						List<EMMessage> emMessages = emConversation.getAllMessages();

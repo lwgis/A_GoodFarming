@@ -406,7 +406,12 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holder1.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
+					if(question.getWriter().isTeamwork()){
+						holder1.levelTextView.setText(question.getWriter().getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holder1.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
+					}
 					holder1.levelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:
@@ -440,7 +445,12 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder1.lelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holder1.lelTextView.setText(user.getIdentifier()+"农资店");
+					if(user.isTeamwork()){
+						holder1.lelTextView.setText(user.getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holder1.lelTextView.setText(user.getIdentifier()+"农资店");
+					}					
 					holder1.lelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:
@@ -525,7 +535,12 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder2.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holder2.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
+					if(question.getWriter().isTeamwork()){
+						holder2.levelTextView.setText(question.getWriter().getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holder2.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
+					}
 					holder2.levelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:
@@ -558,7 +573,12 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder2.lelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holder2.lelTextView.setText(user.getIdentifier()+"农资店");
+					if(user.isTeamwork()){
+						holder2.lelTextView.setText(user.getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holder2.lelTextView.setText(user.getIdentifier()+"农资店");
+					}	
 					holder2.lelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:
@@ -670,7 +690,12 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder3.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holder3.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
+					if(question.getWriter().isTeamwork()){
+						holder3.levelTextView.setText(question.getWriter().getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holder3.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
+					}
 					holder3.levelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:
@@ -703,7 +728,12 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					holder3.lelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holder3.lelTextView.setText(user.getIdentifier()+"农资店");
+					if(user.isTeamwork()){
+						holder3.lelTextView.setText(user.getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holder3.lelTextView.setText(user.getIdentifier()+"农资店");
+					}					
 					holder3.lelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:

@@ -316,7 +316,12 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_dr);
 					break;
 				case 3:
-					holderSolution.levelTextView.setText(disease.getSolutions().get(position-1).getWriter().getIdentifier()+"农资店");
+					if(disease.getSolutions().get(position-1).getWriter().isTeamwork()){
+						holderSolution.levelTextView.setText(disease.getSolutions().get(position-1).getWriter().getIdentifier()+"农资店-合作店");
+					}
+					else{
+						holderSolution.levelTextView.setText(disease.getSolutions().get(position-1).getWriter().getIdentifier()+"农资店");
+					}
 					holderSolution.levelTextView.setBackgroundResource(R.drawable.back_dp);
 					break;
 				case 4:

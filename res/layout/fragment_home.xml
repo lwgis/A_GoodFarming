@@ -104,7 +104,7 @@
            android:layout_height="34dip"
            android:layout_weight="1"
            android:layout_gravity="center_horizontal"
-           android:text="俺的作物"
+           android:text="种植分享"
            android:textColor="#000000"
            android:background="@drawable/topbar"
            android:gravity="center"

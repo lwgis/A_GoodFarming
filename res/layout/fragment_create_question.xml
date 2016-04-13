@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" 
         android:paddingTop="6dip"
+        android:id="@+id/main"
         >
 
         <TextView
@@ -18,6 +19,36 @@
             android:text="尽量按农作物近照,远照,局部,整体,正面,反面来上传图片"
             android:textColor="#808080"
             android:textSize="14dip" />
+        <LinearLayout 
+            android:id="@+id/myCropsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dip"
+            android:layout_marginRight="16dip"
+            android:layout_marginBottom="30dip"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+	            android:layout_width="match_parent"
+	            android:layout_height="20dp"
+	            android:gravity="left"
+	            android:layout_margin="3dip"
+	            android:text="分享类别"
+	            android:textColor="#808080"
+	            android:textSize="17dip" />
+            
+            <TextView
+			    android:id="@+id/mycrop_select"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="left|center_vertical"
+	            android:layout_margin="3dip"
+	            android:padding="5dip"
+	            android:textColor="#333333"
+	            android:textSize="18dip" 
+	            android:background="@drawable/spinner_back"/>
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -180,5 +211,4 @@
 			    />
         </LinearLayout>
     </LinearLayout>
-
 </ScrollView>

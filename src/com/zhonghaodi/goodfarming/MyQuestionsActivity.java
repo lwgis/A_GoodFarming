@@ -60,8 +60,14 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 		if(status==0){
 			titleTextView.setText("我的问题");
 		}
-		else{
+		else if(status==1){
 			titleTextView.setText("我的拉拉呱");
+		}
+		else if(status==3){
+			titleTextView.setText("俺的作物");
+		}
+		else if(status==2){
+			titleTextView.setText("我的种植分享");
 		}
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
@@ -101,9 +107,10 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 								QuestionActivity.class);
 						it.putExtra("questionId", allQuestions
 								.get(position - 1).getId());
-						if(status==1){
-							it.putExtra("status", 1);
+						if(status==1||status==2){
+							it.putExtra("status", status);
 						}
+
 						MyQuestionsActivity.this.startActivity(it);
 					}
 				});
@@ -120,8 +127,14 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 				if(status==0){
 					jsonString = HttpUtil.getMyQuestionsString(uid);
 				}
-				else{
+				else if(status==1){
 					jsonString = HttpUtil.getMyGossipsString(uid);
+				}
+				else if(status==3){
+					jsonString = HttpUtil.getAscQuestionsString(uid);
+				}
+				else{
+					jsonString = HttpUtil.getMyPlantinfoString(uid);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -141,8 +154,22 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 				if(status==0){
 					jsonString = HttpUtil.getMyQuestionsString(uid,qid);
 				}
-				else{
+				else if(status==1){
 					jsonString = HttpUtil.getMyGossipsString(uid,qid);
+				}
+				else if(status==3){
+					jsonString = HttpUtil.getAscQuestionsString(uid,qid);
+				}
+				else{
+					int page;
+					int k=allQuestions.size()%20;
+					if(k==0){
+						page=allQuestions.size()/20;
+					}
+					else{
+						page=allQuestions.size()/20+1;
+					}
+					jsonString = HttpUtil.getMyPlantString(uid,page);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
@@ -158,11 +185,14 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 			@Override
 			public void run() {
 				String jsonString;
-				if(status==0){
+				if(status==0||status==3){
 					jsonString = HttpUtil.deleteQuestion(qid);
 				}
-				else{
+				else if(status==1){
 					jsonString = HttpUtil.deleteGossip(qid);
+				}
+				else{
+					jsonString = HttpUtil.deletePlant(qid);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 3;
@@ -259,6 +289,12 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 				}
 				for (Question question : questions) {
 					allQuestions.add(question);
+				}
+				if(status==2){
+					adapter.setStatus(1);
+				}
+				else{
+					adapter.setStatus(0);
 				}
 				adapter.notifyDataSetChanged();
 			} else {

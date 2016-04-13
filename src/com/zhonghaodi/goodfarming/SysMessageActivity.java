@@ -91,6 +91,15 @@ public class SysMessageActivity extends Activity {
 						
 					}
 				}
+				else if(message.getType().equals("plant")){
+					if(!qidstr.isEmpty()){
+						
+						intent.putExtra("questionId", Integer.parseInt(qidstr));
+						intent.putExtra("status", 2);
+						SysMessageActivity.this.startActivityForResult(intent, 2);
+						
+					}
+				}
 				else if(message.getType().equals("user")){
 					
 				}

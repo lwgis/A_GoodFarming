@@ -23,6 +23,7 @@ public class User implements Serializable {
 	private List<UserCrop> crops;
 	private int levelID;
 	private String identifier;
+	private boolean teamwork;
 	
 	public User() {
 		// TODO Auto-generated constructor stub
@@ -169,6 +170,14 @@ public class User implements Serializable {
 
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+
+	public boolean isTeamwork() {
+		return teamwork;
+	}
+
+	public void setTeamwork(boolean teamwork) {
+		this.teamwork = teamwork;
 	}
 	
 }

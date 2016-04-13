@@ -57,8 +57,11 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		if(status==0){
 			loadCrops();
 		}
-		else{
+		else if(status==1){
 			loadGossipCate();
+		}
+		else{
+			loadCrops();
 		}
 		return view;
 	}
@@ -233,14 +236,18 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
 				.getActivity();
 		activity.setCropId(crop.getId());
-		activity.showFragment(2);
+		activity.showFragment(3);
 		if(status==0){
 			activity.setTitle(crop.getName()
 					+ "问题");
 		}
-		else{
+		else if(status==1){
 			activity.setTitle(crop.getName()
 					+ "话题");
+		}
+		else{
+			activity.setTitle(crop.getName()
+					+ "种植分享");
 		}
 	}
 
@@ -305,11 +312,43 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 				List<String> secList = new ArrayList<String>();
 				List<Integer> intList = new ArrayList<Integer>();
 				if(crops!=null && crops.size()>0){
-			        int k = 0;
-			        int index = -1;
+			        
 			        Crop secCrop = new Crop();
 			        secCrop.setId(100);
 			        secCrop.setName("话题类");
+			        keyMap.put(secCrop.getId(), secCrop.getName());
+					secList.add(secCrop.getName());
+					for (Crop crop : crops) {
+						childCrops.add(crop);
+					}
+					intList.add(childCrops.size());
+					sections = (String[])secList.toArray(new String[secList.size()]);
+			        counts = (Integer[])intList.toArray(new Integer[intList.size()]);
+			        MySectionIndexer indexer = new MySectionIndexer(sections, counts);
+			        adapter = new CropListAdapter(indexer, this.getActivity());
+			        cropListView.setAdapter(adapter);
+			        cropListView.setOnScrollListener(adapter);
+			      //設置頂部固定頭部  
+			        cropListView.setPinnedHeaderView(LayoutInflater.from(getActivity()).inflate(    
+                            R.layout.cell_group_crop, cropListView, false)); 
+				} 	        
+
+			}
+			break;
+		case 3:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Crop> crops = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Crop>>() {
+						}.getType());
+				childCrops.clear();
+				List<String> secList = new ArrayList<String>();
+				List<Integer> intList = new ArrayList<Integer>();
+				if(crops!=null && crops.size()>0){
+
+			        Crop secCrop = new Crop();
+			        secCrop.setId(100);
+			        secCrop.setName("分享类");
 			        keyMap.put(secCrop.getId(), secCrop.getName());
 					secList.add(secCrop.getName());
 					for (Crop crop : crops) {

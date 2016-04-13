@@ -286,8 +286,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			fragment.functions.add(minfoFunction);				
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
 			fragment.functions.add(feedbackFunction);
-//			Function pointruleFunction = new Function("积分规则", PointruleActivity.class,R.drawable.report);
-//			fragment.functions.add(pointruleFunction);
+
 			fragment.pullToRefreshList.onRefreshComplete();
 			adapter.notifyDataSetChanged();
 			break;

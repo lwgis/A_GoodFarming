@@ -6,12 +6,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
+import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
+import com.zhonghaodi.customui.SpinnerPopupwindow;
 import com.zhonghaodi.goodfarming.ContactsActivity.ShdzHolder;
+import com.zhonghaodi.goodfarming.SelectCropFragment.CropListAdapter;
+import com.zhonghaodi.model.Area;
 import com.zhonghaodi.model.Contact;
+import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.Function;
+import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.MySectionIndexer;
+import com.zhonghaodi.model.User;
+import com.zhonghaodi.model.UserCrop;
+import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GsonUtil;
+import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
+import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.R.integer;
 import android.app.Fragment;
@@ -21,12 +37,14 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,8 +59,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class CreateQuestionFragment extends Fragment implements OnClickListener {
+public class CreateQuestionFragment extends Fragment implements OnClickListener,HandMessage {
 	private View view;
 	private GFImageButton jinzhaoBtn = null;
 	private GFImageButton yuanzhaoBtn = null;
@@ -59,11 +78,14 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 	private Spinner spQingkuang;
 	private Spinner spSudu;
 	private Spinner spGenxi;
+	private TextView cropTextView;
 	private TextView tv1;
 	private TextView tv2;
 	private LinearLayout spinnerLayout;
+	private LinearLayout myCropsLayout;
 	private int status;
-
+	private GFHandler<CreateQuestionFragment> handler = new GFHandler<CreateQuestionFragment>(this);
+	private List<Object> crops = new ArrayList<Object>();
 	public void setStatus(int status) {
 		
 		if(status==0){
@@ -76,7 +98,21 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 			tv1.setVisibility(View.VISIBLE);
 			tv2.setVisibility(View.VISIBLE);
 			spinnerLayout.setVisibility(View.VISIBLE);
+			myCropsLayout.setVisibility(View.GONE);
 			contentEt.setHint("病虫害的详细描述...(200字以内)");
+		}
+		else if(status==1){
+			jinzhaoBtn.setTitle("照片1");
+			yuanzhaoBtn.setTitle("照片2");
+			zhengtiBtn.setTitle("照片3");
+			jubuBtn.setTitle("照片4");
+			zhengmianBtn.setTitle("照片5");
+			fanmianBtn.setTitle("照片6");
+			tv1.setVisibility(View.GONE);
+			tv2.setVisibility(View.GONE);
+			spinnerLayout.setVisibility(View.GONE);
+			myCropsLayout.setVisibility(View.GONE);
+			contentEt.setHint("说点啥吧...(200字以内)");
 		}
 		else{
 			jinzhaoBtn.setTitle("照片1");
@@ -88,7 +124,9 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 			tv1.setVisibility(View.GONE);
 			tv2.setVisibility(View.GONE);
 			spinnerLayout.setVisibility(View.GONE);
+			myCropsLayout.setVisibility(View.VISIBLE);
 			contentEt.setHint("说点啥吧...(200字以内)");
+			loadPlantInfo();
 		}
 	}
 
@@ -98,6 +136,14 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 
 	public void setCurrentfile(File currentfile) {
 		this.currentfile = currentfile;
+	}
+
+	public TextView getCropTextView() {
+		return cropTextView;
+	}
+
+	public void setCropTextView(TextView cropTextView) {
+		this.cropTextView = cropTextView;
 	}
 
 	@Override
@@ -120,6 +166,8 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 		spQingkuang = (Spinner)view.findViewById(R.id.spQingkuang);
 		spSudu = (Spinner)view.findViewById(R.id.spSudu);
 		spGenxi = (Spinner)view.findViewById(R.id.spGenxi);
+		cropTextView = (TextView)view.findViewById(R.id.mycrop_select);
+		cropTextView.setOnClickListener(this);
 		jinzhaoBtn.setOnClickListener(this);
 		yuanzhaoBtn.setOnClickListener(this);
 		zhengtiBtn.setOnClickListener(this);
@@ -129,6 +177,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 		tv1 = (TextView)view.findViewById(R.id.label1);
 		tv2 = (TextView)view.findViewById(R.id.label2);
 		spinnerLayout = (LinearLayout)view.findViewById(R.id.spinnerLayout);
+		myCropsLayout = (LinearLayout)view.findViewById(R.id.myCropsLayout);
 		contentEt = (MyEditText) view.findViewById(R.id.content_edit);
 		contentEt.addTextChangedListener(new TextWatcher() {
 
@@ -193,20 +242,70 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 				popupWindow.dismiss();
 			}
 		});
-
 		return view;
+	}
+	
+	public void loadUser() {
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getUser(GFUserDictionary
+						.getUserId(getActivity()));
+				Message msg = handler.obtainMessage();
+				msg.what=1;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
+	private void loadPlantInfo(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getPlantInfoCropsString();
+				if(jsonString!=null){
+					if (!jsonString.equals("")) {
+						Message msg = handler.obtainMessage();
+						msg.what = 1;
+						msg.obj = jsonString;
+						msg.sendToTarget();
+					}
+				}
+				else{
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = "链接服务器错误，请稍后再试！";
+					msg.sendToTarget();
+				}
+				
+			}
+		}).start();
 	}
 
 	@Override
 	public void onClick(View v) {
-		currentGFimageButton = (GFImageButton) v;
-		if (popupWindow.isShowing()) {
-			popupWindow.dismiss();
-		} else {
-			popupWindow.showAsDropDown(v,
-					-DpTransform.dip2px(getActivity(), 0),
-					DpTransform.dip2px(getActivity(), 0));
+		if(v.getId()==R.id.mycrop_select){
+			
+			SpinnerPopupwindow spinnerPopupwindow = new SpinnerPopupwindow(getActivity(), cropTextView.getText().toString(), 
+					crops, cropTextView,"我的作物");
+			spinnerPopupwindow.showAtLocation(view.findViewById(R.id.main), 
+					Gravity.CENTER, 0, 0);
+			return;
+			
 		}
+		else{
+			currentGFimageButton = (GFImageButton) v;
+			if (popupWindow.isShowing()) {
+				popupWindow.dismiss();
+			} else {
+				popupWindow.showAsDropDown(v,
+						-DpTransform.dip2px(getActivity(), 0),
+						DpTransform.dip2px(getActivity(), 0));
+			}
+		}		
 	}
 
 	@Override
@@ -311,6 +410,51 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener 
 		}
 		
 		return content;
+	}
+
+	@Override
+	public void handleMessage(Message msg, Object object) {
+		// TODO Auto-generated method stub
+		switch (msg.what) {
+		case 1:
+//			if (msg.obj == null) {
+//				GFToast.show(getActivity(), "获取失败,请稍后再试");
+//				return;
+//			}
+//			User user = (User) GsonUtil
+//					.fromJson(msg.obj.toString(), User.class);
+//			crops.clear();
+//			if(user.getCrops()!=null && user.getCrops().size()>0){
+//				cropTextView.setText(user.getCrops().get(0).getCrop().getName());
+//				cropTextView.setTag(user.getCrops().get(0).getCrop());
+//				for(UserCrop userCrop:user.getCrops()){
+//					crops.add(userCrop.getCrop());
+//				}
+//			}
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Crop> cps = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Crop>>() {
+						}.getType());
+				crops.clear();
+				if(cps!=null && cps.size()>0){
+					cropTextView.setText(cps.get(0).getName());
+					cropTextView.setTag(cps.get(0));
+					for (Crop crop : cps) {
+						crops.add(crop);
+					}
+				} 	        
+
+			}
+			else{
+				GFToast.show(getActivity(), "获取失败,请稍后再试");
+				return;
+			}
+			break;
+			
+		default:
+			break;
+		}
 	}
 	
 }

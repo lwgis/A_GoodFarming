@@ -15,7 +15,10 @@ import com.zhonghaodi.adapter.QuestionAdpter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
+import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
@@ -27,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.view.PagerAdapter;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -54,12 +58,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	private TextView allTextView;
 	private TextView ascTextView;
 	private TextView myTextView;
-	private ImageView messageIv;
 	private View messageView;
 	private TextView countTv;
 	private Question selectQuestion;
 	private PopupWindow popupWindow;
 	private View popView;
+	private int page=0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +76,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		popView = inflater.inflate(R.layout.popupwindow_question, container,
 				false);
 		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
-				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
+				getActivity(), 180), DpTransform.dip2px(getActivity(), 150));
 		popupWindow.setBackgroundDrawable(new BitmapDrawable());
 		popupWindow.setFocusable(true);
 
@@ -80,6 +84,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		newQueBtn.setOnClickListener(this);
 		Button newGossipBtn = (Button)popView.findViewById(R.id.btn_gossip);
 		newGossipBtn.setOnClickListener(this);
+		Button newPlantInfoBtn = (Button)popView.findViewById(R.id.btn_plantinfo);
+		newPlantInfoBtn.setOnClickListener(this);
 		allTextView = (TextView)view.findViewById(R.id.all_text);
 		allTextView.setOnClickListener(this);
 		ascTextView = (TextView)view.findViewById(R.id.asc_text);
@@ -88,9 +94,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		myTextView.setOnClickListener(this);
 		messageView = view.findViewById(R.id.message_layout);
 		messageView.setOnClickListener(this);
-		messageIv = (ImageView) view.findViewById(R.id.message_image);
-		countTv = (TextView) view.findViewById(R.id.count_text);
-		
+		countTv = (TextView) view.findViewById(R.id.count_text);		
 		pullToRefreshListView = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
@@ -101,12 +105,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
 						if(bAll==0)
-							loadNewDate();
+							loadNewQuestion();
 						else if(bAll==1){
 							loadNewGossips();
 						}
 						else if(bAll==2){
-							loadNewAscDate();
+							loadNewPlant();
 						}
 					}
 
@@ -119,12 +123,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						Question question = allQuestions.get(allQuestions
 								.size() - 1);
 						if(bAll==0)
-							loadMoreData(question.getId());
+							loadMoreQuestion(question.getId());
 						else if(bAll==1){
 							loadMoreGossips(question.getId());
 						}
 						else if(bAll==2){
-							loadMoreAscData(question.getId());
+							loadMorePlant();
 						}
 					}
 
@@ -133,7 +137,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		adapter = new QuestionAdpter(allQuestions,getActivity(),HomeFragment.this);
 		HomeFragment.this.pullToRefreshListView.getRefreshableView()
 				.setAdapter(adapter);
-		loadNewDate();
+		loadNewQuestion();
 		this.pullToRefreshListView
 				.setOnItemClickListener(new OnItemClickListener() {
 
@@ -145,8 +149,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 								QuestionActivity.class);
 						it.putExtra("questionId", allQuestions
 								.get(position - 1).getId());
-						if(bAll==1){
-							it.putExtra("status", 1);
+						if(bAll==1||bAll==2){
+							it.putExtra("status", bAll);
 						}
 						getActivity().startActivity(it);
 					}
@@ -212,7 +216,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	}
 
 
-	private void loadNewDate() {
+	private void loadNewQuestion() {
 		new Thread(new Runnable() {
 
 			@Override
@@ -226,7 +230,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 
-	private void loadMoreData(final int qid) {
+	private void loadMoreQuestion(final int qid) {
 		new Thread(new Runnable() {
 
 			@Override
@@ -268,13 +272,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 	
-	private void loadNewAscDate() {
-		final String  uid= GFUserDictionary.getUserId(getActivity().getApplicationContext());
+	private void loadNewPlant() {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getAscQuestionsString(uid);
+				String jsonString = HttpUtil.getPlant();
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -283,13 +286,20 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 
-	private void loadMoreAscData(final int qid) {
-		final String  uid= GFUserDictionary.getUserId(getActivity().getApplicationContext());
+	private void loadMorePlant() {
 		new Thread(new Runnable() {
-
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getAscQuestionsString(uid,qid);
+				
+				int k=allQuestions.size()%20;
+				if(k==0){
+					page=allQuestions.size()/20;
+				}
+				else{
+					page=allQuestions.size()/20+1;
+				}
+				
+				String jsonString = HttpUtil.getMorePlant(page);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -340,11 +350,14 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			@Override
 			public void run() {
 				String jsonString;
-				if(bAll!=1){
+				if(bAll==0){
 					jsonString = HttpUtil.deleteQuestion(qid);
 				}
-				else{
+				else if(bAll==1){
 					jsonString = HttpUtil.deleteGossip(qid);
+				}
+				else{
+					jsonString = HttpUtil.deletePlant(qid);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 3;
@@ -384,7 +397,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			
 		case R.id.all_text:
 			selectTextView(v);
-			loadNewDate();
+			loadNewQuestion();
 			bAll = 0;
 			break;
 		case R.id.my_text:
@@ -410,13 +423,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				getActivity().startActivity(intent);
 			}
 			else if(cropids==null || cropids.isEmpty()){
-//				popupDialog();
 				Intent it2 = new Intent(getActivity(),
 						SelectCropActivity.class);
 				getActivity().startActivityForResult(it2, 100);
 			}
 			else{
-				loadNewAscDate();
+				loadNewPlant();
 				bAll = 2;
 			}
 			break;
@@ -458,6 +470,18 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			}
 			getActivity().startActivity(intent);
 			break;
+		case R.id.btn_plantinfo:
+			popupWindow.dismiss();
+			Intent intent1 = new Intent();
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
+				intent1.setClass(getActivity(), LoginActivity.class);
+			}
+			else {
+				intent1.setClass(getActivity(), CreateQuestionActivity.class);
+				intent1.putExtra("status", 2);
+			}
+			getActivity().startActivity(intent1);
+			break;
 		default:
 			break;
 		}
@@ -481,7 +505,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 	@Override
 	public void handleMessage(Message msg,Object object) {
-			final HomeFragment fragment =(HomeFragment)object;
 			if(msg.what==0||msg.what==1){
 				if (msg.obj != null) {
 					Gson gson = new Gson();
@@ -489,18 +512,23 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 							new TypeToken<List<Question>>() {
 							}.getType());
 					if (msg.what == 0) {
-						fragment.allQuestions.clear();
+						allQuestions.clear();
 					}
 
 					for (Question question : questions) {
-						fragment.allQuestions.add(question);
+						allQuestions.add(question);
 					}
-					fragment.adapter.notifyDataSetChanged();
+					if(bAll==2){
+						adapter.setStatus(1);
+					}
+					else{
+						adapter.setStatus(0);
+					}
+					adapter.notifyDataSetChanged();
 				} else {
-					Toast.makeText(fragment.getActivity(), "连接服务器失败,请稍候再试!",
-							Toast.LENGTH_SHORT).show();
+					GFToast.show(getActivity(), "连接服务器失败,请稍候再试!");
 				}
-				fragment.pullToRefreshListView.onRefreshComplete();
+				pullToRefreshListView.onRefreshComplete();
 			}
 			else if(msg.what==3){
 				
@@ -510,7 +538,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 				else{
 					allQuestions.remove(selectQuestion);
-					fragment.adapter.notifyDataSetChanged();
+					adapter.notifyDataSetChanged();
 				}
 				
 			}

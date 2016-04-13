@@ -2,12 +2,12 @@ package com.zhonghaodi.model;
 
 import java.io.Serializable;
 
-public class ReportResponse implements Serializable {
+public class PostResponse implements Serializable {
 	
 	private boolean result;
 	private String message;
 	
-	public ReportResponse(){
+	public PostResponse(){
 		
 	}
 
