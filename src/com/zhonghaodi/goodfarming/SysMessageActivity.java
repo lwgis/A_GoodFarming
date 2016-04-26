@@ -71,10 +71,10 @@ public class SysMessageActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				GFMessage message = messages.get(position - 1);
-				Intent intent = new Intent(SysMessageActivity.this, QuestionActivity.class);
-				String qidstr = message.getExcontent();
+				GFMessage message = messages.get(position - 1);			
 				if(message.getType().equals("question")){
+					String qidstr = message.getExcontent();
+					Intent intent = new Intent(SysMessageActivity.this, QuestionActivity.class);
 					if(!qidstr.isEmpty()){
 						
 						intent.putExtra("questionId", Integer.parseInt(qidstr));
@@ -83,6 +83,8 @@ public class SysMessageActivity extends Activity {
 					}
 				}
 				else if(message.getType().equals("gossip")){
+					String qidstr = message.getExcontent();
+					Intent intent = new Intent(SysMessageActivity.this, QuestionActivity.class);
 					if(!qidstr.isEmpty()){
 						
 						intent.putExtra("questionId", Integer.parseInt(qidstr));
@@ -92,11 +94,51 @@ public class SysMessageActivity extends Activity {
 					}
 				}
 				else if(message.getType().equals("plant")){
+					String qidstr = message.getExcontent();
+					Intent intent = new Intent(SysMessageActivity.this, QuestionActivity.class);
 					if(!qidstr.isEmpty()){
 						
 						intent.putExtra("questionId", Integer.parseInt(qidstr));
 						intent.putExtra("status", 2);
 						SysMessageActivity.this.startActivityForResult(intent, 2);
+						
+					}
+				}
+				else if(message.getType().equals("questionReply")){
+					String exContent = message.getExcontent().toString();
+					String[] idstr = exContent.split("-");
+					Intent intent = new Intent(SysMessageActivity.this, CommentActivity.class);
+					if(idstr!=null&&idstr.length>1){
+						
+						intent.putExtra("qid", Integer.parseInt(idstr[0]));
+						intent.putExtra("rid", Integer.parseInt(idstr[1]));
+						SysMessageActivity.this.startActivity(intent);
+						
+					}
+				}
+				else if(message.getType().equals("gossipReply")){
+					String exContent = message.getExcontent().toString();
+					String[] idstr = exContent.split("-");
+					Intent intent = new Intent(SysMessageActivity.this, CommentActivity.class);
+					if(idstr!=null&&idstr.length>1){
+						
+						intent.putExtra("qid", Integer.parseInt(idstr[0]));
+						intent.putExtra("rid", Integer.parseInt(idstr[1]));
+						intent.putExtra("status", 1);
+						SysMessageActivity.this.startActivity(intent);
+						
+					}
+				}
+				else if(message.getType().equals("plantReply")){
+					String exContent = message.getExcontent().toString();
+					String[] idstr = exContent.split("-");
+					Intent intent = new Intent(SysMessageActivity.this, CommentActivity.class);
+					if(idstr!=null&&idstr.length>1){
+						
+						intent.putExtra("qid", Integer.parseInt(idstr[0]));
+						intent.putExtra("rid", Integer.parseInt(idstr[1]));
+						intent.putExtra("status", 2);
+						SysMessageActivity.this.startActivity(intent);
 						
 					}
 				}

@@ -36,7 +36,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 
-public class AppShareActivity extends Activity implements OnClickListener {
+public class AppShareActivity extends Activity implements OnClickListener{
 	private User user;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
@@ -82,12 +82,10 @@ public class AppShareActivity extends Activity implements OnClickListener {
 	}
 	
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-		mTencent.onActivityResult(requestCode, resultCode, data);
+		mTencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
 	}
 
 
@@ -186,13 +184,17 @@ public class AppShareActivity extends Activity implements OnClickListener {
 		}
 		@Override
 		public void onError(UiError e) {
+			GFToast.show(AppShareActivity.this, "分享失败");
 		}
 		@Override
 		public void onCancel() {
+			GFToast.show(AppShareActivity.this, "分享取消");
 		}
 		@Override
 		public void onComplete(Object arg0) {
 			// TODO Auto-generated method stub
+			GFToast.show(AppShareActivity.this, "分享成功");
+			
 		}
 		
 	}

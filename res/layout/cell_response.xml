@@ -89,18 +89,35 @@
 		                     />                
 	                </LinearLayout>
 	            </LinearLayout>	
-	            <ImageView
+	            <LinearLayout 
+	                android:layout_width="wrap_content"
+	                android:layout_height="match_parent"
+	                android:padding="10dip"
+	                android:orientation="vertical"
+	                android:gravity="center_vertical"
+	                >
+	                
+	            </LinearLayout>
+	            <LinearLayout 
 	                android:id="@+id/more_image"
-	                android:layout_width="25dp"
-	                android:layout_height="25dp"
-	                android:layout_marginRight="10dp"
-	                android:layout_marginBottom="10dp"
+	                android:layout_width="wrap_content"
+	                android:layout_height="match_parent"
 	                android:layout_alignParentRight="true"
-	                android:layout_alignParentBottom="true"
-	                android:scaleType="centerCrop"
-	                android:src="@drawable/more1" 
-	                android:focusable="false"
-	                />			
+	                android:orientation="vertical"
+	                android:gravity="center"
+	                >
+	                <ImageView
+		                android:layout_width="30dp"
+		                android:layout_height="30dp"
+		                android:layout_marginLeft="5dip"
+		                android:layout_marginRight="5dip"
+		                android:layout_marginTop="11dip"
+		                android:layout_marginBottom="5dip"
+		                android:scaleType="centerCrop"
+		                android:src="@drawable/more1" 
+		                android:focusable="false"
+		                />
+	            </LinearLayout>			
 	      </RelativeLayout>
 	
 	      <View  

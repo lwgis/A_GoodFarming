@@ -118,7 +118,7 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 					int position, long id) {
 				// TODO Auto-generated method stub
 				Store store = stores.get(position-1);
-				Intent intent = new Intent(StoresActivity.this, StoreActivity.class);
+				Intent intent = new Intent(StoresActivity.this, NzdActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putSerializable("store", store);
 				intent.putExtras(bundle);

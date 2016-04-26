@@ -2,6 +2,9 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -17,6 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Second;
+import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -26,7 +30,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +46,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView.ScaleType;
 
 public class ZfbtActivity extends Activity implements HandMessage,OnClickListener,OnItemClickListener {
 	
@@ -52,6 +63,10 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 	LocationClient mLocClient;
 	public MiaoLocationListenner myListener = new MiaoLocationListenner();
 	private int page=0;
+	
+	//顶部轮播相关
+	private TextView ordersTv;
+	private List<SecondOrder> secondOrders;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +112,29 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		adapter = new SecondAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
 		location();
+		initAdData();
+	}
+	
+	private void initAdData() {
+		// 广告数据
+		ordersTv = (TextView) findViewById(R.id.orders_tv);
+		secondOrders = new ArrayList<SecondOrder>();
+		loadNewOrders();
+	}
+	
+	private void loadNewOrders(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getNewZfbtOrders();
+				Message msg = handler.obtainMessage();
+				msg.what = 2;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
 	}
 	
 	private void loadData(final double x,final double y){
@@ -173,6 +211,16 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		}
 	}
 	
+	private void addDynamicView() {
+		// 动态添加图片和下面指示的圆点
+		// 初始化图片资源
+		String strOrders = "";
+		for (int i = 0; i < secondOrders.size(); i++) {
+			strOrders+="            "+secondOrders.get(i).getUser().getAlias()+"抢购到了："+secondOrders.get(i).getSecond().getTitle();
+		}
+		ordersTv.setText(strOrders);
+	}
+	
 	class HolderSecond {
 		public ImageView secondIv;
 		public TextView titleTv;
@@ -228,7 +276,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			holdersecond=(HolderSecond)convertView.getTag();
 			Second second = seconds.get(position);
 			if (second.getImage()!=null) {
-				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+second.getImage(), holdersecond.secondIv, ImageOptions.optionsNoPlaceholder);
+				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/big/"+second.getImage(), holdersecond.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
 			holdersecond.titleTv.setText(second.getTitle());
 			holdersecond.nzdTv.setText(second.getNzd().getAlias());
@@ -265,29 +313,72 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		final ZfbtActivity miaoactivity =(ZfbtActivity)object;
-		if (msg.obj != null) {
-			Gson gson = new Gson();
-			List<Second> ses = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<Second>>() {
-					}.getType());
-			if (msg.what == 0) {
-				miaoactivity.seconds.clear();
+		switch (msg.what) {
+		case 0:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Second> ses = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Second>>() {
+						}.getType());
+				seconds.clear();
+				for (Second second : ses) {
+					seconds.add(second);
+				}
+				adapter.notifyDataSetChanged();
+				pullToRefreshListView.onRefreshComplete();
+				if(seconds.size()==0){
+					GFToast.show(getApplicationContext(),"附近没有种好地补贴商品抢购活动！");
+				}
+				
+			} else {
+				pullToRefreshListView.onRefreshComplete();
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
+				return;
 			}
-			for (Second second : ses) {
-				miaoactivity.seconds.add(second);
+			break;
+		case 1:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Second> ses = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Second>>() {
+						}.getType());
+				for (Second second : ses) {
+					seconds.add(second);
+				}
+				adapter.notifyDataSetChanged();
+				pullToRefreshListView.onRefreshComplete();
+				if(seconds.size()==0){
+					GFToast.show(getApplicationContext(),"附近没有种好地补贴商品抢购活动！");
+				}
+				
+			} else {
+				pullToRefreshListView.onRefreshComplete();
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
+				return;
 			}
-			miaoactivity.adapter.notifyDataSetChanged();
-			pullToRefreshListView.onRefreshComplete();
-			if(seconds.size()==0){
-				GFToast.show(getApplicationContext(),"附近没有种好地补贴商品抢购活动！");
+			break;
+		case 2:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<SecondOrder> ses = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<SecondOrder>>() {
+						}.getType());
+				secondOrders.clear();
+				for (SecondOrder secondOrder : ses) {
+					secondOrders.add(secondOrder);
+				}
+				addDynamicView();
+				
+			} else {
+				Toast.makeText(this, "连接服务器失败,请稍候再试!",
+						Toast.LENGTH_SHORT).show();
 			}
-			
-		} else {
-			pullToRefreshListView.onRefreshComplete();
-			GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
-			return;
+			break;
+
+		default:
+			break;
 		}
+		
 	}
 
 }

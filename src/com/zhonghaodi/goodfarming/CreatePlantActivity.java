@@ -8,19 +8,20 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.zhonghaodi.customui.CustomProgressDialog;
+import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
-import com.zhonghaodi.goodfarming.RecipesActivity.RecipeLocationListenner;
+import com.zhonghaodi.goodfarming.CreateQuestionActivity.QuestionLocationListenner;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.model.ProjectImage;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
-import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
+import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 
 import android.app.Activity;
@@ -29,9 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.net.wifi.WifiConfiguration.Status;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -39,56 +38,54 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class CreateQuestionActivity extends Activity implements HandMessage {
+public class CreatePlantActivity extends Activity implements HandMessage{
+
 	private  final int TypeQuestion = 1;
 	private  final int TypeImage = 2;
 	private  final int TypeNoImage = 3;
 	private  final int TypeError = -1;
 	private SelectCropFragment selectCropFragment = null;
-	private CreateQuestionFragment createQuestionFragment = null;
-	private TextView titleTv = null;
+	private CreadPlantFragment createPlantFragment = null;
 	private MyTextButton sendBtn;
 	private ArrayList<NetImage> netImages;
-	private GFHandler<CreateQuestionActivity> handler = new GFHandler<CreateQuestionActivity>(
-			this);
+	private GFHandler<CreatePlantActivity> handler = new GFHandler<CreatePlantActivity>(this);
 	private ExecutorService executorService = Executors.newFixedThreadPool(4);
 	private int imageCount;
 	private boolean isSending;
-
-	public MyTextButton getSendBtn() {
-		return sendBtn;
-	}
-
-	public void setSendBtn(MyTextButton sendBtn) {
-		this.sendBtn = sendBtn;
-	}
-
+	private TextView titleTv = null;
 	private int cropId;
 	private double x;
 	private double y;
 	// 定位相关
 	LocationClient mLocClient;
 	public QuestionLocationListenner myListener = new QuestionLocationListenner();
-	private int status;
+	public int getCropId() {
+		return cropId;
+	}
 
+	public void setCropId(int cropId) {
+		this.cropId = cropId;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_create_question);
+		titleTv = (TextView) findViewById(R.id.title_text);
 		isSending = false;
 		netImages = new ArrayList<NetImage>();
-		titleTv = (TextView) findViewById(R.id.title_text);
 		Button cancelButton = (Button) findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				CreateQuestionActivity.this.finish();
+				CreatePlantActivity.this.finish();
 			}
 		});
 		sendBtn = (MyTextButton) findViewById(R.id.send_button);
@@ -98,23 +95,17 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				isSending = true;
 				sendBtn.setEnabled(false);
 				netImages = new ArrayList<NetImage>();
-				if (createQuestionFragment.getImages().size() > 0) {
+				if (createPlantFragment.getProjectImages()!=null&&createPlantFragment.getProjectImages().size()>0) {
 					imageCount = 0;
-					for (int i = 0; i < createQuestionFragment.getImages()
+					for (int i = 0; i <createPlantFragment.getProjectImages()
 							.size(); i++) {
 						final int index = i;
 						executorService.submit(new Runnable() {
 	                        public void run() {
 	                        	try {
 									String imageName;
-									if (status==0||status==1) {
-										imageName = ImageUtil.uploadImage(createQuestionFragment.getImages().get(index),
-												"questions");
-									}
-									else{
-										imageName = ImageUtil.uploadImage(createQuestionFragment.getImages().get(index),
-												"plant");
-									}
+									imageName = ImageUtil.uploadImage(createPlantFragment.getProjectImages().get(index).getImage(),
+											"plant");
 									if(imageName==null || imageName.isEmpty() || imageName.equals("error")){
 										Message msg = handler.obtainMessage();
 										msg.what = TypeError;
@@ -150,18 +141,9 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		});
 		location();
 		sendBtn.setEnabled(false);
-		status = getIntent().getIntExtra("status", 0);
-		if(status==0){
-			showFragment(0);
-		}
-		else if(status==1){
-			showFragment(1);
-		}
-		else{
-			showFragment(2);
-		}
+		showFragment(0);
 	}
-
+	
 	public void showFragment(int index) {
 		FragmentTransaction transation = this.getFragmentManager()
 				.beginTransaction();
@@ -169,49 +151,29 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			selectCropFragment = new SelectCropFragment();
 			transation.add(R.id.content_view, selectCropFragment);
 		}
-		if (createQuestionFragment == null) {
-			createQuestionFragment = new CreateQuestionFragment();
-			transation.add(R.id.content_view, createQuestionFragment);
+		if (createPlantFragment == null) {
+			createPlantFragment = new CreadPlantFragment();
+			transation.add(R.id.content_view, createPlantFragment);
 		}
 		switch (index) {
 		case 0:
 			transation.show(selectCropFragment);
 			setTitle("选择农作物种类");
-			transation.hide(createQuestionFragment);
+			transation.hide(createPlantFragment);
 			break;
 		case 1:
-			transation.show(selectCropFragment);
-			setTitle("选择话题");
-			transation.hide(createQuestionFragment);
-			break;
-		case 2:
-			transation.show(selectCropFragment);
-			setTitle("选择农作物种类");
-			transation.hide(createQuestionFragment);
-			break;
-		case 3:
 			transation.setCustomAnimations(R.anim.fragment_rightin,
 					R.anim.fragment_fadeout);
-			transation.show(createQuestionFragment);
+			transation.show(createPlantFragment);
 			transation.hide(selectCropFragment);
 			break;
-			
 		default:
 			break;
 		}
 		transation.commit();
 	}
-
 	public void setTitle(String title) {
 		titleTv.setText(title);
-	}
-
-	public int getCropId() {
-		return cropId;
-	}
-
-	public void setCropId(int cropId) {
-		this.cropId = cropId;
 	}
 	
 	private void location() {
@@ -225,7 +187,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 	}
-	
+
 	/**
 	 * 定位SDK监听函数
 	 */
@@ -237,8 +199,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				return;
 			x=location.getLongitude();
 			y=location.getLatitude();
-//			x=118.7139351318554;
-//			y=36.80689424778121;
+
 			mLocClient.stop();
 			
 		}
@@ -246,7 +207,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		public void onReceivePoi(BDLocation poiLocation) {
 		}
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
@@ -255,43 +216,41 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			// 相册
 			if (requestCode == 2) {
 				Uri uri = data.getData();
+				String imgPath="";
 				 String[] proj = {MediaStore.Images.Media.DATA};
 				 if (!uri.toString().contains("file://")) {
 						Cursor cursor = this.getContentResolver().query(uri, proj,
 								null, null, null);
 						int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 						cursor.moveToFirst();
-						String imgPath = cursor.getString(column_index);
-						createQuestionFragment.getCurrentGFimageButton()
-								.setImageFilePath(imgPath);
+						imgPath = cursor.getString(column_index);
 						cursor.close();
 				}
 				 else {
-					 createQuestionFragment.getCurrentGFimageButton()
-						.setImageFilePath(uri.getPath());
+					 imgPath = uri.getPath();
 				}
+				 createPlantFragment.setImagePath(imgPath);
 			}
 			// 相机
 			if (requestCode == 3) {
-				String imgPath = createQuestionFragment.getCurrentfile()
+				String imgPath = createPlantFragment.getCurrentfile()
 						.getPath();
-				createQuestionFragment.getCurrentGFimageButton()
-						.setImageFilePath(imgPath);
+				createPlantFragment.setImagePath(imgPath);
 			}
 		}
 	}
-
+	
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
-		if (createQuestionFragment.getPopupWindow() != null
-				&& createQuestionFragment.getPopupWindow().isShowing()) {
-			createQuestionFragment.getPopupWindow().dismiss();
+		if (createPlantFragment.getPopupWindow() != null
+				&& createPlantFragment.getPopupWindow().isShowing()) {
+			createPlantFragment.getPopupWindow().dismiss();
 			return true;
 		}
 		return super.dispatchTouchEvent(ev);
 	}
-
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && isSending) {
@@ -300,7 +259,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		return super.onKeyDown(keyCode, event);
 
 	}
-
+	
 	@Override
 	public void finish() {
 		InputMethodManager im = (InputMethodManager) this
@@ -309,44 +268,31 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		super.finish();
 	}
-
+	
 	@Override
 	public void handleMessage(Message msg, Object object) {
-		final CreateQuestionActivity activity = (CreateQuestionActivity) object;
+		// TODO Auto-generated method stub
 		switch (msg.what) {
 		case TypeImage:
-			activity.imageCount++;
-			if (activity.imageCount == activity.createQuestionFragment
-					.getImages().size()) {
+			imageCount++;
+			if (imageCount == createPlantFragment.getProjectImages().size()) {
 				final Question question = new Question();
-				String content = PublicHelper.TrimRight(activity.createQuestionFragment
-						.getContentString());
-				String zdContent = activity.createQuestionFragment
-						.getBhzdContent();
-				if(!zdContent.isEmpty()){
-					content = content+zdContent;
-				}
+				String content = PublicHelper.TrimRight(createPlantFragment.getContent());
 				question.setContent(content);
 				User writer = new User();
 				writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 				question.setWriter(writer);
 				
 				Crop crop = new Crop();
-				crop.setId(activity.cropId);
-				if(status==0||status==1){
-					question.setCrop(crop);
-				}
-				else{
-					//设置分享类别
-					Crop crop2 = (Crop)activity.createQuestionFragment.getCropTextView().getTag();
-					question.setCate(crop2);					
-					//设置作物类别
-					question.setCrop(crop);
-				}
+				crop.setId(this.cropId);
+				//设置分享类别
+				Crop crop2 = (Crop)createPlantFragment.getCropTextView().getTag();
+				question.setCate(crop2);					
+				//设置作物类别
+				question.setCrop(crop);
 				
 				question.setInform("0");
-				question.setTime("2015-04-08 00:00:00");
-				question.setAttachments(activity.netImages);
+				question.setAttachments(netImages);
 				if(x>=73&&x<=136){
 					question.setX(x);
 				}
@@ -358,22 +304,14 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					@Override
 					public void run() {
 						try {
-							if(status==0){
-								HttpUtil.sendQuestion(question);
-							}
-							else if(status==1){
-								HttpUtil.sendGossip(question);
-							}
-							else{
-								HttpUtil.sendPlant(question);
-							}
-							Message msg = activity.handler.obtainMessage();
+							HttpUtil.sendPlant(question);
+							Message msg = handler.obtainMessage();
 							msg.what = TypeQuestion;
 							msg.sendToTarget();
 						} catch (Throwable e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							activity.isSending = false;
+							isSending = false;
 						}
 					}
 				}).start();
@@ -381,31 +319,19 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			break;
 		case TypeNoImage:
 			final Question question = new Question();
-			String content = PublicHelper.TrimRight(activity.createQuestionFragment
-					.getContentString());
-			String zdContent = activity.createQuestionFragment
-					.getBhzdContent();
-			if(!zdContent.isEmpty()){
-				content = content+zdContent;
-			}
+			String content = PublicHelper.TrimRight(createPlantFragment.getContent());
 			question.setContent(content);
 			User writer = new User();
 			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			question.setWriter(writer);
 			Crop crop = new Crop();
-			crop.setId(activity.cropId);
-			if(status==0||status==1){
-				question.setCrop(crop);
-			}
-			else{
-				//设置分享类别
-				Crop crop2 = (Crop)activity.createQuestionFragment.getCropTextView().getTag();
-				question.setCate(crop2);			
-				//设置作物类别
-				question.setCrop(crop);
-			}
+			crop.setId(cropId);
+			//设置分享类别
+			Crop crop2 = (Crop)createPlantFragment.getCropTextView().getTag();
+			question.setCate(crop2);			
+			//设置作物类别
+			question.setCrop(crop);
 			question.setInform("0");
-			question.setTime("2015-04-08 00:00:00");
 			if(x>=73&&x<=136){
 				question.setX(x);
 			}
@@ -417,16 +343,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				@Override
 				public void run() {
 					try {
-						if(status==0){
-							HttpUtil.sendQuestion(question);
-						}
-						else if(status==1){
-							HttpUtil.sendGossip(question);
-						}
-						else{
-							HttpUtil.sendPlant(question);
-						}
-						Message msg = activity.handler.obtainMessage();
+						HttpUtil.sendPlant(question);
+						Message msg = handler.obtainMessage();
 						msg.what = TypeQuestion;
 						msg.sendToTarget();
 					} catch (Throwable e) {
@@ -437,7 +355,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			}).start();
 			break;
 		case TypeQuestion:
-			activity.isSending = false;
+			isSending = false;
 			GFToast.show(getApplicationContext(),"发送成功");
 			break;
 		case TypeError:
@@ -452,6 +370,14 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		default:
 			break;
 		}
+	}
+
+	public MyTextButton getSendBtn() {
+		return sendBtn;
+	}
+
+	public void setSendBtn(MyTextButton sendBtn) {
+		this.sendBtn = sendBtn;
 	}
 
 }

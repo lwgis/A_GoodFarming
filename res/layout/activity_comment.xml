@@ -20,7 +20,7 @@
             android:background="@null"
             android:text="取消"
             android:textColor="#ffffff"
-            android:textSize="20dip" />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/title_text"
@@ -30,6 +30,18 @@
             android:gravity="center"
             android:text="标题"
             android:textColor="#FFFFFF"
+            android:textSize="18dip" />
+        
+        <Button
+            android:id="@+id/que_button"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:gravity="center"
+            android:text="查看问题"
+            android:textColor="#ffffff"
             android:textSize="18dip" />
 
     </RelativeLayout>
@@ -68,7 +80,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:lines="2"
-                android:maxLength="50"
+                android:maxLength="200"
                 android:minHeight="40dp"
                 android:paddingLeft="5dp"
                 android:textSize="18dip" 

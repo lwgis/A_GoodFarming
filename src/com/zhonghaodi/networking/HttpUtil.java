@@ -520,7 +520,7 @@ public class HttpUtil {
 	
 	public static String getMyPlantString(String uid,int qid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL
-				+ "users/"+uid+"/plantinfo?page=" + qid);
+				+ "users/"+uid+"/plantinfo?fromid=" + qid);
 		return jsonString;
 	}
 	
@@ -541,9 +541,9 @@ public class HttpUtil {
 		return jsonString;
 	}
 
-	public static String getMorePlant(int page) {
+	public static String getMorePlant(int qid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL
-				+ "plantinfo?page=" + page);
+				+ "plantinfo?fromid=" + qid);
 		return jsonString;
 	}
 	
@@ -584,6 +584,12 @@ public class HttpUtil {
 	
 	public static String getGossipsResponse(int qid,int rid) {
 		String urlString = RootURL + "gossips/" + String.valueOf(qid)+"/responses/"+String.valueOf(rid);
+		String jsonString = HttpUtil.executeHttpGet(urlString);
+		return jsonString;
+	}
+	
+	public static String getPlantResponse(int qid,int rid) {
+		String urlString = RootURL + "plantinfo/" + String.valueOf(qid)+"/responses/"+String.valueOf(rid);
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}
@@ -989,6 +995,44 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 赞同种植分享回复
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static NetResponse agreeResponseForPlant(int qid,int rid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "plantinfo/"+qid+"/responses/"+rid+"/agree";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
 	 * 反对回复
 	 * @param qid
 	 * @param rid
@@ -1242,6 +1286,61 @@ public class HttpUtil {
 	public static NetResponse commentGossipResponse(int qid,int rid,final String uid,final String content) {
 		String jsonString = null;
 		String urlString = RootURL + "gossips/"+qid+"/responses/"+rid+"/comment";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		
+		NameValuePair cotentValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return content;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "content";
+			}
+		};
+		
+		nameValuePairs.add(cotentValuePair1);
+		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
+	 * 评论种植分享一级评价
+	 * @param qid
+	 * @param rid
+	 * @return
+	 */
+	public static NetResponse commentPlantResponse(int qid,int rid,final String uid,final String content) {
+		String jsonString = null;
+		String urlString = RootURL + "plantinfo/"+qid+"/responses/"+rid+"/comment";
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		NameValuePair uidValuePair1 = new NameValuePair() {
 
@@ -1738,6 +1837,17 @@ public class HttpUtil {
 	
 	public static String passback(String phone,int n) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL+"users/passback?phone="+phone+"&n="+n);
+		return jsonString;
+	}
+	
+	public static String getNewSecondOrders(){
+		String url = RootURL + "seconds/recentOrder?size=10";
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	public static String getNewZfbtOrders(){
+		String url = RootURL + "zfbt/recentOrder?size=10";
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	

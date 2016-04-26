@@ -32,6 +32,23 @@
             android:textSize="18dip" />
     </RelativeLayout>
 
+     <TextView 
+        android:id="@+id/orders_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:layout_marginTop="0.1dip"
+        android:textColor="#ffffff" 
+        android:ellipsize="marquee" 
+        android:focusable="true" 
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever" 
+        android:scrollHorizontally="true"
+        android:singleLine="true" 
+        android:background="#38be99"
+        android:textSize="16dip"
+        android:gravity="center_vertical"
+        android:text="这是跑马灯的效果这是跑马灯的效果"/>
+    
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pull_refresh_list"

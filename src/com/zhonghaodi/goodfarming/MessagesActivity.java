@@ -84,7 +84,12 @@ public class MessagesActivity extends Activity implements OnClickListener {
 					emConversation1.resetUnreadMsgCount();
 				}
 				else{
-					if(message.getType().equals("question") || message.getType().equals("gossip")|| message.getType().equals("plant")){
+					if(message.getType().equals("question") 
+							|| message.getType().equals("gossip")
+							|| message.getType().equals("plant")
+							||message.getType().equals("questionReply")
+							||message.getType().equals("gossipReply")
+							||message.getType().equals("plantReply")){
 						EMConversation emConversation = list.get(position-1);
 						List<GFMessage> gfMessages = new ArrayList<GFMessage>();
 						List<EMMessage> emMessages = emConversation.getAllMessages();
@@ -98,8 +103,14 @@ public class MessagesActivity extends Activity implements OnClickListener {
 							String content="";
 							try {
 								type = emMessage.getStringAttribute("type");
-								content = emMessage
-										.getStringAttribute("content");
+								if(type.equals("questionReply")||type.equals("gossipReply")||type.equals("plantReply")){
+									 int qid = emMessage.getIntAttribute("qid");
+									 int rid = emMessage.getIntAttribute("rid");
+									 content = qid+"-"+rid;
+								 }
+								 else{
+									 content = emMessage.getStringAttribute("content"); 
+								 }
 							} catch (Exception e) {
 								// TODO: handle exception
 							}
@@ -150,15 +161,23 @@ public class MessagesActivity extends Activity implements OnClickListener {
 			GFMessage message = new GFMessage();
 			message.setTitle(emConversation.getUserName());
 			if (emConversation.getLastMessage().getType()==Type.TXT) {
-				TextMessageBody body = (TextMessageBody) emConversation
-						.getLastMessage().getBody();
+				EMMessage lastMessage = emConversation
+						.getLastMessage();
+				TextMessageBody body = (TextMessageBody) lastMessage.getBody();
 				message.setContent(body.getMessage());
 				String type="";
 				String content = "";
 				try {
-					 type = emConversation.getLastMessage().getStringAttribute("type");
-					 content = emConversation.getLastMessage().getStringAttribute("content");
+					 type = lastMessage.getStringAttribute("type");
 					 message.setType(type);
+					 if(type.equals("questionReply")||type.equals("gossipReply")||type.equals("plantReply")){
+						 int qid = lastMessage.getIntAttribute("qid");
+						 int rid = lastMessage.getIntAttribute("rid");
+						 content = qid+"-"+rid;
+					 }
+					 else{
+						 content = lastMessage.getStringAttribute("content"); 
+					 }
 					 message.setExcontent(content);
 					 
 				} catch (EaseMobException e) {

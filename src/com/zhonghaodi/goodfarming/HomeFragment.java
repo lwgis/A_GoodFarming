@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 							loadMoreGossips(question.getId());
 						}
 						else if(bAll==2){
-							loadMorePlant();
+							loadMorePlant(question.getId());
 						}
 					}
 
@@ -286,20 +286,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		}).start();
 	}
 
-	private void loadMorePlant() {
+	private void loadMorePlant(final int qid) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				
-				int k=allQuestions.size()%20;
-				if(k==0){
-					page=allQuestions.size()/20;
-				}
-				else{
-					page=allQuestions.size()/20+1;
-				}
-				
-				String jsonString = HttpUtil.getMorePlant(page);
+				String jsonString = HttpUtil.getMorePlant(qid);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -477,10 +469,36 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				intent1.setClass(getActivity(), LoginActivity.class);
 			}
 			else {
-				intent1.setClass(getActivity(), CreateQuestionActivity.class);
+				intent1.setClass(getActivity(), CreatePlantActivity.class);
 				intent1.putExtra("status", 2);
 			}
 			getActivity().startActivity(intent1);
+			break;
+		case R.id.plantzan_layout:
+			selectQuestion = (Question)v.getTag();
+			final String uid2 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
+			if(selectQuestion.getWriter().getId().equals(uid2)){
+				GFToast.show(getActivity(),"不能给自己的分享点赞。");
+				return;
+			}
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					NetResponse netResponse=HttpUtil.agreePlant(selectQuestion.getId(),uid2);
+					Message msg = handler.obtainMessage();
+					if(netResponse.getStatus()==1){
+						msg.what = 9;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = 0;
+						msg.obj = netResponse.getMessage();
+					}
+					msg.sendToTarget();
+				}
+			}).start();
 			break;
 		default:
 			break;
@@ -541,6 +559,33 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					adapter.notifyDataSetChanged();
 				}
 				
+			}
+			else if(msg.what==9){
+				if(msg.obj!=null){
+					Gson gson2 = new Gson();
+					String jString = (String) msg.obj;
+					PostResponse reportResponse = gson2.fromJson(jString, PostResponse.class);
+					if(reportResponse == null){
+						GFToast.show(getActivity(),"点赞操作错误");
+					}
+					else{
+						if(reportResponse.isResult()){
+							selectQuestion.setAgree(selectQuestion.getAgree()+1);
+							adapter.notifyDataSetChanged();
+						}
+						else{
+							GFToast.show(getActivity(),reportResponse.getMessage());
+						}
+					}
+				}
+				else{
+					GFToast.show(getActivity(),"点赞操作错误");
+				}
+			}
+			else if(msg.what==-1){
+				if(msg.obj!=null){
+					GFToast.show(getActivity(),msg.obj.toString());
+				}
 			}
 	
 	}

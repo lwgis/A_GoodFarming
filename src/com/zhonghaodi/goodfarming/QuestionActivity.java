@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,6 +46,7 @@ import com.zhonghaodi.model.Prescription;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.User;
+import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFString;
@@ -59,6 +61,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -106,7 +110,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	private int rid;
-	private User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -170,9 +173,11 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		TextView titleTextView = (TextView)findViewById(R.id.title_text);
 		if(status==0||status==1){
 			titleTextView.setText("问题详细信息");
+			sendBtn.setText("回答");
 		}
 		else{
 			titleTextView.setText("种植分享详细信息");
+			sendBtn.setText("评论");
 		}
 		loadData();
 		uid=GFUserDictionary.getUserId(getApplicationContext());
@@ -189,7 +194,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				});
 		pullToRefreshListView.setOnItemClickListener(this);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
-		loadUser();
+		if(uid!=null&&GFUserDictionary.getTjcode(this)==null){
+			loadUser();
+		}	
 	}
 	
 	@Override
@@ -204,7 +211,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				Response response = question.getResponses().get(info.position-2);
 				if(response.getWriter().getId().equals(uid)){
 					menu.add(0, 0, 0, "删除");
-					menu.add(0,1,0,"加入配方");
+					menu.add(0,1,0,"加入处方");
 				} 
 			}
 		}
@@ -439,6 +446,11 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+		if(uid==null){
+			Intent intent = new Intent(this, LoginActivity.class);
+			startActivity(intent);
+			return;
+		}
 		switch (v.getId()) {
 		case R.id.head_image:
 //			if(GFUserDictionary.getUserId()==null){
@@ -512,8 +524,11 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						if(status==0){
 							netResponse = HttpUtil.agreeResponse(questionId,selectResponse.getId(),uid);
 						}
-						else{
+						else if(status==1){
 							netResponse = HttpUtil.agreeResponseForGossip(questionId,selectResponse.getId(),uid);
+						}
+						else{
+							netResponse = HttpUtil.agreeResponseForPlant(questionId,selectResponse.getId(),uid);
 						}
 						Message msg = handler.obtainMessage();
 						if(netResponse.getStatus()==1){
@@ -562,8 +577,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			bundle.putSerializable("question", question);		
 			bundle.putSerializable("response", res);
 			it.putExtras(bundle);
-			if(status==1){
-				it.putExtra("status", 1);
+			if(status==1||status==2){
+				it.putExtra("status", status);
 			}
 			startActivity(it);
 			
@@ -621,7 +636,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				return;
 			}
 			WXWebpageObject webpage = new WXWebpageObject();
-			webpage.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+			webpage.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this);
 			WXMediaMessage msg = new WXMediaMessage(webpage);
 			msg.title = "种好地APP:让种地不再难";
 			msg.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
@@ -641,7 +656,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				return;
 			}
 			WXWebpageObject webpage1 = new WXWebpageObject();
-			webpage1.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+			webpage1.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this);
 			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
 			msg1.title = "种好地APP:让种地不再难";
 			msg1.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
@@ -660,7 +675,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
 		    params.putString(QQShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");
 		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");
-		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());
+		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this));
 		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://121.40.62.120/appimage/apps/appicon.png");
 		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
 		    mTencent.shareToQQ(this, params, new BaseUiListener());
@@ -672,7 +687,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
 		    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");//必填
 		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");//选填
-		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());//必填
+		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this));//必填
 		    ArrayList<String> urlsList = new ArrayList<String>();
 		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
 		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_2_1440519318/550");
@@ -697,17 +712,14 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		if(position<2){
 			return;
 		}
-		if(status==2){
-			return;
-		}
 		Response response = question.getResponses().get(position-2);
 		Intent intent = new Intent(this, CommentActivity.class);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("question", question);		
 		bundle.putSerializable("response", response);
 		intent.putExtras(bundle);
-		if(status==1){
-			intent.putExtra("status", 1);
+		if(status==1||status==2){
+			intent.putExtra("status", status);
 		}
 		startActivity(intent);
 	}
@@ -822,12 +834,17 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			break;
 		case 8:
 			if (msg.obj == null) {
-				Toast.makeText(this, "获取失败,请稍后再试",
-						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			user = (User) GsonUtil
+			User user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
+			// 获取SharedPreferences对象
+			SharedPreferences sharedPre = this.getSharedPreferences("config",
+					Context.MODE_PRIVATE);
+			// 获取Editor对象
+			Editor editor = sharedPre.edit();
+			editor.putString("tjcode", user.getTjCode());
+			editor.commit();
 			break;
 		case 9:
 			if(msg.obj!=null){

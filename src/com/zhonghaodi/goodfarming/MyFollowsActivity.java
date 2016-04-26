@@ -71,7 +71,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				NysHolder nHolder = (NysHolder)view.getTag();
 				Nys nys = nyss.get(position);
 				if(nys.getLevelID()==3){
-					Intent intent = new Intent(MyFollowsActivity.this, StoreActivity.class);
+					Intent intent = new Intent(MyFollowsActivity.this, NzdActivity.class);
 					Bundle bundle = new Bundle();
 					User user = (User)nys;
 					bundle.putSerializable("store", user);

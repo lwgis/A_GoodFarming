@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 public class PointruleActivity extends Activity implements HandMessage {
 
-//	private WebView webview;
-	private TextView ruleTextView;
+	private WebView webview;
+//	private TextView ruleTextView;
 	private GFHandler<PointruleActivity> handler = new GFHandler<PointruleActivity>(this);
 	
 	@Override
@@ -29,8 +29,9 @@ public class PointruleActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pointrule);
-//		webview  = (WebView)findViewById(R.id.webView);
-		ruleTextView = (TextView)findViewById(R.id.gz_text);
+		webview  = (WebView)findViewById(R.id.webView);
+//		ruleTextView = (TextView)findViewById(R.id.gz_text);
+		webview.loadUrl(HttpUtil.ViewUrl+"pointrule");
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -39,7 +40,7 @@ public class PointruleActivity extends Activity implements HandMessage {
 				finish();
 			}
 		});
-		loadData();
+//		loadData();
 	}
 	
 	public void loadData(){
@@ -78,7 +79,7 @@ public class PointruleActivity extends Activity implements HandMessage {
 					}.getType());
 			if(pointrule!=null){
 //				webview.loadDataWithBaseURL(null, pointrule.getMessage(), "text/html", "utf-8", null);
-				ruleTextView.setText(pointrule.getMessage());
+//				ruleTextView.setText(pointrule.getMessage());
 			}
 			else{
 				GFToast.show(this, "积分规则为空");

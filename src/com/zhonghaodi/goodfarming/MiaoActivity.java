@@ -2,7 +2,6 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -17,6 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Second;
+import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -51,6 +51,9 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 	// 定位相关
 	LocationClient mLocClient;
 	public MiaoLocationListenner myListener = new MiaoLocationListenner();
+	//顶部轮播相关
+	private TextView ordersTv;
+	private List<SecondOrder> secondOrders;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +91,31 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 		seconds = new ArrayList<Second>();
 		adapter = new SecondAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
-		location();
+		location();		
+		initAdData();
+	}
+
+
+	private void initAdData() {
+		// 广告数据
+		ordersTv = (TextView) findViewById(R.id.orders_tv);
+		secondOrders = new ArrayList<SecondOrder>();
+		loadNewOrders();
+	}
+	
+	private void loadNewOrders(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getNewSecondOrders();
+				Message msg = handler.obtainMessage();
+				msg.what = 2;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
 	}
 	
 	private void loadData(final double x,final double y){
@@ -165,6 +192,16 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 		}
 	}
 	
+	private void addDynamicView() {
+		// 动态添加图片和下面指示的圆点
+		// 初始化图片资源
+		String strOrders = "";
+		for (int i = 0; i < secondOrders.size(); i++) {
+			strOrders+="            "+secondOrders.get(i).getUser().getAlias()+"抢购到了："+secondOrders.get(i).getSecond().getTitle();
+		}
+		ordersTv.setText(strOrders);
+	}
+
 	class HolderSecond {
 		public ImageView secondIv;
 		public TextView titleTv;
@@ -256,27 +293,70 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		final MiaoActivity miaoactivity =(MiaoActivity)object;
-		if (msg.obj != null) {
-			Gson gson = new Gson();
-			List<Second> ses = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<Second>>() {
-					}.getType());
-			if (msg.what == 0) {
-				miaoactivity.seconds.clear();
+		switch (msg.what) {
+		case 0:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Second> ses = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Second>>() {
+						}.getType());
+				if (msg.what == 0) {
+					seconds.clear();
+				}
+				for (Second second : ses) {
+					seconds.add(second);
+				}
+				adapter.notifyDataSetChanged();
+				
+			} else {
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
 			}
-			for (Second second : ses) {
-				miaoactivity.seconds.add(second);
+			pullToRefreshListView.onRefreshComplete();
+			if(seconds.size()==0){
+				GFToast.show(getApplicationContext(),"附近没有秒杀活动！");
 			}
-			miaoactivity.adapter.notifyDataSetChanged();
-			
-		} else {
-			GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
+			break;
+		case 1:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<Second> ses = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Second>>() {
+						}.getType());
+				for (Second second : ses) {
+					seconds.add(second);
+				}
+				adapter.notifyDataSetChanged();
+				
+			} else {
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
+			}
+			pullToRefreshListView.onRefreshComplete();
+			if(seconds.size()==0){
+				GFToast.show(getApplicationContext(),"附近没有秒杀活动！");
+			}
+			break;
+		case 2:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<SecondOrder> ses = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<SecondOrder>>() {
+						}.getType());
+				secondOrders.clear();
+				for (SecondOrder secondOrder : ses) {
+					secondOrders.add(secondOrder);
+				}
+				addDynamicView();
+				
+			} else {
+				Toast.makeText(this, "连接服务器失败,请稍候再试!",
+						Toast.LENGTH_SHORT).show();
+			}
+			break;
+
+		default:
+			break;
 		}
-		pullToRefreshListView.onRefreshComplete();
-		if(seconds.size()==0){
-			GFToast.show(getApplicationContext(),"附近没有秒杀活动！");
-		}
+		
 	}
 
 }

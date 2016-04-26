@@ -21,7 +21,7 @@ public class HolderResponse {
 	public LinearLayout countLayout;
 	public TextView levelTextView;
 	public LinearLayout bottomLayout;
-	public ImageView moreImage;
+	public LinearLayout moreImage;
 	public View bottomLine;
 		public HolderResponse(View view) {
 			nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -36,7 +36,7 @@ public class HolderResponse {
 			levelTextView = (TextView)view.findViewById(R.id.level_text);
 			bottomLayout = (LinearLayout)view.findViewById(R.id.bottomLayout);
 			bottomLine = view.findViewById(R.id.bottomLine);
-			moreImage = (ImageView)view.findViewById(R.id.more_image);
+			moreImage = (LinearLayout)view.findViewById(R.id.more_image);
 		}
 		
 }

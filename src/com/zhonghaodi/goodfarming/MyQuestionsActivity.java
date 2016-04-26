@@ -64,7 +64,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 			titleTextView.setText("我的拉拉呱");
 		}
 		else if(status==3){
-			titleTextView.setText("俺的作物");
+			titleTextView.setText("我的作物相关问题");
 		}
 		else if(status==2){
 			titleTextView.setText("我的种植分享");
@@ -161,15 +161,8 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 					jsonString = HttpUtil.getAscQuestionsString(uid,qid);
 				}
 				else{
-					int page;
-					int k=allQuestions.size()%20;
-					if(k==0){
-						page=allQuestions.size()/20;
-					}
-					else{
-						page=allQuestions.size()/20+1;
-					}
-					jsonString = HttpUtil.getMyPlantString(uid,page);
+					
+					jsonString = HttpUtil.getMyPlantString(uid,qid);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
@@ -284,7 +277,25 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 				}
 				if(questions==null || questions.size()==0){
 					if(allQuestions.size()==0){
-						GFToast.show(getApplicationContext(),"您还没有提问过。");
+						String mess="";
+						switch (status) {
+						case 0:
+							mess="您还没有提问过。";
+							break;
+						case 1:
+							mess="您还没有发起过话题。";
+							break;
+						case 2:
+							mess="您还没有分享过。";
+							break;
+						case 3:
+							mess="没有与您作物相关的问题。";
+							break;
+
+						default:
+							break;
+						}
+						GFToast.show(getApplicationContext(),mess);
 					}				
 				}
 				for (Question question : questions) {

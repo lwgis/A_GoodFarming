@@ -9,6 +9,7 @@ import com.zhonghaodi.customui.Holder3;
 import com.zhonghaodi.customui.HolderPlant1;
 import com.zhonghaodi.customui.HolderPlant2;
 import com.zhonghaodi.customui.HolderPlant3;
+import com.zhonghaodi.customui.HolderPlant4;
 import com.zhonghaodi.goodfarming.R;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.networking.HttpUtil;
@@ -76,7 +77,7 @@ public class QuestionAdpter extends BaseAdapter {
 	@Override
 	public int getViewTypeCount() {
 		// TODO Auto-generated method stub
-		return 6;
+		return 7;
 	}
 
 	@Override
@@ -103,8 +104,12 @@ public class QuestionAdpter extends BaseAdapter {
 					&& question.getAttachments().size() < 4) {
 				return 4;
 			}
-			if (question.getAttachments().size() > 3) {
+			if (question.getAttachments().size() > 3
+					&&question.getAttachments().size()<7) {
 				return 5;
+			}
+			if (question.getAttachments().size() > 6) {
+				return 6;
 			}
 		}
 		
@@ -121,6 +126,7 @@ public class QuestionAdpter extends BaseAdapter {
 		HolderPlant1 holderPlant1 = null;
 		HolderPlant2 holderPlant2 = null;
 		HolderPlant3 holderPlant3 = null;
+		HolderPlant4 holderPlant4 = null;
 		if (convertView == null) {
 			switch (type) {
 			case 0:
@@ -164,6 +170,13 @@ public class QuestionAdpter extends BaseAdapter {
 						R.layout.cell_plant_6_image, parent, false);
 				holderPlant3 = new HolderPlant3(convertView);
 				convertView.setTag(holderPlant3);
+				break;
+			case 6:
+				convertView = LayoutInflater.from(
+						mContext).inflate(
+						R.layout.cell_plant_9_image, parent, false);
+				holderPlant4 = new HolderPlant4(convertView);
+				convertView.setTag(holderPlant4);
 				break;
 			default:
 				break;
@@ -442,6 +455,8 @@ public class QuestionAdpter extends BaseAdapter {
 			holderPlant1.headIv.setOnClickListener(mClickListener);
 			holderPlant1.countTv.setText("评论（"+question.getResponsecount()+"）");
 			holderPlant1.agreeTextView.setText("赞同（"+question.getAgree()+"）");
+			holderPlant1.agreeLayout.setTag(question);
+			holderPlant1.agreeLayout.setOnClickListener(mClickListener);
 			
 			switch (question.getWriter().getLevelID()) {
 			case 1:
@@ -530,7 +545,8 @@ public class QuestionAdpter extends BaseAdapter {
 			holderPlant2.headIv.setOnClickListener(mClickListener);
 			holderPlant2.countTv.setText("评论（"+question.getResponsecount()+"）");
 			holderPlant2.agreeTextView.setText("赞同（"+question.getAgree()+"）");
-			
+			holderPlant2.agreeLayout.setTag(question);
+			holderPlant2.agreeLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant2.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -641,7 +657,8 @@ public class QuestionAdpter extends BaseAdapter {
 			holderPlant3.headIv.setOnClickListener(mClickListener);
 			holderPlant3.countTv.setText("评论（"+question.getResponsecount()+"）");
 			holderPlant3.agreeTextView.setText("赞同（"+question.getAgree()+"）");
-			
+			holderPlant3.agreeLayout.setTag(question);
+			holderPlant3.agreeLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant3.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -667,6 +684,147 @@ public class QuestionAdpter extends BaseAdapter {
 			case 5:
 				holderPlant3.levelTextView.setText("官方");
 				holderPlant3.levelTextView.setBackgroundResource(R.drawable.back_gf);
+				break;
+			default:
+				break;
+			}
+			break;
+		case 6:
+			holderPlant4 = (HolderPlant4) convertView.getTag();
+			holderPlant4.reSetImageViews();
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"users/small/"
+							+ question.getWriter().getThumbnail(),
+							holderPlant4.headIv, ImageOptions.options);
+			holderPlant4.nameTv.setText(question.getWriter().getAlias());
+			holderPlant4.timeTv.setText(question.getTime());
+			holderPlant4.contentTv.setText(content);
+			if(question.getCrop()!=null){
+				holderPlant4.cropTv.setVisibility(View.VISIBLE);
+				holderPlant4.cropTv.setText(question.getCrop().getName());
+			}
+			else{
+				holderPlant4.cropTv.setVisibility(View.GONE);
+			}
+			if(question.getCate()!=null){
+				holderPlant4.cateTv.setVisibility(View.VISIBLE);
+				holderPlant4.cateTv.setText(question.getCate().getName());
+			}
+			else{
+				holderPlant4.cateTv.setVisibility(View.GONE);
+			}			
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(0).getUrl(),
+							holderPlant4.imageView1, ImageOptions.options);
+			holderPlant4.imageView1.setVisibility(View.VISIBLE);
+			holderPlant4.imageView1.setIndex(0);
+			holderPlant4.imageView1.setImages(question.getAttachments(),"plant");
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(1).getUrl(),
+							holderPlant4.imageView2, ImageOptions.options);
+			holderPlant4.imageView2.setVisibility(View.VISIBLE);
+			holderPlant4.imageView2.setIndex(1);
+			holderPlant4.imageView2.setImages(question.getAttachments(),"plant");
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(2).getUrl(),
+							holderPlant4.imageView3, ImageOptions.options);
+			holderPlant4.imageView3.setVisibility(View.VISIBLE);
+			holderPlant4.imageView3.setIndex(2);
+			holderPlant4.imageView3.setImages(question.getAttachments(),"plant");
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(3).getUrl(),
+							holderPlant4.imageView4, ImageOptions.options);
+			holderPlant4.imageView4.setVisibility(View.VISIBLE);
+			holderPlant4.imageView4.setIndex(3);
+			holderPlant4.imageView4.setImages(question.getAttachments(),"plant");
+			ImageLoader.getInstance()
+			.displayImage(
+					HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(4)
+									.getUrl(),
+									holderPlant4.imageView5, ImageOptions.options);
+			holderPlant4.imageView5.setVisibility(View.VISIBLE);
+			holderPlant4.imageView5.setIndex(4);
+			holderPlant4.imageView5.setImages(question.getAttachments(),"plant");
+			
+			ImageLoader.getInstance()
+			.displayImage(
+					HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(5)
+									.getUrl(),
+									holderPlant4.imageView6, ImageOptions.options);
+			holderPlant4.imageView6.setVisibility(View.VISIBLE);
+			holderPlant4.imageView6.setIndex(5);
+			holderPlant4.imageView6.setImages(question.getAttachments(),"plant");
+			
+			ImageLoader.getInstance()
+			.displayImage(
+					HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(6)
+									.getUrl(),
+									holderPlant4.imageView7, ImageOptions.options);
+			holderPlant4.imageView7.setVisibility(View.VISIBLE);
+			holderPlant4.imageView7.setIndex(6);
+			holderPlant4.imageView7.setImages(question.getAttachments(),"plant");
+			
+			if (question.getAttachments().size() > 7) {
+				ImageLoader.getInstance()
+						.displayImage(
+								HttpUtil.ImageUrl+"plant/small/"
+										+ question.getAttachments().get(7)
+												.getUrl(),
+												holderPlant4.imageView8, ImageOptions.options);
+				holderPlant4.imageView8.setVisibility(View.VISIBLE);
+				holderPlant4.imageView8.setIndex(7);
+				holderPlant4.imageView8.setImages(question.getAttachments(),"plant");
+			}
+			if (question.getAttachments().size() > 8) {
+				ImageLoader.getInstance()
+						.displayImage(
+								HttpUtil.ImageUrl+"plant/small/"
+										+ question.getAttachments().get(8)
+												.getUrl(),
+												holderPlant4.imageView9, ImageOptions.options);
+				holderPlant4.imageView9.setVisibility(View.VISIBLE);
+				holderPlant4.imageView9.setIndex(8);
+				holderPlant4.imageView9.setImages(question.getAttachments(),"plant");
+			}
+			
+			holderPlant4.headIv.setTag(question.getWriter());
+			holderPlant4.headIv.setOnClickListener(mClickListener);
+			holderPlant4.countTv.setText("评论（"+question.getResponsecount()+"）");
+			holderPlant4.agreeTextView.setText("赞同（"+question.getAgree()+"）");
+			holderPlant4.agreeLayout.setTag(question);
+			holderPlant4.agreeLayout.setOnClickListener(mClickListener);
+			switch (question.getWriter().getLevelID()) {
+			case 1:
+				holderPlant4.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
+				holderPlant4.levelTextView.setBackgroundResource(R.drawable.back_ny);
+				break;
+			case 2:
+				holderPlant4.levelTextView.setText(question.getWriter().getIdentifier()+"农技达人");
+				holderPlant4.levelTextView.setBackgroundResource(R.drawable.back_dr);
+				break;
+			case 3:
+				if(question.getWriter().isTeamwork()){
+					holderPlant4.levelTextView.setText(question.getWriter().getIdentifier()+"农资店-合作店");
+				}
+				else{
+					holderPlant4.levelTextView.setText(question.getWriter().getIdentifier()+"农资店");
+				}				
+				holderPlant4.levelTextView.setBackgroundResource(R.drawable.back_dp);
+				break;
+			case 4:
+				holderPlant4.levelTextView.setText("专家");
+				holderPlant4.levelTextView.setBackgroundResource(R.drawable.back_zj);
+				break;
+			case 5:
+				holderPlant4.levelTextView.setText("官方");
+				holderPlant4.levelTextView.setBackgroundResource(R.drawable.back_gf);
 				break;
 			default:
 				break;

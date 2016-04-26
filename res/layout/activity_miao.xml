@@ -31,6 +31,22 @@
             android:textColor="#FFFFFF"
             android:textSize="18dip" />
     </RelativeLayout>
+    <TextView 
+        android:id="@+id/orders_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:layout_marginTop="0.1dip"
+        android:textColor="#ffffff" 
+        android:ellipsize="marquee" 
+        android:focusable="true" 
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever" 
+        android:scrollHorizontally="true"
+        android:singleLine="true" 
+        android:background="#38be99"
+        android:textSize="16dip"
+        android:gravity="center_vertical"
+        android:text="这是跑马灯的效果这是跑马灯的效果"/>
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
@@ -39,12 +55,13 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:cacheColorHint="#000000"
+        android:layout_marginTop="0dip"
         android:divider="#eaeaea"
         android:dividerHeight="8dp"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
+        android:headerDividersEnabled="true"
         android:listSelector="#00000000"
         android:smoothScrollbar="true"
         />

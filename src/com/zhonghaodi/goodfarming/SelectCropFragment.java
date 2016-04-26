@@ -233,21 +233,30 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 			long id) {
 		// TODO Auto-generated method stub
 		Crop crop = childCrops.get(position);
-		CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
-				.getActivity();
-		activity.setCropId(crop.getId());
-		activity.showFragment(3);
+		
 		if(status==0){
+			CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
+					.getActivity();
+			activity.setCropId(crop.getId());
+			activity.showFragment(3);
 			activity.setTitle(crop.getName()
 					+ "问题");
 		}
 		else if(status==1){
+			CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
+					.getActivity();
+			activity.setCropId(crop.getId());
+			activity.showFragment(3);
 			activity.setTitle(crop.getName()
 					+ "话题");
 		}
 		else{
+			CreatePlantActivity activity = (CreatePlantActivity) SelectCropFragment.this
+					.getActivity();
+			activity.setCropId(crop.getId());
+			activity.showFragment(1);
 			activity.setTitle(crop.getName()
-					+ "种植分享");
+					+ "分享");
 		}
 	}
 

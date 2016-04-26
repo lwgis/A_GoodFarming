@@ -179,9 +179,7 @@ public class NyqActivity extends Activity implements HandMessage {
 					@Override
 					public void run() {
 
-						try {
-							
-							
+						try {						
 							String imageName = ImageUtil.uploadImage(projectImages.get(index).getImage()
 									, "quans");
 							if(imageName==null || imageName.isEmpty() || imageName.equals("error")){

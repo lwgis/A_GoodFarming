@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dip"
+    android:orientation="vertical" >
+    <TextView 
+        android:id="@+id/orders_tv"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:textColor="#ffffff" 
+        android:ellipsize="marquee" 
+        android:focusable="true" 
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever" 
+        android:scrollHorizontally="true"
+        android:singleLine="true" 
+        android:background="#38be99"
+        android:textSize="16dip"
+        android:text="这是跑马灯的效果这是跑马灯的效果">
+	</TextView>
+
+</LinearLayout>

@@ -75,7 +75,7 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 				NysHolder nHolder = (NysHolder)view.getTag();
 				User user = users.get(position);
 				if(user.getLevel().getId()==3){
-					Intent intent = new Intent(SearchActivity.this, StoreActivity.class);
+					Intent intent = new Intent(SearchActivity.this, NzdActivity.class);
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("store", user);
 					if(nHolder.followButton.getVisibility()==view.GONE){

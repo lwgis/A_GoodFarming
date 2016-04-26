@@ -51,6 +51,8 @@ public class CommentActivity extends Activity implements UrlOnClick,
 									HandMessage,OnClickListener{
 	private TextView titleTv;
 	private MyEditText chatEv;
+	private MyTextButton cancelBtn;
+	private Button queBtn;
 	private MyTextButton sendMessageBtn;
 	private MyTextButton prescriptionButton;
 	private ListView pullToRefreshList;
@@ -61,27 +63,24 @@ public class CommentActivity extends Activity implements UrlOnClick,
 	private List<RComment> comments;
 	private String rContent;
 	private int status;
+	private int qid;
+	private int rid;
+	private String from;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment);
-		MyTextButton cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
+		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setText("<返回");
-		cancelBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		cancelBtn.setOnClickListener(this);
+		queBtn = (Button)findViewById(R.id.que_button);
+		queBtn.setOnClickListener(this);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		chatEv = (MyEditText) findViewById(R.id.chat_edit);
 		sendMessageBtn = (MyTextButton) findViewById(R.id.send_meassage_button);
 		pullToRefreshList = (ListView) findViewById(R.id.pull_refresh_list);
 		comments = new ArrayList<RComment>();
-		adapter = new CommentAdapter();
-		pullToRefreshList.setAdapter(adapter);
 		sendMessageBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -104,15 +103,43 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		question = (Question)getIntent().getSerializableExtra("question");
 		response = (Response)getIntent().getSerializableExtra("response");
 		status = getIntent().getIntExtra("status", 0);
+		if(question!=null&&response!=null){
+			init();
+			loadData();
+			from = QuestionActivity.class.toString();
+			queBtn.setVisibility(View.GONE);
+		}
+		else{
+			qid = getIntent().getIntExtra("qid", 0);
+			rid = getIntent().getIntExtra("rid", 0);
+			from = SysMessageActivity.class.toString();
+			queBtn.setVisibility(View.VISIBLE);
+			loadQuestion();
+		}
+	}
+	
+	private void init(){
 		rContent = response.getContent();
 		String aliaString = question.getWriter().getAlias();
 		if(aliaString.length()>6){
 			aliaString = aliaString.substring(0,5);
 			aliaString = aliaString + "……";
 		}
- 		titleTv.setText(aliaString+"的提问");
+		if(status==0){
+			titleTv.setText(aliaString+"的提问");
+			queBtn.setText("查看问题");
+		}
+		else if(status==1){
+			titleTv.setText(aliaString+"的话题");
+			queBtn.setText("查看拉拉呱");
+		}
+		else{
+			titleTv.setText(aliaString+"的分享");
+			queBtn.setText("查看分享");
+		}
 		registerForContextMenu(pullToRefreshList);
-		loadData();
+		adapter = new CommentAdapter();
+		pullToRefreshList.setAdapter(adapter);
 	}
 	
 	@Override
@@ -126,7 +153,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 				
 				RComment comment = comments.get(info.position-1);
 				if(comment.getWriter().getId().equals(uid)){
-					menu.add(0, 0, 0, "加入配方");
+					menu.add(0, 0, 0, "加入处方");
 				} 
 			}
 		}
@@ -156,6 +183,30 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		return super.onContextItemSelected(item);
 	}
 	
+	private void loadQuestion(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String jsonString;
+				if(status==0){
+					jsonString = HttpUtil.getSingleQuestion(qid);
+				}
+				else if(status==1){
+					jsonString = HttpUtil.getSingleGossip(qid);
+				}
+				else{
+					jsonString = HttpUtil.getSinglePlant(qid);
+				}
+				Message msg = handler.obtainMessage();
+				msg.what = 3;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
 	private void loadData(){
 		new Thread(new Runnable() {
 
@@ -166,8 +217,11 @@ public class CommentActivity extends Activity implements UrlOnClick,
 				if(status==0){
 					jsonString = HttpUtil.getSingleResponse(question.getId(),response.getId());
 				}
-				else{
+				else if(status==1){
 					jsonString = HttpUtil.getGossipsResponse(question.getId(),response.getId());
+				}
+				else{
+					jsonString = HttpUtil.getPlantResponse(question.getId(),response.getId());
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
@@ -188,8 +242,11 @@ public class CommentActivity extends Activity implements UrlOnClick,
 				if(status==0){
 					netResponse = HttpUtil.commentResponse(question.getId(),response.getId(),uid,content);
 				}
-				else{
+				else if(status==1){
 					netResponse = HttpUtil.commentGossipResponse(question.getId(),response.getId(),uid,content);
+				}
+				else{
+					netResponse = HttpUtil.commentPlantResponse(question.getId(),response.getId(),uid,content);
 				}
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
@@ -381,6 +438,29 @@ public class CommentActivity extends Activity implements UrlOnClick,
 			Intent intent = new Intent(this,PrescriptionsActivity.class);
 			this.startActivityForResult(intent, 100);
 			break;
+		case R.id.cancel_button:
+			this.finish();
+//			if(from.equals(SysMessageActivity.class.toString())){
+//				Intent it = new Intent(this,
+//						QuestionActivity.class);
+//				it.putExtra("questionId", qid);
+//				it.putExtra("status", status);
+//				startActivity(it);
+//				this.finish();
+//				this.overridePendingTransition(R.anim.anim_leftin, R.anim.anim_rightout);
+//			}
+//			else{
+//				this.finish();
+//			}
+			break;
+		case R.id.que_button:
+			Intent it = new Intent(this,
+					QuestionActivity.class);
+			it.putExtra("questionId", qid);
+			it.putExtra("status", status);
+			startActivity(it);
+			this.finish();
+			break;
 
 		default:
 			break;
@@ -453,6 +533,24 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		case 2:
 			loadData();
 			GFToast.show(getApplicationContext(),"评论成功");
+			break;
+		case 3:
+			Gson gson = new Gson();
+			String jsonString = (String) msg.obj;
+			question = gson.fromJson(jsonString, Question.class);
+			if(question==null||question.getStatus()==1){
+				GFToast.show(getApplicationContext(),"评论的问题不存在或者已经删除");
+				finish();
+			}
+			for (int i = 0; i < question.getResponses().size(); i++) {
+				Response rs = question.getResponses().get(i);
+				if(rs.getId()==rid){
+					response = rs;
+					break;
+				}
+			}
+			init();
+			loadData();
 			break;
 		
 		default:
