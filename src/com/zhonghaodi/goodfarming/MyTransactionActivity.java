@@ -1,12 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.User;
-import com.zhonghaodi.model.UserCrop;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -70,7 +64,7 @@ public class MyTransactionActivity extends Activity implements OnClickListener {
 			intent = new Intent(this, ContactsActivity.class);
 			break;
 		case R.id.layout5:
-			intent = new Intent(this, OrderScanActivity.class);
+			intent = new Intent(this, CaptureActivity.class);
 			break;
 		default:
 			break;

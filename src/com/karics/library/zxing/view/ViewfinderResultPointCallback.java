@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.zhonghaodi.view;
+package com.karics.library.zxing.view;
 
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;
-
 
 public final class ViewfinderResultPointCallback implements ResultPointCallback {
 
@@ -28,6 +27,7 @@ public final class ViewfinderResultPointCallback implements ResultPointCallback 
     this.viewfinderView = viewfinderView;
   }
 
+  @Override
   public void foundPossibleResultPoint(ResultPoint point) {
     viewfinderView.addPossibleResultPoint(point);
   }
