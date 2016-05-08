@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.MyEditText;
@@ -156,7 +157,21 @@ public class UpdateZjActivity extends Activity implements OnClickListener,
 			}
 		});
 	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("升级为专家");
+		MobclickAgent.onResume(this);
+	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("升级为专家");
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	public void onClick(View v) {
 		currentGFimageButton = (GFImageButton) v;

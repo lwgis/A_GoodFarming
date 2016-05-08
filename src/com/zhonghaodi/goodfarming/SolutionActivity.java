@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderCommentTextMessage;
 import com.zhonghaodi.customui.MyEditText;
@@ -95,7 +96,21 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 		titleTv.setText(dname+"的妙招");
 		loadData();
 	}
-	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("妙招内容");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("妙招内容");
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {

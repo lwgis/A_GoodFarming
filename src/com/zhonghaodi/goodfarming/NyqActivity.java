@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.AddImageAdapter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
@@ -164,6 +165,22 @@ public class NyqActivity extends Activity implements HandMessage {
 				NyqActivity.this.uploadImages();
 			}
 		});
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("编辑农艺圈");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("编辑农艺圈");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void uploadImages(){

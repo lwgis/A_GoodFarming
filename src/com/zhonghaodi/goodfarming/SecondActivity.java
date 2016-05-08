@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.goodfarming.RegisterFragment1.TimeCount;
@@ -83,6 +84,8 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("秒杀产品页");
+		MobclickAgent.onResume(this);
 		if(second.getCount()<1){
 			buyBtn.setVisibility(View.GONE);
 			timeBtn.setText("已售完");
@@ -93,7 +96,13 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		}
 		
 	}
-
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("秒杀产品页");
+		MobclickAgent.onPause(this);
+	}
 	private void loadTime(){
 		new Thread(new Runnable() {
 			

@@ -11,6 +11,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderEvaluate;
 import com.zhonghaodi.customui.HolderRecipeInfo;
@@ -122,6 +123,15 @@ public class EvaluatesActivity extends Activity implements HandMessage,OnClickLi
 		// TODO Auto-generated method stub
 		super.onResume();
 		loadNewEvaluates();
+		MobclickAgent.onPageStart("订单评价");
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("订单评价");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void selectTextView(View view){

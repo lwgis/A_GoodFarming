@@ -17,6 +17,7 @@ import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
@@ -113,6 +114,20 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			}
 		});
 		return view;
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("我Fragment");
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("我Fragment");
 	}
 
 	public void loadData() {

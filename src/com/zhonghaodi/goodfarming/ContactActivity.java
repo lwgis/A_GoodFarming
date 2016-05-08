@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -41,6 +42,24 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 		phoneEditText = (EditText)findViewById(R.id.phone_edit);
 		postEditText = (EditText)findViewById(R.id.post_edit);
 		addressEditText = (EditText)findViewById(R.id.address_edit);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("收货地址编辑");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("收货地址编辑");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void add(){

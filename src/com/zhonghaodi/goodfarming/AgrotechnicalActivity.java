@@ -16,6 +16,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.networking.HttpUtil;
@@ -31,9 +32,16 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class AgrotechnicalActivity extends Activity implements OnClickListener {
 	int id;
@@ -46,6 +54,10 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 	ImageView agroImageView;
 	Bitmap bitmap;
 	byte[] data;
+	WebView webview;
+	private FrameLayout mFullscreenContainer;  
+    private LinearLayout mContentView;  
+    private View mCustomView = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -72,11 +84,58 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 		if(content.length()>50){
 			content = content.substring(0, 49)+"……";
 		}
-		WebView webview  = (WebView)findViewById(R.id.webView);
+		
+		initView();  
+        initWebView();  
+  
+        if (PublicHelper.getPhoneAndroidSDK() >= 14) {// 4.0 需打开硬件加速  
+            getWindow().setFlags(0x1000000, 0x1000000);  
+        }  
 		webview.loadUrl(HttpUtil.ViewUrl+"agrotechnical/detail?id="+id+"&f=1");
 		loadImage();
 	}
 	
+	private void initView(){
+		mFullscreenContainer = (FrameLayout) findViewById(R.id.fullscreen_custom_content);  
+        mContentView = (LinearLayout) findViewById(R.id.main_content);  
+        webview  = (WebView)findViewById(R.id.webView);
+	}
+	
+	private void initWebView(){
+		WebSettings settings = webview.getSettings();  
+        settings.setJavaScriptEnabled(true);  
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);  
+        settings.setPluginState(PluginState.ON);  
+        // settings.setPluginsEnabled(true);  
+        settings.setAllowFileAccess(true);  
+        settings.setLoadWithOverviewMode(true);  
+  
+        webview.setWebChromeClient(new MyWebChromeClient());  
+        webview.setWebViewClient(new MyWebViewClient());
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		webview.onResume();
+		MobclickAgent.onPageStart("田间地头内容");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		webview.onPause();
+		MobclickAgent.onPageEnd("田间地头内容");
+		MobclickAgent.onPause(this);
+	}
+
+
+
 	public void loadImage(){
 		ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"agrotechnicals/small/"+image, agroImageView, ImageOptions.optionsNoPlaceholder);
 		agroImageView.setDrawingCacheEnabled(true);
@@ -96,6 +155,70 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
     private String buildTransaction(final String type) {
 		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
 	}
+    
+    class MyWebChromeClient extends WebChromeClient {  
+    	  
+        private CustomViewCallback mCustomViewCallback;  
+        private int mOriginalOrientation = 1;  
+  
+        @Override  
+        public void onShowCustomView(View view, CustomViewCallback callback) {  
+            // TODO Auto-generated method stub  
+            onShowCustomView(view, mOriginalOrientation, callback);  
+            super.onShowCustomView(view, callback);  
+  
+        }  
+  
+        public void onShowCustomView(View view, int requestedOrientation,  
+                WebChromeClient.CustomViewCallback callback) {  
+            if (mCustomView != null) {  
+                callback.onCustomViewHidden();  
+                return;  
+            }  
+            if (PublicHelper.getPhoneAndroidSDK() >= 14) {  
+                mFullscreenContainer.addView(view);  
+                mCustomView = view;  
+                mCustomViewCallback = callback;  
+                mOriginalOrientation = getRequestedOrientation();  
+                mContentView.setVisibility(View.GONE);  
+                mFullscreenContainer.setVisibility(View.VISIBLE);  
+                mFullscreenContainer.bringToFront();  
+  
+                setRequestedOrientation(mOriginalOrientation);  
+            }  
+  
+        }  
+  
+        public void onHideCustomView() {  
+            mContentView.setVisibility(View.VISIBLE);  
+            if (mCustomView == null) {  
+                return;  
+            }  
+            mCustomView.setVisibility(View.GONE);  
+            mFullscreenContainer.removeView(mCustomView);  
+            mCustomView = null;  
+            mFullscreenContainer.setVisibility(View.GONE);  
+            try {  
+                mCustomViewCallback.onCustomViewHidden();  
+            } catch (Exception e) {  
+            }  
+            // Show the content view.  
+  
+            setRequestedOrientation(mOriginalOrientation);  
+        }  
+  
+    }  
+  
+    class MyWebViewClient extends WebViewClient {  
+  
+        @Override  
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {  
+            // TODO Auto-generated method stub  
+            view.loadUrl(url);  
+            return super.shouldOverrideUrlLoading(view, url);  
+        }  
+  
+    }
     
     class BaseUiListener implements IUiListener {
 		

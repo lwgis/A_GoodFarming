@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
@@ -53,6 +54,21 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 		if(content!=null){
 			contentEditText.setText(content);
 		}
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("处方编辑");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("处方编辑");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void edit(){

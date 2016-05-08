@@ -6,6 +6,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderDisease;
 import com.zhonghaodi.customui.HolderRecipe;
@@ -100,6 +101,24 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
 		loadData();
 		
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("病害内容");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("病害内容");
+		MobclickAgent.onPause(this);
 	}
 
 	protected void loadData() {

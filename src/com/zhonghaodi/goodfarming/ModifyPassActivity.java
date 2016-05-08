@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.LoginUser;
@@ -52,6 +53,22 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 				ModifyPassActivity.this.startActivity(intent);
 			}
 		});
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("修改密码");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("修改密码");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

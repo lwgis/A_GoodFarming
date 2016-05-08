@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Recipe;
@@ -79,6 +80,7 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onResume(this);
 //		SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
 //		SurfaceHolder surfaceHolder = surfaceView.getHolder();
 //		if (hasSurface) {
@@ -110,6 +112,7 @@ public class OrderScanActivity extends Activity implements HandMessage,Callback{
 	@Override
 	protected void onPause() {
 		super.onPause();
+		MobclickAgent.onPause(this);
 //		if (handler != null) {
 //			handler.quitSynchronously();
 //			handler = null;

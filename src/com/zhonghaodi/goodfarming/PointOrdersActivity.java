@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.PointOrder;
 import com.zhonghaodi.networking.GFHandler;
@@ -67,8 +68,17 @@ public class PointOrdersActivity extends Activity implements OnItemClickListener
 		// TODO Auto-generated method stub
 		super.onResume();
 		loadData();
+		MobclickAgent.onPageStart("积分订单");
+		MobclickAgent.onResume(this);
 	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("积分订单");
+		MobclickAgent.onPause(this);
+	}
 
 
 	public void loadData(){

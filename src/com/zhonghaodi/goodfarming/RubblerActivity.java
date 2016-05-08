@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.duguang.baseanimation.ui.customview.serchfly.KeywordsFlow;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.GuaGuaKa;
 import com.zhonghaodi.customui.MyTextButton;
@@ -76,6 +77,21 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
  
 		loadData();
     }
+    @Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("刮刮乐");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("刮刮乐");
+		MobclickAgent.onPause(this);
+	}
     
     private void loadData(){
     	new Thread(new Runnable() {

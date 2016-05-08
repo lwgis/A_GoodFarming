@@ -11,6 +11,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Commodity;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -95,6 +96,24 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 		adapter = new CommodityAdapter();
 		pullToRefreshGridView.getRefreshableView().setAdapter(adapter);
 		loaddata();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("积分商城");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("积分商城");
+		MobclickAgent.onPause(this);
 	}
 	
 	/**

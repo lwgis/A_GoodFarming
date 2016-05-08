@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.GFToast;
@@ -223,6 +224,20 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 		return view;
 	}
 	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("注册用户");
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("注册用户");
+	}
+
 	private void updateImage(){
 		registerBtn.setEnabled(false);
 		new Thread(new Runnable() {

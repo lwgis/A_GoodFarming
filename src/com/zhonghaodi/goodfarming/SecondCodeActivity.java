@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.networking.GFHandler;
@@ -46,6 +47,21 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 			loadQR(secondOrder.getSecond().getId(),secondOrder.getUsid());
 		}
 		status = getIntent().getIntExtra("status", 0);
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("订单二维码");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("订单二维码");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void loadQR(final int sid,final String qrCode) {

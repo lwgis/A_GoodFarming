@@ -4,6 +4,7 @@ package com.zhonghaodi.goodfarming;
 
 import org.jivesoftware.smack.util.StringUtils;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.RecipeOrder;
@@ -68,6 +69,21 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 			orderRecipe();
 		}
 		
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("购买配方");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("购买配方");
+		MobclickAgent.onPause(this);
 	}
 
 	private void orderRecipe() {

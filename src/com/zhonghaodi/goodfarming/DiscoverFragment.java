@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -50,6 +51,22 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		btcpView.setOnClickListener(this);
 		return view;
 	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("发现Fragment");
+	}
+
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("发现Fragment");
+	}
+
 
 	@Override
 	public void onClick(View v) {

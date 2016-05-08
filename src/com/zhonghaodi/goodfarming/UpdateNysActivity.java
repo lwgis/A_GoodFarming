@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.AreaAdapter;
 import com.zhonghaodi.adapter.NysCateAdapter;
 import com.zhonghaodi.customui.DpTransform;
@@ -191,6 +192,21 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 		areaTextView = (TextView)findViewById(R.id.area_select);
 		areaTextView.setOnClickListener(this);
 		loadData();
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("升级为农技达人");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("升级为农技达人");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

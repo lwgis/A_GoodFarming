@@ -17,6 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Second;
@@ -114,7 +115,21 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		location();
 		initAdData();
 	}
-	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("政府补贴产品");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("政府补贴产品");
+		MobclickAgent.onPause(this);
+	}
 	private void initAdData() {
 		// 广告数据
 		ordersTv = (TextView) findViewById(R.id.orders_tv);

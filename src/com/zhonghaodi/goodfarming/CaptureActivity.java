@@ -12,6 +12,7 @@ import com.karics.library.zxing.android.InactivityTimer;
 import com.karics.library.zxing.android.IntentSource;
 import com.karics.library.zxing.camera.CameraManager;
 import com.karics.library.zxing.view.ViewfinderView;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.RecipeOrder;
@@ -114,7 +115,8 @@ public final class CaptureActivity extends Activity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-
+		MobclickAgent.onPageStart("二维码扫描");
+		MobclickAgent.onResume(this);
 		// CameraManager必须在这里初始化，而不是在onCreate()中。
 		// 这是必须的，因为当我们第一次进入时需要显示帮助页，我们并不想打开Camera,测量屏幕大小
 		// 当扫描框的尺寸不正确时会出现bug
@@ -159,6 +161,8 @@ public final class CaptureActivity extends Activity implements
 			surfaceHolder.removeCallback(this);
 		}
 		super.onPause();
+		MobclickAgent.onPageEnd("二维码扫描");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

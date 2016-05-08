@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.model.RecipeOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -58,6 +59,24 @@ public class CompleteOrderActivity extends Activity implements HandMessage {
 		if(recipeOrder!=null){
 			setData(recipeOrder);
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("已完成订单内容");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("已完成订单内容");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void setData(RecipeOrder recipeOrder){

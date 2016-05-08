@@ -12,6 +12,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.CustomRelativeLayout;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
@@ -150,6 +151,8 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("农艺圈");
+		MobclickAgent.onResume(this);
 		uid = GFUserDictionary.getUserId(getApplicationContext());
 		registerReceiver(receiver, filter);
 		if(uid==null || uid.isEmpty()){
@@ -163,6 +166,8 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		MobclickAgent.onPageEnd("农艺圈");
+		MobclickAgent.onPause(this);
 		unregisterReceiver(receiver);
 	}
 

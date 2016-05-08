@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import com.google.gson.Gson;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
@@ -49,6 +50,21 @@ public class ReportActivity extends Activity implements HandMessage,OnClickListe
 		status = getIntent().getIntExtra("status", 0);
 		
 		loadItems();
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("答案举报");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("答案举报");
+		MobclickAgent.onPause(this);
 	}
 	
 	/**

@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.goodfarming.PointOrdersActivity.HolderPointOrder;
 import com.zhonghaodi.goodfarming.PointOrdersActivity.PointOrderAdapter;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -69,7 +70,17 @@ public class GuaOrdersActivity extends Activity implements OnItemClickListener,H
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("刮刮乐订单");
+		MobclickAgent.onResume(this);
 		loadData();
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("刮刮乐订单");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void loadData(){

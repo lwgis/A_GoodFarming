@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.goodfarming.MainActivity.MainHandler;
 import com.zhonghaodi.model.AppVersion;
@@ -72,6 +73,21 @@ public class InformationActivity extends Activity implements OnClickListener {
 		else{
 			zjView.setVisibility(View.GONE);
 		}
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("我的资料");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("我的资料");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

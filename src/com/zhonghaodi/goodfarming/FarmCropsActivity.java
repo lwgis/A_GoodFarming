@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.networking.GFHandler;
@@ -62,6 +63,24 @@ public class FarmCropsActivity extends Activity implements HandMessage,OnItemCli
 		gridView.getRefreshableView().setAdapter(adapter);
 		titleView.setText("蔬菜瓜果病害");
 		loaddata();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("蔬菜瓜果病害");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("蔬菜瓜果病害");
+		MobclickAgent.onPause(this);
 	}
 	
 	/**

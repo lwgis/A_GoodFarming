@@ -7,6 +7,7 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.HoldMessage;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.networking.GFDate;
@@ -156,6 +157,21 @@ public class SysMessageActivity extends Activity {
 				
 			}
 		});
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("系统消息");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("系统消息");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void popupDialog(){

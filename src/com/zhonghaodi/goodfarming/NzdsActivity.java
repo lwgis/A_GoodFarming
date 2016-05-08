@@ -1,5 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +28,20 @@ public class NzdsActivity extends Activity implements OnClickListener {
 		questionView.setOnClickListener(this);
 		View lalaguaView = findViewById(R.id.layout2);
 		lalaguaView.setOnClickListener(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +32,19 @@ public class QuestionsActivity extends Activity implements OnClickListener {
 		adzwView.setOnClickListener(this);
 		View wdzzfxView = findViewById(R.id.layout4);
 		wdzzfxView.setOnClickListener(this);
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.ResponseAdapter;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
@@ -197,6 +198,21 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		if(uid!=null&&GFUserDictionary.getTjcode(this)==null){
 			loadUser();
 		}	
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("问题内容");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("问题内容");
+		MobclickAgent.onPause(this);
 	}
 	
 	@Override

@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldMessage;
 import com.zhonghaodi.model.GFMessage;
@@ -146,8 +147,17 @@ public class MessagesActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		loadData();
+		MobclickAgent.onPageStart("消息");
+		MobclickAgent.onResume(this);
 	}
-
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("消息");
+		MobclickAgent.onPause(this);
+	}
 
 
 	public void loadData() {

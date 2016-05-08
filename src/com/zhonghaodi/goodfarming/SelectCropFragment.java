@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.MySectionIndexer;
@@ -91,6 +92,20 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		}).start();
 	}
 	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("选择提问作物");
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("选择提问作物");
+	}
+
 	private void loadGossipCate(){
 		new Thread(new Runnable() {
 

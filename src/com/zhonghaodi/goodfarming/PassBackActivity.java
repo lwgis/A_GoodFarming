@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
@@ -33,6 +34,21 @@ public class PassBackActivity extends Activity implements HandMessage,OnClickLis
 		okBtn.setOnClickListener(this);
 		cancelBtn = (Button)findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("密码找回");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("密码找回");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

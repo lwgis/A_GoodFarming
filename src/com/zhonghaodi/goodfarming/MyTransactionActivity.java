@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.model.User;
 import android.app.Activity;
 import android.content.Intent;
@@ -41,6 +42,19 @@ public class MyTransactionActivity extends Activity implements OnClickListener {
 		else{
 			scanView.setVisibility(View.GONE);
 		}
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

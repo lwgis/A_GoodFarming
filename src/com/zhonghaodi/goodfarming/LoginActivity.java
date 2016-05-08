@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import java.io.File;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.MyTextButton;
 
 import android.app.Activity;
@@ -128,7 +129,14 @@ public class LoginActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

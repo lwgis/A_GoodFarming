@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Crop;
@@ -103,6 +104,21 @@ public class SelectCropActivity extends Activity implements HandMessage {
 				}
 			}
 		}).start();
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("设置我的作物");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("设置我的作物");
+		MobclickAgent.onPause(this);
 	}
 
 	/**

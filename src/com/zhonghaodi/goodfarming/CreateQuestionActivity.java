@@ -8,6 +8,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
@@ -160,6 +161,22 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		else{
 			showFragment(2);
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 	public void showFragment(int index) {

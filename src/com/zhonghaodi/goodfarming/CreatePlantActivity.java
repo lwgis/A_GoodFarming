@@ -8,6 +8,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
@@ -142,6 +143,22 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 		location();
 		sendBtn.setEnabled(false);
 		showFragment(0);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 	
 	public void showFragment(int index) {

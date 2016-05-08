@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
@@ -36,6 +37,24 @@ public class FeedBackActivity extends Activity implements HandMessage,OnClickLis
 		sendBtn.setEnabled(false);
 		contentEt = (MyEditText)findViewById(R.id.content_edit);
 		contentEt.addTextChangedListener(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("意见反馈");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("意见反馈");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void send(){

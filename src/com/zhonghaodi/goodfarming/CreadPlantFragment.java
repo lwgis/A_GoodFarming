@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.AddImageAdapter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
@@ -131,6 +132,24 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 		return view;
 	}
 	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("新增种植分享Fragment");
+	}
+
+
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("新增种植分享Fragment");
+	}
+
+
+
 	public void loadPlantInfo(){
 		new Thread(new Runnable() {
 

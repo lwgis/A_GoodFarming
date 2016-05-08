@@ -11,6 +11,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.CustomRelativeLayout;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
@@ -148,7 +149,16 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
+		MobclickAgent.onPageStart("专家、农技达人信息");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("专家、农技达人信息");
+		MobclickAgent.onPause(this);
 	}
 	
 	@Override

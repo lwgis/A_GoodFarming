@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Pointrule;
@@ -41,6 +42,21 @@ public class PointruleActivity extends Activity implements HandMessage {
 			}
 		});
 //		loadData();
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("积分规则");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("积分规则");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void loadData(){

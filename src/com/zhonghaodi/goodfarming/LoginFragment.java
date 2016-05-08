@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
@@ -86,6 +87,24 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 		});
 		return view;
 	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("登录");
+	}
+
+
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("登录");
+	}
+
+
 
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count,

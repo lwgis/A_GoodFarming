@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Commodity;
@@ -71,6 +72,21 @@ public class GuaOrderActivity extends Activity implements OnClickListener,HandMe
 		GuaOrder guaOrder = (GuaOrder)getIntent().getSerializableExtra("order");
 		display(guaOrder);
 		mGuaOrder = guaOrder;
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("刮刮乐订单内容");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("刮刮乐订单内容");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void display(GuaOrder guaOrder){

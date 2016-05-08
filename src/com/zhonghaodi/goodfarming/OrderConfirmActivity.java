@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
@@ -81,6 +82,22 @@ public class OrderConfirmActivity extends Activity implements HandMessage {
 		if(recipeOrder!=null){
 			setData(recipeOrder);
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("配方订单提交");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("配方订单提交");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void setData(RecipeOrder recipeOrder){

@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -119,13 +120,21 @@ public class ShoppingCartActivity extends Activity implements HandMessage,OnClic
 		pullToRefreshListView.setAdapter(adapter);	
 		selectTextView(orderTextView0);
 	}
-	
-	
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("配方订单");
+		MobclickAgent.onPause(this);
+	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("配方订单");
+		MobclickAgent.onResume(this);
 		switch (status) {
 		case 0:
 			loadData();

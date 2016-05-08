@@ -4,6 +4,7 @@ package com.zhonghaodi.goodfarming;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
 import com.zhonghaodi.customui.MyTextButton;
@@ -56,7 +57,22 @@ public class RegisterFragment1 extends Fragment implements OnClickListener,
 		time = new TimeCount(60000, 1000);
 		return view;
 	}
-	
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("获取验证码");
+	}
+
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("获取验证码");
+	}
+
 
 	@Override
 	public void onClick(View v) {

@@ -10,6 +10,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderEvaluate;
 import com.zhonghaodi.customui.HolderRecipeInfo;
@@ -113,6 +114,21 @@ public class RecipeActivity extends Activity implements HandMessage,OnClickListe
 		});
 
 		loadData();
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("农资店配方内容");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("农资店配方内容");
+		MobclickAgent.onPause(this);
 	}
 
 	private void loadData() {

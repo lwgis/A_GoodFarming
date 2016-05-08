@@ -7,6 +7,7 @@ import com.easemob.chat.EMChatManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -116,6 +117,8 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("我的关注、粉丝");
+		MobclickAgent.onResume(this);
 		uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null || uid.isEmpty()){
 			Intent intent = new Intent(this, LoginActivity.class);
@@ -128,6 +131,14 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 		else{
 			loadFans();
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("我的关注粉丝");
+		MobclickAgent.onPause(this);
 	}
 	
 	/**

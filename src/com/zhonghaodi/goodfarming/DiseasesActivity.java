@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.goodfarming.ShoppingCartActivity.MyOrderAdapter;
 import com.zhonghaodi.model.Agrotechnical;
@@ -85,6 +86,24 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 		TextView titleView = (TextView)findViewById(R.id.title_text);
 		titleView.setText(cropname+"的病害");
 		loadData();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("病虫害");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("病虫害");
+		MobclickAgent.onPause(this);
 	}
 	
 	/**

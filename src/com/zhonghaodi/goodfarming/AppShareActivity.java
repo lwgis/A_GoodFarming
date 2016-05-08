@@ -15,6 +15,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.Crop;
@@ -64,6 +65,24 @@ public class AppShareActivity extends Activity implements OnClickListener{
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("APP分享");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("APP分享");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void popwindow(){

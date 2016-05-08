@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -60,6 +61,22 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 			contentTextView.setText(secondOrder.getSecond().getContent());
 		}
 		status = getIntent().getIntExtra("status", 0);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("订单确认");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("订单确认");
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

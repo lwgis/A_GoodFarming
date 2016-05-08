@@ -21,6 +21,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldMessage;
 import com.zhonghaodi.customui.Holder1;
@@ -126,6 +127,20 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 		return view;
 	}
 	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("田间地头Fragment");
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("田间地头Fragment");
+	}
+
 	public void loadCategory(){
 		new Thread(new Runnable() {
 			

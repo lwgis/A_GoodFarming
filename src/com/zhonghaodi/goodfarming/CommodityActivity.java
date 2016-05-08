@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 import java.util.Iterator;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Commodity;
@@ -55,6 +56,24 @@ public class CommodityActivity extends Activity implements OnClickListener,HandM
 		exchangeBtn.setOnClickListener(this);
 		cid = getIntent().getIntExtra("cid", 0);
 		loadData();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("积分商品页");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("积分商品页");
+		MobclickAgent.onPause(this);
 	}
 	
 	private void loadData(){

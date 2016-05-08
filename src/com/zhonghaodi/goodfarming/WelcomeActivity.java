@@ -14,6 +14,7 @@ import java.util.TimerTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SettingPopupwindow;
 import com.zhonghaodi.customui.SharePopupwindow;
@@ -59,12 +60,14 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		if(!UILApplication.checkNetworkState()){
 			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
-		 
+		MobclickAgent.openActivityDurationTrack(false); 
 	}
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("启动页");
+		MobclickAgent.onResume(this);
 //		 new Handler().postDelayed(new Runnable(){  
 //		     public void run() {  
 //		     //execute the task  
@@ -75,6 +78,13 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		sleep();
 	}
 	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("启动页");
+		MobclickAgent.onPause(this);
+	}
 	public void popupwindow(){
 		final SettingPopupwindow settingPopupwindow = new SettingPopupwindow(this);
 		OnClickListener clickListener = new OnClickListener() {

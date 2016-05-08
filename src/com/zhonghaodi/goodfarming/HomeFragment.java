@@ -11,6 +11,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.QuestionAdpter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
@@ -160,6 +161,21 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		
 		return view;
 	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("主页Fragment");
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("主页Fragment");
+	}
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {

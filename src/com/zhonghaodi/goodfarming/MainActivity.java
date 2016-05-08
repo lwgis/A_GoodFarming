@@ -36,6 +36,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.AppVersion;
@@ -237,13 +238,13 @@ public class MainActivity extends Activity implements OnClickListener,
 		PackageManager packageManager = this.getPackageManager();
 		int versionString;
 		try {
-		PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), 0);
-		versionString = packageInfo.versionCode;
-	} catch (NameNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		versionString = 0;
-	}
+			PackageInfo packageInfo = packageManager.getPackageInfo(this.getPackageName(), 0);
+			versionString = packageInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			versionString = 0;
+		}
 		return versionString;
 	}
 
@@ -489,6 +490,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onResume(this);
 		if (!isLogin) {
 			initEm();
 		} else {
@@ -502,6 +504,14 @@ public class MainActivity extends Activity implements OnClickListener,
 			tryUpdate();
 		}
 	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+
 
 	@Override
 	protected void onStop() {

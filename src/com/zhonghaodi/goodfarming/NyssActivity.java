@@ -14,6 +14,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.model.Follow;
@@ -137,6 +138,8 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("专家、农技达人");
+		MobclickAgent.onResume(this);
 		uid = GFUserDictionary.getUserId(getApplicationContext());
 		
 		if(status==0){
@@ -145,6 +148,14 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		else{
 			loadZj(0);
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("专家、农技达人");
+		MobclickAgent.onPause(this);
 	}
 	
 	public void selectTextView(View view){

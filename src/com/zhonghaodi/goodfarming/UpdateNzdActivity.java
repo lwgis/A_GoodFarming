@@ -22,6 +22,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.model.LatLng;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.GFToast;
@@ -432,6 +433,8 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 		// MapView的生命周期与Activity同步，当activity挂起时需调用MapView.onPause()
 		mapView.onPause();
 		super.onPause();
+		MobclickAgent.onPageEnd("升级为农资店");
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
@@ -439,6 +442,8 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 		// MapView的生命周期与Activity同步，当activity恢复时需调用MapView.onResume()
 		mapView.onResume();
 		super.onResume();
+		MobclickAgent.onPageStart("升级为农资店");
+		MobclickAgent.onResume(this);
 	}
 
 	@Override

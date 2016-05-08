@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import java.io.File;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.utils.QRCodeUtil;
 
@@ -56,6 +57,24 @@ public class AppdownActivity extends Activity {
                 }
             }
         }).start();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("二维码分享");
+		MobclickAgent.onResume(this);
+	}
+
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("二维码分享");
+		MobclickAgent.onPause(this);
 	}
 
 	//文件存储根目录
