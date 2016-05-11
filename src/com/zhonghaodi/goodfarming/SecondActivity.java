@@ -19,6 +19,7 @@ import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.R.integer;
 import android.app.Activity;
@@ -53,6 +54,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second);
+		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		nzdTextView=(TextView)findViewById(R.id.nzd_text);
 		headImage = (ImageView)findViewById(R.id.head_image);
@@ -239,7 +241,11 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("order", secondOrder);
 					intent.putExtras(bundle);
-					if(status==1){
+					if(status == 0){
+						MobclickAgent.onEvent(this, UmengConstants.BUY_SECOND_ID);
+					}
+					else if(status==1){
+						MobclickAgent.onEvent(this, UmengConstants.BUY_ALLOWANCE_ID);
 						intent.putExtra("status", status);
 					}
 					startActivity(intent);

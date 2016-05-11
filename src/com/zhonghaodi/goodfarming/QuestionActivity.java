@@ -56,6 +56,7 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.R.integer;
 import android.app.Activity;
@@ -117,6 +118,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_question);
+		MobclickAgent.openActivityDurationTrack(false);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -898,13 +900,17 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		}
 		@Override
 		public void onError(UiError e) {
+			GFToast.show(QuestionActivity.this, "分享失败");
 		}
 		@Override
 		public void onCancel() {
+			GFToast.show(QuestionActivity.this, "分享取消");
 		}
 		@Override
 		public void onComplete(Object arg0) {
 			// TODO Auto-generated method stub
+			MobclickAgent.onEvent(QuestionActivity.this, UmengConstants.APP_SHARE_ID);
+			GFToast.show(QuestionActivity.this, "分享成功");
 		}
 		
 	}

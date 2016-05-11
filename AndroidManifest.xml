@@ -498,7 +498,7 @@
         
         <meta-data android:value="572bef3167e58eeefe002485" android:name="UMENG_APPKEY"></meta-data>
         <!-- <meta-data android:value="channel_value" android:name="UMENG_CHANNEL"/> -->
-        <meta-data android:value="Tencent" android:name="UMENG_CHANNEL"/>
+        <meta-data android:value="Baidu" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>

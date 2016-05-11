@@ -46,6 +46,7 @@ public class FarmCropsActivity extends Activity implements HandMessage,OnItemCli
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_farmcrops);
+		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		gridView = (PullToRefreshGridView)findViewById(R.id.pull_refresh_grid);
 		gridView.setMode(Mode.DISABLED);

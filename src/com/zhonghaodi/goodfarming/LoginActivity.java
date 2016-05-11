@@ -36,6 +36,7 @@ public class LoginActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_login);
+		MobclickAgent.openActivityDurationTrack(false);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {

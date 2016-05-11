@@ -30,6 +30,7 @@ import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.UmengConstants;
 import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -308,6 +309,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		case 2:
 			siginButton.setEnabled(true);
 			if(msg.obj!=null){
+				MobclickAgent.onEvent(getActivity(), UmengConstants.USER_SIGNIN_ID);
 				GFToast.show(getActivity().getApplicationContext(),msg.obj.toString());
 				loadData();
 			}

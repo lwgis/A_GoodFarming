@@ -24,6 +24,7 @@ import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.UmengConstants;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.R.integer;
@@ -71,7 +72,7 @@ public class NyqActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nyq);
-		 
+		MobclickAgent.openActivityDurationTrack(false);
 		 this.nyqSend=(Button)findViewById(R.id.send_button);
 		 this.imageGridView=(GridView)findViewById(R.id.imageGridView);
 		 this.nyqEditText = (MyEditText)findViewById(R.id.content_edit);
@@ -353,6 +354,7 @@ public class NyqActivity extends Activity implements HandMessage {
 			}	
 			break;		
 		case TypeQuan:
+			MobclickAgent.onEvent(this, UmengConstants.CREATE_QUAN_ID);
 			GFToast.show(getApplicationContext(),"发送成功");
 			SendRefreshBroadcase();
 			break;

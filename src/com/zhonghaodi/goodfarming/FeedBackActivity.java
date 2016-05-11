@@ -30,6 +30,7 @@ public class FeedBackActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feedback);
+		MobclickAgent.openActivityDurationTrack(false);
 		cancelButton = (MyTextButton)findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(this);
 		sendBtn = (MyTextButton)findViewById(R.id.send_button);

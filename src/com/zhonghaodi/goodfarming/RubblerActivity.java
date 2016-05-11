@@ -60,7 +60,8 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rubbler);       
+        setContentView(R.layout.activity_rubbler);    
+        MobclickAgent.openActivityDurationTrack(false);
         keywordsFlow = (KeywordsFlow) findViewById(R.id.frameLayout1);
 		keywordsFlow.setDuration(800l);
 		keywordsFlow.setOnClickListener(this);

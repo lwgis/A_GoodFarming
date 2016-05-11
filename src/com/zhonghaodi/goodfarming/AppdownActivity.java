@@ -22,6 +22,7 @@ public class AppdownActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_download);
+		MobclickAgent.openActivityDurationTrack(false);
 		MyTextButton cancelBtn = (MyTextButton)findViewById(R.id.back_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 

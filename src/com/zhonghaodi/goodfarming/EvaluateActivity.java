@@ -44,6 +44,7 @@ public class EvaluateActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_evaluate);
+		MobclickAgent.openActivityDurationTrack(false);
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
 		evaluateEditText = (MyEditText)findViewById(R.id.desc_edit);
 		cancelButton = (MyTextButton)findViewById(R.id.cancel_button);

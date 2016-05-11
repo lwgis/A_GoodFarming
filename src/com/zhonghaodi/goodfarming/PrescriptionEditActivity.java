@@ -39,6 +39,7 @@ public class PrescriptionEditActivity extends Activity implements OnClickListene
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_prescriptionedit);
+		MobclickAgent.openActivityDurationTrack(false);
 		Button cancelButton = (Button)findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(this);
 		Button okButton = (Button)findViewById(R.id.ok_button);

@@ -23,6 +23,7 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
 import com.zhonghaodi.utils.PublicHelper;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -81,6 +82,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_create_question);
+		MobclickAgent.openActivityDurationTrack(false);
 		isSending = false;
 		netImages = new ArrayList<NetImage>();
 		titleTv = (TextView) findViewById(R.id.title_text);
@@ -377,9 +379,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 						try {
 							if(status==0){
 								HttpUtil.sendQuestion(question);
+								MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_DISEASE_ID);
 							}
 							else if(status==1){
 								HttpUtil.sendGossip(question);
+								MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_GOSSIP_ID);
 							}
 							else{
 								HttpUtil.sendPlant(question);
@@ -436,9 +440,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					try {
 						if(status==0){
 							HttpUtil.sendQuestion(question);
+							MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_DISEASE_ID);
 						}
 						else if(status==1){
 							HttpUtil.sendGossip(question);
+							MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_GOSSIP_ID);
 						}
 						else{
 							HttpUtil.sendPlant(question);

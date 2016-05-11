@@ -38,6 +38,7 @@ public class InformationActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_information);
+		MobclickAgent.openActivityDurationTrack(false);
 		user = (User)getIntent().getSerializableExtra("user");
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {

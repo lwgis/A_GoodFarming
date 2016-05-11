@@ -81,6 +81,7 @@ public class RecipeActivity extends Activity implements HandMessage,OnClickListe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_recipe);
+		MobclickAgent.openActivityDurationTrack(false);
 		recipeIv = (ImageView)findViewById(R.id.recipe_image);
 		repiceTitleTv = (TextView)findViewById(R.id.recipetitle_text);
 		priceOldTv = (TextView)findViewById(R.id.oldprice_text);

@@ -22,6 +22,7 @@ import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.UmengConstants;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Activity;
@@ -67,6 +68,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		super.onCreate(savedInstanceState);
 		adapter = new DiseaseAdapter();
 		super.setContentView(R.layout.activity_disease);
+		MobclickAgent.openActivityDurationTrack(false);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		sendLayout = (LinearLayout)findViewById(R.id.sendlayout);
 		mzEditText = (MyEditText)findViewById(R.id.chat_edit);
@@ -542,7 +544,7 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 			break;
 		case 2:
 			if(msg.obj==null){
-				
+				MobclickAgent.onEvent(this, UmengConstants.ADD_SOLUTION_ID);
 				loadData();
 				GFToast.show(getApplicationContext(),"添加成功");
 			}

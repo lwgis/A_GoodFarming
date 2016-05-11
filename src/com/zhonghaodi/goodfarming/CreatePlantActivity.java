@@ -24,6 +24,7 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -78,6 +79,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_create_question);
+		MobclickAgent.openActivityDurationTrack(false);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		isSending = false;
 		netImages = new ArrayList<NetImage>();
@@ -322,6 +324,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 					public void run() {
 						try {
 							HttpUtil.sendPlant(question);
+							MobclickAgent.onEvent(CreatePlantActivity.this, UmengConstants.ASK_PLANT_ID);
 							Message msg = handler.obtainMessage();
 							msg.what = TypeQuestion;
 							msg.sendToTarget();
@@ -361,6 +364,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				public void run() {
 					try {
 						HttpUtil.sendPlant(question);
+						MobclickAgent.onEvent(CreatePlantActivity.this, UmengConstants.ASK_PLANT_ID);
 						Message msg = handler.obtainMessage();
 						msg.what = TypeQuestion;
 						msg.sendToTarget();

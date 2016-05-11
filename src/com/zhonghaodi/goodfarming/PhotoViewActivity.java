@@ -37,6 +37,7 @@ public class PhotoViewActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_photo_view);
+		MobclickAgent.openActivityDurationTrack(false);
 		viewPage=(ViewPager)findViewById(R.id.view_pager);
 		countTv=(TextView)findViewById(R.id.count_text);
 		images=(List<NetImage>)getIntent().getSerializableExtra("images");

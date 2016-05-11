@@ -96,6 +96,7 @@ public final class CaptureActivity extends Activity implements
 		Window window = getWindow();
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.capture);
+		MobclickAgent.openActivityDurationTrack(false);
 
 		hasSurface = false;
 

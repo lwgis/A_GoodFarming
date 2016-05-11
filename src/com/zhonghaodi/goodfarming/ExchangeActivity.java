@@ -9,6 +9,7 @@ import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.R.integer;
 import android.app.Activity;
@@ -31,6 +32,7 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_exchange);
+		MobclickAgent.openActivityDurationTrack(false);
 		keyTextView = (TextView)findViewById(R.id.key_text);
 		countExt = (MyEditText)findViewById(R.id.count_ext);
 		backBtn = (MyTextButton)findViewById(R.id.back_button);
@@ -151,6 +153,7 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 			try {
 				String keyString = msg.obj.toString();
 				int k2 = Integer.parseInt(keyString);
+				MobclickAgent.onEvent(this, UmengConstants.EXCHANGE_POINT_ID);
 				GFToast.show(getApplicationContext(),"成功兑换为"+k2+"个优惠币");
 				ExchangeActivity.this.finish();
 			} catch (Exception e) {

@@ -59,6 +59,7 @@ public class EvaluatesActivity extends Activity implements HandMessage,OnClickLi
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_evaluates);
+		MobclickAgent.openActivityDurationTrack(false);
 		titleTextView = (TextView)findViewById(R.id.title_text);
 		nzdCode = getIntent().getStringExtra("nzdCode");
 		recipeId = getIntent().getIntExtra("recipeId", 0);

@@ -45,6 +45,7 @@ public class CommodityActivity extends Activity implements OnClickListener,HandM
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_commodity);
+		MobclickAgent.openActivityDurationTrack(false);
 		bigImageView = (ImageView)findViewById(R.id.head_image);
 		nameTextView = (TextView)findViewById(R.id.name_text);
 		pointTextView = (TextView)findViewById(R.id.point_text);

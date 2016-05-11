@@ -57,6 +57,7 @@ public class SearchActivity extends Activity implements HandMessage,OnClickListe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
+		MobclickAgent.openActivityDurationTrack(false);
 		listView = (ListView)findViewById(R.id.pull_refresh_list);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);

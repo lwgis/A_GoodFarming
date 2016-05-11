@@ -37,6 +37,7 @@ public class CompleteOrderActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_completeorder);
+		MobclickAgent.openActivityDurationTrack(false);
 		recipeIv = (ImageView) findViewById(R.id.recipe_image);
 		repiceTitleTv = (TextView) findViewById(R.id.recipetitle_text);
 		priceOldTv = (TextView) findViewById(R.id.oldprice_text);

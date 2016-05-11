@@ -55,6 +55,7 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_commodities);
+		MobclickAgent.openActivityDurationTrack(false);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 

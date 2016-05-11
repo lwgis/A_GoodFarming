@@ -44,6 +44,7 @@ public class SysMessageActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sysmessage);
+		MobclickAgent.openActivityDurationTrack(false);
 		messages = (List<GFMessage>)getIntent().getSerializableExtra("messages");
 		userName =  getIntent().getStringExtra("userName");
 		emConversation = EMChatManager.getInstance().getConversation(userName);

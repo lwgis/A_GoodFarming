@@ -55,6 +55,7 @@ public class MessagesActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_messages);
+		MobclickAgent.openActivityDurationTrack(false);
 		pullToRefreshList = (PullToRefreshListView)findViewById(R.id.pull_refresh_list);
 		messages = new ArrayList<GFMessage>();
 		Button contactsBtn = (Button)findViewById(R.id.contacts_button);

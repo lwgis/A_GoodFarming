@@ -90,6 +90,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nys);
+		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		uid = getIntent().getStringExtra("uid");
 		mid = GFUserDictionary.getUserId(getApplicationContext());

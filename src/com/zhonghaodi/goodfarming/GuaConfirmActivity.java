@@ -16,6 +16,7 @@ import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -49,6 +50,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guaconfirm);
+		MobclickAgent.openActivityDurationTrack(false);
 		MyTextButton okButton = (MyTextButton)findViewById(R.id.ok_button);
 		okButton.setOnClickListener(this);
 		nameTextView = (TextView)findViewById(R.id.name_text);
@@ -268,6 +270,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 			}
 			break;
 		case 1:
+			MobclickAgent.onEvent(this, UmengConstants.WINNING_RUBBER_ID);
 			GFToast.show(getApplicationContext(),"订单提交成功。可在我的订单里查看。");
 			this.finish();
 			break;

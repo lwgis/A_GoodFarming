@@ -54,6 +54,7 @@ public class ShoppingCartActivity extends Activity implements HandMessage,OnClic
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shoppingcart);
+		MobclickAgent.openActivityDurationTrack(false);
 		emptyLayout = (LinearLayout)findViewById(R.id.empty_layout);
 		orderTextView0 = (TextView)findViewById(R.id.ordertxt0);
 		orderTextView0.setOnClickListener(this);

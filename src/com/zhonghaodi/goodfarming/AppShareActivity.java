@@ -24,6 +24,7 @@ import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.utils.PublicHelper;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.os.Bundle;
 import android.view.Gravity;
@@ -48,6 +49,7 @@ public class AppShareActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_appshare);
+		MobclickAgent.openActivityDurationTrack(false);
 		user = (User)getIntent().getSerializableExtra("user");
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
@@ -212,6 +214,7 @@ public class AppShareActivity extends Activity implements OnClickListener{
 		@Override
 		public void onComplete(Object arg0) {
 			// TODO Auto-generated method stub
+			MobclickAgent.onEvent(AppShareActivity.this, UmengConstants.APP_SHARE_ID);
 			GFToast.show(AppShareActivity.this, "分享成功");
 			
 		}

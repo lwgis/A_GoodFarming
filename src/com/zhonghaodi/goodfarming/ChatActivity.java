@@ -118,6 +118,7 @@ public class ChatActivity extends Activity implements TextWatcher, HandMessage,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_chat);
+		MobclickAgent.openActivityDurationTrack(false);
 		MyTextButton cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setText("<返回");
 		cancelBtn.setOnClickListener(new OnClickListener() {

@@ -5,9 +5,11 @@ import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.goodfarming.R;
 import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -38,6 +40,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 		// TODO Auto-generated method stub
 		switch (arg0.errCode) {  
         case BaseResp.ErrCode.ERR_OK:  
+        	MobclickAgent.onEvent(this, UmengConstants.APP_SHARE_ID);
         	GFToast.show(this, "发送成功");
             resultTv.setText("发送成功");
             finish();  

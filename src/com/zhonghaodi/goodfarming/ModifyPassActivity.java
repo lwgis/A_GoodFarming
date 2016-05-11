@@ -37,6 +37,7 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_modifypass);
+		MobclickAgent.openActivityDurationTrack(false);
 		oldPassEt = (EditText)findViewById(R.id.oldpass_edit);
 		newPassEt = (EditText)findViewById(R.id.newpass_edit);
 		confirmPassEt = (EditText)findViewById(R.id.confirmpass_edit);
