@@ -48,7 +48,6 @@ public class GuaOrdersActivity extends Activity implements OnItemClickListener,H
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guaorders);
-		MobclickAgent.openActivityDurationTrack(false);
 		emptyLayout = (LinearLayout)findViewById(R.id.empty_layout);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {

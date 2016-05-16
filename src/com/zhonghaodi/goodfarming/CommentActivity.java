@@ -72,7 +72,6 @@ public class CommentActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment);
-		MobclickAgent.openActivityDurationTrack(false);
 		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setText("<返回");
 		cancelBtn.setOnClickListener(this);

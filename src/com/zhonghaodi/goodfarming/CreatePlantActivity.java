@@ -79,7 +79,6 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_create_question);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		isSending = false;
 		netImages = new ArrayList<NetImage>();
@@ -168,23 +167,29 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				.beginTransaction();
 		if (selectCropFragment == null) {
 			selectCropFragment = new SelectCropFragment();
-			transation.add(R.id.content_view, selectCropFragment);
+//			transation.add(R.id.content_view, selectCropFragment);
 		}
 		if (createPlantFragment == null) {
 			createPlantFragment = new CreadPlantFragment();
-			transation.add(R.id.content_view, createPlantFragment);
+//			transation.add(R.id.content_view, createPlantFragment);
 		}
 		switch (index) {
 		case 0:
-			transation.show(selectCropFragment);
+			if (selectCropFragment == null) {
+				selectCropFragment = new SelectCropFragment();
+			}
+			transation.replace(R.id.content_view, selectCropFragment);
 			setTitle("选择农作物种类");
-			transation.hide(createPlantFragment);
 			break;
 		case 1:
-			transation.setCustomAnimations(R.anim.fragment_rightin,
-					R.anim.fragment_fadeout);
-			transation.show(createPlantFragment);
-			transation.hide(selectCropFragment);
+			if (createPlantFragment == null) {
+				createPlantFragment = new CreadPlantFragment();
+			}
+			transation.replace(R.id.content_view, createPlantFragment);
+//			transation.setCustomAnimations(R.anim.fragment_rightin,
+//					R.anim.fragment_fadeout);
+//			transation.show(createPlantFragment);
+//			transation.hide(selectCropFragment);
 			break;
 		default:
 			break;

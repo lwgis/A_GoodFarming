@@ -1,33 +1,18 @@
 package com.zhonghaodi.goodfarming;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.baidu.platform.comapi.map.u;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.tencent.mm.sdk.modelmsg.GetMessageFromWX;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
-import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
 import com.zhonghaodi.customui.MyTextButton;
-import com.zhonghaodi.customui.SharePopupwindow;
-import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Function;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
-import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.UmengConstants;
@@ -37,12 +22,8 @@ import com.zhonghaodi.networking.ImageOptions;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.os.Message;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +95,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				
 			}
 		});
+		
 		return view;
 	}
 
@@ -122,6 +104,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onPageStart("我Fragment");
+		loadData();
 	}
 
 	@Override

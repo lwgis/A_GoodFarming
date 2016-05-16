@@ -32,7 +32,6 @@ public class ExchangeActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_exchange);
-		MobclickAgent.openActivityDurationTrack(false);
 		keyTextView = (TextView)findViewById(R.id.key_text);
 		countExt = (MyEditText)findViewById(R.id.count_ext);
 		backBtn = (MyTextButton)findViewById(R.id.back_button);

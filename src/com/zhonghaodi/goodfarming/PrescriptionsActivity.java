@@ -56,7 +56,6 @@ public class PrescriptionsActivity extends Activity implements OnClickListener,O
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_prescriptions);
-		MobclickAgent.openActivityDurationTrack(false);
 		addButton = (Button)findViewById(R.id.add_button);
 		addButton.setOnClickListener(this);
 		Button cancelButton = (Button)findViewById(R.id.cancel_button);

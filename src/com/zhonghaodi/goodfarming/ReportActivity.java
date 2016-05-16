@@ -38,7 +38,6 @@ public class ReportActivity extends Activity implements HandMessage,OnClickListe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_report);
-		MobclickAgent.openActivityDurationTrack(false);
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
 		reportEditText = (MyEditText)findViewById(R.id.desc_edit);
 		cancelButton = (MyTextButton)findViewById(R.id.cancel_button);

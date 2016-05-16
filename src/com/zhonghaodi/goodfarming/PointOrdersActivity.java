@@ -45,7 +45,6 @@ public class PointOrdersActivity extends Activity implements OnItemClickListener
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pointorders);
-		MobclickAgent.openActivityDurationTrack(false);
 		emptyLayout = (LinearLayout)findViewById(R.id.empty_layout);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {

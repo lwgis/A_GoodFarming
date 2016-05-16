@@ -74,7 +74,6 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_zfbt);
-		MobclickAgent.openActivityDurationTrack(false);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);		

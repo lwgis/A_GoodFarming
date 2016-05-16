@@ -36,7 +36,6 @@ public class LoginActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_login);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
@@ -77,46 +76,49 @@ public class LoginActivity extends Activity {
 		
 		if (resgiterFragment1 == null) {
 			resgiterFragment1 = new RegisterFragment1();
-			transaction.add(R.id.content_view, resgiterFragment1);
+//			transaction.add(R.id.content_view, resgiterFragment1);
 		}
 		if (loginFragment == null) {
 			loginFragment = new LoginFragment();
-			transaction.add(R.id.content_view, loginFragment);
+//			transaction.add(R.id.content_view, loginFragment);
 		}
 		if (resgiterFragment2 == null) {
 			resgiterFragment2 = new RegisterFragment2();
-			transaction.add(R.id.content_view, resgiterFragment2);
+//			transaction.add(R.id.content_view, resgiterFragment2);
 		}
 		switch (index) {
 		case 0:
+			transaction.replace(R.id.content_view, resgiterFragment1);
 			resgisterBtn.setVisibility(View.INVISIBLE);
 			titleTv.setText("注册");
 //			transaction.setCustomAnimations(R.anim.fragment_rightin,
 //					R.anim.fragment_fadeout);
-			transaction.show(resgiterFragment1);
-			transaction.hide(loginFragment);
-			transaction.hide(resgiterFragment2);	
+//			transaction.show(resgiterFragment1);
+//			transaction.hide(loginFragment);
+//			transaction.hide(resgiterFragment2);	
 			break;
 		case 1:
+			transaction.replace(R.id.content_view, loginFragment);
 			im.hideSoftInputFromWindow(findViewById(R.id.content_view)
 					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			resgisterBtn.setVisibility(View.VISIBLE);
 			titleTv.setText("登录");
-			transaction.setCustomAnimations(R.anim.fragment_rightin,
-					R.anim.fragment_fadeout);
-			transaction.hide(resgiterFragment1);
-			transaction.show(loginFragment);
-			transaction.hide(resgiterFragment2);
+//			transaction.setCustomAnimations(R.anim.fragment_rightin,
+//					R.anim.fragment_fadeout);
+//			transaction.hide(resgiterFragment1);
+//			transaction.show(loginFragment);
+//			transaction.hide(resgiterFragment2);
 			break;
 		case 2:
+			transaction.replace(R.id.content_view, resgiterFragment2);
 			resgisterBtn.setVisibility(View.INVISIBLE);
 			im.hideSoftInputFromWindow(findViewById(R.id.content_view)
 					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-			transaction.setCustomAnimations(R.anim.fragment_rightin,
-					R.anim.fragment_fadeout);
-			transaction.show(resgiterFragment2);
-			transaction.hide(resgiterFragment1);
-			transaction.hide(loginFragment);
+//			transaction.setCustomAnimations(R.anim.fragment_rightin,
+//					R.anim.fragment_fadeout);
+//			transaction.show(resgiterFragment2);
+//			transaction.hide(resgiterFragment1);
+//			transaction.hide(loginFragment);
 			break;
 		default:
 			break;
@@ -130,6 +132,7 @@ public class LoginActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("用户登录Activity");
 		MobclickAgent.onResume(this);
 	}
 
@@ -137,6 +140,7 @@ public class LoginActivity extends Activity {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		MobclickAgent.onPageEnd("用户登录Activity");
 		MobclickAgent.onPause(this);
 	}
 

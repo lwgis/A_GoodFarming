@@ -66,7 +66,6 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_diseases);
-		MobclickAgent.openActivityDurationTrack(false);
 		tabLayout = (LinearLayout)findViewById(R.id.tabhost);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {

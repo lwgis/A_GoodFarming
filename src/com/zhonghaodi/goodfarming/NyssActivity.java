@@ -70,7 +70,6 @@ public class NyssActivity extends Activity implements OnClickListener,HandMessag
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nyss);
-		MobclickAgent.openActivityDurationTrack(false);
 		gridView = (PullToRefreshListView)findViewById(R.id.pull_refresh_list);
 		nysTextView = (TextView)findViewById(R.id.nys_text);
 		nysTextView.setOnClickListener(this);

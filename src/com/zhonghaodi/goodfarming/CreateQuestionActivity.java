@@ -82,7 +82,6 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_create_question);
-		MobclickAgent.openActivityDurationTrack(false);
 		isSending = false;
 		netImages = new ArrayList<NetImage>();
 		titleTv = (TextView) findViewById(R.id.title_text);
@@ -186,33 +185,39 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				.beginTransaction();
 		if (selectCropFragment == null) {
 			selectCropFragment = new SelectCropFragment();
-			transation.add(R.id.content_view, selectCropFragment);
+//			transation.add(R.id.content_view, selectCropFragment);
 		}
 		if (createQuestionFragment == null) {
 			createQuestionFragment = new CreateQuestionFragment();
-			transation.add(R.id.content_view, createQuestionFragment);
+//			transation.add(R.id.content_view, createQuestionFragment);
 		}
 		switch (index) {
 		case 0:
-			transation.show(selectCropFragment);
+			if (selectCropFragment == null) {
+				selectCropFragment = new SelectCropFragment();
+			}
+			transation.replace(R.id.content_view, selectCropFragment);
 			setTitle("选择农作物种类");
-			transation.hide(createQuestionFragment);
 			break;
 		case 1:
-			transation.show(selectCropFragment);
+			if (selectCropFragment == null) {
+				selectCropFragment = new SelectCropFragment();
+			}
+			transation.replace(R.id.content_view, selectCropFragment);
 			setTitle("选择话题");
-			transation.hide(createQuestionFragment);
 			break;
 		case 2:
-			transation.show(selectCropFragment);
+			if (selectCropFragment == null) {
+				selectCropFragment = new SelectCropFragment();
+			}
+			transation.replace(R.id.content_view, selectCropFragment);
 			setTitle("选择农作物种类");
-			transation.hide(createQuestionFragment);
 			break;
 		case 3:
-			transation.setCustomAnimations(R.anim.fragment_rightin,
-					R.anim.fragment_fadeout);
-			transation.show(createQuestionFragment);
-			transation.hide(selectCropFragment);
+			if (createQuestionFragment == null) {
+				createQuestionFragment = new CreateQuestionFragment();
+			}
+			transation.replace(R.id.content_view, createQuestionFragment);
 			break;
 			
 		default:

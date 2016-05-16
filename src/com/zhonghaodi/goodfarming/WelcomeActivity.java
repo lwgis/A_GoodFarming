@@ -26,6 +26,7 @@ import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 
+import android.Manifest.permission;
 import android.R.integer;
 import android.app.Activity;
 import android.app.Dialog;
@@ -37,6 +38,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -60,8 +62,8 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		if(!UILApplication.checkNetworkState()){
 			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
-		MobclickAgent.openActivityDurationTrack(false); 
 	}
+                  
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub

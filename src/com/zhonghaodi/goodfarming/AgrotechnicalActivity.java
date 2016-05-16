@@ -63,7 +63,6 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_agrotechnical);
-		MobclickAgent.openActivityDurationTrack(false);
 		agroImageView = (ImageView)findViewById(R.id.agro_image);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {

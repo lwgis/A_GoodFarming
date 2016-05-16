@@ -55,7 +55,6 @@ public class SelectCropActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_select_crop);
-		MobclickAgent.openActivityDurationTrack(false);
 		rootCrops = new ArrayList<Crop>();
 		listView = (ListView) findViewById(R.id.crop_list);
 		listView.setAdapter(adapter);

@@ -41,7 +41,6 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_secondorder);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		headImageView = (ImageView)findViewById(R.id.head_image);
 		countpriceView = (TextView)findViewById(R.id.countprice_text);

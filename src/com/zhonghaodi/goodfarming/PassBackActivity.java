@@ -29,7 +29,6 @@ public class PassBackActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_passback);
-		MobclickAgent.openActivityDurationTrack(false);
 		phoneEt = (EditText)findViewById(R.id.phone_edit);
 		okBtn = (Button)findViewById(R.id.ok_button);
 		okBtn.setOnClickListener(this);

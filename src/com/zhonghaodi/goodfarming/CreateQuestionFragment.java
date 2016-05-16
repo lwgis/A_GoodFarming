@@ -251,7 +251,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("新增作物问题、拉拉呱Fragment");
+		MobclickAgent.onPageStart("提问、拉拉呱Fragment");
 	}
 
 	public void loadUser() {
@@ -325,7 +325,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		im.hideSoftInputFromWindow(view
 				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		super.onPause();
-		MobclickAgent.onPageEnd("新增作物问题、拉拉呱Fragment");
+		MobclickAgent.onPageEnd("提问、拉拉呱Fragment");
 	}
 	
 	public ArrayList<Bitmap> getImages() {

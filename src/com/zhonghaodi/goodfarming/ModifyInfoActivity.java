@@ -60,7 +60,6 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_modifyinfo);
-		MobclickAgent.openActivityDurationTrack(false);
 		descEt = (MyEditText)findViewById(R.id.desc_edit);
 		aliasEt = (MyEditText)findViewById(R.id.alias_edit);
 		addressEt = (MyEditText)findViewById(R.id.address_edit);

@@ -45,7 +45,6 @@ public class PayActivity extends Activity implements HandMessage,OnClickListener
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pay);
-		MobclickAgent.openActivityDurationTrack(false);
 		user = (User)getIntent().getSerializableExtra("user");
 		countExt = (MyEditText)findViewById(R.id.count_ext);
 		passExt = (MyEditText)findViewById(R.id.password_edit);

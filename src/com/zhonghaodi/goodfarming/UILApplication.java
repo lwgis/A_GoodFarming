@@ -45,6 +45,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.baidu.a.a.a.c;
 import com.baidu.mapapi.SDKInitializer;
 import com.easemob.chat.EMChat;
 import com.google.gson.Gson;
@@ -54,6 +55,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemor
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.GFPointDictionary;
@@ -76,6 +78,8 @@ public class UILApplication extends Application {
 		
 		applicationContext=this;
 		super.onCreate();
+//		MobclickAgent.setDebugMode(true);
+		MobclickAgent.openActivityDurationTrack(false); 
 		ErrorReport catchExcep = new ErrorReport(this);  
         Thread.setDefaultUncaughtExceptionHandler(catchExcep);
 		initImageLoader(getApplicationContext());

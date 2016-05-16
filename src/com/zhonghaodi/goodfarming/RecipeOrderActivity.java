@@ -43,7 +43,6 @@ public class RecipeOrderActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_recipeorder);
-		MobclickAgent.openActivityDurationTrack(false);
 		Button cancel = (Button) findViewById(R.id.cancel_button);
 		cancel.setOnClickListener(new OnClickListener() {
 

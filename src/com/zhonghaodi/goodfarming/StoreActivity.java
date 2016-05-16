@@ -64,7 +64,6 @@ public class StoreActivity extends Activity implements HandMessage,OnClickListen
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_store);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		bfollow = getIntent().getBooleanExtra("bfollow", false);
 		store = (User)getIntent().getSerializableExtra("store");

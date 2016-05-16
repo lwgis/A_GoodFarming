@@ -30,7 +30,6 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_secondcode);
-		MobclickAgent.openActivityDurationTrack(false);
 		orderinfoView = (TextView)findViewById(R.id.ordercontent_text);
 		qrCodeIv = (ImageView)findViewById(R.id.qrcode_image);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);

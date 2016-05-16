@@ -81,7 +81,6 @@ public class UpdateNysActivity extends Activity implements TextWatcher,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_update_nys);
-		MobclickAgent.openActivityDurationTrack(false);
 		MyTextButton cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		zhengmianBtn = (GFImageButton) findViewById(R.id.zhengmian_image);
 		fanmianBtn = (GFImageButton) findViewById(R.id.fanmian_image);

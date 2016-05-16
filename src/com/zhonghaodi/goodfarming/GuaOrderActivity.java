@@ -52,7 +52,6 @@ public class GuaOrderActivity extends Activity implements OnClickListener,HandMe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guaorder);
-		MobclickAgent.openActivityDurationTrack(false);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
 		MyTextButton okButton = (MyTextButton)findViewById(R.id.ok_button);

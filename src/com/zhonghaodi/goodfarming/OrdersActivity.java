@@ -21,7 +21,6 @@ public class OrdersActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_orders);
-		MobclickAgent.openActivityDurationTrack(false);
 		pointView = findViewById(R.id.layout1);
 		pointView.setOnClickListener(this);
 		miaoView = findViewById(R.id.layout2);

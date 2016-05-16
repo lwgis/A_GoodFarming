@@ -87,7 +87,6 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quan);
-		MobclickAgent.openActivityDurationTrack(false);
 		cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
 		quanButton = (ImageView)findViewById(R.id.quan_button);

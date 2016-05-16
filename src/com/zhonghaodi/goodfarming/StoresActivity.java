@@ -71,7 +71,6 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_stores);
-		MobclickAgent.openActivityDurationTrack(false);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 

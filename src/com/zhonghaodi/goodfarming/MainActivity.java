@@ -114,12 +114,12 @@ public class MainActivity extends Activity implements OnClickListener,
 	private ProgressBar progressBar;
 	private TextView proTextView1;
 	private TextView proTextView2;
+	private long lastClick;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		MobclickAgent.openActivityDurationTrack(false);
 		homeView = findViewById(R.id.home_layout);
 		forumView = findViewById(R.id.forum_layout);
 		discoverView = findViewById(R.id.discover_layout);
@@ -186,7 +186,7 @@ public class MainActivity extends Activity implements OnClickListener,
 										MainActivity.this,
 										new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
 						EMChat.getInstance().setAppInited();
-						forumFragment.loadData();
+//						forumFragment.loadData();
 						isLogin = true;
 					}
 
@@ -398,24 +398,20 @@ public class MainActivity extends Activity implements OnClickListener,
 				.beginTransaction();
 		if (homeFragment == null) {
 			homeFragment = new HomeFragment();
-			transction.add(R.id.content, homeFragment);
 		}
 		if (forumFragment == null) {
 			forumFragment = new ForumFragment();
-			transction.add(R.id.content, forumFragment);
 		}
 		if (discoverFragment == null) {
 			discoverFragment = new DiscoverFragment();
-			transction.add(R.id.content, discoverFragment);
 		}
 		if (meFragment == null) {
 			meFragment = new MeFragment();
-			transction.add(R.id.content, meFragment);
 		}
-		transction.hide(homeFragment);
-		transction.hide(forumFragment);
-		transction.hide(discoverFragment);
-		transction.hide(meFragment);
+//		transction.hide(homeFragment);
+//		transction.hide(forumFragment);
+//		transction.hide(discoverFragment);
+//		transction.hide(meFragment);
 		homeIv.setImageResource(R.drawable.home);
 		forumIv.setImageResource(R.drawable.tian);
 		discoverIv.setImageResource(R.drawable.discover);
@@ -427,25 +423,34 @@ public class MainActivity extends Activity implements OnClickListener,
 
 		switch (i) {
 		case 0:
-			transction.show(homeFragment);
+			if (homeFragment == null) {
+				homeFragment = new HomeFragment();	
+			}
+			transction.replace(R.id.content, homeFragment);
 			homeIv.setImageResource(R.drawable.home_s);
 			homeTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 1:
-			transction.show(forumFragment);
+			if (forumFragment == null) {
+				forumFragment = new ForumFragment();
+			}
+			transction.replace(R.id.content, forumFragment);
 			forumIv.setImageResource(R.drawable.tian_s);
 			forumTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 2:
-			transction.show(discoverFragment);
+			if (discoverFragment == null) {
+				discoverFragment = new DiscoverFragment();
+			}
+			transction.replace(R.id.content, discoverFragment);
 			discoverIv.setImageResource(R.drawable.discover_s);
 			discoverTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 3:
-			if (meFragment.getUser() == null) {
-				meFragment.loadData();
+			if (meFragment == null) {
+				meFragment = new MeFragment();
 			}
-			transction.show(meFragment);
+			transction.replace(R.id.content, meFragment);
 			meIv.setImageResource(R.drawable.me_s);
 			meTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
@@ -462,15 +467,25 @@ public class MainActivity extends Activity implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
+		//大于一秒方个通过  
+        if (System.currentTimeMillis() - lastClick <= 1000)  
+        {  
+            return;  
+        }  
+        lastClick = System.currentTimeMillis(); 
 		if (v == homeView && pageIndex != 0) {
 			seletFragmentIndex(0);
 		}
 		if (v == forumView && pageIndex != 1) {
+			
+			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
+				Intent it = new Intent();
+				it.setClass(this, LoginActivity.class);
+				startActivityForResult(it, 0);
+				return;
+			}
 			seletFragmentIndex(1);
-//			if (GFUserDictionary.getUserId() == null) {
-//				return;
-//			}
-			forumFragment.loadData();
+//			forumFragment.loadData();
 		}
 		if (v == discoverView && pageIndex != 2) {
 
@@ -494,13 +509,13 @@ public class MainActivity extends Activity implements OnClickListener,
 		MobclickAgent.onResume(this);
 		if (!isLogin) {
 			initEm();
-		} else {
-			
-			if(pageIndex==3){
-				meFragment.loadData();
-			}
+		} else {		
+//			if(pageIndex==3){
+//				meFragment.loadData();
+//			}
 		}
-		homeFragment.setUnreadMessageCount();
+//		homeFragment.setUnreadMessageCount();
+		
 		if(bUpdate){
 			tryUpdate();
 		}

@@ -375,6 +375,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 						new TypeToken<List<Category_disease>>() {
 						}.getType());
 				createTabViews();
+				loadData();
 			}
 			
 			break;

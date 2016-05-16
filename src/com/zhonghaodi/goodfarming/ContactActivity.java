@@ -34,7 +34,6 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_contact);
-		MobclickAgent.openActivityDurationTrack(false);
 		Button cancelButton = (Button)findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(this);
 		Button okButton = (Button)findViewById(R.id.ok_button);

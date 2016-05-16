@@ -51,7 +51,6 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_myfollows);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		gridView = (ListView)findViewById(R.id.pull_refresh_list);
 		addButton = (Button)findViewById(R.id.add_button);

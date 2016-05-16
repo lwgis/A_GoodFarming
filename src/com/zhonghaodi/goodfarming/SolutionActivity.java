@@ -57,7 +57,6 @@ public class SolutionActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_solution);
-		MobclickAgent.openActivityDurationTrack(false);
 		MyTextButton cancelBtn = (MyTextButton) findViewById(R.id.cancel_button);
 		cancelBtn.setText("<返回");
 		cancelBtn.setOnClickListener(new OnClickListener() {

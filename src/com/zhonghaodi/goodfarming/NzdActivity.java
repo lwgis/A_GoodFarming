@@ -66,7 +66,6 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_nzd);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		bfollow = getIntent().getBooleanExtra("bfollow", false);
 		store = (User)getIntent().getSerializableExtra("store");

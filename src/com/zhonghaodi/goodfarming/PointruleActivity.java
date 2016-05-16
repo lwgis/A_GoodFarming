@@ -30,7 +30,6 @@ public class PointruleActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pointrule);
-		MobclickAgent.openActivityDurationTrack(false);
 		webview  = (WebView)findViewById(R.id.webView);
 //		ruleTextView = (TextView)findViewById(R.id.gz_text);
 		webview.loadUrl(HttpUtil.ViewUrl+"pointrule");

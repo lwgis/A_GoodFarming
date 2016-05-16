@@ -59,7 +59,6 @@ public class UpdateZjActivity extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_update_zj);
-		MobclickAgent.openActivityDurationTrack(false);
 		descriptionEv = (MyEditText) findViewById(R.id.description_edit);
 		yyzzBtn = (GFImageButton) findViewById(R.id.yyzz_image);
 		zhengmianBtn = (GFImageButton) findViewById(R.id.zhengmian_image);

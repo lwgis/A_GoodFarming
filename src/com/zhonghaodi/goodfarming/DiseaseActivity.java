@@ -68,7 +68,6 @@ public class DiseaseActivity extends Activity implements HandMessage,OnClickList
 		super.onCreate(savedInstanceState);
 		adapter = new DiseaseAdapter();
 		super.setContentView(R.layout.activity_disease);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		sendLayout = (LinearLayout)findViewById(R.id.sendlayout);
 		mzEditText = (MyEditText)findViewById(R.id.chat_edit);

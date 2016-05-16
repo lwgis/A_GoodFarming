@@ -50,7 +50,6 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guaconfirm);
-		MobclickAgent.openActivityDurationTrack(false);
 		MyTextButton okButton = (MyTextButton)findViewById(R.id.ok_button);
 		okButton.setOnClickListener(this);
 		nameTextView = (TextView)findViewById(R.id.name_text);

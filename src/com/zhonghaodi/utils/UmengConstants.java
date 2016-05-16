@@ -15,5 +15,8 @@ public class UmengConstants {
 	public static String USER_SIGNIN_ID="user_signin";
 	public static String APP_SHARE_ID="app_share";
 	public static String CREATE_QUAN_ID="create_quan";
+	public static String REPLY_DISEASE_ID="reply_disease";
+	public static String REPLY_GOSSIP_ID="reply_gossip";
+	public static String REPLY_PLANT_ID="reply_plant";
 	
 }

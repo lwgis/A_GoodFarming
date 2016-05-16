@@ -96,14 +96,14 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("选择提问作物");
+		MobclickAgent.onPageStart("选择提问作物Fragment");
 	}
 
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("选择提问作物");
+		MobclickAgent.onPageEnd("选择提问作物Fragment");
 	}
 
 	private void loadGossipCate(){

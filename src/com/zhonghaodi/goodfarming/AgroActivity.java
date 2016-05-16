@@ -55,7 +55,6 @@ public class AgroActivity extends Activity implements HandMessage {
 		if(aid!=0){
 			loadData(aid);
 		}
-		MobclickAgent.openActivityDurationTrack(false);
 	}
 	
 	

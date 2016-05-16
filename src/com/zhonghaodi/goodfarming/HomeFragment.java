@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				getActivity(), 180), DpTransform.dip2px(getActivity(), 150));
 		popupWindow.setBackgroundDrawable(new BitmapDrawable());
 		popupWindow.setFocusable(true);
-
+		bAll = 0;
 		Button newQueBtn = (Button)popView.findViewById(R.id.btn_question);
 		newQueBtn.setOnClickListener(this);
 		Button newGossipBtn = (Button)popView.findViewById(R.id.btn_gossip);
@@ -167,6 +167,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onPageStart("主页Fragment");
+		setUnreadMessageCount();
 	}
 
 	@Override
@@ -409,13 +410,14 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			bAll = 0;
 			break;
 		case R.id.my_text:
-			selectTextView(v);
+			
 			String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 			if(uid==null){
 				Intent intent = new Intent(getActivity(),LoginActivity.class);
 				getActivity().startActivity(intent);
 			}
 			else{
+				selectTextView(v);
 				loadNewGossips();
 				
 				bAll = 1;
@@ -423,19 +425,20 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			
 			break;
 		case R.id.asc_text:
-			selectTextView(v);
+			
 			String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
-			String cropids = GFUserDictionary.getCroids(getActivity().getApplicationContext());
+//			String cropids = GFUserDictionary.getCroids(getActivity().getApplicationContext());
 			if(uid1==null){
 				Intent intent = new Intent(getActivity(),LoginActivity.class);
 				getActivity().startActivity(intent);
 			}
-			else if(cropids==null || cropids.isEmpty()){
-				Intent it2 = new Intent(getActivity(),
-						SelectCropActivity.class);
-				getActivity().startActivityForResult(it2, 100);
-			}
+//			else if(cropids==null || cropids.isEmpty()){
+//				Intent it2 = new Intent(getActivity(),
+//						SelectCropActivity.class);
+//				getActivity().startActivityForResult(it2, 100);
+//			}
 			else{
+				selectTextView(v);
 				loadNewPlant();
 				bAll = 2;
 			}

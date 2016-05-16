@@ -118,7 +118,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_question);
-		MobclickAgent.openActivityDurationTrack(false);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -400,12 +399,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					NetResponse netResponse;
 					if(status==0){
 						netResponse = HttpUtil.sendResponse(response, qid);
+						MobclickAgent.onEvent(QuestionActivity.this, UmengConstants.REPLY_DISEASE_ID);
 					}
 					else if(status==1){
 						netResponse = HttpUtil.sendResponseForGossip(response, qid);
+						MobclickAgent.onEvent(QuestionActivity.this, UmengConstants.REPLY_GOSSIP_ID);
 					}
 					else{
 						netResponse = HttpUtil.sendResponseForPlant(response, qid);
+						MobclickAgent.onEvent(QuestionActivity.this, UmengConstants.REPLY_PLANT_ID);
 					}
 					Message msg = handler.obtainMessage();
 					msg.what = 7;

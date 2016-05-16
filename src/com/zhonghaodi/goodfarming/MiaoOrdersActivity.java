@@ -49,7 +49,6 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_miaoorders);
-		MobclickAgent.openActivityDurationTrack(false);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
 		pullToRefreshListView = (ListView) findViewById(R.id.pull_refresh_list);		

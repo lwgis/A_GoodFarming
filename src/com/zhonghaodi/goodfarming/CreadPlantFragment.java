@@ -136,7 +136,7 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("新增种植分享Fragment");
+		MobclickAgent.onPageStart("种植分享Fragment");
 	}
 
 
@@ -145,7 +145,7 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("新增种植分享Fragment");
+		MobclickAgent.onPageEnd("种植分享Fragment");
 	}
 
 

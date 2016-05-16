@@ -92,7 +92,6 @@ public class UpdateNzdActivity extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_update_nzd);
-		MobclickAgent.openActivityDurationTrack(false);
 		nameEv = (MyEditText) findViewById(R.id.name_edit);
 		descriptionEv = (MyEditText) findViewById(R.id.description_edit);
 		yyzzBtn = (GFImageButton) findViewById(R.id.yyzz_image);

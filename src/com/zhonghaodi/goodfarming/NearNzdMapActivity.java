@@ -49,7 +49,6 @@ public class NearNzdMapActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_near_map_nzd);
-		MobclickAgent.openActivityDurationTrack(false);
 		mCurrentMode = LocationMode.NORMAL;
 		tilteTv = (TextView) findViewById(R.id.title_text);
 		tilteTv.setText("农资店位置");

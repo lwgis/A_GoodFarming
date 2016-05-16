@@ -54,7 +54,6 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second);
-		MobclickAgent.openActivityDurationTrack(false);
 		titleView = (TextView)findViewById(R.id.title_text);
 		nzdTextView=(TextView)findViewById(R.id.nzd_text);
 		headImage = (ImageView)findViewById(R.id.head_image);
