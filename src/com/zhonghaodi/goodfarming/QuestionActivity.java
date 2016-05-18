@@ -86,6 +86,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -109,15 +110,19 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private MyTextButton prescriptionButton;
 	private int status;
 	private MorePopupWindow morePopupWindow;
+	private SharePopupwindow sharePopupwindow;
+	private ImageView agroImageView;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	private int rid;
+	private int WX_THUMB_SIZE = 60;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_question);
+		agroImageView = (ImageView)findViewById(R.id.agro_image);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -129,6 +134,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				finish();
 			}
 		});
+		Button shareButton = (Button)findViewById(R.id.share_button);
+		shareButton.setOnClickListener(this);
 		Button sendBtn = (Button) findViewById(R.id.send_button);
 		sendBtn.setOnClickListener(new OnClickListener() {
 
@@ -199,6 +206,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		if(uid!=null&&GFUserDictionary.getTjcode(this)==null){
 			loadUser();
 		}	
+		
 	}
 	@Override
 	protected void onResume() {
@@ -291,6 +299,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		
 		 
 		return super.onContextItemSelected(item);
+	}
+	
+	public void loadImage(){
+		if(question.getAttachments()!=null && question.getAttachments().size()>0){
+			ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"questions/small/"
+					+ question.getAttachments().get(0)
+					.getUrl(), agroImageView, ImageOptions.optionsNoPlaceholder);			
+		}
+		agroImageView.setDrawingCacheEnabled(true);
 	}
 	
 	private void delete(final int qid,final int rid){
@@ -422,8 +439,26 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 		}).start();
 	}
+	private void sharePoint(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					HttpUtil.sharePoint(GFUserDictionary.getUserId(QuestionActivity.this), UILApplication.shareUrl);
+					
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = e.getMessage().toString();
+					msg.sendToTarget();
+				}
+			}
+		}).start();
+	}
 	
-	public void popwindow(){
+	public void popmorewindow(){
 		morePopupWindow = new MorePopupWindow(this,this);
 		morePopupWindow.setFocusable(true);
 		morePopupWindow.setOutsideTouchable(true);
@@ -431,6 +466,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
     	ColorDrawable dw = new ColorDrawable(0xb0000000);
     	morePopupWindow.setBackgroundDrawable(dw);
     	morePopupWindow.showAtLocation(findViewById(R.id.main), 
+				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+	public void popwindow(){
+    	sharePopupwindow = new SharePopupwindow(this,this);
+    	sharePopupwindow.setFocusable(true);
+    	sharePopupwindow.setOutsideTouchable(true);
+    	sharePopupwindow.update();
+    	ColorDrawable dw = new ColorDrawable(0xb0000000);
+    	sharePopupwindow.setBackgroundDrawable(dw);
+		sharePopupwindow.showAtLocation(findViewById(R.id.main), 
 				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 	private String buildTransaction(final String type) {
@@ -486,6 +531,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 //				it.putExtra("thumbnail", user.getThumbnail());
 //				startActivity(it);
 //			}
+			break;
+		case R.id.share_button:
+			popwindow();
 			break;
 		case R.id.zan_layout:
 			if(GFUserDictionary.getUserId(getApplicationContext())==null){
@@ -640,7 +688,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			break;
 		case R.id.more_image:
 			rid = Integer.parseInt(v.getTag().toString());
-			popwindow();
+			popmorewindow();
 			break;
 		case R.id.img_more_report:
 			Intent it1 = new Intent(this, ReportActivity.class);
@@ -656,19 +704,37 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				return;
 			}
 			WXWebpageObject webpage = new WXWebpageObject();
-			webpage.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this);
+			if(status==0){
+				webpage.webpageUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+			}
+			else if(status==1){
+				webpage.webpageUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+			}
+			else{
+				webpage.webpageUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+			}
+			UILApplication.shareUrl = webpage.webpageUrl;
 			WXMediaMessage msg = new WXMediaMessage(webpage);
-			msg.title = "种好地APP:让种地不再难";
-			msg.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
-			Bitmap thumb = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+			msg.title = "种好地APP：让种地不再难";
+			String content;
+			if(question.getContent().length()>40){
+				content = question.getContent().substring(0, 40);
+			}
+			else{
+				content = question.getContent();
+			}
+			msg.description = content;
+			Bitmap b = agroImageView.getDrawingCache();			 			             
+			Bitmap bitmap = Bitmap.createScaledBitmap(b, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
+			msg.thumbData = PublicHelper.bmpToByteArray(bitmap, true);
+			bitmap.recycle();
 			
 			SendMessageToWX.Req req = new SendMessageToWX.Req();
 			req.transaction = buildTransaction("webpage");
 			req.message = msg;
 			req.scene=SendMessageToWX.Req.WXSceneSession;
 			wxApi.sendReq(req);
-			morePopupWindow.dismiss();
+			sharePopupwindow.dismiss();
 			break;
 		case R.id.img_share_circlefriends:
 			if(!wxApi.isWXAppInstalled()){
@@ -676,47 +742,118 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				return;
 			}
 			WXWebpageObject webpage1 = new WXWebpageObject();
-			webpage1.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this);
+			if(status==0){
+				webpage1.webpageUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+			}
+			else if(status==1){
+				webpage1.webpageUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+			}
+			else{
+				webpage1.webpageUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+			}
+			UILApplication.shareUrl = webpage1.webpageUrl;
 			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
-			msg1.title = "种好地APP:让种地不再难";
-			msg1.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
-			Bitmap thumb1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg1.thumbData = PublicHelper.bmpToByteArray(thumb1, true);
+			String content1;
+			if(question.getContent().length()>40){
+				content1 = question.getContent().substring(0, 40);
+			}
+			else{
+				content1 = question.getContent();
+			}
+			msg1.title = content1;
+			msg1.description = content1;
+			Bitmap b1 = agroImageView.getDrawingCache();
+			Bitmap bitmap1 = Bitmap.createScaledBitmap(b1, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
+			msg1.thumbData = PublicHelper.bmpToByteArray(bitmap1, true);
+			bitmap1.recycle();
 			
 			SendMessageToWX.Req req1 = new SendMessageToWX.Req();
 			req1.transaction = buildTransaction("webpage");
 			req1.message = msg1;
 			req1.scene=SendMessageToWX.Req.WXSceneTimeline;
 			wxApi.sendReq(req1);
-			morePopupWindow.dismiss();
+			sharePopupwindow.dismiss();
 			break;
 		case R.id.img_share_qq:
 			Bundle params = new Bundle();
 		    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
-		    params.putString(QQShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");
-		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");
-		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this));
-		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://121.40.62.120/appimage/apps/appicon.png");
+		    params.putString(QQShare.SHARE_TO_QQ_TITLE, "种好地APP：让种地不再难");
+		    String content2;
+			if(question.getContent().length()>40){
+				content2 = question.getContent().substring(0, 40);
+			}
+			else{
+				content2 = question.getContent();
+			}
+		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  content2);
+		    
+		    if(status==0){
+				UILApplication.shareUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+			}
+			else if(status==1){
+				UILApplication.shareUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+			}
+			else{
+				UILApplication.shareUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+			}
+		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  UILApplication.shareUrl);
+		    String imgurl;
+		    if(question.getAttachments()!=null && question.getAttachments().size()>0){
+		    	imgurl = HttpUtil.ImageUrl+"questions/small/"
+						+ question.getAttachments().get(0)
+						.getUrl();
+		    }
+		    else{
+		    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
+		    }
+		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgurl);
 		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
 		    mTencent.shareToQQ(this, params, new BaseUiListener());
-		    morePopupWindow.dismiss();
+		    sharePopupwindow.dismiss();
 			
 			break;
 		case R.id.img_share_qzone:
 			Bundle params1 = new Bundle();
 			params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
-		    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");//必填
-		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");//选填
-		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, HttpUtil.ViewUrl+"appshare?code="+GFUserDictionary.getTjcode(this));//必填
-		    ArrayList<String> urlsList = new ArrayList<String>();
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_2_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_3_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_4_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_5_1440519318/550");
+		    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, "种好地APP：让种地不再难");//必填
+		    String content3;
+			if(question.getContent().length()>40){
+				content3 = question.getContent().substring(0, 40);
+			}
+			else{
+				content3 = question.getContent();
+			}
+		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, content3);//选填
+		    if(status==0){
+		    	UILApplication.shareUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+			}
+			else if(status==1){
+				UILApplication.shareUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+			}
+			else{
+				UILApplication.shareUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+			}
+		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填
+		    ArrayList<String> urlsList = new ArrayList<String>();		    
+		    String imgurl1;
+		    if(question.getAttachments()!=null && question.getAttachments().size()>0){
+		    	imgurl1 = HttpUtil.ImageUrl+"questions/small/"
+						+ question.getAttachments().get(0)
+						.getUrl();
+		    	for(int i=0;i<question.getAttachments().size();i++){
+		    		urlsList.add(HttpUtil.ImageUrl+"questions/small/"
+							+ question.getAttachments().get(i)
+							.getUrl());
+		    	}
+		    }
+		    else{
+		    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
+		    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+		    }
+		    params1.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgurl1);		    
 		    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urlsList);
 		    mTencent.shareToQzone(this, params1, new BaseUiListener());
-		    morePopupWindow.dismiss();
+		    sharePopupwindow.dismiss();
 			break;
 		default:
 			break;
@@ -767,6 +904,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				GFToast.show(getApplicationContext(),"问题已删除");
 			}
 			pullToRefreshListView.onRefreshComplete();
+			loadImage();
 			break;
 		case 3:
 			String strerr = msg.obj.toString();
@@ -912,7 +1050,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		public void onComplete(Object arg0) {
 			// TODO Auto-generated method stub
 			MobclickAgent.onEvent(QuestionActivity.this, UmengConstants.APP_SHARE_ID);
-			GFToast.show(QuestionActivity.this, "分享成功");
+			sharePoint();
 		}
 		
 	}

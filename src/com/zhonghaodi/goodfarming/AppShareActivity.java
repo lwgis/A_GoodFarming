@@ -27,6 +27,7 @@ import com.zhonghaodi.utils.PublicHelper;
 import com.zhonghaodi.utils.UmengConstants;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -107,7 +108,21 @@ public class AppShareActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		mTencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
 	}
+	private void sharePoint(){
+		new Thread(new Runnable() {
 
+			@Override
+			public void run() {
+				try {
+					HttpUtil.sharePoint(GFUserDictionary.getUserId(AppShareActivity.this), UILApplication.shareUrl);
+					
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					
+				}
+			}
+		}).start();
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -130,6 +145,7 @@ public class AppShareActivity extends Activity implements OnClickListener{
 			}
 			WXWebpageObject webpage = new WXWebpageObject();
 			webpage.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+			UILApplication.shareUrl = webpage.webpageUrl;
 			WXMediaMessage msg = new WXMediaMessage(webpage);
 			msg.title = "种好地APP:让种地不再难";
 			msg.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
@@ -151,6 +167,7 @@ public class AppShareActivity extends Activity implements OnClickListener{
 			}
 			WXWebpageObject webpage1 = new WXWebpageObject();
 			webpage1.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+			UILApplication.shareUrl = webpage1.webpageUrl;
 			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
 			msg1.title = "种好地APP:让种地不再难";
 			msg1.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
@@ -169,7 +186,8 @@ public class AppShareActivity extends Activity implements OnClickListener{
 		    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
 		    params.putString(QQShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");
 		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");
-		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());
+		    UILApplication.shareUrl= HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl );
 		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://121.40.62.120/appimage/apps/appicon.png");
 		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
 		    mTencent.shareToQQ(this, params, new BaseUiListener());
@@ -181,7 +199,8 @@ public class AppShareActivity extends Activity implements OnClickListener{
 			params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
 		    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");//必填
 		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");//选填
-		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());//必填
+		    UILApplication.shareUrl= HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
+		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填
 		    ArrayList<String> urlsList = new ArrayList<String>();
 		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
 		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_2_1440519318/550");
@@ -214,7 +233,7 @@ public class AppShareActivity extends Activity implements OnClickListener{
 		public void onComplete(Object arg0) {
 			// TODO Auto-generated method stub
 			MobclickAgent.onEvent(AppShareActivity.this, UmengConstants.APP_SHARE_ID);
-			GFToast.show(AppShareActivity.this, "分享成功");
+			sharePoint();
 			
 		}
 		

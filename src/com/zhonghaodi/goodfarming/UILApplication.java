@@ -71,6 +71,7 @@ public class UILApplication extends Application {
 	ArrayList<Activity> list = new ArrayList<Activity>(); 
 	public static int sendcount=0;
 	public static Context applicationContext;
+	public static String shareUrl="";
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override

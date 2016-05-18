@@ -7,7 +7,10 @@ import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.goodfarming.AppShareActivity;
 import com.zhonghaodi.goodfarming.R;
+import com.zhonghaodi.goodfarming.UILApplication;
+import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.utils.UmengConstants;
 
@@ -34,6 +37,22 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void sharePoint(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					HttpUtil.sharePoint(GFUserDictionary.getUserId(WXEntryActivity.this), UILApplication.shareUrl);
+					
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					
+				}
+			}
+		}).start();
+	}
 
 	@Override
 	public void onResp(BaseResp arg0) {
@@ -41,7 +60,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 		switch (arg0.errCode) {  
         case BaseResp.ErrCode.ERR_OK:  
         	MobclickAgent.onEvent(this, UmengConstants.APP_SHARE_ID);
-        	GFToast.show(this, "发送成功");
+        	sharePoint();
             resultTv.setText("发送成功");
             finish();  
             break;  

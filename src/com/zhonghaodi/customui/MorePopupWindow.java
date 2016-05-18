@@ -28,14 +28,6 @@ public class MorePopupWindow extends PopupWindow {
 		LayoutInflater inflater = (LayoutInflater) context  
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mMenuView = inflater.inflate(R.layout.popupwindow_more, null);
-		weixinView = (ImageView)mMenuView.findViewById(R.id.img_share_weixin);
-		weixinView.setOnClickListener(clickListener);
-		circlefriendsView = (ImageView)mMenuView.findViewById(R.id.img_share_circlefriends);
-		circlefriendsView.setOnClickListener(clickListener);
-		qqView = (ImageView)mMenuView.findViewById(R.id.img_share_qq);
-		qqView.setOnClickListener(clickListener);
-		qzoneView = (ImageView)mMenuView.findViewById(R.id.img_share_qzone);
-		qzoneView.setOnClickListener(clickListener);
 		reportView = (ImageView)mMenuView.findViewById(R.id.img_more_report);
 		reportView.setOnClickListener(clickListener);
 		
