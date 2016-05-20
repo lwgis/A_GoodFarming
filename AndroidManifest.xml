@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zhonghaodi.goodfarming"
     android:versionCode="18"
-    android:versionName="1.6.9.1" >
+    android:versionName="1.6.9.2" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -492,10 +492,10 @@
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="lwgis#goodfarming" />
+            android:value="lwgis#nyim" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService" />        
-        <meta-data android:value="572bef3167e58eeefe002485" android:name="UMENG_APPKEY"></meta-data>
+        <meta-data android:value="57295cd9e0f55aa51a001212" android:name="UMENG_APPKEY"></meta-data>
         <!-- <meta-data android:value="channel_value" android:name="UMENG_CHANNEL"/> -->
         <meta-data android:value="Zhonghaodi" android:name="UMENG_CHANNEL"/>
     </application>

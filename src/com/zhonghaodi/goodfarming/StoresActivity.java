@@ -321,7 +321,13 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 					HttpUtil.ImageUrl+"users/small/"
 							+ store.getThumbnail(),
 							holder.imageView, ImageOptions.options);
-			holder.nameTextView.setText(store.getAlias());
+			if(store.isTeamwork()){
+				holder.nameTextView.setText(store.getAlias()+"（合作店）");
+			}
+			else{
+				holder.nameTextView.setText(store.getAlias());
+			}
+			
 			if(store.getDistance()!=null){
 				DecimalFormat    df   = new DecimalFormat("######0.00");   
 				holder.disTextView.setText("距离："+df.format(store.getDistance())+"公里");

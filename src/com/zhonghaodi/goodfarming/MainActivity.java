@@ -398,20 +398,24 @@ public class MainActivity extends Activity implements OnClickListener,
 				.beginTransaction();
 		if (homeFragment == null) {
 			homeFragment = new HomeFragment();
+			transction.add(R.id.content, homeFragment);
 		}
 		if (forumFragment == null) {
 			forumFragment = new ForumFragment();
+			transction.add(R.id.content, forumFragment);
 		}
 		if (discoverFragment == null) {
 			discoverFragment = new DiscoverFragment();
+			transction.add(R.id.content, discoverFragment);
 		}
 		if (meFragment == null) {
 			meFragment = new MeFragment();
+			transction.add(R.id.content, meFragment);
 		}
-//		transction.hide(homeFragment);
-//		transction.hide(forumFragment);
-//		transction.hide(discoverFragment);
-//		transction.hide(meFragment);
+		transction.hide(homeFragment);
+		transction.hide(forumFragment);
+		transction.hide(discoverFragment);
+		transction.hide(meFragment);
 		homeIv.setImageResource(R.drawable.home);
 		forumIv.setImageResource(R.drawable.tian);
 		discoverIv.setImageResource(R.drawable.discover);
@@ -423,34 +427,22 @@ public class MainActivity extends Activity implements OnClickListener,
 
 		switch (i) {
 		case 0:
-			if (homeFragment == null) {
-				homeFragment = new HomeFragment();	
-			}
-			transction.replace(R.id.content, homeFragment);
+			transction.show(homeFragment);
 			homeIv.setImageResource(R.drawable.home_s);
 			homeTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 1:
-			if (forumFragment == null) {
-				forumFragment = new ForumFragment();
-			}
-			transction.replace(R.id.content, forumFragment);
+			transction.show(forumFragment);
 			forumIv.setImageResource(R.drawable.tian_s);
 			forumTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 2:
-			if (discoverFragment == null) {
-				discoverFragment = new DiscoverFragment();
-			}
-			transction.replace(R.id.content, discoverFragment);
+			transction.show(discoverFragment);
 			discoverIv.setImageResource(R.drawable.discover_s);
 			discoverTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 3:
-			if (meFragment == null) {
-				meFragment = new MeFragment();
-			}
-			transction.replace(R.id.content, meFragment);
+			transction.show(meFragment);
 			meIv.setImageResource(R.drawable.me_s);
 			meTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
@@ -475,6 +467,7 @@ public class MainActivity extends Activity implements OnClickListener,
         lastClick = System.currentTimeMillis(); 
 		if (v == homeView && pageIndex != 0) {
 			seletFragmentIndex(0);
+			
 		}
 		if (v == forumView && pageIndex != 1) {
 			
@@ -485,11 +478,13 @@ public class MainActivity extends Activity implements OnClickListener,
 				return;
 			}
 			seletFragmentIndex(1);
+			
 //			forumFragment.loadData();
 		}
 		if (v == discoverView && pageIndex != 2) {
 
 			seletFragmentIndex(2);
+			
 		}
 		if (v == meView && pageIndex != 3) {
 			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {

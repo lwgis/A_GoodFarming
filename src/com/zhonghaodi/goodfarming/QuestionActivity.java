@@ -110,7 +110,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private MyTextButton prescriptionButton;
 	private int status;
 	private MorePopupWindow morePopupWindow;
-	private SharePopupwindow sharePopupwindow;
 	private ImageView agroImageView;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
@@ -458,8 +457,14 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		}).start();
 	}
 	
-	public void popmorewindow(){
+	public void popmorewindow(boolean isMore){
 		morePopupWindow = new MorePopupWindow(this,this);
+		if(isMore){
+			morePopupWindow.showReport();
+		}
+		else{
+			morePopupWindow.hideReport();
+		}
 		morePopupWindow.setFocusable(true);
 		morePopupWindow.setOutsideTouchable(true);
 		morePopupWindow.update();
@@ -468,16 +473,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
     	morePopupWindow.showAtLocation(findViewById(R.id.main), 
 				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
     }
-	public void popwindow(){
-    	sharePopupwindow = new SharePopupwindow(this,this);
-    	sharePopupwindow.setFocusable(true);
-    	sharePopupwindow.setOutsideTouchable(true);
-    	sharePopupwindow.update();
-    	ColorDrawable dw = new ColorDrawable(0xb0000000);
-    	sharePopupwindow.setBackgroundDrawable(dw);
-		sharePopupwindow.showAtLocation(findViewById(R.id.main), 
-				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
-    }
+	
 	private String buildTransaction(final String type) {
 		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
 	}
@@ -533,7 +529,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 //			}
 			break;
 		case R.id.share_button:
-			popwindow();
+			popmorewindow(false);
 			break;
 		case R.id.zan_layout:
 			if(GFUserDictionary.getUserId(getApplicationContext())==null){
@@ -688,7 +684,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			break;
 		case R.id.more_image:
 			rid = Integer.parseInt(v.getTag().toString());
-			popmorewindow();
+			popmorewindow(true);
 			break;
 		case R.id.img_more_report:
 			Intent it1 = new Intent(this, ReportActivity.class);
@@ -734,7 +730,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			req.message = msg;
 			req.scene=SendMessageToWX.Req.WXSceneSession;
 			wxApi.sendReq(req);
-			sharePopupwindow.dismiss();
+			morePopupWindow.dismiss();
 			break;
 		case R.id.img_share_circlefriends:
 			if(!wxApi.isWXAppInstalled()){
@@ -772,7 +768,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			req1.message = msg1;
 			req1.scene=SendMessageToWX.Req.WXSceneTimeline;
 			wxApi.sendReq(req1);
-			sharePopupwindow.dismiss();
+			morePopupWindow.dismiss();
 			break;
 		case R.id.img_share_qq:
 			Bundle params = new Bundle();
@@ -809,7 +805,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgurl);
 		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
 		    mTencent.shareToQQ(this, params, new BaseUiListener());
-		    sharePopupwindow.dismiss();
+		    morePopupWindow.dismiss();
 			
 			break;
 		case R.id.img_share_qzone:
@@ -853,7 +849,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		    params1.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgurl1);		    
 		    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urlsList);
 		    mTencent.shareToQzone(this, params1, new BaseUiListener());
-		    sharePopupwindow.dismiss();
+		    morePopupWindow.dismiss();
 			break;
 		default:
 			break;

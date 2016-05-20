@@ -104,7 +104,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onPageStart("我Fragment");
-		loadData();
+		if(GFUserDictionary.getUserId(getActivity())!=null){
+			loadData();
+		}
 	}
 
 	@Override
