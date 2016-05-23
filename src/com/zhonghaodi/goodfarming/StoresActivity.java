@@ -273,10 +273,12 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 		public TextView disTextView;
 		public ImageView locationView;
 		public RatingBar ratingBar;
+		public TextView teamTextView;
 		public TextView recipeTextView;
 		public StoreHolder(View view){
 			imageView = (RoundedImageView)view.findViewById(R.id.head_image);
 			nameTextView = (TextView)view.findViewById(R.id.name_text);
+			teamTextView = (TextView)view.findViewById(R.id.team_text);
 			disTextView = (TextView)view.findViewById(R.id.dis_text);
 			locationView = (ImageView)view.findViewById(R.id.map_image);
 			ratingBar = (RatingBar)view.findViewById(R.id.rb);
@@ -321,19 +323,19 @@ public class StoresActivity extends Activity implements HandMessage,OnClickListe
 					HttpUtil.ImageUrl+"users/small/"
 							+ store.getThumbnail(),
 							holder.imageView, ImageOptions.options);
-			if(store.isTeamwork()){
-				holder.nameTextView.setText(store.getAlias()+"（合作店）");
-			}
-			else{
-				holder.nameTextView.setText(store.getAlias());
-			}
-			
+			holder.nameTextView.setText(store.getAlias());
 			if(store.getDistance()!=null){
 				DecimalFormat    df   = new DecimalFormat("######0.00");   
 				holder.disTextView.setText("距离："+df.format(store.getDistance())+"公里");
 			}
 			float sc = (float)(store.getScoring()/100);
 			holder.ratingBar.setRating(sc);
+			if(store.isTeamwork()){
+				holder.teamTextView.setVisibility(View.VISIBLE);
+			}
+			else{
+				holder.teamTextView.setVisibility(View.GONE);
+			}
 			if(store.getRecipes()!=null && store.getRecipes().size()>0){
 				String recipeStr = "擅长：";
 				for (Iterator iterator = store.getRecipes().iterator(); iterator
