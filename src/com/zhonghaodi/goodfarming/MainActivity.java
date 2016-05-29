@@ -394,7 +394,8 @@ public class MainActivity extends Activity implements OnClickListener,
 	* @param i
 	*/
 	public void seletFragmentIndex(int i) {
-		FragmentTransaction transction = getFragmentManager().beginTransaction();
+		FragmentTransaction transction = getFragmentManager()
+											.beginTransaction();
 		if (homeFragment == null) {
 			homeFragment = new HomeFragment();
 		}
@@ -421,40 +422,40 @@ public class MainActivity extends Activity implements OnClickListener,
 		meTv.setTextColor(Color.rgb(128, 128, 128));
 	
 		switch (i) {
-		case 0:
-			if (homeFragment == null) {
-				homeFragment = new HomeFragment();
-			}
-			transction.replace(R.id.content, homeFragment);
-			homeIv.setImageResource(R.drawable.home_s);
-			homeTv.setTextColor(Color.rgb(12, 179, 136));
-			break;
-		case 1:
-			if (forumFragment == null) {
-				forumFragment = new ForumFragment();
-			}
-			transction.replace(R.id.content, forumFragment);
-			forumIv.setImageResource(R.drawable.tian_s);
-			forumTv.setTextColor(Color.rgb(12, 179, 136));
-			break;
-		case 2:
-			if (discoverFragment == null) {
-				discoverFragment = new DiscoverFragment();
-			}
-			transction.replace(R.id.content, discoverFragment);
-			discoverIv.setImageResource(R.drawable.discover_s);
-			discoverTv.setTextColor(Color.rgb(12, 179, 136));
-			break;
-		case 3:
-			if (meFragment == null) {
-				meFragment = new MeFragment();
-			}
-			transction.replace(R.id.content, meFragment);
-			meIv.setImageResource(R.drawable.me_s);
-			meTv.setTextColor(Color.rgb(12, 179, 136));
-			break;
-		default:
-			break;
+			case 0:
+				if (homeFragment == null) {
+					homeFragment = new HomeFragment();
+				}
+				transction.replace(R.id.content, homeFragment);
+				homeIv.setImageResource(R.drawable.home_s);
+				homeTv.setTextColor(Color.rgb(12, 179, 136));
+				break;
+			case 1:
+				if (forumFragment == null) {
+					forumFragment = new ForumFragment();
+				}
+				transction.replace(R.id.content, forumFragment);
+				forumIv.setImageResource(R.drawable.tian_s);
+				forumTv.setTextColor(Color.rgb(12, 179, 136));
+				break;
+			case 2:
+				if (discoverFragment == null) {
+					discoverFragment = new DiscoverFragment();
+				}
+				transction.replace(R.id.content, discoverFragment);
+				discoverIv.setImageResource(R.drawable.discover_s);
+				discoverTv.setTextColor(Color.rgb(12, 179, 136));
+				break;
+			case 3:
+				if (meFragment == null) {
+					meFragment = new MeFragment();
+				}
+				transction.replace(R.id.content, meFragment);
+				meIv.setImageResource(R.drawable.me_s);
+				meTv.setTextColor(Color.rgb(12, 179, 136));
+				break;
+			default:
+				break;
 		}
 		transction.commit();
 		pageIndex = i;

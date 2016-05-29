@@ -492,12 +492,12 @@
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="lwgis#nyim" />
+            android:value="lwgis#goodfarming" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService" />        
-        <meta-data android:value="57295cd9e0f55aa51a001212" android:name="UMENG_APPKEY"></meta-data>
-        <meta-data android:value="channel_value" android:name="UMENG_CHANNEL"/>
-        <!-- <meta-data android:value="Zhonghaodi" android:name="UMENG_CHANNEL"/> -->
+        <meta-data android:value="573670e067e58e03c300138c" android:name="UMENG_APPKEY"></meta-data>
+        <!-- <meta-data android:value="channel_value" android:name="UMENG_CHANNEL"/> -->
+        <meta-data android:value="Zhonghaodi" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>
