@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="我的资料"
+            android:text="资料设置"
             android:textColor="#FFFFFF"
             android:textSize="20dip" />
     </RelativeLayout>
@@ -66,7 +66,7 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="我的作物"
+		            android:text="修改关注的作物"
 		            />
 		        
 		    </RelativeLayout>
@@ -182,7 +182,7 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="修改资料"
+		            android:text="更改我的信息"
 		            />
 		        
 		    </RelativeLayout>
@@ -212,6 +212,35 @@
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="修改密码"
+		            />
+		        
+		    </RelativeLayout>
+		    <RelativeLayout 
+	            android:id="@+id/layout7"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg7"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/address"
+		            />
+		        <TextView 
+		            android:id="@+id/avname7"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg7"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="我的收货地址"
 		            />
 		        
 		    </RelativeLayout>

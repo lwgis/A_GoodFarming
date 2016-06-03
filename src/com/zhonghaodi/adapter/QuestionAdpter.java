@@ -85,7 +85,7 @@ public class QuestionAdpter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		Question question = allQuestions.get(position);
 		if(status==0){
-			if (question.getAttachments().size() == 0) {
+			if (question.getAttachments()==null||question.getAttachments().size() == 0) {
 				return 0;
 			}
 			if (question.getAttachments().size() > 0

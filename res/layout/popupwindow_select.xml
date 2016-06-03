@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    android:padding="0.5dip"
+    >
+    <Button
+        android:id="@+id/btn_disease"
+        android:layout_width="120dp"
+        android:layout_height="34dp"
+        android:background="@drawable/menu_item_bg"
+        android:shadowColor="#222222"
+        android:shadowDy="-2"
+        android:shadowRadius="2"
+        android:text="病害问题"
+        android:textColor="#ffffff"
+        android:textSize="18dip"  />
+    <Button
+        android:id="@+id/btn_asc"
+        android:layout_width="120dp"
+        android:layout_height="34dp"
+        android:background="@drawable/menu_item_bg"
+        android:shadowColor="#222222"
+        android:shadowDy="-2"
+        android:shadowRadius="2"
+        android:text="我的作物"
+        android:textColor="#ffffff"
+        android:textSize="18dip" />
+</LinearLayout>

@@ -61,9 +61,9 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-	public static String RootURL = "http://121.40.62.120:8080/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage/";
-	public static String ViewUrl = "http://121.40.62.120:8080/dfyy/view/";
+	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage8/";
+	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 //	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
 //	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
 
@@ -557,6 +557,11 @@ public class HttpUtil {
 				+ "gossips?fromid=" + qid);
 		return jsonString;
 	}
+	
+	public static String getFavorites(String uid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/myFavQuestion");
+		return jsonString;
+	}
 
 	public static String getSingleQuestion(int qid) {
 		String urlString = RootURL + "questions/" + String.valueOf(qid);
@@ -655,6 +660,16 @@ public class HttpUtil {
 	public static NetResponse sendResponseForPlant(Response response, int qid)
 			throws Throwable {
 		String urlString = RootURL + "plantinfo/" + String.valueOf(qid)
+				+ "/reply";
+		String jsonString = JsonUtil.convertObjectToJson(response,
+				"yyyy-MM-dd HH:mm:ss",
+				new String[] { Response.class.toString(), });
+		return HttpUtil.executeHttpPost(urlString, jsonString);
+	}
+	
+	public static NetResponse sendResponseForForum(Response response, int aid)
+			throws Throwable {
+		String urlString = RootURL + "agrotechnicals/" + String.valueOf(aid)
 				+ "/reply";
 		String jsonString = JsonUtil.convertObjectToJson(response,
 				"yyyy-MM-dd HH:mm:ss",
@@ -1096,6 +1111,59 @@ public class HttpUtil {
 		};
 		
 		nameValuePairs.add(uidValuePair1);
+		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
+	 * 收藏问题
+	 * @return
+	 */
+	public static NetResponse favoriteQue(int qid,final String uid,final boolean add) {
+		String jsonString = null;
+		String urlString = RootURL + "questions/"+qid+"/favorite";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		NameValuePair addValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "add";
+			}
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(add);
+			}
+
+			
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		nameValuePairs.add(addValuePair1);
 		
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);

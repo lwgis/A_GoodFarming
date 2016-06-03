@@ -27,4 +27,8 @@
 	    <item>浇水</item>  
 	    <item>打药</item>  
     </string-array>
+    <string-array name="questionarr">
+	    <item>病害问题</item>  
+	    <item>我的作物</item>  
+    </string-array>
 </resources>

@@ -178,25 +178,30 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 			GFToast.show(getApplicationContext(),"请上传头像");
 			return;
 		}
-		new Thread(new Runnable() {
+		if(!aliasEt.getText().toString().equals(user.getAlias())){
+			new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				NetResponse netResponse= HttpUtil.checkAlias(aliasEt.getText().toString());
-				Message numMsg = handler
-						.obtainMessage();
-				if(netResponse.getStatus()==1){
-					numMsg.what = 3;
-					numMsg.obj = netResponse.getResult();
+				@Override
+				public void run() {
+					NetResponse netResponse= HttpUtil.checkAlias(aliasEt.getText().toString());
+					Message numMsg = handler
+							.obtainMessage();
+					if(netResponse.getStatus()==1){
+						numMsg.what = 3;
+						numMsg.obj = netResponse.getResult();
+					}
+					else{
+						numMsg.what = -1;
+						numMsg.obj = netResponse.getMessage();
+					}
+					
+					numMsg.sendToTarget();
 				}
-				else{
-					numMsg.what = -1;
-					numMsg.obj = netResponse.getMessage();
-				}
-				
-				numMsg.sendToTarget();
-			}
-		}).start();
+			}).start();
+		}
+		else{
+			uploadImage();
+		}
 		
 	}
 	

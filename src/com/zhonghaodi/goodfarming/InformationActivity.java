@@ -59,6 +59,8 @@ public class InformationActivity extends Activity implements OnClickListener {
 		passView.setOnClickListener(this);
 		View zjView = findViewById(R.id.layout6);
 		zjView.setOnClickListener(this);
+		View addressView = findViewById(R.id.layout7);
+		addressView.setOnClickListener(this);
 		if(user.getLevel().getId()==1){
 			nysView.setVisibility(View.VISIBLE);
 			nzdView.setVisibility(View.VISIBLE);
@@ -78,7 +80,7 @@ public class InformationActivity extends Activity implements OnClickListener {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("我的资料");
+		MobclickAgent.onPageStart("资料设置");
 		MobclickAgent.onResume(this);
 	}
 
@@ -86,7 +88,7 @@ public class InformationActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("我的资料");
+		MobclickAgent.onPageEnd("资料设置");
 		MobclickAgent.onPause(this);
 	}
 
@@ -131,6 +133,9 @@ public class InformationActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.layout6:
 			intent = new Intent(this, UpdateZjActivity.class);
+			startActivity(intent);
+		case R.id.layout7:
+			intent = new Intent(this, ContactsActivity.class);
 			startActivity(intent);
 			break;
 		default:

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -12,6 +13,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.QuestionAdpter;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.FavoriteQuestion;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.networking.GFHandler;
@@ -65,7 +67,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 			titleTextView.setText("我的拉拉呱");
 		}
 		else if(status==3){
-			titleTextView.setText("我的作物相关问题");
+			titleTextView.setText("我的收藏");
 		}
 		else if(status==2){
 			titleTextView.setText("我的种植分享");
@@ -148,7 +150,8 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 					jsonString = HttpUtil.getMyGossipsString(uid);
 				}
 				else if(status==3){
-					jsonString = HttpUtil.getAscQuestionsString(uid);
+//					jsonString = HttpUtil.getAscQuestionsString(uid);
+					jsonString = HttpUtil.getFavorites(uid);
 				}
 				else{
 					jsonString = HttpUtil.getMyPlantinfoString(uid);
@@ -163,6 +166,10 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 
 	private void loadMoreMyData(final int qid) {
 		final String  uid= GFUserDictionary.getUserId(getApplicationContext());
+		if(status==3){
+			pullToRefreshListView.onRefreshComplete();
+			return;
+		}
 		new Thread(new Runnable() {
 
 			@Override
@@ -174,9 +181,9 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 				else if(status==1){
 					jsonString = HttpUtil.getMyGossipsString(uid,qid);
 				}
-				else if(status==3){
-					jsonString = HttpUtil.getAscQuestionsString(uid,qid);
-				}
+//				else if(status==3){
+//					jsonString = HttpUtil.getAscQuestionsString(uid,qid);
+//				}
 				else{
 					
 					jsonString = HttpUtil.getMyPlantString(uid,qid);
@@ -285,45 +292,62 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 		// TODO Auto-generated method stub
 		if(msg.what==0||msg.what==1){
 			if (msg.obj != null) {
-				Gson gson = new Gson();
-				List<Question> questions = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<Question>>() {
-						}.getType());
-				if (msg.what == 0) {
-					allQuestions.clear();
-				}
-				if(questions==null || questions.size()==0){
-					if(allQuestions.size()==0){
-						String mess="";
-						switch (status) {
-						case 0:
-							mess="您还没有提问过。";
-							break;
-						case 1:
-							mess="您还没有发起过话题。";
-							break;
-						case 2:
-							mess="您还没有分享过。";
-							break;
-						case 3:
-							mess="没有与您作物相关的问题。";
-							break;
+				if(status!=3){
+					Gson gson = new Gson();
+					List<Question> questions = gson.fromJson(msg.obj.toString(),
+							new TypeToken<List<Question>>() {
+							}.getType());
+					if (msg.what == 0) {
+						allQuestions.clear();
+					}
+					if(questions==null || questions.size()==0){
+						if(allQuestions.size()==0){
+							String mess="";
+							switch (status) {
+							case 0:
+								mess="您还没有提问过。";
+								break;
+							case 1:
+								mess="您还没有发起过话题。";
+								break;
+							case 2:
+								mess="您还没有分享过。";
+								break;
 
-						default:
-							break;
-						}
-						GFToast.show(getApplicationContext(),mess);
-					}				
-				}
-				for (Question question : questions) {
-					allQuestions.add(question);
-				}
-				if(status==2){
-					adapter.setStatus(1);
+							default:
+								break;
+							}
+							GFToast.show(getApplicationContext(),mess);
+						}				
+					}
+					for (Question question : questions) {
+						allQuestions.add(question);
+					}
+					if(status==2){
+						adapter.setStatus(1);
+					}
+					else{
+						adapter.setStatus(0);
+					}
 				}
 				else{
+					Gson gs = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+					List<FavoriteQuestion> questions = gs.fromJson(msg.obj.toString(),
+							new TypeToken<List<FavoriteQuestion>>() {
+							}.getType());
+					if (msg.what == 0) {
+						allQuestions.clear();
+					}
+					if(questions==null || questions.size()==0){
+						
+						GFToast.show(getApplicationContext(),"您没有收藏任何问题");				
+					}
+					for (FavoriteQuestion favoriteQuestion : questions) {
+						allQuestions.add(favoriteQuestion.getQuestion());						
+					}
 					adapter.setStatus(0);
 				}
+				
 				adapter.notifyDataSetChanged();
 			} else {
 				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");

@@ -2,6 +2,8 @@ package com.zhonghaodi.goodfarming;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONObject;
 
@@ -18,14 +20,24 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.customui.MyEditText;
+import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetResponse;
+import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.User;
+import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GFString;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
+import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 import com.zhonghaodi.utils.UmengConstants;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -34,6 +46,7 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.PluginState;
@@ -45,21 +58,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public class AgrotechnicalActivity extends Activity implements OnClickListener {
-	int id;
-	String image;
-	String title;
-	String content;
+public class AgrotechnicalActivity extends Activity implements OnClickListener,HandMessage {
+
+	private int id;
+	private String image;
+	private String title;
+	private String content;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
-	SharePopupwindow sharePopupwindow;
-	ImageView agroImageView;
-	Bitmap bitmap;
-	byte[] data;
-	WebView webview;
+	private SharePopupwindow sharePopupwindow;
+	private ImageView agroImageView;
+	private Bitmap bitmap;
+	private byte[] data;
+	private WebView webview;
 	private FrameLayout mFullscreenContainer;  
     private LinearLayout mContentView;  
     private View mCustomView = null;
+    private LinearLayout sendLayout;
+	private LinearLayout resLayout;
+	private MyEditText mzEditText;
+	private MyTextButton sendTextButton;
+	private GFHandler<AgrotechnicalActivity> handler = new GFHandler<AgrotechnicalActivity>(this);
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -76,6 +95,36 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 		});
 		Button shareButton = (Button)findViewById(R.id.share_button);
 		shareButton.setOnClickListener(this);
+		Button sendBtn = (Button) findViewById(R.id.send_button);
+		sendBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+				if (GFUserDictionary.getUserId(getApplicationContext()) != null) {
+
+					resLayout.setVisibility(View.GONE);
+					sendLayout.setVisibility(View.VISIBLE);
+					mzEditText.setFocusable(true);
+					mzEditText.setFocusableInTouchMode(true);
+					mzEditText.requestFocus();
+					mzEditText.findFocus();
+					
+					InputMethodManager inputManager =  
+				               (InputMethodManager)mzEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);  
+				    inputManager.showSoftInput(mzEditText, 0); 
+				} else {
+					Intent it = new Intent(AgrotechnicalActivity.this,
+							LoginActivity.class);
+					AgrotechnicalActivity.this.startActivity(it);
+				}
+			}
+		});
+		sendLayout = (LinearLayout)findViewById(R.id.sendlayout);
+		resLayout = (LinearLayout)findViewById(R.id.resLayout);
+		mzEditText = (MyEditText)findViewById(R.id.chat_edit);
+		sendTextButton = (MyTextButton)findViewById(R.id.send_meassage_button);
+		sendTextButton.setOnClickListener(this);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -94,6 +143,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
             getWindow().setFlags(0x1000000, 0x1000000);  
         }  
 		webview.loadUrl(HttpUtil.ViewUrl+"agrotechnical/detail?id="+id+"&f=1");
+//        webview.loadUrl("http://player.youku.com/embed/XMTU4ODM5NjM5Ng==");
 		loadImage();
 	}
 	
@@ -108,7 +158,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
         settings.setJavaScriptEnabled(true);  
         settings.setJavaScriptCanOpenWindowsAutomatically(true);  
         settings.setPluginState(PluginState.ON);  
-        // settings.setPluginsEnabled(true);  
+        settings.setPluginsEnabled(true); // 
         settings.setAllowFileAccess(true);  
         settings.setLoadWithOverviewMode(true);  
   
@@ -144,6 +194,10 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 	}
 	
 	public void popwindow(){
+		InputMethodManager im = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     	sharePopupwindow = new SharePopupwindow(this,this);
     	sharePopupwindow.setFocusable(true);
     	sharePopupwindow.setOutsideTouchable(true);
@@ -165,6 +219,28 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					
+				}
+			}
+		}).start();
+	}
+	private void sendResponse(final Response response, final int qid) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					NetResponse netResponse=HttpUtil.sendResponseForForum(response, qid);
+					MobclickAgent.onEvent(AgrotechnicalActivity.this, UmengConstants.REPLY_AGRO_ID);
+					
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = e.getMessage().toString();
+					msg.sendToTarget();
 				}
 			}
 		}).start();
@@ -341,6 +417,54 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener {
 		    mTencent.shareToQzone(this, params1, new BaseUiListener());
 		    sharePopupwindow.dismiss();
 			break;
+		case R.id.send_meassage_button:
+			
+			if(mzEditText.getText().toString().trim().length()<5){
+				GFToast.show(this, "回复应不少于5个字");
+				return;
+			}
+			Response response = new Response();
+			response.setContent(GFString.htmlToStr(mzEditText.getText().toString()));
+			User writer = new User();
+			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
+			response.setWriter(writer);
+			sendResponse(response, id);
+			mzEditText.setText("");
+			mzEditText.setFocusable(false);
+			
+			Timer timer = new Timer();  
+		     timer.schedule(new TimerTask()  
+		     {  
+		           
+		         public void run()  
+		         {  
+		        	 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+		 			 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
+		         }  
+		           
+		     },  998);
+			sendLayout.setVisibility(View.GONE);
+			resLayout.setVisibility(View.VISIBLE);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public void handleMessage(Message msg, Object object) {
+		// TODO Auto-generated method stub
+		switch (msg.what) {
+		case 0:
+			if(msg.obj!=null){
+				GFToast.show(this, msg.obj.toString());
+			}
+			break;
+		case 1:
+			String url = HttpUtil.ViewUrl+"agrotechnical/detail?id="+id+"&f=1";
+			webview.reload();
+			break;
+
 		default:
 			break;
 		}

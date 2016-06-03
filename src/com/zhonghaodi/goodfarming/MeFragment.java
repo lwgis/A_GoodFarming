@@ -6,6 +6,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
 import com.zhonghaodi.customui.HolderMeInfo;
@@ -42,12 +43,16 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	private MyTextButton siginButton;
 	private MeAdapter adapter;
 	private GFHandler<MeFragment> handler = new GFHandler<MeFragment>(this);
+	private ShareContainer shareContainer;
 	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	public MeFragment(ShareContainer container){
+		shareContainer = container;
 	}
 
 	@Override
@@ -82,12 +87,14 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 
 				Intent it=new Intent();
 				it.setClass(getActivity(), function.getActivityClass());
-				if(function.getName().equals("我的交易") || function.getName().equals("我的资料") 
-						|| function.getName().equals("邀请好友下载")){
+				if(function.getName().equals("优惠币使用") || function.getName().equals("资料设置")){
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("user", user);
 					it.putExtras(bundle);
 					getActivity().startActivity(it);
+				}
+				else if(function.getName().equals("邀请好友赚积分")){
+					shareContainer.popupShareWindow(user);
 				}
 				else{
 					getActivity().startActivity(it);
@@ -279,11 +286,13 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());			
 			Function questionFunction = new Function("我的提问", QuestionsActivity.class,R.drawable.myquestions);
 			fragment.functions.add(questionFunction);
-			Function cartFunction = new Function("我的交易", MyTransactionActivity.class,R.drawable.store);
+			Function ordersFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
+			fragment.functions.add(ordersFunction);
+			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.store);
 			fragment.functions.add(cartFunction);
-			Function shareFunction = new Function("邀请好友下载",AppShareActivity.class,R.drawable.appshare);
+			Function shareFunction = new Function("邀请好友赚积分",AppShareActivity.class,R.drawable.appshare);
 			fragment.functions.add(shareFunction);
-			Function minfoFunction = new Function("我的资料", InformationActivity.class,R.drawable.me_s);
+			Function minfoFunction = new Function("资料设置", InformationActivity.class,R.drawable.me_s);
 			fragment.functions.add(minfoFunction);				
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
 			fragment.functions.add(feedbackFunction);

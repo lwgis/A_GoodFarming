@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,6 +11,8 @@ import javax.sdp.Info;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -39,6 +42,7 @@ import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
 import com.zhonghaodi.goodfarming.AppShareActivity.BaseUiListener;
 import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.FavoriteQuestion;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
@@ -97,6 +101,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		HandMessage,OnClickListener,OnItemClickListener{
 	private PullToRefreshListView pullToRefreshListView;
 	private Question question;
+	private List<FavoriteQuestion> favQuestions;
 	private int questionId;
 	private GFHandler<QuestionActivity> handler = new GFHandler<QuestionActivity>(
 			this);
@@ -111,10 +116,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private int status;
 	private MorePopupWindow morePopupWindow;
 	private ImageView agroImageView;
+	private ImageView favoriteImageView;
+	private LinearLayout favoriteLayout;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	private int rid;
 	private int WX_THUMB_SIZE = 60;
+	private boolean favoriteStatus=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +130,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_question);
 		agroImageView = (ImageView)findViewById(R.id.agro_image);
+		favoriteLayout = (LinearLayout)findViewById(R.id.favoritelayout);
+		favoriteImageView = (ImageView)findViewById(R.id.favorite_image);
+		favoriteLayout.setOnClickListener(this);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -179,16 +190,31 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		questionId = getIntent().getIntExtra("questionId", 0);
 		status = getIntent().getIntExtra("status", 0);
 		TextView titleTextView = (TextView)findViewById(R.id.title_text);
-		if(status==0||status==1){
+		favQuestions = new ArrayList<FavoriteQuestion>();
+		if(status==0){
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
+			favoriteLayout.setVisibility(View.VISIBLE);
+			
+		}
+		else if(status==1){
+			titleTextView.setText("问题详细信息");
+			sendBtn.setText("回答");
+			favoriteLayout.setVisibility(View.GONE);
 		}
 		else{
 			titleTextView.setText("种植分享详细信息");
 			sendBtn.setText("评论");
+			favoriteLayout.setVisibility(View.GONE);
 		}
 		loadData();
 		uid=GFUserDictionary.getUserId(getApplicationContext());
+		if(uid==null){
+			Intent it = new Intent(QuestionActivity.this,
+					LoginActivity.class);
+			QuestionActivity.this.startActivity(it);
+			return;
+		}
 		adapter = new ResponseAdapter(this,this,this,uid);
 		pullToRefreshListView.setAdapter(adapter);
 		pullToRefreshListView
@@ -205,6 +231,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		if(uid!=null&&GFUserDictionary.getTjcode(this)==null){
 			loadUser();
 		}	
+		loadFavorites();
 		
 	}
 	@Override
@@ -307,6 +334,21 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					.getUrl(), agroImageView, ImageOptions.optionsNoPlaceholder);			
 		}
 		agroImageView.setDrawingCacheEnabled(true);
+	}
+	public void loadFavorites(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String jsonString= HttpUtil.getFavorites(uid);
+				Message msg = handler.obtainMessage();
+				msg.what = 11;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+		
 	}
 	
 	private void delete(final int qid,final int rid){
@@ -438,6 +480,28 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 		}).start();
 	}
+	public void favoriteQuestion(final boolean add){
+		
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				NetResponse netResponse = HttpUtil.favoriteQue(questionId, uid, add);
+				Message msg = handler.obtainMessage();
+				if(netResponse.getStatus()==1){
+					msg.what = 10;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = 0;
+					msg.obj = netResponse.getMessage();
+				}
+				msg.sendToTarget();
+			}
+		}).start();
+	}
 	private void sharePoint(){
 		new Thread(new Runnable() {
 
@@ -458,6 +522,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	}
 	
 	public void popmorewindow(boolean isMore){
+		InputMethodManager im = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		morePopupWindow = new MorePopupWindow(this,this);
 		if(isMore){
 			morePopupWindow.showReport();
@@ -851,6 +919,14 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		    mTencent.shareToQzone(this, params1, new BaseUiListener());
 		    morePopupWindow.dismiss();
 			break;
+		case R.id.favoritelayout:
+			if(!favoriteStatus){
+				favoriteQuestion(true);
+			}
+			else{
+				favoriteQuestion(false);
+			}
+			break;
 		default:
 			break;
 		}
@@ -1020,6 +1096,43 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 			else{
 				GFToast.show(this,"点赞操作错误");
+			}
+			break;
+		case 10:
+			if(msg.obj!=null){
+				Gson gson2 = new Gson();
+				String jString = (String) msg.obj;
+				PostResponse reportResponse = gson2.fromJson(jString, PostResponse.class);
+				if(reportResponse.isResult()){
+					loadFavorites();
+				}
+				else{
+					GFToast.show(this,reportResponse.getMessage());
+				}
+			}
+			else{
+				GFToast.show(this,"操作错误");
+			}
+			break;
+		case 11:
+			if (msg.obj != null) {
+				Gson gs = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+				List<FavoriteQuestion> questions = gs.fromJson(msg.obj.toString(),
+						new TypeToken<List<FavoriteQuestion>>() {
+						}.getType());
+				favQuestions.clear();
+				favoriteStatus=false;
+				favoriteImageView.setImageResource(R.drawable.favorite_g);
+				for (FavoriteQuestion favoriteQuestion : questions) {
+					favQuestions.add(favoriteQuestion);
+					if(favoriteQuestion.getQuestion().getId()==questionId){
+						favoriteStatus=true;
+						favoriteImageView.setImageResource(R.drawable.favorite);
+					}
+				}
+				
+			} else {
+				
 			}
 			break;
 

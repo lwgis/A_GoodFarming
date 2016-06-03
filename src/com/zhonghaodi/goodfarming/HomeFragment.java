@@ -15,6 +15,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.QuestionAdpter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.customui.MorePopupWindow;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -22,6 +23,7 @@ import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.PublicHelper;
 import com.zhonghaodi.networking.HttpUtil;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -29,10 +31,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,6 +45,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -56,15 +61,18 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	private QuestionAdpter adapter;
 	private GFHandler<HomeFragment> handler = new GFHandler<HomeFragment>(this);
 	private int bAll = 0;
-	private TextView allTextView;
-	private TextView ascTextView;
-	private TextView myTextView;
+	private TextView diseaseTextView;
+	private TextView plantTextView;
+	private TextView gossipTextView;
 	private View messageView;
 	private TextView countTv;
 	private Question selectQuestion;
 	private PopupWindow popupWindow;
+	private PopupWindow selectWindow;
 	private View popView;
+	private View selectView;
 	private int page=0;
+	private int diseaseStatus = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +88,11 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				getActivity(), 180), DpTransform.dip2px(getActivity(), 150));
 		popupWindow.setBackgroundDrawable(new BitmapDrawable());
 		popupWindow.setFocusable(true);
+		selectView = inflater.inflate(R.layout.popupwindow_select, container, false);
+		selectWindow = new PopupWindow(selectView,PublicHelper.getPhoneWidth(getActivity())/3,
+				DpTransform.dip2px(getActivity(), 69));
+		selectWindow.setBackgroundDrawable(new BitmapDrawable());
+		selectWindow.setFocusable(true);
 		bAll = 0;
 		Button newQueBtn = (Button)popView.findViewById(R.id.btn_question);
 		newQueBtn.setOnClickListener(this);
@@ -87,12 +100,16 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		newGossipBtn.setOnClickListener(this);
 		Button newPlantInfoBtn = (Button)popView.findViewById(R.id.btn_plantinfo);
 		newPlantInfoBtn.setOnClickListener(this);
-		allTextView = (TextView)view.findViewById(R.id.all_text);
-		allTextView.setOnClickListener(this);
-		ascTextView = (TextView)view.findViewById(R.id.asc_text);
-		ascTextView.setOnClickListener(this);
-		myTextView = (TextView)view.findViewById(R.id.my_text);
-		myTextView.setOnClickListener(this);
+		Button seldiseaseBtn = (Button)selectView.findViewById(R.id.btn_disease);
+		seldiseaseBtn.setOnClickListener(this);
+		Button selascBtn = (Button)selectView.findViewById(R.id.btn_asc);
+		selascBtn.setOnClickListener(this);
+		diseaseTextView = (TextView)view.findViewById(R.id.disease_text);
+		diseaseTextView.setOnClickListener(this);
+		plantTextView = (TextView)view.findViewById(R.id.plant_text);
+		plantTextView.setOnClickListener(this);
+		gossipTextView = (TextView)view.findViewById(R.id.gossip_text);
+		gossipTextView.setOnClickListener(this);
 		messageView = view.findViewById(R.id.message_layout);
 		messageView.setOnClickListener(this);
 		countTv = (TextView) view.findViewById(R.id.count_text);		
@@ -157,7 +174,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					}
 				});
 		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
-		selectTextView(allTextView);
+		selectTextView(diseaseTextView);
 		
 		return view;
 	}
@@ -238,7 +255,14 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getQuestionsString();
+				String jsonString;
+				if(diseaseStatus==0){
+					jsonString = HttpUtil.getQuestionsString();
+				}
+				else{
+					String uid = GFUserDictionary.getUserId(getActivity());
+					jsonString = HttpUtil.getAscQuestionsString(uid);
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -252,7 +276,14 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getQuestionsString(qid);
+				String jsonString;
+				if(diseaseStatus==0){
+					jsonString = HttpUtil.getQuestionsString(qid);
+				}
+				else{
+					String uid = GFUserDictionary.getUserId(getActivity());
+					jsonString = HttpUtil.getAscQuestionsString(uid,qid);
+				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -404,44 +435,44 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			
 			break;
 			
-		case R.id.all_text:
-			selectTextView(v);
-			loadNewQuestion();
-			bAll = 0;
-			break;
-		case R.id.my_text:
-			
-			String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
-			if(uid==null){
-				Intent intent = new Intent(getActivity(),LoginActivity.class);
-				getActivity().startActivity(intent);
-			}
-			else{
+		case R.id.disease_text:
+			if(bAll!=0){
 				selectTextView(v);
-				loadNewGossips();
-				
-				bAll = 1;
-			}
-			
-			break;
-		case R.id.asc_text:
-			
-			String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
-//			String cropids = GFUserDictionary.getCroids(getActivity().getApplicationContext());
-			if(uid1==null){
-				Intent intent = new Intent(getActivity(),LoginActivity.class);
-				getActivity().startActivity(intent);
-			}
-//			else if(cropids==null || cropids.isEmpty()){
-//				Intent it2 = new Intent(getActivity(),
-//						SelectCropActivity.class);
-//				getActivity().startActivityForResult(it2, 100);
-//			}
+				loadNewQuestion();
+				bAll = 0;
+			}	
 			else{
-				selectTextView(v);
-				loadNewPlant();
-				bAll = 2;
+				popselectwindow(v);
 			}
+			break;
+		case R.id.gossip_text:
+			if(bAll!=1){
+				String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
+				if(uid==null){
+					Intent intent = new Intent(getActivity(),LoginActivity.class);
+					getActivity().startActivity(intent);
+				}
+				else{
+					selectTextView(v);
+					loadNewGossips();
+					
+					bAll = 1;
+				}
+			}			
+			break;
+		case R.id.plant_text:
+			if(bAll!=2){
+				String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
+				if(uid1==null){
+					Intent intent = new Intent(getActivity(),LoginActivity.class);
+					getActivity().startActivity(intent);
+				}
+				else{
+					selectTextView(v);
+					loadNewPlant();
+					bAll = 2;
+				}
+			}			
 			break;
 		case R.id.head_image:
 //			if(GFUserDictionary.getUserId()==null){
@@ -519,24 +550,58 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 			}).start();
 			break;
+		case R.id.btn_disease:
+			popselectwindow(diseaseTextView);
+			if(diseaseStatus!=0){
+				diseaseStatus=0;
+				diseaseTextView.setText("病害问题");
+				loadNewQuestion();
+			}
+			break;
+		case R.id.btn_asc:
+			popselectwindow(diseaseTextView);
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
+				Intent intent2 = new Intent();
+				intent2.setClass(getActivity(), LoginActivity.class);
+				getActivity().startActivity(intent2);
+				return;
+			}
+			if(diseaseStatus!=1){
+				diseaseStatus=1;
+				diseaseTextView.setText("我的作物");
+				loadNewQuestion();
+			}
+			break;
 		default:
 			break;
 		}
 	}
 	
 	public void selectTextView(View view){
-		allTextView.setTextColor(Color.rgb(128, 128, 128));
-		allTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
-		ascTextView.setTextColor(Color.rgb(128, 128, 128));
-		ascTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
-		myTextView.setTextColor(Color.rgb(128, 128, 128));
-		myTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		diseaseTextView.setTextColor(Color.rgb(128, 128, 128));
+		diseaseTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		plantTextView.setTextColor(Color.rgb(128, 128, 128));
+		plantTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		gossipTextView.setTextColor(Color.rgb(128, 128, 128));
+		gossipTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		
 		TextView selectTextView = (TextView)view;
 		selectTextView.setTextColor(Color.rgb(56, 190, 153));
 	}
 	
-	public void hidePopueWindow(){
+	public void popselectwindow(View v){
+		if(selectWindow.isShowing()){
+			selectWindow.dismiss();
+		}
+		else{
+			selectWindow.showAsDropDown(v,
+					-DpTransform.dip2px(getActivity(), 0),
+					DpTransform.dip2px(getActivity(), 0));
+		}
+    }
+	
+	public void hideselectWindow(){
+		selectWindow.dismiss();
 	}
 	
 
