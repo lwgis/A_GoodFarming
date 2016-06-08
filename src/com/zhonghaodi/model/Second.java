@@ -1,6 +1,7 @@
 package com.zhonghaodi.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 public class Second implements Serializable {
@@ -20,6 +21,7 @@ public class Second implements Serializable {
 	private Integer count;
 	private Double nprice;
 	private Double oprice;
+	private List<NetImage>attachments;
 	
 	public Second() {
 		// TODO Auto-generated constructor stub
@@ -112,6 +114,14 @@ public class Second implements Serializable {
 
 	public void setEndtime(String endtime) {
 		this.endtime = endtime;
+	}
+
+	public List<NetImage> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<NetImage> attachments) {
+		this.attachments = attachments;
 	}
 
 	@Override

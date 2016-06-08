@@ -213,6 +213,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.guanzhuView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
+				holderMeInfo.reccountTv.setText(String.valueOf(user.getRecCount()));
+				holderMeInfo.tjcoinTv.setText(String.valueOf(user.getTjcoin()));
 				holderMeInfo.qrImageView.setOnClickListener(MeFragment.this);
 				break;
 			case 1:

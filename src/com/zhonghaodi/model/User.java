@@ -24,6 +24,8 @@ public class User implements Serializable {
 	private int levelID;
 	private String identifier;
 	private boolean teamwork;
+	private int tjcoin;
+	private int recCount;
 	
 	public User() {
 		// TODO Auto-generated constructor stub
@@ -178,6 +180,22 @@ public class User implements Serializable {
 
 	public void setTeamwork(boolean teamwork) {
 		this.teamwork = teamwork;
+	}
+
+	public int getTjcoin() {
+		return tjcoin;
+	}
+
+	public void setTjcoin(int tjcoin) {
+		this.tjcoin = tjcoin;
+	}
+
+	public int getRecCount() {
+		return recCount;
+	}
+
+	public void setRecCount(int recCount) {
+		this.recCount = recCount;
 	}
 	
 }

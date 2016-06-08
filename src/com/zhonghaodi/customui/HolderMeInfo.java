@@ -15,6 +15,8 @@ public class HolderMeInfo {
 	public TextView guanzhuTv;
 	public TextView fensiTv;
 	public TextView tjcodeTv;
+	public TextView reccountTv;
+	public TextView tjcoinTv;
 	public ImageView qrImageView;
 	public View guanzhuView;
 	public View fensiView;
@@ -28,6 +30,8 @@ public class HolderMeInfo {
 		guanzhuView=view.findViewById(R.id.guanzhu_view);
 		fensiView=view.findViewById(R.id.fensi_view);
 		tjcodeTv = (TextView)view.findViewById(R.id.tjcode_text);
+		reccountTv = (TextView)view.findViewById(R.id.reccount_text);
+		tjcoinTv = (TextView)view.findViewById(R.id.tjcoin_text);
 		qrImageView=(ImageView)view.findViewById(R.id.qrcode_img);
 	}
 }

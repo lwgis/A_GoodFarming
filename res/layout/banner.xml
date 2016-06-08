@@ -1,106 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_layout"
     android:layout_width="match_parent"
-    android:layout_height="210dp" >
+    android:layout_height="match_parent" 
+    >
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp"
         android:layout_width="match_parent"
-        android:layout_height="210dp" />
-    <LinearLayout 
+        android:layout_height="match_parent" />
+
+ 
+    <LinearLayout
+        android:id="@+id/dot_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#88000000"
-        android:orientation="vertical"
-        >
-        <LinearLayout 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <TextView
-	            android:id="@+id/tv_name"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_marginBottom="10dp"
-	            android:layout_marginLeft="10dp"
-	            android:maxLines="2"
-	            android:text="3月4日"
-	            android:textColor="#ffffff"
-	            android:textSize="18sp" />
-	
-	        <TextView
-	            android:id="@+id/tv_price"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_marginBottom="10dp"
-	            android:layout_marginLeft="10dp"
-	            android:layout_marginRight="10dp"
-	            android:maxLines="2"
-	            android:text="我和令计划只是同姓"
-	            android:textColor="#ffffff"
-	            android:textSize="12sp" />
-        </LinearLayout>
-        <LinearLayout 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-	        <TextView
-                android:id="@+id/tv_pname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="文章选题来自"
-                android:textColor="#ffffff"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="阿宅的"
-                android:textColor="#ffffff"
-                android:textSize="12sp" />
-	    </LinearLayout>
-    </LinearLayout>
-
- 
-    <!-- <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
         android:gravity="center" >
-
-        <View
-            android:id="@+id/v_dot0"
-            style="@style/dot_style"
-            android:background="@drawable/dot_focused"
-            android:visibility="invisible" />
-
-        <View
-            android:id="@+id/v_dot1"
-            style="@style/dot_style" 
-            android:visibility="invisible"/>
-
-        <View
-            android:id="@+id/v_dot2"
-            style="@style/dot_style" 
-            android:visibility="invisible"/>
-
-        <View
-            android:id="@+id/v_dot3"
-            style="@style/dot_style" 
-            android:visibility="invisible"/>
-
-        <View
-            android:id="@+id/v_dot4"
-            style="@style/dot_style"
-            android:visibility="invisible" />
-    </LinearLayout> -->
+    </LinearLayout>
 </RelativeLayout>

@@ -66,12 +66,21 @@
                         android:textSize="20dip" />
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/head_image"
+                
+                <FrameLayout 
                     android:layout_width="match_parent"
                     android:layout_height="200dip"
                     android:layout_margin="5dip"
-                    android:scaleType="centerCrop" />
+                    >
+                    <include layout="@layout/banner"/>
+                    <com.zhonghaodi.customui.GFImageView
+	                    android:id="@+id/head_image"
+	                    android:layout_width="match_parent"
+	                    android:layout_height="match_parent"
+	                    android:scaleType="centerCrop" 
+	                    android:src="@drawable/placeholder"
+	                    />
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/nzd_text"

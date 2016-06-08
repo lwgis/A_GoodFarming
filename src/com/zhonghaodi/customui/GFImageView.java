@@ -30,6 +30,7 @@ public class GFImageView extends ImageView {
 	}
 	public GFImageView(Context context){
 		super(context);
+		mContext = context;
 	}
 	public GFImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);

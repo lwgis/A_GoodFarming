@@ -158,7 +158,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
         settings.setJavaScriptEnabled(true);  
         settings.setJavaScriptCanOpenWindowsAutomatically(true);  
         settings.setPluginState(PluginState.ON);  
-        settings.setPluginsEnabled(true); // 
+//        settings.setPluginsEnabled(true); 
         settings.setAllowFileAccess(true);  
         settings.setLoadWithOverviewMode(true);  
   
@@ -282,6 +282,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
             }  
   
         }  
+        
   
         public void onHideCustomView() {  
             mContentView.setVisibility(View.VISIBLE);  

@@ -181,7 +181,9 @@
         </activity>
         <activity
             android:name=".AgrotechnicalActivity"
-            android:windowSoftInputMode="adjustResize" >
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"  
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" 
+            >
         </activity>
         <activity
             android:name=".AgroActivity"
