@@ -126,7 +126,8 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getCommodities(0);
+				String uid = GFUserDictionary.getUserId(CommoditiesActivity.this);
+				String jsonString = HttpUtil.getCommodities(0,uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -147,7 +148,8 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getCommodities(position);
+				String uid = GFUserDictionary.getUserId(CommoditiesActivity.this);
+				String jsonString = HttpUtil.getCommodities(position,uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;

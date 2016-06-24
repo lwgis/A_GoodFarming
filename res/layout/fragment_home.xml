@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="种好地"
+            android:text="试用版171"
             android:textColor="#FFFFFF"
             android:textSize="18dip" />
 
@@ -78,7 +78,7 @@
            android:layout_height="34dip"
            android:layout_weight="1"
            android:layout_gravity="center_horizontal"
-           android:text="病害问答"
+           android:text="病害问题 ▼"
            android:textColor="#38be99"
            android:background="@drawable/topbar"
            android:gravity="center"

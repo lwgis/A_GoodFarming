@@ -6,7 +6,7 @@ import java.util.Date;
 public class FavoriteQuestion implements Serializable {
 	private int id;
 	private Date time;
-	private Question question;
+	private Question myquestion;
 	private int status;
 	public int getId() {
 		return id;
@@ -20,17 +20,18 @@ public class FavoriteQuestion implements Serializable {
 	public void setTime(Date time) {
 		this.time = time;
 	}
-	public Question getQuestion() {
-		return question;
-	}
-	public void setQuestion(Question question) {
-		this.question = question;
-	}
+	
 	public int getStatus() {
 		return status;
 	}
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	public Question getMyquestion() {
+		return myquestion;
+	}
+	public void setMyquestion(Question myquestion) {
+		this.myquestion = myquestion;
 	}
 	
 }

@@ -440,6 +440,11 @@
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateHidden" >
         </activity>
+        <activity
+            android:name=".PointsActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
         <activity android:name=".wxapi.WXEntryActivity"  
             android:launchMode="singleInstance"  
             android:exported="true"  
@@ -497,7 +502,7 @@
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="lwgis#goodfarming" />
+            android:value="lwgis#nyim" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService" />        
         <meta-data android:value="572bef3167e58eeefe002485" android:name="UMENG_APPKEY"></meta-data>

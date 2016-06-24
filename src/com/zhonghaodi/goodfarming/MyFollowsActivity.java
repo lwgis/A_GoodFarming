@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -22,6 +23,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -46,6 +49,8 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 	private Button addButton;
 	private TextView titleView;
 	private int status = 0;
+	private PopupWindow popupWindow;
+	private View popView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -63,6 +68,15 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				finish();
 			}
 		});
+		popView = LayoutInflater.from(MyFollowsActivity.this).inflate(R.layout.popupwindow_follows, null);
+		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
+				this, 180), DpTransform.dip2px(this, 100));
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		popupWindow.setFocusable(true);
+		Button nysBtn = (Button)popView.findViewById(R.id.btn_qys);
+		nysBtn.setOnClickListener(this);
+		Button nyBtn = (Button)popView.findViewById(R.id.btn_ny);
+		nyBtn.setOnClickListener(this);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -281,8 +295,31 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Intent intent = new Intent(this,SearchActivity.class);
-		startActivity(intent);
+		switch (v.getId()) {
+		case R.id.add_button:
+			if (popupWindow.isShowing()) {
+				popupWindow.dismiss();
+			} else {
+				popupWindow.showAsDropDown(v,
+						-DpTransform.dip2px(this, -50),
+						DpTransform.dip2px(this, 0));
+			}
+			break;
+		case R.id.btn_ny:
+			popupWindow.dismiss();
+			Intent intent = new Intent(this,SearchActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btn_qys:
+			popupWindow.dismiss();
+			Intent intent1 = new Intent(this, NyssActivity.class);
+			startActivity(intent1);
+			break;
+
+		default:
+			break;
+		}
+		
 	}
 
 	@Override
@@ -320,7 +357,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				nysactivity.adapter.notifyDataSetChanged();
 				if(nysactivity.nyss.size()==0){
 					if(status==0){
-						popupDialog();
+						GFToast.show(getApplicationContext(),"您没有关注任何人");
 					}
 					else{
 						GFToast.show(getApplicationContext(),"您目前没有粉丝");

@@ -205,14 +205,14 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 						HttpUtil.ImageUrl+"users/small/"
 								+ user.getThumbnail(), holderMeInfo.headIv,
 						ImageOptions.optionsNoPlaceholder);
+				User u1= user;
 				holderMeInfo.titleTv.setText(user.getAlias());
-				holderMeInfo.jifenTv.setText(String.valueOf(user.getPoint()));
 				holderMeInfo.youhuibiTv.setText(String.valueOf(user.getCurrency()));
 				holderMeInfo.fensiTv.setText(String.valueOf(user.getFanscount()));
 				holderMeInfo.fensiView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
-				holderMeInfo.tjcodeTv.setText(String.valueOf(user.getTjCode()));
+				holderMeInfo.tjcodeTv.setText(user.getTjCode());
 				holderMeInfo.reccountTv.setText(String.valueOf(user.getRecCount()));
 				holderMeInfo.tjcoinTv.setText(String.valueOf(user.getTjcoin()));
 				holderMeInfo.qrImageView.setOnClickListener(MeFragment.this);
@@ -221,6 +221,13 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holdFunction=(HoldFunction)convertView.getTag();
 				holdFunction.leftIv.setImageResource(functions.get(position-1).getImageId());
 				holdFunction.titileTv.setText(functions.get(position-1).getName());
+				if(functions.get(position-1).getDescription()==null){
+					holdFunction.desTv.setVisibility(View.GONE);
+				}
+				else{
+					holdFunction.desTv.setVisibility(View.VISIBLE);
+					holdFunction.desTv.setText(functions.get(position-1).getDescription());
+				}
 				break;
 			default:
 				break;
@@ -285,12 +292,15 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			}
 			fragment.user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
-			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());			
+			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());	
+			Function pointsFunction = new Function("积分使用", PointsActivity.class,R.drawable.jifen);
+			pointsFunction.setDescription(user.getPoint()+"积分");
+			fragment.functions.add(pointsFunction);
 			Function questionFunction = new Function("我的提问", QuestionsActivity.class,R.drawable.myquestions);
 			fragment.functions.add(questionFunction);
 			Function ordersFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
 			fragment.functions.add(ordersFunction);
-			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.store);
+			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.yhbsh);
 			fragment.functions.add(cartFunction);
 			Function shareFunction = new Function("邀请好友赚积分",AppShareActivity.class,R.drawable.appshare);
 			fragment.functions.add(shareFunction);

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="我的提问"
+            android:text="积分"
             android:textColor="#FFFFFF"
             android:textSize="20dip" />
     </RelativeLayout>
@@ -42,36 +42,7 @@
 	          android:background="#e6e7eb"
 	          >
 		    <RelativeLayout 
-	            android:id="@+id/layout1"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg1"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/myquestions"
-		            />
-		        <TextView 
-		            android:id="@+id/avname1"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg1"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="我的病害问答"
-		            />
-		        
-		    </RelativeLayout>
-		    <RelativeLayout 
-	            android:id="@+id/layout3"
+	            android:id="@+id/layout6"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginTop="2dip"
@@ -80,56 +51,28 @@
 		        android:clickable="true"
 		        >
 		        <ImageView 
-		            android:id="@+id/avimg3"
+		            android:id="@+id/avimg6"
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/shoucang"
+		            android:src="@drawable/scorestore"
 		            />
 		        <TextView 
-		            android:id="@+id/avname3"
+		            android:id="@+id/avname6"
 		            android:layout_width="wrap_content"
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg3"
+		            android:layout_toRightOf="@+id/avimg6"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="我的收藏"
-		            />		        
-		    </RelativeLayout>
-		    <RelativeLayout 
-	            android:id="@+id/layout2"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg2"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/mylalagua"
-		            />
-		        <TextView 
-		            android:id="@+id/avname2"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg2"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="我的拉拉呱"
+		            android:text="积分商城"
 		            />
 		        
 		    </RelativeLayout>
 		    
 		    <RelativeLayout 
-	            android:id="@+id/layout4"
+	            android:id="@+id/layout8"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_marginTop="2dip"
@@ -138,23 +81,24 @@
 		        android:clickable="true"
 		        >
 		        <ImageView 
-		            android:id="@+id/avimg4"
+		            android:id="@+id/avimg8"
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/plantshare"
+		            android:src="@drawable/guaguale"
 		            />
 		        <TextView 
-		            android:id="@+id/avname4"
+		            android:id="@+id/avname8"
 		            android:layout_width="wrap_content"
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg4"
+		            android:layout_toRightOf="@+id/avimg8"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="我的种植分享"
-		            />		        
+		            android:text="刮刮乐"
+		            />
+		        
 		    </RelativeLayout>
 	       </LinearLayout>
     </ScrollView>

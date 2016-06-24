@@ -343,7 +343,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 						GFToast.show(getApplicationContext(),"您没有收藏任何问题");				
 					}
 					for (FavoriteQuestion favoriteQuestion : questions) {
-						allQuestions.add(favoriteQuestion.getQuestion());						
+						allQuestions.add(favoriteQuestion.getMyquestion());						
 					}
 					adapter.setStatus(0);
 				}

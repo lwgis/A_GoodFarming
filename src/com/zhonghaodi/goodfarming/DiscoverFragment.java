@@ -21,9 +21,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	private View nzdView;
 	private View nysView;
 	private View nyqView;
-	private View miaoView;
-	private View commodityView;
-	private View rubblerView;
+	
 	private View bchView;
 	private View btcpView;
 
@@ -39,12 +37,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		nysView.setOnClickListener(this);
 		nyqView = view.findViewById(R.id.layout3);
 		nyqView.setOnClickListener(this);
-		miaoView = view.findViewById(R.id.layout5);
-		miaoView.setOnClickListener(this);
-		commodityView = view.findViewById(R.id.layout6);
-		commodityView.setOnClickListener(this);
-		rubblerView = view.findViewById(R.id.layout8);
-		rubblerView.setOnClickListener(this);
+
 		bchView = view.findViewById(R.id.layout9);
 		bchView.setOnClickListener(this);
 		btcpView = view.findViewById(R.id.layout7);
@@ -98,24 +91,9 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 			Intent intent4 = new Intent(getActivity(), MiaoActivity.class);
 			startActivity(intent4);
 			break;
-		case R.id.layout6:
-			Intent intent5 = new Intent(getActivity(), CommoditiesActivity.class);
-			startActivity(intent5);
-			break;
 		case R.id.layout7:
 			Intent intent9 = new Intent(getActivity(), ZfbtActivity.class);
 			startActivity(intent9);
-			break;
-		case R.id.layout8:
-			int point = GFUserDictionary.getPoint(getActivity().getApplicationContext());
-			int guagua = GFPointDictionary.getGuaguaPoint(getActivity());
-			if(point>=guagua){
-				Intent intent7 = new Intent(getActivity(), RubblerActivity.class);
-				startActivity(intent7);
-			}
-			else{
-				GFToast.show(getActivity().getApplicationContext(),"您的积分不足！");
-			}
 			break;
 		case R.id.layout9:
 			Intent intent8 = new Intent(getActivity(), FarmCropsActivity.class);

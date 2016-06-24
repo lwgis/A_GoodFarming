@@ -5,6 +5,7 @@ public class Function {
 	private String name;
 	private Class<?> activityClass;
 	private int imageId;
+	private String description;
 	public int getImageId() {
 		return imageId;
 	}
@@ -32,6 +33,14 @@ public class Function {
 
 	public void setActivityClass(Class<?> activityClass) {
 		this.activityClass = activityClass;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

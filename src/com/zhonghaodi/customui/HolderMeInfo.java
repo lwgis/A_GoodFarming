@@ -10,7 +10,6 @@ import android.widget.TextView;
 public class HolderMeInfo {
 	public RoundedImageView headIv;
 	public TextView titleTv;
-	public TextView jifenTv;
 	public TextView youhuibiTv;
 	public TextView guanzhuTv;
 	public TextView fensiTv;
@@ -23,7 +22,6 @@ public class HolderMeInfo {
 	public HolderMeInfo(View view){
 		headIv=(RoundedImageView)view.findViewById(R.id.head_image);
 		titleTv=(TextView)view.findViewById(R.id.title_text);
-		jifenTv=(TextView)view.findViewById(R.id.jifen_text);
 		youhuibiTv=(TextView)view.findViewById(R.id.youhuibi_text);
 		guanzhuTv=(TextView)view.findViewById(R.id.guanzhu_text);
 		fensiTv=(TextView)view.findViewById(R.id.fensi_text);

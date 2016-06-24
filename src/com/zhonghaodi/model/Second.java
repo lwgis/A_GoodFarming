@@ -22,6 +22,7 @@ public class Second implements Serializable {
 	private Double nprice;
 	private Double oprice;
 	private List<NetImage>attachments;
+	private int coupon;
 	
 	public Second() {
 		// TODO Auto-generated constructor stub
@@ -122,6 +123,14 @@ public class Second implements Serializable {
 
 	public void setAttachments(List<NetImage> attachments) {
 		this.attachments = attachments;
+	}
+
+	public int getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(int coupon) {
+		this.coupon = coupon;
 	}
 
 	@Override

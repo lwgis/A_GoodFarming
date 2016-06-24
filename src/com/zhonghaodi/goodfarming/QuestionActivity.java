@@ -1125,7 +1125,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				favoriteImageView.setImageResource(R.drawable.favorite_g);
 				for (FavoriteQuestion favoriteQuestion : questions) {
 					favQuestions.add(favoriteQuestion);
-					if(favoriteQuestion.getQuestion().getId()==questionId){
+					if(favoriteQuestion.getMyquestion().getId()==questionId){
 						favoriteStatus=true;
 						favoriteImageView.setImageResource(R.drawable.favorite);
 					}

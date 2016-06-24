@@ -50,12 +50,12 @@
                 android:background="@drawable/item_background_default"
                 android:orientation="vertical" >
 
-                <ImageView
+                <com.zhonghaodi.customui.GFImageView
                     android:id="@+id/head_image"
                     android:layout_width="match_parent"
-                    android:layout_height="200dip"
+                    android:layout_height="300dip"
                     android:layout_margin="5dip"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="fitCenter" />
 
                 <TextView
                     android:id="@+id/name_text"

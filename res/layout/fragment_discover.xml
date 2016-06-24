@@ -37,7 +37,7 @@
 	            android:id="@+id/layout3"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
+		        android:layout_marginTop="8dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
@@ -63,68 +63,40 @@
 		        
 		    </RelativeLayout>
 		    <RelativeLayout 
-	            android:id="@+id/layout9"
+	            android:id="@+id/layout7"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
+		        android:layout_marginTop="8dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
-		            android:id="@+id/avimg9"
+		            android:id="@+id/avimg7"
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/disease"
+		            android:src="@drawable/youhui"
 		            />
 		        <TextView 
-		            android:id="@+id/avname9"
+		            android:id="@+id/avname7"
 		            android:layout_width="wrap_content"
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg9"
+		            android:layout_toRightOf="@+id/avimg7"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="蔬菜瓜果病害查询"
+		            android:text="超实惠"
 		            />
 		        
 		    </RelativeLayout>
-		    <RelativeLayout 
-	            android:id="@+id/layout2"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg2"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/nys"
-		            />
-		        <TextView 
-		            android:id="@+id/avname2"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg2"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="专家和农技达人"
-		            />
-		        
-		    </RelativeLayout>
+		    
 		    <RelativeLayout 
 	            android:id="@+id/layout1"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
+		        android:layout_marginTop="3dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
@@ -151,121 +123,61 @@
 		    </RelativeLayout>
 		    
 		    <RelativeLayout 
-	            android:id="@+id/layout5"
+	            android:id="@+id/layout9"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
+		        android:layout_marginTop="8dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
-		            android:id="@+id/avimg5"
+		            android:id="@+id/avimg9"
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/second"
+		            android:src="@drawable/ktsb"
 		            />
 		        <TextView 
-		            android:id="@+id/avname5"
+		            android:id="@+id/avname9"
 		            android:layout_width="wrap_content"
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg5"
+		            android:layout_toRightOf="@+id/avimg9"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="附近秒杀优惠活动"
+		            android:text="看图识病"
 		            />
 		        
 		    </RelativeLayout>
 		    
 		    <RelativeLayout 
-	            android:id="@+id/layout7"
+	            android:id="@+id/layout2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
+		        android:layout_marginTop="3dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
-		            android:id="@+id/avimg7"
+		            android:id="@+id/avimg2"
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/youhui"
+		            android:src="@drawable/nys"
 		            />
 		        <TextView 
-		            android:id="@+id/avname7"
+		            android:id="@+id/avname2"
 		            android:layout_width="wrap_content"
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg7"
+		            android:layout_toRightOf="@+id/avimg2"
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="种好地补贴商品抢购"
-		            />
-		        
-		    </RelativeLayout>
-		    
-		    <RelativeLayout 
-	            android:id="@+id/layout6"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="10dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg6"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/scorestore"
-		            />
-		        <TextView 
-		            android:id="@+id/avname6"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg6"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="积分商城"
-		            />
-		        
-		    </RelativeLayout>
-		    
-		    <RelativeLayout 
-	            android:id="@+id/layout8"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg8"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/guaguale"
-		            />
-		        <TextView 
-		            android:id="@+id/avname8"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg8"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="刮刮乐"
+		            android:text="专家和农技达人"
 		            />
 		        
 		    </RelativeLayout>

@@ -28,6 +28,8 @@ public class NzdsActivity extends Activity implements OnClickListener {
 		questionView.setOnClickListener(this);
 		View lalaguaView = findViewById(R.id.layout2);
 		lalaguaView.setOnClickListener(this);
+		View miaoView = findViewById(R.id.layout5);
+		miaoView.setOnClickListener(this);
 	}
 	
 	@Override
@@ -56,7 +58,9 @@ public class NzdsActivity extends Activity implements OnClickListener {
 		case R.id.layout2:
 			intent = new Intent(this, RecipesActivity.class);
 			break;
-
+		case R.id.layout5:
+			intent = new Intent(this, MiaoActivity.class);
+			break;
 		default:
 			intent = null;
 			break;

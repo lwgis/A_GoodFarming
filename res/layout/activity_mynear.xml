@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="我的提问"
+            android:text="附近农资店"
             android:textColor="#FFFFFF"
             android:textSize="20dip" />
     </RelativeLayout>

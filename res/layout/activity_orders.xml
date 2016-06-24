@@ -125,7 +125,7 @@
 	            android:paddingLeft="10dip"
 	            android:textColor="#444444"
 	            android:textSize="18dip"
-	            android:text="种好地补贴商品订单"
+	            android:text="超实惠订单"
 	            />
 	        
 	    </RelativeLayout>

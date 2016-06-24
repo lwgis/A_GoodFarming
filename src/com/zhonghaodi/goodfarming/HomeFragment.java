@@ -554,7 +554,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			popselectwindow(diseaseTextView);
 			if(diseaseStatus!=0){
 				diseaseStatus=0;
-				diseaseTextView.setText("病害问题");
+				diseaseTextView.setText("病害问题 ▼");
 				loadNewQuestion();
 			}
 			break;
@@ -568,7 +568,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			}
 			if(diseaseStatus!=1){
 				diseaseStatus=1;
-				diseaseTextView.setText("我的作物");
+				diseaseTextView.setText("我的作物 ▼");
 				loadNewQuestion();
 			}
 			break;

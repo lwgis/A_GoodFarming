@@ -61,11 +61,12 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage8/";
-	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
-//	public static final String RootURL = "http://192.168.31.232:8083/dfyy/rest/";
-//	public static final String ImageUrl = "http://192.168.0.120:8080/zhdimages/";
+	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
+	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
+	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
+//	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+//	public static String ImageUrl = "http://121.40.62.120/appimage8/";
+//	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 
 	public static String executeHttpGet(String urlString) {
 		StringBuffer sb = new StringBuffer();
@@ -1975,7 +1976,7 @@ public class HttpUtil {
 		}
 	}
 	
-	public static NetResponse buyZfbt(final String uid,int sid){
+	public static NetResponse buyZfbt(final String uid,int sid,final int coupon){
 		
 		String jsonString = null;
 		String urlString = RootURL + "zfbt/"+sid+"/buy";
@@ -1996,6 +1997,24 @@ public class HttpUtil {
 		};
 		
 		nameValuePairs.add(nameValuePair1);
+		if(coupon>0){
+			NameValuePair nameValuePair2 = new NameValuePair() {
+
+				@Override
+				public String getValue() {
+					// TODO Auto-generated method stub
+					return String.valueOf(coupon);
+				}
+
+				@Override
+				public String getName() {
+					// TODO Auto-generated method stub
+					return "coupon";
+				}
+			};
+			
+			nameValuePairs.add(nameValuePair2);
+		}
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {
@@ -2340,9 +2359,9 @@ public class HttpUtil {
 	 * @param position
 	 * @return
 	 */
-	public static String getCommodities(int position){
+	public static String getCommodities(int position,String uid){
 		
-		String urlString = RootURL + "commodities?position="+position;
+		String urlString = RootURL + "commodities?position="+position+"&uid="+uid;
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		

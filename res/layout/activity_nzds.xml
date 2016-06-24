@@ -66,7 +66,36 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="农资店"
+		            android:text="附近农资店"
+		            />
+		        
+		    </RelativeLayout>
+		    <RelativeLayout 
+	            android:id="@+id/layout5"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg5"
+		            android:layout_width="40dip"
+		            android:layout_height="40dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/second"
+		            />
+		        <TextView 
+		            android:id="@+id/avname5"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg5"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="附近秒杀优惠活动"
 		            />
 		        
 		    </RelativeLayout>
@@ -95,7 +124,7 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="配方团购"
+		            android:text="附近配方团购"
 		            />
 		        
 		    </RelativeLayout>

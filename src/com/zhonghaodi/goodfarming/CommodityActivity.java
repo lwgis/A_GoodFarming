@@ -1,14 +1,18 @@
 package com.zhonghaodi.goodfarming;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.customui.GFImageView;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Commodity;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Level;
+import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
@@ -29,7 +33,7 @@ import android.widget.TextView;
 
 public class CommodityActivity extends Activity implements OnClickListener,HandMessage {
 	
-	private ImageView bigImageView;
+	private GFImageView bigImageView;
 	private TextView  nameTextView;
 	private TextView  pointTextView;
 	private TextView  levelTextView;
@@ -45,7 +49,7 @@ public class CommodityActivity extends Activity implements OnClickListener,HandM
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_commodity);
-		bigImageView = (ImageView)findViewById(R.id.head_image);
+		bigImageView = (GFImageView)findViewById(R.id.head_image);
 		nameTextView = (TextView)findViewById(R.id.name_text);
 		pointTextView = (TextView)findViewById(R.id.point_text);
 		levelTextView = (TextView)findViewById(R.id.level_text);
@@ -151,6 +155,13 @@ public class CommodityActivity extends Activity implements OnClickListener,HandM
 							HttpUtil.ImageUrl+"commodities/small/"
 									+ commodity.getImage(),
 									bigImageView, ImageOptions.options);
+					NetImage netImage = new NetImage();
+					netImage.setId(1);
+					netImage.setUrl(commodity.getImage());
+					List<NetImage> images = new ArrayList<NetImage>();
+					images.add(netImage);
+					bigImageView.setIndex(0);
+					bigImageView.setImages(images,"commodities");
 					nameTextView.setText(commodity.getName());
 					pointTextView.setText("积分："+commodity.getPoint());
 					if(commodity.getLevels()!=null && commodity.getLevels().size()>0){

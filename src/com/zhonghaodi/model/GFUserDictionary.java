@@ -36,6 +36,7 @@ public class GFUserDictionary {
 		editor.putString("thumbnail", user.getThumbnail());
 		editor.putInt("point", user.getPoint());
 		editor.putString("tjcode", user.getTjCode());
+		editor.putInt("coin", user.getCurrency());
 		String croids = "";
 		if(user.getCrops()!=null && user.getCrops().size()>0){
 			for (Iterator iterator = user.getCrops().iterator(); iterator.hasNext();) {
@@ -90,6 +91,7 @@ public class GFUserDictionary {
 		editor.remove("croids");
 		editor.remove("point");
 		editor.remove("tjcode");
+		editor.remove("coin");
 		// 提交
 		editor.commit();
 	}
@@ -139,5 +141,11 @@ public class GFUserDictionary {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getString("tjcode", null);
+	}
+	
+	public static int getCoin(Context context){
+		SharedPreferences sharedPre = context.getSharedPreferences("config",
+				Context.MODE_PRIVATE);
+		return sharedPre.getInt("coin", 0);
 	}
 }

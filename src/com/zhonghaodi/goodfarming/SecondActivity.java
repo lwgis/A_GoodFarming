@@ -33,6 +33,8 @@ import com.zhonghaodi.utils.UmengConstants;
 
 import android.R.integer;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ import android.os.CountDownTimer;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -65,6 +68,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	private TextView newTextView;
 	private TextView countTextView;
 	private TextView contentTextView;
+	private TextView couponTextView;
 	private Second second;
 	private int status;
 	private MyTextButton buyBtn;
@@ -73,6 +77,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	private TimeCount time;
 	private ScheduledExecutorService scheduledExecutorService;
 	private int currentItem = 0;
+	private int coin = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -88,6 +93,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		oldTextView.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );
 		newTextView = (TextView)findViewById(R.id.newprice_text);
 		countTextView = (TextView)findViewById(R.id.count_text);
+		couponTextView = (TextView)findViewById(R.id.coupon_text);
 		contentTextView = (TextView)findViewById(R.id.content_text);
 		buyBtn = (MyTextButton)findViewById(R.id.buy_button);
 		buyBtn.setOnClickListener(this);
@@ -103,6 +109,13 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			newTextView.setText("现价：￥"+String.valueOf(second.getNprice()));
 			countTextView.setText("数量："+String.valueOf(second.getCount()));
 			contentTextView.setText(second.getContent());
+//			couponTextView.setText("可使用优惠币："+second.getCoupon());
+//			if(second.getCoupon()>0){
+//				couponTextView.setVisibility(View.VISIBLE);
+//			}
+//			else{
+//				couponTextView.setVisibility(View.GONE);
+//			}
 		}
 		status = getIntent().getIntExtra("status", 0);
 		if(second.getAttachments()==null || second.getAttachments().size()<=1){
@@ -121,14 +134,6 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			dots = new ArrayList<View>();
 			for (int i=0;i<second.getAttachments().size();i++) {
 				NetImage netImage = second.getAttachments().get(i);
-				View dot = new View(this);
-				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(PublicHelper.dip2px(this, 5),PublicHelper.dip2px(this, 5));
-				layoutParams.setMargins(PublicHelper.dip2px(this, 2), 0, PublicHelper.dip2px(this, 2), 0);
-				dot.setLayoutParams(layoutParams);
-				dot.setBackgroundResource(R.drawable.dot_normal);
-				dot.setVisibility(View.VISIBLE);
-				dotLayout.addView(dot);
-				dots.add(dot);
 				
 				GFImageView imageView = new GFImageView(this);
 				ImageLoader.getInstance().displayImage(
@@ -137,8 +142,17 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 						imageView, ImageOptions.options);
 				imageView.setIndex(i);
 				imageView.setImages(second.getAttachments(),"seconds");
-				imageView.setScaleType(ScaleType.CENTER_CROP);
+				imageView.setScaleType(ScaleType.FIT_CENTER);
 				imageViews.add(imageView);
+				
+				View dot = new View(this);
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(PublicHelper.dip2px(this, 5),PublicHelper.dip2px(this, 5));
+				layoutParams.setMargins(PublicHelper.dip2px(this, 2), 0, PublicHelper.dip2px(this, 2), 0);
+				dot.setLayoutParams(layoutParams);
+				dot.setBackgroundResource(R.drawable.dot_normal);
+				dot.setVisibility(View.VISIBLE);
+				dotLayout.addView(dot);
+				dots.add(dot);
 			}
 			adapter = new BannerAdapter(imageViews);
 			adViewPager.setAdapter(adapter);
@@ -227,30 +241,81 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 		}
+
+//		if(second.getCoupon()>0){
+//			final Dialog dialog = new Dialog(SecondActivity.this, R.style.MyDialog);
+//	        //设置它的ContentView
+//			LayoutInflater inflater = (LayoutInflater) SecondActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//	        View layout = inflater.inflate(R.layout.dialog, null);
+//	        dialog.setContentView(layout);
+//	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+//	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+//	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+//	        okBtn.setText("使用");
+//	        okBtn.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					dialog.dismiss();
+//					if(second.getCoupon()>GFUserDictionary.getCoin(SecondActivity.this)){
+//						GFToast.show(SecondActivity.this, "您的优惠币余额不足");
+//						buyBtn.setEnabled(true);
+//						return;
+//					}
+//					else{
+//						coin = second.getCoupon();
+//						sendBuy(uid);
+//					}
+//				}
+//			});
+//	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+//	        cancelButton.setText("不使用");
+//	        cancelButton.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					dialog.dismiss();
+//					sendBuy(uid);
+//				}
+//			});
+//	        titleView.setText("提示");
+//	        contentView.setText("请您选择是否使用优惠币购买");
+//	        dialog.show();
+//		}
+//		else{
+//			sendBuy(uid);
+//		}
+		sendBuy(uid);
+		
+	}
+	
+	private void sendBuy(final String uid){
 		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
 				
-				NetResponse netResponse;
-				if(status==0){
-					netResponse = HttpUtil.buySecond(uid,second.getId());
-				}else{
-					netResponse = HttpUtil.buyZfbt(uid,second.getId());
+				@Override
+				public void run() {
+					
+					NetResponse netResponse;
+					if(status==0){
+						netResponse = HttpUtil.buySecond(uid,second.getId());
+					}else{
+						netResponse = HttpUtil.buyZfbt(uid,second.getId(),coin);
+					}
+					Message msg = handler.obtainMessage();
+					if(netResponse.getStatus()==1){
+						msg.what = 0;
+						msg.obj = netResponse.getResult();
+					}
+					else{
+						msg.what = -1;
+						msg.obj = netResponse.getMessage();
+					}
+					msg.sendToTarget();
+					
 				}
-				Message msg = handler.obtainMessage();
-				if(netResponse.getStatus()==1){
-					msg.what = 0;
-					msg.obj = netResponse.getResult();
-				}
-				else{
-					msg.what = -1;
-					msg.obj = netResponse.getMessage();
-				}
-				msg.sendToTarget();
-				
-			}
-		}).start();
+			}).start();
 	}
 	
 	private void parseTime(String str){
@@ -368,6 +433,9 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 					else if(status==1){
 						MobclickAgent.onEvent(this, UmengConstants.BUY_ALLOWANCE_ID);
 						intent.putExtra("status", status);
+						if(coin>0){
+							GFToast.show(this, "抢购成功，共花费"+coin+"优惠币");
+						}
 					}
 					startActivity(intent);
 					this.finish();

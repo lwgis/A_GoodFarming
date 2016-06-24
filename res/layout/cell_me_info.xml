@@ -20,8 +20,8 @@
 
             <com.makeramen.RoundedImageView
                 android:id="@+id/head_image"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_margin="5dp"
                 android:scaleType="centerCrop"
 		        android:src="@drawable/user_head"
@@ -36,158 +36,155 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginTop="5dip"
                 android:orientation="vertical" >
-
-                <TextView
-                       android:id="@+id/title_text"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:singleLine="true"
-                       android:text="用户昵称"
-                       android:textColor="#444444"
-                       android:textSize="18dip" />
-
-                <LinearLayout
+                <LinearLayout 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal" >
-
+                    android:orientation="horizontal"
+                    >
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:gravity="right"
-                        android:singleLine="true"
-                        android:text="积    分:"
-                        android:textColor="#808080"
-                        android:textSize="15dip" />
-
-                    <TextView
-                        android:id="@+id/jifen_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:singleLine="true"
-                        android:text="0"
-                        android:textColor="#444444"
-                        android:textSize="15dip" />
+	                     android:id="@+id/title_text"
+	                     android:layout_width="0dip"
+	                     android:layout_height="wrap_content"
+	                     android:layout_weight="1"
+	                     android:singleLine="true"
+	                     android:text="用户昵称"
+	                     android:textColor="#444444"
+	                     android:textSize="18dip" />
+                    <ImageView
+			             android:id="@+id/qrcode_img"
+			             android:layout_width="30dp"
+			             android:layout_height="30dp"
+			             android:layout_gravity="center"
+			             android:layout_marginTop="2dip"
+			             android:layout_marginRight="10dip"
+			             android:src="@drawable/qrcode"
+			             />
                 </LinearLayout>
-
-                <LinearLayout
+				<LinearLayout 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:gravity="right"
-                        android:singleLine="true"
-                        android:text="优惠币:"
-                        android:textColor="#808080"
-                        android:textSize="15dip" />
-
-                    <TextView
-                        android:id="@+id/youhuibi_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:singleLine="true"
-                        android:text="0"
-                        android:textColor="#444444"
-                        android:textSize="15dip" />
+                    android:orientation="horizontal"
+                    >
+	                <LinearLayout
+	                    android:layout_width="0dip"
+	                    android:layout_height="wrap_content"
+	                    android:layout_weight="1"
+	                    android:layout_marginBottom="0dp"
+	                    android:orientation="horizontal" >
+	
+	                    <TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:gravity="right"
+	                        android:singleLine="true"
+	                        android:text="优惠币:"
+	                        android:textColor="#808080"
+	                        android:textSize="15dip" />
+	
+	                    <TextView
+	                        android:id="@+id/youhuibi_text"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:singleLine="true"
+	                        android:text="0"
+	                        android:textColor="#444444"
+	                        android:textSize="15dip" />
+	                </LinearLayout>
+	                <LinearLayout
+	                    android:layout_width="0dip"
+	                    android:layout_height="wrap_content"
+	                    android:layout_weight="1"
+	                    android:layout_marginBottom="0dp"
+	                    android:orientation="horizontal" >
+	
+	                    <TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:gravity="right"
+	                        android:singleLine="true"
+	                        android:text="贡献值:"
+	                        android:textColor="#808080"
+	                        android:textSize="15dip" />
+	
+	                    <TextView
+	                        android:id="@+id/tjcoin_text"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:singleLine="true"
+	                        android:text="0"
+	                        android:textColor="#444444"
+	                        android:textSize="15dip" />
+	                </LinearLayout>
                 </LinearLayout>
-                <LinearLayout
+                <LinearLayout 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:gravity="right"
-                        android:singleLine="true"
-                        android:text="推荐码:"
-                        android:textColor="#808080"
-                        android:textSize="15dip" />
-
-                    <TextView
-                        android:id="@+id/tjcode_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:singleLine="true"
-                        android:text="0"
-                        android:textColor="#444444"
-                        android:textSize="15dip" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:gravity="right"
-                        android:singleLine="true"
-                        android:text="推荐人数:"
-                        android:textColor="#808080"
-                        android:textSize="15dip" />
-
-                    <TextView
-                        android:id="@+id/reccount_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:singleLine="true"
-                        android:text="0"
-                        android:textColor="#444444"
-                        android:textSize="15dip" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:gravity="right"
-                        android:singleLine="true"
-                        android:text="贡献值:"
-                        android:textColor="#808080"
-                        android:textSize="15dip" />
-
-                    <TextView
-                        android:id="@+id/tjcoin_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:singleLine="true"
-                        android:text="0"
-                        android:textColor="#444444"
-                        android:textSize="15dip" />
-                </LinearLayout>
+                    android:orientation="horizontal"
+                    >
+	                <LinearLayout
+	                    android:layout_width="0dip"
+	                    android:layout_height="wrap_content"
+	                    android:layout_weight="1"
+	                    android:layout_marginBottom="0dp"
+	                    android:orientation="horizontal" >
+	
+	                    <TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:gravity="right"
+	                        android:singleLine="true"
+	                        android:text="推荐码:"
+	                        android:textColor="#808080"
+	                        android:textSize="15dip" />
+	
+	                    <TextView
+	                        android:id="@+id/tjcode_text"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:singleLine="true"
+	                        android:text="0"
+	                        android:textColor="#444444"
+	                        android:textSize="15dip" />
+	                </LinearLayout>
+	                <LinearLayout
+	                    android:layout_width="0dip"
+	                    android:layout_height="wrap_content"
+	                    android:layout_weight="1"
+	                    android:layout_marginBottom="0dp"
+	                    android:orientation="horizontal" >
+	
+	                    <TextView
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:gravity="right"
+	                        android:singleLine="true"
+	                        android:text="推荐人数:"
+	                        android:textColor="#808080"
+	                        android:textSize="15dip" />
+	
+	                    <TextView
+	                        android:id="@+id/reccount_text"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_marginTop="3dp"
+	                        android:singleLine="true"
+	                        android:text="0"
+	                        android:textColor="#444444"
+	                        android:textSize="15dip" />
+	                </LinearLayout>
+	            </LinearLayout>
+				
             </LinearLayout>
-            <ImageView
-	             android:id="@+id/qrcode_img"
-	             android:layout_width="30dp"
-	             android:layout_height="30dp"
-	             android:layout_gravity="center"
-	             android:layout_margin="10dip" 
-	             android:src="@drawable/qrcode"
-	             />
+            
         </LinearLayout>
 
         <View  
