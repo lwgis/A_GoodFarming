@@ -93,7 +93,6 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	private int coin = 0;
 	private StockAdapter sAdapter;
 	private Stock selectStock;
-	private List<Stock> stocks;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -176,7 +175,6 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			adViewPager.setOnPageChangeListener(new MyPageChangeListener());			
 		}
 		stockList.addHeaderView(bannerView);
-		stocks = new ArrayList<Stock>();
 		sAdapter = new StockAdapter();
 		stockList.setAdapter(sAdapter);	
 		stockList.setOnItemClickListener(new OnItemClickListener() {
@@ -271,52 +269,52 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			startActivity(intent);
 		}
 
-//		if(second.getCoupon()>0){
-//			final Dialog dialog = new Dialog(SecondActivity.this, R.style.MyDialog);
-//	        //设置它的ContentView
-//			LayoutInflater inflater = (LayoutInflater) SecondActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//	        View layout = inflater.inflate(R.layout.dialog, null);
-//	        dialog.setContentView(layout);
-//	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-//	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-//	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-//	        okBtn.setText("使用");
-//	        okBtn.setOnClickListener(new OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					dialog.dismiss();
-//					if(second.getCoupon()>GFUserDictionary.getCoin(SecondActivity.this)){
-//						GFToast.show(SecondActivity.this, "您的优惠币余额不足");
-//						buyBtn.setEnabled(true);
-//						return;
-//					}
-//					else{
-//						coin = second.getCoupon();
-//						sendBuy(uid);
-//					}
-//				}
-//			});
-//	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
-//	        cancelButton.setText("不使用");
-//	        cancelButton.setOnClickListener(new OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					dialog.dismiss();
-//					sendBuy(uid);
-//				}
-//			});
-//	        titleView.setText("提示");
-//	        contentView.setText("请您选择是否使用优惠币购买");
-//	        dialog.show();
-//		}
-//		else{
-//			sendBuy(uid);
-//		}
-		sendBuy(uid);
+		if(second.getCoupon()>0){
+			final Dialog dialog = new Dialog(SecondActivity.this, R.style.MyDialog);
+	        //设置它的ContentView
+			LayoutInflater inflater = (LayoutInflater) SecondActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	        View layout = inflater.inflate(R.layout.dialog, null);
+	        dialog.setContentView(layout);
+	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+	        okBtn.setText("使用");
+	        okBtn.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					if(second.getCoupon()>GFUserDictionary.getCoin(SecondActivity.this)){
+						GFToast.show(SecondActivity.this, "您的优惠币余额不足");
+						buyBtn.setEnabled(true);
+						return;
+					}
+					else{
+						coin = second.getCoupon();
+						sendBuy(uid);
+					}
+				}
+			});
+	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+	        cancelButton.setText("不使用");
+	        cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					sendBuy(uid);
+				}
+			});
+	        titleView.setText("提示");
+	        contentView.setText("请您选择是否使用优惠币购买");
+	        dialog.show();
+		}
+		else{
+			sendBuy(uid);
+		}
+//		sendBuy(uid);
 		
 	}
 	
@@ -463,13 +461,13 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return stocks.size();
+			return second.getStocks().size();
 		}
 
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
-			return stocks.get(position);
+			return second.getStocks().get(position);
 		}
 
 		@Override
@@ -481,7 +479,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
-			Stock stock = stocks.get(position);
+			Stock stock = second.getStocks().get(position);
 			StockHolder holder;
 			if(convertView==null){
 				convertView = LayoutInflater.from(SecondActivity.this)

@@ -61,12 +61,12 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
-	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
-	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
-//	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-//	public static String ImageUrl = "http://121.40.62.120/appimage8/";
-//	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
+//	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
+//	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
+//	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
+	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage8/";
+	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 
 	public static String executeHttpGet(String urlString) {
 		StringBuffer sb = new StringBuffer();
