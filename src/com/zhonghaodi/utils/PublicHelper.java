@@ -15,6 +15,8 @@ import android.graphics.Bitmap.CompressFormat;
 import android.view.WindowManager;
 
 public class PublicHelper {
+	
+	public static int WX_THUMB_SIZE = 60;
 
 	public static String TrimRight(String sString){
         String sResult = "";

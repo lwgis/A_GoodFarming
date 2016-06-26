@@ -22,6 +22,8 @@ public class HolderPlant2 {
 	public	GFImageView imageView1;
 	public	GFImageView imageView2;
 	public	GFImageView imageView3;
+	public TextView forwardTextView;
+	public LinearLayout forwardLayout;
 	
 	public HolderPlant2(View view){
 		nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -38,6 +40,8 @@ public class HolderPlant2 {
 		imageView1 = (GFImageView) view.findViewById(R.id.image1);
 		imageView2 = (GFImageView) view.findViewById(R.id.image2);
 		imageView3 = (GFImageView) view.findViewById(R.id.image3);
+		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
+		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
 		reSetImageViews();
 	}
 	

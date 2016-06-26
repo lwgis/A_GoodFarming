@@ -19,6 +19,8 @@ public class HolderPlant1 {
 	public TextView countTv;
 	public LinearLayout countLayout;
 	public TextView levelTextView;
+	public TextView forwardTextView;
+	public LinearLayout forwardLayout;
 	
 	public HolderPlant1(View view){
 		nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -32,5 +34,7 @@ public class HolderPlant1 {
 		countTv = (TextView)view.findViewById(R.id.count_tv);
 		countLayout = (LinearLayout)view.findViewById(R.id.count_layout);
 		levelTextView = (TextView)view.findViewById(R.id.level_text);
+		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
+		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
 	}
 }

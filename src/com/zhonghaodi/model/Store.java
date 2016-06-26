@@ -23,6 +23,8 @@ public class Store extends User implements Serializable {
 	
 	private Double scoring;
 	
+	private boolean acceptCoupon;
+	
 	public Store() {
 		// TODO Auto-generated constructor stub
 	}
@@ -74,6 +76,16 @@ public class Store extends User implements Serializable {
 	public void setScoring(Double scoring) {
 		this.scoring = scoring;
 	}
+	
+
+	public boolean isAcceptCoupon() {
+		return acceptCoupon;
+	}
+
+	public void setAcceptCoupon(boolean acceptCoupon) {
+		this.acceptCoupon = acceptCoupon;
+	}
+	
 
 	@Override
 	public String toString() {

@@ -1976,7 +1976,7 @@ public class HttpUtil {
 		}
 	}
 	
-	public static NetResponse buyZfbt(final String uid,int sid,final int coupon){
+	public static NetResponse buyZfbt(final String uid,int sid,final int coupon,final String nzdid){
 		
 		String jsonString = null;
 		String urlString = RootURL + "zfbt/"+sid+"/buy";
@@ -2014,6 +2014,24 @@ public class HttpUtil {
 			};
 			
 			nameValuePairs.add(nameValuePair2);
+		}
+		if(nzdid!=null){
+			NameValuePair nameValuePair3 = new NameValuePair() {
+
+				@Override
+				public String getValue() {
+					// TODO Auto-generated method stub
+					return nzdid;
+				}
+
+				@Override
+				public String getName() {
+					// TODO Auto-generated method stub
+					return "nzd";
+				}
+			};
+			
+			nameValuePairs.add(nameValuePair3);
 		}
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
@@ -3094,6 +3112,35 @@ public class HttpUtil {
 		
 		nameValuePairs.add(cotentValuePair1);
 		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	public static NetResponse addForwardcount(final String folder,final int qid) {
+		String urlString = RootURL + "share/"+folder;
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(qid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "id";
+			}
+		};		
+		nameValuePairs.add(uidValuePair1);
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
 		} catch (Throwable e) {

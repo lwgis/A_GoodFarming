@@ -3,8 +3,10 @@ package com.zhonghaodi.customui;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.baidu.lbsapi.auth.i;
 import com.makeramen.RoundedImageView;
 import com.zhonghaodi.goodfarming.R;
 
@@ -20,6 +22,8 @@ public class Holder2 {
 	public	GFImageView imageView3;
 	public TextView addressTextView;
 	public TextView levelTextView;
+	public TextView forwardTextView;
+	public LinearLayout forwardLayout;
 	public Holder2(View view) {
 		nameTv = (TextView) view.findViewById(R.id.name_text);
 		timeTv = (TextView) view.findViewById(R.id.time_text);
@@ -32,6 +36,8 @@ public class Holder2 {
 		cropTv = (TextView)view.findViewById(R.id.crop_text);
 		addressTextView = (TextView)view.findViewById(R.id.address_text);
 		levelTextView = (TextView)view.findViewById(R.id.level_text);
+		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
+		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
 		reSetImageViews();
 	}
 

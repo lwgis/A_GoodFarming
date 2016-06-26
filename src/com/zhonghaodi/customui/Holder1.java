@@ -2,6 +2,7 @@ package com.zhonghaodi.customui;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
@@ -16,6 +17,8 @@ public  TextView cropTv;
 public	RoundedImageView headIv;
 public TextView addressTextView;
 public TextView levelTextView;
+public TextView forwardTextView;
+public LinearLayout forwardLayout;
 
 	public Holder1(View view) {
 		nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -26,5 +29,7 @@ public TextView levelTextView;
 		cropTv = (TextView)view.findViewById(R.id.crop_text);
 		addressTextView = (TextView)view.findViewById(R.id.address_text);
 		levelTextView = (TextView)view.findViewById(R.id.level_text);
+		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
+		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
 	}
 }

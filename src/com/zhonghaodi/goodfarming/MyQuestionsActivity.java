@@ -3,6 +3,8 @@ package com.zhonghaodi.goodfarming;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -10,24 +12,45 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tencent.connect.share.QQShare;
+import com.tencent.connect.share.QzoneShare;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.QuestionAdpter;
+import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.customui.SharePopupwindow;
+import com.zhonghaodi.goodfarming.MainActivity.BaseUiListener;
 import com.zhonghaodi.model.FavoriteQuestion;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.PublicHelper;
+import com.zhonghaodi.utils.UmengConstants;
 
 import android.R.integer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +63,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MyQuestionsActivity extends Activity implements OnClickListener,HandMessage,OnCreateContextMenuListener {
+public class MyQuestionsActivity extends Activity implements OnClickListener,HandMessage,
+				OnCreateContextMenuListener,ShareContainer {
 	
 	private PullToRefreshListView pullToRefreshListView;
 	private ArrayList<Question> allQuestions;
@@ -49,6 +73,10 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 	private Question selectQuestion;
 	private int status;
 	private TextView titleTextView;
+	public IWXAPI wxApi;
+	public Tencent mTencent;
+	private Question shareQue;
+	public SharePopupwindow sharePopupwindow;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +100,11 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 		else if(status==2){
 			titleTextView.setText("我的种植分享");
 		}
+		
+		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
+		wxApi.registerApp(HttpUtil.WX_APP_ID);
+		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
+		
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView
@@ -281,10 +314,322 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 		case R.id.cancel_button:
 			finish();
 			break;
+		case R.id.forward_layout:
+			Question q = (Question)v.getTag();
+			String folder;
+			if(status==0 || status==3){
+				folder="questions";
+			}else if(status==1){
+				folder="gossips";
+			}else{
+				folder="plantinfo";
+			}
+			shareQuestionWindow(q, folder);
+			break;
+		case R.id.img_share_weixin:
+			if(!wxApi.isWXAppInstalled()){
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
+				return;
+			}
+			String url=HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+			String title ="种好地APP：让种地不再难";
+			String content;
+			if(shareQue.getContent().length()>40){
+				content = shareQue.getContent().substring(0, 40);
+			}
+			else{
+				content = shareQue.getContent();
+			} 
+			Bitmap b;
+			if(shareQue.getAttachments()==null || shareQue.getAttachments().size()==0){
+				b =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+				
+			}
+			else{
+				String path;
+				String img;
+				if(UILApplication.sharefolder.equals("plantinfo")){
+					img = HttpUtil.ImageUrl+"plant/small/"+ shareQue.getAttachments().get(0).getUrl();
+				}
+				else{
+					img = HttpUtil.ImageUrl+"questions/small/"+ shareQue.getAttachments().get(0).getUrl();
+				}
+				
+				b=ImageLoader.getInstance().loadImageSync(img);
+				if(b==null){
+					b =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+				}
+			}
+			Bitmap bitmap = Bitmap.createScaledBitmap(b, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
+			shareWeixin(url, title, content, bitmap);
+			
+			sharePopupwindow.dismiss();
+			
+			break;
+		case R.id.img_share_circlefriends:
+			if(!wxApi.isWXAppInstalled()){
+				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
+				return;
+			}
+			String url1=HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+			String title1 ="种好地APP：让种地不再难";
+			String content1;
+			if(shareQue.getContent().length()>40){
+				content1 = shareQue.getContent().substring(0, 40);
+			}
+			else{
+				content1 = shareQue.getContent();
+			} 
+			Bitmap b1;
+			if(shareQue.getAttachments()==null || shareQue.getAttachments().size()==0){
+				b1 =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+				
+			}
+			else{
+				String path;
+				String img;
+				if(UILApplication.sharefolder.equals("plantinfo")){
+					img = HttpUtil.ImageUrl+"plant/small/"+ shareQue.getAttachments().get(0).getUrl();
+				}
+				else{
+					img = HttpUtil.ImageUrl+"questions/small/"+ shareQue.getAttachments().get(0).getUrl();
+				}					
+				b1=ImageLoader.getInstance().loadImageSync(img);
+				if(b1==null){
+					b1 =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+				}
+			}
+			Bitmap bitmap1 = Bitmap.createScaledBitmap(b1, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
+			shareCirclefriends(url1, content1, content1, bitmap1);
+			
+			sharePopupwindow.dismiss();
+			break;
+		case R.id.img_share_qq:
+			String url2 = HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+			String title2 ="种好地APP：让种地不再难";
+			String content2;
+			if(shareQue.getContent().length()>40){
+				content2 = shareQue.getContent().substring(0, 40);
+			}
+			else{
+				content2 = shareQue.getContent();
+			}
+			String img2;
+			if(shareQue.getAttachments()!=null && shareQue.getAttachments().size()>0){
+				if(UILApplication.sharefolder.equals("plantinfo")){
+					img2 = HttpUtil.ImageUrl+"plant/small/"+ shareQue.getAttachments().get(0).getUrl();
+				}
+				else{
+					img2 = HttpUtil.ImageUrl+"questions/small/"+ shareQue.getAttachments().get(0).getUrl();
+				}
+			}
+			else{
+				img2 = "http://121.40.62.120/appimage/apps/appicon.png";
+			}
+			shareQQ(url2, title2, content2, img2);		    
+		    sharePopupwindow.dismiss();			
+			break;
+		case R.id.img_share_qzone:
+			String url3 = HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+			String title3 ="种好地APP：让种地不再难";
+			String content3;
+			if(shareQue.getContent().length()>40){
+				content3 = shareQue.getContent().substring(0, 40);
+			}
+			else{
+				content3 = shareQue.getContent();
+			}
+			ArrayList<String> urlsList = new ArrayList<String>();		    
+		    String imgurl1;
+		    if(shareQue.getAttachments()!=null && shareQue.getAttachments().size()>0){
+		    	if(UILApplication.sharefolder.equals("plantinfo")){
+		    		imgurl1 = HttpUtil.ImageUrl+"plant/small/"
+							+ shareQue.getAttachments().get(0)
+							.getUrl();
+		    	}
+		    	else{
+		    		imgurl1 = HttpUtil.ImageUrl+"questions/small/"
+							+ shareQue.getAttachments().get(0)
+							.getUrl();
+		    	}
+		    	for(int i=0;i<shareQue.getAttachments().size();i++){
+		    		if(UILApplication.sharefolder.equals("plantinfo")){
+		    			urlsList.add(HttpUtil.ImageUrl+"plant/small/"
+								+ shareQue.getAttachments().get(i)
+								.getUrl());
+		    		}
+		    		else{
+		    			urlsList.add(HttpUtil.ImageUrl+"questions/small/"
+								+ shareQue.getAttachments().get(i)
+								.getUrl());
+		    		}
+		    	}
+		    }
+		    else{
+		    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
+		    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+		    }
+		    shareQZone(url3,title3,content3,urlsList,imgurl1);
+		    sharePopupwindow.dismiss();
+			break;
 
 		default:
 			break;
 		}
+	}
+	
+	private void sharePoint(){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					HttpUtil.sharePoint(GFUserDictionary.getUserId(MyQuestionsActivity.this), UILApplication.shareUrl);
+					if(UILApplication.sharestatus==1){
+						if(UILApplication.sharefolder.contains("question")){
+							HttpUtil.addForwardcount("question", shareQue.getId());
+						}
+						else if(UILApplication.sharefolder.contains("gossip")){
+							HttpUtil.addForwardcount("gossip", shareQue.getId());
+						}
+						else{
+							HttpUtil.addForwardcount("plantinfo", shareQue.getId());
+						}
+					}
+					
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					
+				}
+			}
+		}).start();
+	}
+	
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		mTencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
+	}
+	
+	private String buildTransaction(final String type) {
+		return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+	}
+
+	@Override
+	public void popupShareWindow(User user) {
+		// TODO Auto-generated method stub
+		UILApplication.sharestatus = 0;
+	}
+
+	@Override
+	public void shareQuestionWindow(Question question, String folder) {
+		// TODO Auto-generated method stub
+		shareQue=question;
+		UILApplication.sharestatus = 1;
+		UILApplication.sharefolder = folder;
+		UILApplication.sharequeid= question.getId();
+		sharePopupwindow = new SharePopupwindow(this,this);
+    	sharePopupwindow.setFocusable(true);
+    	sharePopupwindow.setOutsideTouchable(true);
+    	sharePopupwindow.update();
+    	ColorDrawable dw = new ColorDrawable(0xb0000000);
+    	sharePopupwindow.setBackgroundDrawable(dw);
+		sharePopupwindow.showAtLocation(findViewById(R.id.main), 
+				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+	}
+
+	@Override
+	public void shareWeixin(String url, String title, String des, Bitmap thumb) {
+		// TODO Auto-generated method stub
+		WXWebpageObject webpage = new WXWebpageObject();
+		webpage.webpageUrl = url;
+		UILApplication.shareUrl = webpage.webpageUrl;
+		WXMediaMessage msg = new WXMediaMessage(webpage);
+		msg.title = title;
+		msg.description = des;
+		msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+		
+		SendMessageToWX.Req req = new SendMessageToWX.Req();
+		req.transaction = buildTransaction("webpage");
+		req.message = msg;
+		req.scene=SendMessageToWX.Req.WXSceneSession;
+		wxApi.sendReq(req);
+	}
+
+
+	@Override
+	public void shareCirclefriends(String url, String title, String des, Bitmap thumb) {
+		// TODO Auto-generated method stub
+		WXWebpageObject webpage1 = new WXWebpageObject();
+		webpage1.webpageUrl = url;
+		UILApplication.shareUrl = webpage1.webpageUrl;
+		WXMediaMessage msg1 = new WXMediaMessage(webpage1);
+		msg1.title = title;
+		msg1.description = des;
+		msg1.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+		
+		SendMessageToWX.Req req1 = new SendMessageToWX.Req();
+		req1.transaction = buildTransaction("webpage");
+		req1.message = msg1;
+		req1.scene=SendMessageToWX.Req.WXSceneTimeline;
+		wxApi.sendReq(req1);
+	}
+
+
+	@Override
+	public void shareQQ(String url, String title, String des, String imgUrl) {
+		// TODO Auto-generated method stub
+		Bundle params = new Bundle();
+	    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+	    params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+	    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  des);
+	    UILApplication.shareUrl= url;
+	    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl );
+	    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgUrl);
+	    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
+	    mTencent.shareToQQ(this, params, new BaseUiListener());
+	}
+
+
+	@Override
+	public void shareQZone(String url, String title, String des, ArrayList<String> urList,String img1) {
+		// TODO Auto-generated method stub
+		Bundle params1 = new Bundle();
+		params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
+	    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
+	    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, des);//选填
+	    UILApplication.shareUrl= url;
+	    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填
+	    if(img1!=null){
+	    	params1.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL, img1);
+	    }
+	    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urList);
+	    mTencent.shareToQzone(this, params1, new BaseUiListener());
+	}
+	
+	class BaseUiListener implements IUiListener {
+		
+		protected void doComplete(JSONObject values) {
+			
+		}
+		@Override
+		public void onError(UiError e) {
+//			GFToast.show(MainActivity.this, "分享失败");
+		}
+		@Override
+		public void onCancel() {
+//			GFToast.show(MainActivity.this, "分享取消");
+		}
+		@Override
+		public void onComplete(Object arg0) {
+			// TODO Auto-generated method stub
+			MobclickAgent.onEvent(MyQuestionsActivity.this, UmengConstants.APP_SHARE_ID);
+			sharePoint();
+			
+		}
+		
 	}
 	
 	@Override

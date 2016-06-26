@@ -26,6 +26,8 @@ import com.easemob.chat.TextMessageBody;
 import com.easemob.util.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzoneShare;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -47,6 +49,7 @@ import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PointDic;
+import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GsonUtil;
@@ -106,7 +109,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	private View forumView;
 	private View discoverView;
 	private View meView;
-	int pageIndex;	
+	private int pageIndex;	
 	private boolean isLogin = false;
 	private MainHandler handler = new MainHandler(this);
 	private EMMessage currenEmMsg;
@@ -121,7 +124,8 @@ public class MainActivity extends Activity implements OnClickListener,
 	private User user;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
-	SharePopupwindow sharePopupwindow;
+	private Question shareQue;
+	public SharePopupwindow sharePopupwindow;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -291,6 +295,17 @@ public class MainActivity extends Activity implements OnClickListener,
 			public void run() {
 				try {
 					HttpUtil.sharePoint(GFUserDictionary.getUserId(MainActivity.this), UILApplication.shareUrl);
+					if(UILApplication.sharestatus==1){
+						if(UILApplication.sharefolder.contains("question")){
+							HttpUtil.addForwardcount("question", shareQue.getId());
+						}
+						else if(UILApplication.sharefolder.contains("gossip")){
+							HttpUtil.addForwardcount("gossip", shareQue.getId());
+						}
+						else{
+							HttpUtil.addForwardcount("plantinfo", shareQue.getId());
+						}
+					}
 					
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
@@ -422,6 +437,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		FragmentTransaction transction = getFragmentManager().beginTransaction();
 		if (homeFragment == null) {
 			homeFragment = new HomeFragment();
+			homeFragment.setShareContainer(this);
 		}
 		if (forumFragment == null) {
 			forumFragment = new ForumFragment();
@@ -493,6 +509,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	public void popupShareWindow(User user) {
 		// TODO Auto-generated method stub
 		this.user = user;
+		UILApplication.sharestatus = 0;
 		sharePopupwindow = new SharePopupwindow(this,this);
     	sharePopupwindow.setFocusable(true);
     	sharePopupwindow.setOutsideTouchable(true);
@@ -501,6 +518,92 @@ public class MainActivity extends Activity implements OnClickListener,
     	sharePopupwindow.setBackgroundDrawable(dw);
 		sharePopupwindow.showAtLocation(findViewById(R.id.main), 
 				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+	}
+	
+	@Override
+	public void shareQuestionWindow(Question question,String folder) {
+		// TODO Auto-generated method stub
+		shareQue=question;
+		UILApplication.sharestatus = 1;
+		UILApplication.sharefolder = folder;
+		UILApplication.sharequeid= question.getId();
+		sharePopupwindow = new SharePopupwindow(this,this);
+    	sharePopupwindow.setFocusable(true);
+    	sharePopupwindow.setOutsideTouchable(true);
+    	sharePopupwindow.update();
+    	ColorDrawable dw = new ColorDrawable(0xb0000000);
+    	sharePopupwindow.setBackgroundDrawable(dw);
+		sharePopupwindow.showAtLocation(findViewById(R.id.main), 
+				Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+	}
+	
+	@Override
+	public void shareWeixin(String url, String title, String des, Bitmap thumb) {
+		// TODO Auto-generated method stub
+		WXWebpageObject webpage = new WXWebpageObject();
+		webpage.webpageUrl = url;
+		UILApplication.shareUrl = webpage.webpageUrl;
+		WXMediaMessage msg = new WXMediaMessage(webpage);
+		msg.title = title;
+		msg.description = des;
+		msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+		
+		SendMessageToWX.Req req = new SendMessageToWX.Req();
+		req.transaction = buildTransaction("webpage");
+		req.message = msg;
+		req.scene=SendMessageToWX.Req.WXSceneSession;
+		wxApi.sendReq(req);
+	}
+
+
+	@Override
+	public void shareCirclefriends(String url, String title, String des, Bitmap thumb) {
+		// TODO Auto-generated method stub
+		WXWebpageObject webpage1 = new WXWebpageObject();
+		webpage1.webpageUrl = url;
+		UILApplication.shareUrl = webpage1.webpageUrl;
+		WXMediaMessage msg1 = new WXMediaMessage(webpage1);
+		msg1.title = title;
+		msg1.description = des;
+		msg1.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+		
+		SendMessageToWX.Req req1 = new SendMessageToWX.Req();
+		req1.transaction = buildTransaction("webpage");
+		req1.message = msg1;
+		req1.scene=SendMessageToWX.Req.WXSceneTimeline;
+		wxApi.sendReq(req1);
+	}
+
+
+	@Override
+	public void shareQQ(String url, String title, String des, String imgUrl) {
+		// TODO Auto-generated method stub
+		Bundle params = new Bundle();
+	    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+	    params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+	    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  des);
+	    UILApplication.shareUrl= url;
+	    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl );
+	    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgUrl);
+	    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
+	    mTencent.shareToQQ(this, params, new BaseUiListener());
+	}
+
+
+	@Override
+	public void shareQZone(String url, String title, String des, ArrayList<String> urList,String img1) {
+		// TODO Auto-generated method stub
+		Bundle params1 = new Bundle();
+		params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
+	    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
+	    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, des);//选填
+	    UILApplication.shareUrl= url;
+	    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填
+	    if(img1!=null){
+	    	params1.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL, img1);
+	    }
+	    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urList);
+	    mTencent.shareToQzone(this, params1, new BaseUiListener());
 	}
 
 	/**
@@ -528,8 +631,6 @@ public class MainActivity extends Activity implements OnClickListener,
 				return;
 			}
 			seletFragmentIndex(1);
-			
-//			forumFragment.loadData();
 		}
 		if (v == discoverView && pageIndex != 2) {
 
@@ -552,20 +653,42 @@ public class MainActivity extends Activity implements OnClickListener,
 				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
 				return;
 			}
-			WXWebpageObject webpage = new WXWebpageObject();
-			webpage.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
-			UILApplication.shareUrl = webpage.webpageUrl;
-			WXMediaMessage msg = new WXMediaMessage(webpage);
-			msg.title = "种好地APP:让种地不再难";
-			msg.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
-			Bitmap thumb = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg.thumbData = PublicHelper.bmpToByteArray(thumb, true);
+			if(UILApplication.sharestatus==0){
+				shareWeixin(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(), "种好地APP:让种地不再难",
+						"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
+						BitmapFactory.decodeResource(this.getResources(), R.drawable.app108));
+			}
+			else{
+				String url=HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+				String title ="种好地APP：让种地不再难";
+				String content;
+				if(shareQue.getContent().length()>40){
+					content = shareQue.getContent().substring(0, 40);
+				}
+				else{
+					content = shareQue.getContent();
+				} 
+				Bitmap b;
+				if(shareQue.getAttachments()==null || shareQue.getAttachments().size()==0){
+					b =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+					
+				}
+				else{
+					String path;
+					String img;
+					if(UILApplication.sharefolder.equals("plantinfo")){
+						img = HttpUtil.ImageUrl+"plant/small/"+ shareQue.getAttachments().get(0).getUrl();
+					}
+					else{
+						img = HttpUtil.ImageUrl+"questions/small/"+ shareQue.getAttachments().get(0).getUrl();
+					}
+					
+					b=ImageLoader.getInstance().loadImageSync(img);
+				}
+				Bitmap bitmap = Bitmap.createScaledBitmap(b, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
+				shareWeixin(url, title, content, bitmap);
+			}
 			
-			SendMessageToWX.Req req = new SendMessageToWX.Req();
-			req.transaction = buildTransaction("webpage");
-			req.message = msg;
-			req.scene=SendMessageToWX.Req.WXSceneSession;
-			wxApi.sendReq(req);
 			sharePopupwindow.dismiss();
 			
 			break;
@@ -574,50 +697,132 @@ public class MainActivity extends Activity implements OnClickListener,
 				GFToast.show(getApplicationContext(),"您还未安装微信客户端");
 				return;
 			}
-			WXWebpageObject webpage1 = new WXWebpageObject();
-			webpage1.webpageUrl = HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
-			UILApplication.shareUrl = webpage1.webpageUrl;
-			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
-			msg1.title = "种好地APP:让种地不再难";
-			msg1.description = "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。";
-			Bitmap thumb1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.app108);
-			msg1.thumbData = PublicHelper.bmpToByteArray(thumb1, true);
+			if(UILApplication.sharestatus==0){
+				shareCirclefriends(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(), 
+						"种好地APP:让种地不再难", 
+						"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
+						BitmapFactory.decodeResource(this.getResources(), R.drawable.app108));
+			}else{
+				String url=HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+				String title ="种好地APP：让种地不再难";
+				String content;
+				if(shareQue.getContent().length()>40){
+					content = shareQue.getContent().substring(0, 40);
+				}
+				else{
+					content = shareQue.getContent();
+				} 
+				Bitmap b;
+				if(shareQue.getAttachments()==null || shareQue.getAttachments().size()==0){
+					b =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+					
+				}
+				else{
+					String path;
+					String img;
+					if(UILApplication.sharefolder.equals("plantinfo")){
+						img = HttpUtil.ImageUrl+"plant/small/"+ shareQue.getAttachments().get(0).getUrl();
+					}
+					else{
+						img = HttpUtil.ImageUrl+"questions/small/"+ shareQue.getAttachments().get(0).getUrl();
+					}					
+					b=ImageLoader.getInstance().loadImageSync(img);
+				}
+				Bitmap bitmap = Bitmap.createScaledBitmap(b, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
+				shareCirclefriends(url, content, content, bitmap);
+			}
 			
-			SendMessageToWX.Req req1 = new SendMessageToWX.Req();
-			req1.transaction = buildTransaction("webpage");
-			req1.message = msg1;
-			req1.scene=SendMessageToWX.Req.WXSceneTimeline;
-			wxApi.sendReq(req1);
 			sharePopupwindow.dismiss();
 			break;
 		case R.id.img_share_qq:
-			Bundle params = new Bundle();
-		    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
-		    params.putString(QQShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");
-		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");
-		    UILApplication.shareUrl= HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
-		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl );
-		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://121.40.62.120/appimage/apps/appicon.png");
-		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
-		    mTencent.shareToQQ(this, params, new BaseUiListener());
-		    sharePopupwindow.dismiss();
-			
+			if(UILApplication.sharestatus==0){
+				shareQQ(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(),
+			    		"种好地APP:让种地不再难", 
+			    		"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
+			    		"http://121.40.62.120/appimage/apps/appicon.png");
+			}else{
+				String url = HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+				String title ="种好地APP：让种地不再难";
+				String content2;
+				if(shareQue.getContent().length()>40){
+					content2 = shareQue.getContent().substring(0, 40);
+				}
+				else{
+					content2 = shareQue.getContent();
+				}
+				String img;
+				if(shareQue.getAttachments()!=null && shareQue.getAttachments().size()>0){
+					if(UILApplication.sharefolder.equals("plantinfo")){
+						img = HttpUtil.ImageUrl+"plant/small/"+ shareQue.getAttachments().get(0).getUrl();
+					}
+					else{
+						img = HttpUtil.ImageUrl+"questions/small/"+ shareQue.getAttachments().get(0).getUrl();
+					}
+				}
+				else{
+					img = "http://121.40.62.120/appimage/apps/appicon.png";
+				}
+				
+				shareQQ(url, title, content2, img);
+			}		    
+		    sharePopupwindow.dismiss();			
 			break;
 		case R.id.img_share_qzone:
-			Bundle params1 = new Bundle();
-			params1.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
-		    params1.putString(QzoneShare.SHARE_TO_QQ_TITLE, "种好地APP:让种地不再难");//必填
-		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");//选填
-		    UILApplication.shareUrl= HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
-		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填
-		    ArrayList<String> urlsList = new ArrayList<String>();
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_2_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_3_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_4_1440519318/550");
-		    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_5_1440519318/550");
-		    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urlsList);
-		    mTencent.shareToQzone(this, params1, new BaseUiListener());
+			if(UILApplication.sharestatus==0){
+				ArrayList<String> urlsList = new ArrayList<String>();
+			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_1_1440519318/550");
+			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_2_1440519318/550");
+			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_3_1440519318/550");
+			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_4_1440519318/550");
+			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_5_1440519318/550");
+			    shareQZone(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(), 
+			    		"种好地APP:让种地不再难", 
+			    		"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
+			    		urlsList,null);
+			}
+			else{
+				String url = HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
+				String title ="种好地APP：让种地不再难";
+				String content2;
+				if(shareQue.getContent().length()>40){
+					content2 = shareQue.getContent().substring(0, 40);
+				}
+				else{
+					content2 = shareQue.getContent();
+				}
+				ArrayList<String> urlsList = new ArrayList<String>();		    
+			    String imgurl1;
+			    if(shareQue.getAttachments()!=null && shareQue.getAttachments().size()>0){
+			    	if(UILApplication.sharefolder.equals("plantinfo")){
+			    		imgurl1 = HttpUtil.ImageUrl+"plant/small/"
+								+ shareQue.getAttachments().get(0)
+								.getUrl();
+			    	}
+			    	else{
+			    		imgurl1 = HttpUtil.ImageUrl+"questions/small/"
+								+ shareQue.getAttachments().get(0)
+								.getUrl();
+			    	}
+			    	for(int i=0;i<shareQue.getAttachments().size();i++){
+			    		if(UILApplication.sharefolder.equals("plantinfo")){
+			    			urlsList.add(HttpUtil.ImageUrl+"plant/small/"
+									+ shareQue.getAttachments().get(i)
+									.getUrl());
+			    		}
+			    		else{
+			    			urlsList.add(HttpUtil.ImageUrl+"questions/small/"
+									+ shareQue.getAttachments().get(i)
+									.getUrl());
+			    		}
+			    	}
+			    }
+			    else{
+			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
+			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    }
+			    shareQZone(url,title,content2,urlsList,imgurl1);
+			}
+		    
 		    sharePopupwindow.dismiss();
 			break;
 

@@ -212,8 +212,8 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 				return;
 			x=location.getLongitude();
 			y=location.getLatitude();
-//			x=118.786685;
-//			y=36.992325;
+//			x=118.798632;
+//			y=36.858719;
 			if(progressDialog!=null){
 				progressDialog.dismiss();
 			}

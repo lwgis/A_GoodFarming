@@ -28,8 +28,8 @@ public class QuestionsActivity extends Activity implements OnClickListener {
 		questionView.setOnClickListener(this);
 		View lalaguaView = findViewById(R.id.layout2);
 		lalaguaView.setOnClickListener(this);
-		View adzwView = findViewById(R.id.layout3);
-		adzwView.setOnClickListener(this);
+//		View adzwView = findViewById(R.id.layout3);
+//		adzwView.setOnClickListener(this);
 		View wdzzfxView = findViewById(R.id.layout4);
 		wdzzfxView.setOnClickListener(this);
 	}
@@ -59,9 +59,9 @@ public class QuestionsActivity extends Activity implements OnClickListener {
 		case R.id.layout2:
 			intent.putExtra("status", 1);
 			break;
-		case R.id.layout3:
-			intent.putExtra("status", 3);
-			break;
+//		case R.id.layout3:
+//			intent.putExtra("status", 3);
+//			break;
 		case R.id.layout4:
 			intent.putExtra("status", 2);
 			break;

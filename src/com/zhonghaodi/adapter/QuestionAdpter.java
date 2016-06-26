@@ -206,6 +206,9 @@ public class QuestionAdpter extends BaseAdapter {
 			}
 			holder1.headIv.setTag(question.getWriter());
 			holder1.headIv.setOnClickListener(mClickListener);
+			holder1.forwardTextView.setText("转发("+question.getForwards()+")");
+			holder1.forwardLayout.setTag(question);
+			holder1.forwardLayout.setOnClickListener(mClickListener);
 			if(question.getAddress()!=null){
 				holder1.addressTextView.setText(question.getAddress());
 			}
@@ -290,6 +293,9 @@ public class QuestionAdpter extends BaseAdapter {
 					+ "个答案");
 			holder2.headIv.setTag(question.getWriter());
 			holder2.headIv.setOnClickListener(mClickListener);
+			holder2.forwardTextView.setText("转发("+question.getForwards()+")");
+			holder2.forwardLayout.setTag(question);
+			holder2.forwardLayout.setOnClickListener(mClickListener);
 			if(question.getAddress()!=null){
 				holder2.addressTextView.setText(question.getAddress());
 			}
@@ -395,6 +401,9 @@ public class QuestionAdpter extends BaseAdapter {
 					+ "个答案");
 			holder3.headIv.setTag(question.getWriter());
 			holder3.headIv.setOnClickListener(mClickListener);
+			holder3.forwardTextView.setText("转发("+question.getForwards()+")");
+			holder3.forwardLayout.setTag(question);
+			holder3.forwardLayout.setOnClickListener(mClickListener);
 			if(question.getAddress()!=null){
 				holder3.addressTextView.setText(question.getAddress());
 			}
@@ -457,6 +466,9 @@ public class QuestionAdpter extends BaseAdapter {
 			holderPlant1.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant1.agreeLayout.setTag(question);
 			holderPlant1.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant1.forwardTextView.setText("转发("+question.getForwards()+")");
+			holderPlant1.forwardLayout.setTag(question);
+			holderPlant1.forwardLayout.setOnClickListener(mClickListener);
 			
 			switch (question.getWriter().getLevelID()) {
 			case 1:
@@ -547,6 +559,9 @@ public class QuestionAdpter extends BaseAdapter {
 			holderPlant2.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant2.agreeLayout.setTag(question);
 			holderPlant2.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant2.forwardTextView.setText("转发("+question.getForwards()+")");
+			holderPlant2.forwardLayout.setTag(question);
+			holderPlant2.forwardLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant2.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -659,6 +674,9 @@ public class QuestionAdpter extends BaseAdapter {
 			holderPlant3.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant3.agreeLayout.setTag(question);
 			holderPlant3.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant3.forwardTextView.setText("转发("+question.getForwards()+")");
+			holderPlant3.forwardLayout.setTag(question);
+			holderPlant3.forwardLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant3.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -800,6 +818,9 @@ public class QuestionAdpter extends BaseAdapter {
 			holderPlant4.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant4.agreeLayout.setTag(question);
 			holderPlant4.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant4.forwardTextView.setText("转发("+question.getForwards()+")");
+			holderPlant4.forwardLayout.setTag(question);
+			holderPlant4.forwardLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant4.levelTextView.setText(question.getWriter().getIdentifier()+"农友");

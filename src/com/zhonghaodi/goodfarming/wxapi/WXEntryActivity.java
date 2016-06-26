@@ -45,6 +45,17 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 			public void run() {
 				try {
 					HttpUtil.sharePoint(GFUserDictionary.getUserId(WXEntryActivity.this), UILApplication.shareUrl);
+					if(UILApplication.sharestatus==1){
+						if(UILApplication.sharefolder.contains("question")){
+							HttpUtil.addForwardcount("question", UILApplication.sharequeid);
+						}
+						else if(UILApplication.sharefolder.contains("gossip")){
+							HttpUtil.addForwardcount("gossip", UILApplication.sharequeid);
+						}
+						else{
+							HttpUtil.addForwardcount("plantinfo", UILApplication.sharequeid);
+						}
+					}
 					
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block

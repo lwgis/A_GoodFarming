@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.BannerAdapter;
@@ -17,12 +19,15 @@ import com.zhonghaodi.customui.GFImageView;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.goodfarming.RegisterFragment1.TimeCount;
+import com.zhonghaodi.goodfarming.StoresActivity.StoreHolder;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.model.SecondOrder;
+import com.zhonghaodi.model.Stock;
+import com.zhonghaodi.model.Store;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
@@ -44,12 +49,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -58,7 +70,8 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	private TextView titleView;
 	private TextView nzdTextView;
 	private GFImageView headImage;
-	private RelativeLayout bannerLayout;
+	private View bannerView;
+	private ListView stockList;
 	private LinearLayout dotLayout;
 	private ViewPager adViewPager;
 	private List<GFImageView> imageViews;
@@ -78,23 +91,27 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	private ScheduledExecutorService scheduledExecutorService;
 	private int currentItem = 0;
 	private int coin = 0;
+	private StockAdapter sAdapter;
+	private Stock selectStock;
+	private List<Stock> stocks;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second);
-		titleView = (TextView)findViewById(R.id.title_text);
-		nzdTextView=(TextView)findViewById(R.id.nzd_text);
-		headImage = (GFImageView)findViewById(R.id.head_image);
-		bannerLayout = (RelativeLayout)findViewById(R.id.banner_layout);
-		dotLayout = (LinearLayout)findViewById(R.id.dot_layout);
-		adViewPager = (ViewPager) findViewById(R.id.vp);
-		oldTextView = (TextView)findViewById(R.id.oldprice_text);
+		bannerView = LayoutInflater.from(SecondActivity.this).inflate(R.layout.header_second, null);
+		titleView = (TextView)bannerView.findViewById(R.id.title_text);
+		nzdTextView=(TextView)bannerView.findViewById(R.id.nzd_text);
+		headImage = (GFImageView)bannerView.findViewById(R.id.head_image);
+		dotLayout = (LinearLayout)bannerView.findViewById(R.id.dot_layout);
+		adViewPager = (ViewPager)bannerView.findViewById(R.id.vp);
+		oldTextView = (TextView)bannerView.findViewById(R.id.oldprice_text);
 		oldTextView.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );
-		newTextView = (TextView)findViewById(R.id.newprice_text);
-		countTextView = (TextView)findViewById(R.id.count_text);
-		couponTextView = (TextView)findViewById(R.id.coupon_text);
-		contentTextView = (TextView)findViewById(R.id.content_text);
+		newTextView = (TextView)bannerView.findViewById(R.id.newprice_text);
+		countTextView = (TextView)bannerView.findViewById(R.id.count_text);
+		couponTextView = (TextView)bannerView.findViewById(R.id.coupon_text);
+		contentTextView = (TextView)bannerView.findViewById(R.id.content_text);
+		stockList = (ListView)findViewById(R.id.stocks_list);
 		buyBtn = (MyTextButton)findViewById(R.id.buy_button);
 		buyBtn.setOnClickListener(this);
 		timeBtn = (MyTextButton)findViewById(R.id.time_button);
@@ -109,13 +126,13 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			newTextView.setText("现价：￥"+String.valueOf(second.getNprice()));
 			countTextView.setText("数量："+String.valueOf(second.getCount()));
 			contentTextView.setText(second.getContent());
-//			couponTextView.setText("可使用优惠币："+second.getCoupon());
-//			if(second.getCoupon()>0){
-//				couponTextView.setVisibility(View.VISIBLE);
-//			}
-//			else{
-//				couponTextView.setVisibility(View.GONE);
-//			}
+			couponTextView.setText("可使用优惠币："+second.getCoupon());
+			if(second.getCoupon()>0){
+				couponTextView.setVisibility(View.VISIBLE);
+			}
+			else{
+				couponTextView.setVisibility(View.GONE);
+			}
 		}
 		status = getIntent().getIntExtra("status", 0);
 		if(second.getAttachments()==null || second.getAttachments().size()<=1){
@@ -156,9 +173,21 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			}
 			adapter = new BannerAdapter(imageViews);
 			adViewPager.setAdapter(adapter);
-			adViewPager.setOnPageChangeListener(new MyPageChangeListener());
-			
+			adViewPager.setOnPageChangeListener(new MyPageChangeListener());			
 		}
+		stockList.addHeaderView(bannerView);
+		stocks = new ArrayList<Stock>();
+		sAdapter = new StockAdapter();
+		stockList.setAdapter(sAdapter);	
+		stockList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				selectStock = second.getStocks().get(position-1);
+				sAdapter.notifyDataSetChanged();
+			}
+		});
 	}
 
 	@Override
@@ -301,7 +330,11 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 					if(status==0){
 						netResponse = HttpUtil.buySecond(uid,second.getId());
 					}else{
-						netResponse = HttpUtil.buyZfbt(uid,second.getId(),coin);
+						String nzd=null;
+						if(selectStock!=null){
+							nzd = selectStock.getUser().getId();
+						}
+						netResponse = HttpUtil.buyZfbt(uid,second.getId(),coin,nzd);
 					}
 					Message msg = handler.obtainMessage();
 					if(netResponse.getStatus()==1){
@@ -402,6 +435,95 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			dots.get(position).setBackgroundResource(R.drawable.dot_focused);
 			oldPosition = position;
 		}
+	}
+	
+	class StockHolder{
+		public RoundedImageView imageView;
+		public TextView nameTextView;
+		public TextView disTextView;
+		public ImageView locationView;
+		public RatingBar ratingBar;
+		public TextView teamTextView;
+		public TextView couponTextView;
+		public RadioButton rdselect;
+		public StockHolder(View view){
+			imageView = (RoundedImageView)view.findViewById(R.id.head_image);
+			nameTextView = (TextView)view.findViewById(R.id.name_text);
+			teamTextView = (TextView)view.findViewById(R.id.team_text);
+			disTextView = (TextView)view.findViewById(R.id.dis_text);
+			locationView = (ImageView)view.findViewById(R.id.map_image);
+			ratingBar = (RatingBar)view.findViewById(R.id.rb);
+			couponTextView = (TextView)view.findViewById(R.id.coupon_text);
+			rdselect = (RadioButton)view.findViewById(R.id.rd_select);
+		}
+	}
+	
+	class StockAdapter extends BaseAdapter{
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return stocks.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return stocks.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			Stock stock = stocks.get(position);
+			StockHolder holder;
+			if(convertView==null){
+				convertView = LayoutInflater.from(SecondActivity.this)
+						.inflate(R.layout.cell_stock, parent,false);
+				holder = new StockHolder(convertView);
+				convertView.setTag(holder);
+			}
+			
+			holder = (StockHolder)convertView.getTag();
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"users/small/"
+							+ stock.getUser().getThumbnail(),
+							holder.imageView, ImageOptions.options);
+			holder.nameTextView.setText(stock.getUser().getAlias());
+			if(stock.getUser().getDistance()!=null){
+				DecimalFormat    df   = new DecimalFormat("######0.00");   
+				holder.disTextView.setText("距离："+df.format(stock.getUser().getDistance())+"公里");
+			}
+			float sc = (float)(stock.getUser().getScoring()/100);
+			holder.ratingBar.setRating(sc);
+			if(stock.getUser().isTeamwork()){
+				holder.teamTextView.setVisibility(View.VISIBLE);
+			}
+			else{
+				holder.teamTextView.setVisibility(View.GONE);
+			}
+			if(stock.getUser().isAcceptCoupon()){
+				
+				holder.couponTextView.setText("支持使用优惠币");
+			}
+			else{
+				holder.couponTextView.setText("不支持使用优惠币");
+			}
+			if(selectStock==null || selectStock.getId()!=stock.getId()){
+				holder.rdselect.setChecked(false);
+			}
+			else{
+				holder.rdselect.setChecked(true);
+			}
+			return convertView;
+		}
+		
 	}
 
 	@Override

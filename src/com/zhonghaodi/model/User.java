@@ -27,6 +27,7 @@ public class User implements Serializable {
 	private int tjcoin;
 	private int recCount;
 	
+	
 	public User() {
 		// TODO Auto-generated constructor stub
 	}
@@ -197,5 +198,5 @@ public class User implements Serializable {
 	public void setRecCount(int recCount) {
 		this.recCount = recCount;
 	}
-	
+
 }

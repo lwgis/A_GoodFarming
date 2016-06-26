@@ -13,6 +13,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.QuestionAdpter;
+import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MorePopupWindow;
@@ -73,11 +74,20 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	private View selectView;
 	private int page=0;
 	private int diseaseStatus = 0;
+	private ShareContainer shareContainer;
+
+	public ShareContainer getShareContainer() {
+		return shareContainer;
+	}
+
+	public void setShareContainer(ShareContainer shareContainer) {
+		this.shareContainer = shareContainer;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub你好哈哈哈
+		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		Button questionButton = (Button) view
 				.findViewById(R.id.question_button);
@@ -163,14 +173,22 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
-						Intent it = new Intent(getActivity(),
-								QuestionActivity.class);
-						it.putExtra("questionId", allQuestions
-								.get(position - 1).getId());
-						if(bAll==1||bAll==2){
-							it.putExtra("status", bAll);
+						if (GFUserDictionary.getUserId(getActivity().getApplicationContext()) != null){
+							Intent it = new Intent(getActivity(),
+									QuestionActivity.class);
+							it.putExtra("questionId", allQuestions
+									.get(position - 1).getId());
+							if(bAll==1||bAll==2){
+								it.putExtra("status", bAll);
+							}
+							getActivity().startActivity(it);
 						}
-						getActivity().startActivity(it);
+						else{
+							Intent it = new Intent(getActivity(),
+									LoginActivity.class);
+							getActivity().startActivity(it);
+						}
+						
 					}
 				});
 		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
@@ -571,6 +589,28 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				diseaseTextView.setText("我的作物 ▼");
 				loadNewQuestion();
 			}
+			break;
+		case R.id.forward_layout:
+			
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
+				Intent intent2 = new Intent();
+				intent2.setClass(getActivity(), LoginActivity.class);
+				getActivity().startActivity(intent2);
+				
+			}
+			else {				
+				Question q = (Question)v.getTag();
+				String folder;
+				if(bAll==0){
+					folder="questions";
+				}else if(bAll==1){
+					folder="gossips";
+				}else{
+					folder="plantinfo";
+				}
+				shareContainer.shareQuestionWindow(q, folder);			
+			}
+			
 			break;
 		default:
 			break;

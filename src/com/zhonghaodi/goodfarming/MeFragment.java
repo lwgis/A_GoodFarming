@@ -93,6 +93,10 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					it.putExtras(bundle);
 					getActivity().startActivity(it);
 				}
+				else if(function.getName().equals("我的收藏")){
+					it.putExtra("status", 3);
+					getActivity().startActivity(it);
+				}
 				else if(function.getName().equals("邀请好友赚积分")){
 					shareContainer.popupShareWindow(user);
 				}
@@ -293,11 +297,14 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			fragment.user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
 			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());	
+			fragment.functions.clear();
 			Function pointsFunction = new Function("积分使用", PointsActivity.class,R.drawable.jifen);
 			pointsFunction.setDescription(user.getPoint()+"积分");
 			fragment.functions.add(pointsFunction);
 			Function questionFunction = new Function("我的提问", QuestionsActivity.class,R.drawable.myquestions);
 			fragment.functions.add(questionFunction);
+			Function favFunction = new Function("我的收藏", MyQuestionsActivity.class,R.drawable.shoucang);
+			fragment.functions.add(favFunction);
 			Function ordersFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
 			fragment.functions.add(ordersFunction);
 			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.yhbsh);

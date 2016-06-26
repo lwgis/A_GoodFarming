@@ -72,6 +72,9 @@ public class UILApplication extends Application {
 	public static int sendcount=0;
 	public static Context applicationContext;
 	public static String shareUrl="";
+	public static int sharestatus=0;
+	public static String sharefolder;
+	public static int sharequeid;
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override

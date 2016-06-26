@@ -22,6 +22,7 @@ public class Question implements Serializable {
 	private Response myResponse;
 	private Crop cate;
 	private int agree;
+	private int forwards;
 	public List<Response> getResponses() {
 		return responses;
 	}
@@ -151,6 +152,14 @@ public class Question implements Serializable {
 
 	public void setAgree(int agree) {
 		this.agree = agree;
+	}
+
+	public int getForwards() {
+		return forwards;
+	}
+
+	public void setForwards(int forwards) {
+		this.forwards = forwards;
 	}
 	
 }

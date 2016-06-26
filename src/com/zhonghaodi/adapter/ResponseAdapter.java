@@ -235,6 +235,7 @@ public class ResponseAdapter extends BaseAdapter {
 			}
 			holder1.headIv.setTag(question.getWriter());
 			holder1.headIv.setOnClickListener(mClickListener);
+			holder1.forwardLayout.setOnClickListener(mClickListener);
 			if(question.getAddress()!=null){
 				holder1.addressTextView.setText(question.getAddress());
 			}
@@ -321,6 +322,7 @@ public class ResponseAdapter extends BaseAdapter {
 			}
 			holder2.headIv.setTag(question.getWriter());
 			holder2.headIv.setOnClickListener(mClickListener);
+			holder2.forwardLayout.setOnClickListener(mClickListener);
 			if(question.getAddress()!=null){
 				holder2.addressTextView.setText(question.getAddress());
 			}
@@ -437,6 +439,7 @@ public class ResponseAdapter extends BaseAdapter {
 			holder3.cropTv.setText(question.getCrop().getName());
 			holder3.headIv.setTag(question.getWriter());
 			holder3.headIv.setOnClickListener(mClickListener);
+			holder3.forwardLayout.setOnClickListener(mClickListener);
 			if(question.getAddress()!=null){
 				holder3.addressTextView.setText(question.getAddress());
 			}
@@ -499,6 +502,7 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant1.countTv.setText("评论（"+question.getResponsecount()+"）");
 			holderPlant1.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant1.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant1.forwardLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant1.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -591,6 +595,7 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant2.countTv.setText("评论（"+question.getResponsecount()+"）");
 			holderPlant2.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant2.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant2.forwardLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant2.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -707,6 +712,7 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant3.countTv.setText("评论（"+question.getResponsecount()+"）");
 			holderPlant3.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant3.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant3.forwardLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant3.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -847,6 +853,7 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant4.countTv.setText("评论（"+question.getResponsecount()+"）");
 			holderPlant4.agreeTextView.setText("赞同（"+question.getAgree()+"）");
 			holderPlant4.agreeLayout.setOnClickListener(mClickListener);
+			holderPlant4.forwardLayout.setOnClickListener(mClickListener);
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant4.levelTextView.setText(question.getWriter().getIdentifier()+"农友");

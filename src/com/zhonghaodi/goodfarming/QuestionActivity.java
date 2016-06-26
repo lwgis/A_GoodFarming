@@ -116,13 +116,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private int status;
 	private MorePopupWindow morePopupWindow;
 	private ImageView agroImageView;
-	private ImageView favoriteImageView;
-	private LinearLayout favoriteLayout;
+//	private ImageView favoriteImageView;
+//	private LinearLayout favoriteLayout;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	private int rid;
-	private int WX_THUMB_SIZE = 60;
 	private boolean favoriteStatus=false;
+	private Button favoriteButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,9 +130,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_question);
 		agroImageView = (ImageView)findViewById(R.id.agro_image);
-		favoriteLayout = (LinearLayout)findViewById(R.id.favoritelayout);
-		favoriteImageView = (ImageView)findViewById(R.id.favorite_image);
-		favoriteLayout.setOnClickListener(this);
+//		favoriteLayout = (LinearLayout)findViewById(R.id.favoritelayout);
+//		favoriteImageView = (ImageView)findViewById(R.id.favorite_image);
+//		favoriteLayout.setOnClickListener(this);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -144,8 +144,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				finish();
 			}
 		});
-		Button shareButton = (Button)findViewById(R.id.share_button);
-		shareButton.setOnClickListener(this);
+		favoriteButton = (Button)findViewById(R.id.share_button);
+		favoriteButton.setOnClickListener(this);
 		Button sendBtn = (Button) findViewById(R.id.send_button);
 		sendBtn.setOnClickListener(new OnClickListener() {
 
@@ -194,25 +194,25 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		if(status==0){
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
-			favoriteLayout.setVisibility(View.VISIBLE);
+			favoriteButton.setVisibility(View.VISIBLE);
 			
 		}
 		else if(status==1){
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
-			favoriteLayout.setVisibility(View.GONE);
+			favoriteButton.setVisibility(View.GONE);
 		}
 		else{
 			titleTextView.setText("种植分享详细信息");
 			sendBtn.setText("评论");
-			favoriteLayout.setVisibility(View.GONE);
+			favoriteButton.setVisibility(View.GONE);
 		}
-		loadData();
+		
 		uid=GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null){
 			Intent it = new Intent(QuestionActivity.this,
 					LoginActivity.class);
-			QuestionActivity.this.startActivity(it);
+			QuestionActivity.this.startActivityForResult(it, 2);
 			return;
 		}
 		adapter = new ResponseAdapter(this,this,this,uid);
@@ -228,6 +228,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				});
 		pullToRefreshListView.setOnItemClickListener(this);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
+		loadData();
 		if(uid!=null&&GFUserDictionary.getTjcode(this)==null){
 			loadUser();
 		}	
@@ -384,6 +385,11 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				@Override
 				public void run() {
 					loadData();
+					if(uid!=null&&GFUserDictionary.getTjcode(QuestionActivity.this)==null){
+						loadUser();
+						
+					}	
+					loadFavorites();
 				}
 			}, 1000);
 		}
@@ -596,9 +602,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 //				startActivity(it);
 //			}
 			break;
-		case R.id.share_button:
-			popmorewindow(false);
-			break;
+//		case R.id.share_button:
+//			popmorewindow(false);
+//			break;
 		case R.id.zan_layout:
 			if(GFUserDictionary.getUserId(getApplicationContext())==null){
 				GFToast.show(getApplicationContext(),"请您先登录！");
@@ -789,7 +795,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 			msg.description = content;
 			Bitmap b = agroImageView.getDrawingCache();			 			             
-			Bitmap bitmap = Bitmap.createScaledBitmap(b, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
+			Bitmap bitmap = Bitmap.createScaledBitmap(b, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
 			msg.thumbData = PublicHelper.bmpToByteArray(bitmap, true);
 			bitmap.recycle();
 			
@@ -827,7 +833,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			msg1.title = content1;
 			msg1.description = content1;
 			Bitmap b1 = agroImageView.getDrawingCache();
-			Bitmap bitmap1 = Bitmap.createScaledBitmap(b1, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
+			Bitmap bitmap1 = Bitmap.createScaledBitmap(b1, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
 			msg1.thumbData = PublicHelper.bmpToByteArray(bitmap1, true);
 			bitmap1.recycle();
 			
@@ -919,13 +925,16 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		    mTencent.shareToQzone(this, params1, new BaseUiListener());
 		    morePopupWindow.dismiss();
 			break;
-		case R.id.favoritelayout:
+		case R.id.share_button:
 			if(!favoriteStatus){
 				favoriteQuestion(true);
 			}
 			else{
 				favoriteQuestion(false);
 			}
+			break;
+		case R.id.forward_layout:
+			popmorewindow(false);
 			break;
 		default:
 			break;
@@ -1122,12 +1131,12 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						}.getType());
 				favQuestions.clear();
 				favoriteStatus=false;
-				favoriteImageView.setImageResource(R.drawable.favorite_g);
+				favoriteButton.setText("收藏");
 				for (FavoriteQuestion favoriteQuestion : questions) {
 					favQuestions.add(favoriteQuestion);
 					if(favoriteQuestion.getMyquestion().getId()==questionId){
 						favoriteStatus=true;
-						favoriteImageView.setImageResource(R.drawable.favorite);
+						favoriteButton.setText("已收藏");
 					}
 				}
 				

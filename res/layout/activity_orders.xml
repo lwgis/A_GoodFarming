@@ -42,65 +42,7 @@
           android:orientation="vertical"
           android:background="#e6e7eb"
           >
-	    <RelativeLayout 
-            android:id="@+id/layout3"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="10dip"
-	        android:background="@drawable/background_with_shadow"
-	        android:padding="5dip"
-	        android:clickable="true"
-	        >
-	        <ImageView 
-	            android:id="@+id/avimg3"
-	            android:layout_width="40dip"
-	            android:layout_height="40dip"
-	            android:scaleType="fitXY"
-	            android:src="@drawable/yaofang"
-	            />
-	        <TextView 
-	            android:id="@+id/avname3"
-	            android:layout_width="wrap_content"
-	            android:layout_height="40dip"
-	            android:gravity="center_vertical"
-	            android:layout_toRightOf="@+id/avimg3"
-	            android:paddingLeft="10dip"
-	            android:textColor="#444444"
-	            android:textSize="18dip"
-	            android:text="配方订单"
-	            />
-	        
-	    </RelativeLayout>
-	    <RelativeLayout 
-            android:id="@+id/layout2"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="10dip"
-	        android:background="@drawable/background_with_shadow"
-	        android:padding="5dip"
-	        android:clickable="true"
-	        >
-	        <ImageView 
-	            android:id="@+id/avimg2"
-	            android:layout_width="40dip"
-	            android:layout_height="40dip"
-	            android:scaleType="fitXY"
-	            android:src="@drawable/second"
-	            />
-	        <TextView 
-	            android:id="@+id/avname2"
-	            android:layout_width="wrap_content"
-	            android:layout_height="40dip"
-	            android:gravity="center_vertical"
-	            android:layout_toRightOf="@+id/avimg2"
-	            android:paddingLeft="10dip"
-	            android:textColor="#444444"
-	            android:textSize="18dip"
-	            android:text="秒杀订单"
-	            />
-	        
-	    </RelativeLayout>
-	    <RelativeLayout 
+        <RelativeLayout 
             android:id="@+id/layout5"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
@@ -187,7 +129,64 @@
 	            />
 	        
 	    </RelativeLayout>
-	    
+	    <RelativeLayout 
+            android:id="@+id/layout2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:background="@drawable/background_with_shadow"
+	        android:padding="5dip"
+	        android:clickable="true"
+	        >
+	        <ImageView 
+	            android:id="@+id/avimg2"
+	            android:layout_width="40dip"
+	            android:layout_height="40dip"
+	            android:scaleType="fitXY"
+	            android:src="@drawable/second"
+	            />
+	        <TextView 
+	            android:id="@+id/avname2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dip"
+	            android:gravity="center_vertical"
+	            android:layout_toRightOf="@+id/avimg2"
+	            android:paddingLeft="10dip"
+	            android:textColor="#444444"
+	            android:textSize="18dip"
+	            android:text="秒杀订单"
+	            />
+	        
+	    </RelativeLayout>
+	    <RelativeLayout 
+            android:id="@+id/layout3"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:background="@drawable/background_with_shadow"
+	        android:padding="5dip"
+	        android:clickable="true"
+	        >
+	        <ImageView 
+	            android:id="@+id/avimg3"
+	            android:layout_width="40dip"
+	            android:layout_height="40dip"
+	            android:scaleType="fitXY"
+	            android:src="@drawable/yaofang"
+	            />
+	        <TextView 
+	            android:id="@+id/avname3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dip"
+	            android:gravity="center_vertical"
+	            android:layout_toRightOf="@+id/avimg3"
+	            android:paddingLeft="10dip"
+	            android:textColor="#444444"
+	            android:textSize="18dip"
+	            android:text="配方订单"
+	            />
+	        
+	    </RelativeLayout>
    </LinearLayout>
 
 </LinearLayout>

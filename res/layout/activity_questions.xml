@@ -70,7 +70,7 @@
 		            />
 		        
 		    </RelativeLayout>
-		    <RelativeLayout 
+		    <!-- <RelativeLayout 
 	            android:id="@+id/layout3"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
 		            android:textSize="18dip"
 		            android:text="我的收藏"
 		            />		        
-		    </RelativeLayout>
+		    </RelativeLayout> -->
 		    <RelativeLayout 
 	            android:id="@+id/layout2"
 		        android:layout_width="match_parent"
