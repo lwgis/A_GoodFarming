@@ -3159,10 +3159,10 @@ public class HttpUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static File getFileFromServer(String filename, ProgressBar pd,Handler handler) throws Exception{   
+	public static File getFileFromServer(String downUrl, ProgressBar pd,Handler handler) throws Exception{   
 	    //如果相等的话表示当前的sdcard挂载在手机上并且是可用的 
 		String id = UUID.randomUUID().toString();
-		String path = HttpUtil.ImageUrl+"apps/"+filename+"?id="+id;
+		String path = downUrl+"?id="+id;
 	    if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){   
 	        URL url = new URL(path);   
 	        HttpURLConnection conn =  (HttpURLConnection) url.openConnection();   
@@ -3170,7 +3170,9 @@ public class HttpUtil {
 	        //获取到文件的大小   
 	        int max = conn.getContentLength();
 	        pd.setMax(max);   
-	        InputStream is = conn.getInputStream();   
+	        InputStream is = conn.getInputStream(); 
+	        String str[] = downUrl.split("/");
+	        String filename = str[str.length-1];
 	        File file = new File(Environment.getExternalStorageDirectory(), filename);   
 	        FileOutputStream fos = new FileOutputStream(file);   
 	        BufferedInputStream bis = new BufferedInputStream(is);   
