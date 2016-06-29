@@ -602,9 +602,9 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				Question q = (Question)v.getTag();
 				String folder;
 				if(bAll==0){
-					folder="questions";
+					folder="question";
 				}else if(bAll==1){
-					folder="gossips";
+					folder="gossip";
 				}else{
 					folder="plantinfo";
 				}

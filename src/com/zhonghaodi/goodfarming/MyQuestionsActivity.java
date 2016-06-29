@@ -318,9 +318,9 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 			Question q = (Question)v.getTag();
 			String folder;
 			if(status==0 || status==3){
-				folder="questions";
+				folder="question";
 			}else if(status==1){
-				folder="gossips";
+				folder="gossip";
 			}else{
 				folder="plantinfo";
 			}
