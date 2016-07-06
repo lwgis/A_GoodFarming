@@ -36,9 +36,14 @@
         >
         <ScrollView 
 		    android:layout_width="match_parent"
-		    android:layout_height="match_parent" 
+		    android:layout_height="0dip" 
 		    android:layout_weight="1"
 		    android:clickable="true"
+		    >
+		<LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"
 		    >
 	    <LinearLayout
 	        android:layout_width="match_parent"
@@ -114,6 +119,76 @@
 	            android:text="内容"
 	            android:textColor="#333333"
 	            android:textSize="16dip" />
+	        
+	    </LinearLayout>
+	    <LinearLayout 	        
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:background="@drawable/background_with_shadow" 
+	        android:layout_margin="5dip"
+	        android:padding="5dip"
+	        android:id="@+id/contactlayout"
+	        >
+	        <RelativeLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:padding="5dip"
+	            >
+	            <TextView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_alignParentLeft="true"
+			        android:text="收货地址"
+			        android:textColor="#444444"
+			        android:textSize="15dip" />
+	        </RelativeLayout>
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="1dip"
+	            android:background="#38be99"
+	            >
+	            
+	        </LinearLayout>
+	        <TextView
+		        android:id="@+id/name_text"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:text="姓名："
+		        android:textColor="#444444"
+		        android:textSize="15dip" />
+		
+		    <TextView
+		        android:id="@+id/phone_text"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:maxLines="2"
+		        android:ellipsize="end"
+		        android:text="电话："
+		        android:textColor="#808080"
+		        android:textSize="14dip" />
+		    
+		    <TextView
+		        android:id="@+id/post_text"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:maxLines="2"
+		        android:ellipsize="end"
+		        android:text="邮编："
+		        android:textColor="#808080"
+		        android:textSize="14dip" />
+		    
+		    <TextView
+		        android:id="@+id/address_text"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:maxLines="2"
+		        android:ellipsize="end"
+		        android:text="地址："
+		        android:textColor="#808080"
+		        android:textSize="14dip" />
+	    </LinearLayout>
 	    </LinearLayout>
 		</ScrollView>
 		<com.zhonghaodi.customui.MyTextButton

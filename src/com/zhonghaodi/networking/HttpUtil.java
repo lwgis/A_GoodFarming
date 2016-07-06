@@ -1976,7 +1976,7 @@ public class HttpUtil {
 		}
 	}
 	
-	public static NetResponse buyZfbt(final String uid,int sid,final int coupon,final String nzdid){
+	public static NetResponse buyZfbt(final String uid,int sid,final int coupon,final String nzdid,final int cid){
 		
 		String jsonString = null;
 		String urlString = RootURL + "zfbt/"+sid+"/buy";
@@ -2032,6 +2032,24 @@ public class HttpUtil {
 			};
 			
 			nameValuePairs.add(nameValuePair3);
+		}
+		if(cid!=0){
+			NameValuePair nameValuePair4 = new NameValuePair() {
+
+				@Override
+				public String getValue() {
+					// TODO Auto-generated method stub
+					return String.valueOf(cid);
+				}
+
+				@Override
+				public String getName() {
+					// TODO Auto-generated method stub
+					return "cid";
+				}
+			};
+			
+			nameValuePairs.add(nameValuePair4);
 		}
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
@@ -2109,6 +2127,12 @@ public class HttpUtil {
 	
 	public static String getSecondOrderByCode(String uid,String code){
 		String url = RootURL + "users/"+uid+"/second/"+code;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getMyPostOrders(String uid){
+		String url = RootURL + "users/"+uid+"/mypostzfbt";
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}

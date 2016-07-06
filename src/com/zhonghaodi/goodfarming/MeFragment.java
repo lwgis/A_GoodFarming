@@ -100,6 +100,10 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				else if(function.getName().equals("邀请好友赚积分")){
 					shareContainer.popupShareWindow(user);
 				}
+				else if(function.getName().equals("我的订单")){
+					it.putExtra("level", user.getLevel().getId());
+					getActivity().startActivity(it);
+				}
 				else{
 					getActivity().startActivity(it);
 				}

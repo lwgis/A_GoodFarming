@@ -315,6 +315,8 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			bundle.putSerializable("second", second);
 			intent.putExtras(bundle);
 			intent.putExtra("status", 1);
+			intent.putExtra("x", x);
+			intent.putExtra("y", y);
 			startActivity(intent);
 		}
 	}

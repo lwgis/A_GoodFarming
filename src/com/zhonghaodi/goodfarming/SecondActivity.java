@@ -90,9 +90,9 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	private TimeCount time;
 	private ScheduledExecutorService scheduledExecutorService;
 	private int currentItem = 0;
-	private int coin = 0;
 	private StockAdapter sAdapter;
 	private Stock selectStock;
+	private double x,y;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -117,6 +117,11 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
 		second = (Second)getIntent().getSerializableExtra("second");
+		if(second.getStocks()==null){
+			second.setStocks(new ArrayList<Stock>());
+		}
+		x = getIntent().getDoubleExtra("x", 0);
+		y = getIntent().getDoubleExtra("y", 0);
 		if(second!=null){
 			titleView.setText(second.getTitle());
 			nzdTextView.setText(second.getNzd().getAlias());
@@ -254,8 +259,12 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 			this.finish();
 			break;
 		case R.id.buy_button:
-			buy();
-			buyBtn.setEnabled(false);
+			if(second.getStocks()!=null && second.getStocks().size()>0 && selectStock==null){
+				GFToast.show(this, "请选择发货的农资店！");
+			}
+			else{
+				buy();
+			}
 			break;
 		default:
 			break;
@@ -267,54 +276,20 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		if(uid==null){
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
+			return;
 		}
-
-		if(second.getCoupon()>0){
-			final Dialog dialog = new Dialog(SecondActivity.this, R.style.MyDialog);
-	        //设置它的ContentView
-			LayoutInflater inflater = (LayoutInflater) SecondActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	        View layout = inflater.inflate(R.layout.dialog, null);
-	        dialog.setContentView(layout);
-	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
-	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
-	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
-	        okBtn.setText("使用");
-	        okBtn.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					dialog.dismiss();
-					if(second.getCoupon()>GFUserDictionary.getCoin(SecondActivity.this)){
-						GFToast.show(SecondActivity.this, "您的优惠币余额不足");
-						buyBtn.setEnabled(true);
-						return;
-					}
-					else{
-						coin = second.getCoupon();
-						sendBuy(uid);
-					}
-				}
-			});
-	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
-	        cancelButton.setText("不使用");
-	        cancelButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					dialog.dismiss();
-					sendBuy(uid);
-				}
-			});
-	        titleView.setText("提示");
-	        contentView.setText("请您选择是否使用优惠币购买");
-	        dialog.show();
+		if(status==1){
+			Intent intent = new Intent(this,ZfbtBuyActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("product", second);
+			bundle.putSerializable("stock", selectStock);
+			intent.putExtras(bundle);
+			startActivity(intent);
 		}
 		else{
 			sendBuy(uid);
+			buyBtn.setEnabled(false);
 		}
-//		sendBuy(uid);
 		
 	}
 	
@@ -325,15 +300,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 				public void run() {
 					
 					NetResponse netResponse;
-					if(status==0){
-						netResponse = HttpUtil.buySecond(uid,second.getId());
-					}else{
-						String nzd=null;
-						if(selectStock!=null){
-							nzd = selectStock.getUser().getId();
-						}
-						netResponse = HttpUtil.buyZfbt(uid,second.getId(),coin,nzd);
-					}
+					netResponse = HttpUtil.buySecond(uid,second.getId());
 					Message msg = handler.obtainMessage();
 					if(netResponse.getStatus()==1){
 						msg.what = 0;
@@ -494,10 +461,9 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 							+ stock.getUser().getThumbnail(),
 							holder.imageView, ImageOptions.options);
 			holder.nameTextView.setText(stock.getUser().getAlias());
-			if(stock.getUser().getDistance()!=null){
-				DecimalFormat    df   = new DecimalFormat("######0.00");   
-				holder.disTextView.setText("距离："+df.format(stock.getUser().getDistance())+"公里");
-			}
+			double distance = PublicHelper.GetShortDistance(stock.getUser().getX(), stock.getUser().getY(), x, y)/1000;
+			DecimalFormat    df   = new DecimalFormat("######0.00");   
+			holder.disTextView.setText("距离："+df.format(distance)+"公里");
 			float sc = (float)(stock.getUser().getScoring()/100);
 			holder.ratingBar.setRating(sc);
 			if(stock.getUser().isTeamwork()){
@@ -547,18 +513,12 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("order", secondOrder);
 					intent.putExtras(bundle);
-					if(status == 0){
-						MobclickAgent.onEvent(this, UmengConstants.BUY_SECOND_ID);
-					}
-					else if(status==1){
-						MobclickAgent.onEvent(this, UmengConstants.BUY_ALLOWANCE_ID);
-						intent.putExtra("status", status);
-						if(coin>0){
-							GFToast.show(this, "抢购成功，共花费"+coin+"优惠币");
-						}
-					}
+					MobclickAgent.onEvent(this, UmengConstants.BUY_SECOND_ID);
 					startActivity(intent);
 					this.finish();
+				}
+				else{
+					GFToast.show(getApplicationContext(),"很遗憾，手慢了没抢到。");
 				}
 			}
 			break;
