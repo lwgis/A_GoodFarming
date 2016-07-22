@@ -453,6 +453,10 @@
             android:name=".PostOrdersActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".CityActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity android:name=".wxapi.WXEntryActivity"  
             android:launchMode="singleInstance"  
             android:exported="true"  

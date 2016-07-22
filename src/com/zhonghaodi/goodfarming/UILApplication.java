@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -58,6 +59,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.AppVersion;
+import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
@@ -75,6 +77,7 @@ public class UILApplication extends Application {
 	public static int sharestatus=0;
 	public static String sharefolder;
 	public static int sharequeid;
+	public static Bitmap sharebit;
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override

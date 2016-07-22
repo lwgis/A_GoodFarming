@@ -32,6 +32,7 @@ import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Category_disease;
 import com.zhonghaodi.model.ComparatorSort;
 import com.zhonghaodi.model.Disease;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.User;
@@ -75,6 +76,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	private AgroAdapter adapter;
 	private GFHandler<ForumFragment> handler = new GFHandler<ForumFragment>(this);
 	private int categoryid=1;
+	private int zone=0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,6 +125,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 		agrotechnicals = new ArrayList<Agrotechnical>();
 		adapter = new AgroAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
+		zone = GFAreaUtil.getCityId(getActivity());
 		loadCategory();
 		return view;
 	}
@@ -161,7 +164,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getAgrotechnical(categoryid);
+				String jsonString = HttpUtil.getAgrotechnical(categoryid,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -177,7 +180,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getMoreAgrotechnical(fromid,categoryid);
+				String jsonString = HttpUtil.getMoreAgrotechnical(fromid,categoryid,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;

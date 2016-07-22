@@ -2,6 +2,7 @@ package com.zhonghaodi.goodfarming;
 
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.model.User;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

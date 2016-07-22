@@ -17,11 +17,13 @@ import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MorePopupWindow;
-import com.zhonghaodi.model.Question;
-import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.City;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PostResponse;
+import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.Response;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
@@ -67,6 +69,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	private TextView gossipTextView;
 	private View messageView;
 	private TextView countTv;
+	private TextView titleTv;
 	private Question selectQuestion;
 	private PopupWindow popupWindow;
 	private PopupWindow selectWindow;
@@ -75,6 +78,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	private int page=0;
 	private int diseaseStatus = 0;
 	private ShareContainer shareContainer;
+	private City area1;
+	private String zonestr;
 
 	public ShareContainer getShareContainer() {
 		return shareContainer;
@@ -91,6 +96,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		Button questionButton = (Button) view
 				.findViewById(R.id.question_button);
+		titleTv = (TextView)view.findViewById(R.id.title_txt);
+		titleTv.setOnClickListener(this);
 		questionButton.setOnClickListener(this);
 		popView = inflater.inflate(R.layout.popupwindow_question, container,
 				false);
@@ -103,7 +110,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				DpTransform.dip2px(getActivity(), 69));
 		selectWindow.setBackgroundDrawable(new BitmapDrawable());
 		selectWindow.setFocusable(true);
-		bAll = 0;
 		Button newQueBtn = (Button)popView.findViewById(R.id.btn_question);
 		newQueBtn.setOnClickListener(this);
 		Button newGossipBtn = (Button)popView.findViewById(R.id.btn_gossip);
@@ -165,7 +171,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		adapter = new QuestionAdpter(allQuestions,getActivity(),HomeFragment.this);
 		HomeFragment.this.pullToRefreshListView.getRefreshableView()
 				.setAdapter(adapter);
-		loadNewQuestion();
+		initArea();
+		
 		this.pullToRefreshListView
 				.setOnItemClickListener(new OnItemClickListener() {
 
@@ -192,8 +199,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					}
 				});
 		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
-		selectTextView(diseaseTextView);
-		
 		return view;
 	}
 	
@@ -203,6 +208,7 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		super.onResume();
 		MobclickAgent.onPageStart("主页Fragment");
 		setUnreadMessageCount();
+		
 	}
 
 	@Override
@@ -266,20 +272,47 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
         dialog.show();
 		return super.onContextItemSelected(item);
 	}
+	public void initArea(){
+		zonestr="";
+		int cityid = GFAreaUtil.getCityId(getActivity());
+		int zone1 = GFAreaUtil.getCityId1(getActivity());
+		if(cityid!=0){
+			area1 = new City();
+			area1.setId(cityid);
+			area1.setName(GFAreaUtil.getCityName(getActivity()));
+			titleTv.setText(area1.getName());
+			zonestr+=cityid;
+			if(zone1!=0){
+				zonestr+=","+zone1;
+			}
+		}
+		else{
+			if(zone1!=0){
+				zonestr+=zone1;
+			}
+		}
+		loadNewQuestion();
+		selectTextView(diseaseTextView);
+		bAll=0;
+	}
 
-
-	private void loadNewQuestion() {
+	public void loadNewQuestion() {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				String jsonString;
 				if(diseaseStatus==0){
-					jsonString = HttpUtil.getQuestionsString();
+					
+					jsonString = HttpUtil.getQuestionsString(zonestr);
 				}
 				else{
+					int zone=0;
+					if(area1!=null){
+						zone = area1.getId();
+					}
 					String uid = GFUserDictionary.getUserId(getActivity());
-					jsonString = HttpUtil.getAscQuestionsString(uid);
+					jsonString = HttpUtil.getAscQuestionsString(uid,zone);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -296,11 +329,19 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			public void run() {
 				String jsonString;
 				if(diseaseStatus==0){
-					jsonString = HttpUtil.getQuestionsString(qid);
+					int zone=0;
+					if(area1!=null){
+						zone = area1.getId();
+					}
+					jsonString = HttpUtil.getQuestionsString(qid,zonestr);
 				}
 				else{
+					int zone=0;
+					if(area1!=null){
+						zone = area1.getId();
+					}
 					String uid = GFUserDictionary.getUserId(getActivity());
-					jsonString = HttpUtil.getAscQuestionsString(uid,qid);
+					jsonString = HttpUtil.getAscQuestionsString(uid,qid,zone);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
@@ -315,7 +356,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getGossipsString();
+				
+				String jsonString = HttpUtil.getGossipsString(zonestr);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -329,7 +371,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getGossipsString(qid);
+				
+				String jsonString = HttpUtil.getGossipsString(qid,zonestr);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -343,7 +386,11 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getPlant();
+				int zone=0;
+				if(area1!=null){
+					zone = area1.getId();
+				}
+				String jsonString = HttpUtil.getPlant(zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -356,8 +403,11 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				
-				String jsonString = HttpUtil.getMorePlant(qid);
+				int zone=0;
+				if(area1!=null){
+					zone = area1.getId();
+				}
+				String jsonString = HttpUtil.getMorePlant(qid,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -448,9 +498,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				it1.setClass(getActivity(), MessagesActivity.class);			
 			}
 			getActivity().startActivity(it1);
-			break;
-		case R.id.title_txt:
-			
 			break;
 			
 		case R.id.disease_text:
@@ -611,6 +658,10 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				shareContainer.shareQuestionWindow(q, folder);			
 			}
 			
+			break;
+		case R.id.title_txt:
+			Intent cityIntent = new Intent(getActivity(), CityActivity.class);
+			getActivity().startActivityForResult(cityIntent, PublicHelper.CITY_REQUEST_CODE);
 			break;
 		default:
 			break;

@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Commodity;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Level;
 import com.zhonghaodi.model.User;
@@ -49,6 +50,7 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 	private GFHandler<CommoditiesActivity> handler = new GFHandler<CommoditiesActivity>(this);
 	private CommodityAdapter adapter;
 	private Commodity selCommodity;
+	private int zone;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 					}
 
 				});
+		zone = GFAreaUtil.getCityId(this);
 		pullToRefreshGridView.setOnItemClickListener(this);
 		commodities = new ArrayList<Commodity>();
 		adapter = new CommodityAdapter();
@@ -127,7 +130,7 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 			@Override
 			public void run() {
 				String uid = GFUserDictionary.getUserId(CommoditiesActivity.this);
-				String jsonString = HttpUtil.getCommodities(0,uid);
+				String jsonString = HttpUtil.getCommodities(0,uid,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -149,7 +152,7 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 			@Override
 			public void run() {
 				String uid = GFUserDictionary.getUserId(CommoditiesActivity.this);
-				String jsonString = HttpUtil.getCommodities(position,uid);
+				String jsonString = HttpUtil.getCommodities(position,uid,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;

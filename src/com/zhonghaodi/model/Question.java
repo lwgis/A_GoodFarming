@@ -23,6 +23,7 @@ public class Question implements Serializable {
 	private Crop cate;
 	private int agree;
 	private int forwards;
+	private int zone;
 	public List<Response> getResponses() {
 		return responses;
 	}
@@ -160,6 +161,14 @@ public class Question implements Serializable {
 
 	public void setForwards(int forwards) {
 		this.forwards = forwards;
+	}
+
+	public int getZone() {
+		return zone;
+	}
+
+	public void setZone(int zone) {
+		this.zone = zone;
 	}
 	
 }

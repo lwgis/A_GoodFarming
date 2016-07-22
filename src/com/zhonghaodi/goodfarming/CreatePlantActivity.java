@@ -13,13 +13,18 @@ import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.goodfarming.CreateQuestionActivity.QuestionLocationListenner;
+import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.ProjectImage;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.ShareObj;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -63,6 +68,9 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 	private int cropId;
 	private double x;
 	private double y;
+	private Question question;
+	private boolean isshare;
+	private City area;
 	// 定位相关
 	LocationClient mLocClient;
 	public QuestionLocationListenner myListener = new QuestionLocationListenner();
@@ -105,6 +113,9 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 						executorService.submit(new Runnable() {
 	                        public void run() {
 	                        	try {
+	                        		if(index==0 && createPlantFragment.getcheck()){
+										UILApplication.sharebit = createPlantFragment.getProjectImages().get(index).getImage();
+									}
 									String imageName;
 									imageName = ImageUtil.uploadImage(createPlantFragment.getProjectImages().get(index).getImage(),
 											"plant");
@@ -141,6 +152,11 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				finish();
 			}
 		});
+		int aid = GFAreaUtil.getCityId(this);
+		if(aid!=0){
+			area = new City();
+			area.setId(aid);
+		}
 		location();
 		sendBtn.setEnabled(false);
 		showFragment(0);
@@ -300,7 +316,8 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 		case TypeImage:
 			imageCount++;
 			if (imageCount == createPlantFragment.getProjectImages().size()) {
-				final Question question = new Question();
+				question = new Question();
+				isshare = createPlantFragment.getcheck();
 				String content = PublicHelper.TrimRight(createPlantFragment.getContent());
 				question.setContent(content);
 				User writer = new User();
@@ -314,7 +331,9 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				question.setCate(crop2);					
 				//设置作物类别
 				question.setCrop(crop);
-				
+				if(area!=null){
+					question.setZone(area.getId());
+				}
 				question.setInform("0");
 				question.setAttachments(netImages);
 				if(x>=73&&x<=136){
@@ -328,10 +347,11 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 					@Override
 					public void run() {
 						try {
-							HttpUtil.sendPlant(question);
+							NetResponse response = HttpUtil.sendPlant(question);
 							MobclickAgent.onEvent(CreatePlantActivity.this, UmengConstants.ASK_PLANT_ID);
 							Message msg = handler.obtainMessage();
 							msg.what = TypeQuestion;
+							msg.obj = response;
 							msg.sendToTarget();
 						} catch (Throwable e) {
 							// TODO Auto-generated catch block
@@ -343,7 +363,8 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 			}
 			break;
 		case TypeNoImage:
-			final Question question = new Question();
+			isshare = createPlantFragment.getcheck();
+			question = new Question();
 			String content = PublicHelper.TrimRight(createPlantFragment.getContent());
 			question.setContent(content);
 			User writer = new User();
@@ -363,15 +384,19 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 			if(y>=3&&y<=54){
 				question.setY(y);
 			}
+			if(area!=null){
+				question.setZone(area.getId());
+			}
 			new Thread(new Runnable() {
 
 				@Override
 				public void run() {
 					try {
-						HttpUtil.sendPlant(question);
+						NetResponse response = HttpUtil.sendPlant(question);
 						MobclickAgent.onEvent(CreatePlantActivity.this, UmengConstants.ASK_PLANT_ID);
 						Message msg = handler.obtainMessage();
 						msg.what = TypeQuestion;
+						msg.obj = response;
 						msg.sendToTarget();
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
@@ -381,8 +406,34 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 			}).start();
 			break;
 		case TypeQuestion:
+			if(msg.obj==null){
+				GFToast.show(getApplicationContext(),"发送失败");
+			}
+			else{
+				NetResponse response = (NetResponse)msg.obj;
+				if(response.getStatus()!=1){
+					GFToast.show(getApplicationContext(),response.getMessage());
+				}
+				else{
+					GFToast.show(getApplicationContext(),"发送成功");
+					if(isshare){
+						Intent in= new Intent();
+						Bundle bundle = new Bundle();
+						bundle.putSerializable("question", question);
+						in.putExtras(bundle);
+						ShareObj shareObj= (ShareObj) GsonUtil
+								.fromJson(response.getResult(), ShareObj.class);
+						if(shareObj==null || shareObj.getUrl().isEmpty()){
+							return;
+						}
+						in.putExtra("url", shareObj.getUrl());
+						in.putExtra("folder", "plantinfo");
+						in.setAction("sharequestion");
+						sendBroadcast(in);
+					}
+				}
+			}
 			isSending = false;
-			GFToast.show(getApplicationContext(),"发送成功");
 			break;
 		case TypeError:
 			if(msg.obj==null){

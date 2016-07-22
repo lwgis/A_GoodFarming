@@ -101,7 +101,6 @@
 				    android:focusable="false"
 				    android:enabled="false"
 				    />
-               
            </LinearLayout>
 		
        </LinearLayout>

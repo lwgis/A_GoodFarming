@@ -16,12 +16,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -55,6 +57,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 	//顶部轮播相关
 	private TextView ordersTv;
 	private List<SecondOrder> secondOrders;
+	private int zone;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 
 			
 		});
+		zone = GFAreaUtil.getCityId(this);
 		seconds = new ArrayList<Second>();
 		adapter = new SecondAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
@@ -123,7 +127,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getNewSecondOrders();
+				String jsonString = HttpUtil.getNewSecondOrders(zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 2;
 				msg.obj = jsonString;
@@ -139,7 +143,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getSeconds(x,y);
+				String jsonString = HttpUtil.getSeconds(x,y,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -156,7 +160,7 @@ public class MiaoActivity extends Activity implements HandMessage,OnClickListene
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getMoreSeconds(x,y,fromid);
+				String jsonString = HttpUtil.getMoreSeconds(x,y,fromid,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;

@@ -9,10 +9,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.HoldMessage;
-import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import com.zhonghaodi.goodfarming.R;
+import com.zhonghaodi.model.GFMessage;
 
 public class SysMessageActivity extends Activity {
 	private PullToRefreshListView pullToRefreshList;

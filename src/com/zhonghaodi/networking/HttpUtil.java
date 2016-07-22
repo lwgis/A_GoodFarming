@@ -481,14 +481,17 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getQuestionsString() {
-		String jsonString = HttpUtil.executeHttpGet(RootURL + "questions");
+	public static String getQuestionsString(String zone) {
+		String url = RootURL + "questions";
+		url=url+"?zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 
-	public static String getQuestionsString(int qid) {
-		String jsonString = HttpUtil.executeHttpGet(RootURL
-				+ "questions?fromid=" + qid);
+	public static String getQuestionsString(int qid,String zone) {
+		String url = RootURL+ "questions?fromid=" + qid;
+		url=url+"&zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
@@ -526,36 +529,53 @@ public class HttpUtil {
 	}
 	
 	
-	public static String getAscQuestionsString(String uid) {
-		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/ascquestions");
+	public static String getAscQuestionsString(String uid,int zone) {
+		String url = RootURL + "users/"+uid+"/ascquestions";
+		if(zone!=0){
+			url = url + "?zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 
-	public static String getAscQuestionsString(String uid,int qid) {
-		String jsonString = HttpUtil.executeHttpGet(RootURL
-				+ "users/"+uid+"/ascquestions?fromid=" + qid);
+	public static String getAscQuestionsString(String uid,int qid,int zone) {
+		String url = RootURL+ "users/"+uid+"/ascquestions?fromid=" + qid;
+		if(zone!=0){
+			url = url + "&zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
-	public static String getPlant() {
-		String jsonString = HttpUtil.executeHttpGet(RootURL + "plantinfo");
+	public static String getPlant(int zone) {
+		String url = RootURL + "plantinfo";
+		if(zone!=0){
+			url = url + "?zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 
-	public static String getMorePlant(int qid) {
-		String jsonString = HttpUtil.executeHttpGet(RootURL
-				+ "plantinfo?fromid=" + qid);
+	public static String getMorePlant(int qid,int zone) {
+		String url = RootURL+ "plantinfo?fromid=" + qid;
+		if(zone!=0){
+			url = url + "&zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
-	public static String getGossipsString() {
-		String jsonString = HttpUtil.executeHttpGet(RootURL + "gossips");
+	public static String getGossipsString(String zone) {
+		String url = RootURL + "gossips";
+		url=url+"?zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 
-	public static String getGossipsString(int qid) {
-		String jsonString = HttpUtil.executeHttpGet(RootURL
-				+ "gossips?fromid=" + qid);
+	public static String getGossipsString(int qid,String zone) {
+		String url = RootURL+ "gossips?fromid=" + qid;
+		url=url+"&zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
@@ -619,23 +639,26 @@ public class HttpUtil {
 		return jsonString;
 	}
 
-	public static void sendQuestion(Question question) throws Throwable {
+	public static NetResponse sendQuestion(Question question) throws Throwable {
 		String jsonString = JsonUtil.convertObjectToJson(question,
 				"yyyy-MM-dd HH:mm:ss", new String[] {
 						Question.class.toString(), NetImage.class.toString() });
-		HttpUtil.executeHttpPost(RootURL + "questions", jsonString);
+		NetResponse response = HttpUtil.executeHttpPost(RootURL + "questions", jsonString);
+		return response;
 	}
-	public static void sendGossip(Question question) throws Throwable {
+	public static NetResponse sendGossip(Question question) throws Throwable {
 		String jsonString = JsonUtil.convertObjectToJson(question,
 				"yyyy-MM-dd HH:mm:ss", new String[] {
 						Question.class.toString(), NetImage.class.toString() });
-		HttpUtil.executeHttpPost(RootURL + "gossips", jsonString);
+		NetResponse response = HttpUtil.executeHttpPost(RootURL + "gossips", jsonString);
+		return response;
 	}
-	public static void sendPlant(Question question) throws Throwable {
+	public static NetResponse sendPlant(Question question) throws Throwable {
 		String jsonString = JsonUtil.convertObjectToJson(question,
 				"yyyy-MM-dd HH:mm:ss", new String[] {
 						Question.class.toString(), NetImage.class.toString() });
-		HttpUtil.executeHttpPost(RootURL + "plantinfo", jsonString);
+		NetResponse response = HttpUtil.executeHttpPost(RootURL + "plantinfo", jsonString);
+		return response;
 	}
 
 	public static NetResponse sendResponse(Response response, int qid)
@@ -1578,6 +1601,13 @@ public class HttpUtil {
 		}
 	}
 	
+	public static String getAreaString(double x,double y) {
+		
+		String url = RootURL + "zone/my?x="+x+"&y="+y;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
 	public static String getStoresString(double x,double y) {
 		
 		String url = RootURL + "users/around?x="+x+"&y="+y;
@@ -1745,17 +1775,23 @@ public class HttpUtil {
 		
 	}
 	
-	public static String getAgrotechnical(int cid){
+	public static String getAgrotechnical(int cid,int zone){
 		
 		String urlString = RootURL + "agrotechnicals?cate="+cid;
+		if(zone!=0){
+			urlString = urlString+"&zone="+zone;
+		}
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
 	}
 	
-	public static String getMoreAgrotechnical(int fromid,int cid){
+	public static String getMoreAgrotechnical(int fromid,int cid,int zone){
 		
 		String urlString = RootURL + "agrotechnicals?cate="+cid+"&fromid="+fromid;
+		if(zone!=0){
+			urlString = urlString+"&zone="+zone;
+		}
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
@@ -1909,25 +1945,37 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getNewSecondOrders(){
+	public static String getNewSecondOrders(int zone){
 		String url = RootURL + "seconds/recentOrder?size=10";
+		if(zone!=0){
+			url = url +"&zone="+zone;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
-	public static String getNewZfbtOrders(){
+	public static String getNewZfbtOrders(int zone){
 		String url = RootURL + "zfbt/recentOrder?size=10";
+		if(zone!=0){
+			url = url+"&zone="+zone;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
-	public static String getSeconds(double x,double y){
+	public static String getSeconds(double x,double y,int zone){
 		String url = RootURL + "seconds?x="+x+"&y="+y;
+		if(zone!=0){
+			url = url+"&zone="+zone;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
-	public static String getZfbt(double x,double y,int page){
+	public static String getZfbt(double x,double y,int page,int zone){
 		String url = RootURL + "zfbt?x="+x+"&y="+y+"&page="+page;
+		if(zone!=0){
+			url = url +"&zone="+zone;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
@@ -1938,8 +1986,11 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getMoreSeconds(double x,double y,int fromid){
+	public static String getMoreSeconds(double x,double y,int fromid,int zone){
 		String url = RootURL + "seconds?x="+x+"&y="+y+"&fromid="+fromid;
+		if(zone!=0){
+			url = url +"&zone="+zone;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
@@ -2401,9 +2452,12 @@ public class HttpUtil {
 	 * @param position
 	 * @return
 	 */
-	public static String getCommodities(int position,String uid){
+	public static String getCommodities(int position,String uid,int zone){
 		
 		String urlString = RootURL + "commodities?position="+position+"&uid="+uid;
+		if(zone!=0){
+			urlString=urlString+"&zone="+zone;
+		}
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
@@ -2694,9 +2748,12 @@ public class HttpUtil {
 	 * 获取刮刮乐奖品列表
 	 * @return
 	 */
-	public static String getGuaGua(){
+	public static String getGuaGua(int zone){
 		
 		String urlString = RootURL + "guagua/all";
+		if(zone!=0){
+			urlString = urlString+"?zone="+zone;
+		}
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		
@@ -2705,9 +2762,12 @@ public class HttpUtil {
 	/**
 	 * 抽签
 	 */
-	public static NetResponse qian(final String uid) {
+	public static NetResponse qian(final String uid,int zone) {
 		String jsonString = null;
 		String urlString = RootURL + "guagua/qiang";
+		if(zone!=0){
+			urlString = urlString+"?zone="+zone;
+		}
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		NameValuePair uidValuePair1 = new NameValuePair() {
 
@@ -2936,9 +2996,12 @@ public class HttpUtil {
 	 * 获取刮刮乐奖品列表
 	 * @return
 	 */
-	public static String getRecentOrders(){
+	public static String getRecentOrders(int zone){
 		
 		String urlString = RootURL + "guagua/recentOrder?size=10";
+		if(zone!=0){
+			urlString = urlString+"&zone="+zone;
+		}
 		String result =HttpUtil.executeHttpGet(urlString);
 		return result;
 		

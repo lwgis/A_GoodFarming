@@ -44,7 +44,10 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.goodfarming.AppShareActivity.BaseUiListener;
 import com.zhonghaodi.model.AppVersion;
+import com.zhonghaodi.model.City;
+import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
@@ -63,8 +66,10 @@ import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -120,13 +125,13 @@ public class MainActivity extends Activity implements OnClickListener,
 	private TextView proTextView1;
 	private TextView proTextView2;
 	private long lastClick;
-	///////////////////
 	private User user;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	private Question shareQue;
 	public SharePopupwindow sharePopupwindow;
-
+	private BroadcastReceiver receiver;
+	private IntentFilter filter;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -168,6 +173,32 @@ public class MainActivity extends Activity implements OnClickListener,
 				bUpdate = false;
 			}
         }
+        
+      //注册一个广播接收器
+        receiver = new BroadcastReceiver() {
+	    	@Override
+	        public void onReceive(Context ctx, Intent intent) {
+	    		if (intent.getAction().equals("sharequestion")) {
+	    				shareQue = (Question)intent.getSerializableExtra("question");
+	    				String url = intent.getStringExtra("url");
+	    				UILApplication.sharefolder = intent.getStringExtra("folder");
+	    				Bitmap bitmap = UILApplication.sharebit;
+	    				if(shareQue==null){
+	    					return;
+	    				}
+	    				if(bitmap==null){
+	    					bitmap =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+	    				}
+	    				Bitmap b = Bitmap.createScaledBitmap(bitmap, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
+	    				setShareToCircle(url,b);
+	    				UILApplication.sharebit = null;
+	 	    		}
+	    	}
+	    };
+	    filter = new IntentFilter();
+	    filter.addAction("sharequestion");
+	    filter.addCategory(Intent.CATEGORY_DEFAULT);
+        
         wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -605,6 +636,19 @@ public class MainActivity extends Activity implements OnClickListener,
 	    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urList);
 	    mTencent.shareToQzone(this, params1, new BaseUiListener());
 	}
+	
+	private void setShareToCircle(String url,Bitmap bitmap){
+		
+		String content;
+		if(shareQue.getContent().length()>40){
+			content = shareQue.getContent().substring(0, 40);
+		}
+		else{
+			content = shareQue.getContent();
+		} 
+		
+		shareCirclefriends(url, content, content, bitmap);
+	}
 
 	/**
 	 * 点击事件
@@ -704,21 +748,12 @@ public class MainActivity extends Activity implements OnClickListener,
 						BitmapFactory.decodeResource(this.getResources(), R.drawable.app108));
 			}else{
 				String url=HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
-				String title ="种好地APP：让种地不再难";
-				String content;
-				if(shareQue.getContent().length()>40){
-					content = shareQue.getContent().substring(0, 40);
-				}
-				else{
-					content = shareQue.getContent();
-				} 
 				Bitmap b;
 				if(shareQue.getAttachments()==null || shareQue.getAttachments().size()==0){
 					b =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
 					
 				}
 				else{
-					String path;
 					String img;
 					if(UILApplication.sharefolder.equals("plantinfo")){
 						img = HttpUtil.ImageUrl+"plant/small/"+ shareQue.getAttachments().get(0).getUrl();
@@ -727,9 +762,12 @@ public class MainActivity extends Activity implements OnClickListener,
 						img = HttpUtil.ImageUrl+"questions/small/"+ shareQue.getAttachments().get(0).getUrl();
 					}					
 					b=ImageLoader.getInstance().loadImageSync(img);
+					if(b==null){
+						b =BitmapFactory.decodeResource(getResources(), R.drawable.app108);
+					}
 				}
 				Bitmap bitmap = Bitmap.createScaledBitmap(b, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
-				shareCirclefriends(url, content, content, bitmap);
+				setShareToCircle(url,bitmap);
 			}
 			
 			sharePopupwindow.dismiss();
@@ -836,6 +874,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
+		registerReceiver(receiver, filter);
 		if (!isLogin) {
 			initEm();
 		} else {		
@@ -855,6 +894,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onPause();
 		MobclickAgent.onPause(this);
+		unregisterReceiver(receiver);
 	}
 
 
@@ -885,21 +925,28 @@ public class MainActivity extends Activity implements OnClickListener,
 		if (resultCode == 2) {
 			forumFragment.loadData();
 		}
-		if(resultCode == RESULT_OK && requestCode == 100){
-			ArrayList<Crop> selectCrops = data.getParcelableArrayListExtra("crops");
-			meFragment.getUser().setCrops(null);
-			if (selectCrops!=null&&selectCrops.size()>0) {
-				String cropString = "";
-				List<UserCrop> userCrops = new ArrayList<UserCrop>();
-				for (Crop c : selectCrops) {
-					cropString = cropString + c.getName() + "  ";
-					UserCrop userCrop = new UserCrop();
-					userCrop.setCrop(c);
-					userCrops.add(userCrop);
+		if(resultCode == RESULT_OK){
+			if(requestCode==100){
+				ArrayList<Crop> selectCrops = data.getParcelableArrayListExtra("crops");
+				meFragment.getUser().setCrops(null);
+				if (selectCrops!=null&&selectCrops.size()>0) {
+					String cropString = "";
+					List<UserCrop> userCrops = new ArrayList<UserCrop>();
+					for (Crop c : selectCrops) {
+						cropString = cropString + c.getName() + "  ";
+						UserCrop userCrop = new UserCrop();
+						userCrop.setCrop(c);
+						userCrops.add(userCrop);
+					}
+					meFragment.getUser().setCrops(userCrops);
 				}
-				meFragment.getUser().setCrops(userCrops);
+				updateCrops(meFragment.getUser());
 			}
-			updateCrops(meFragment.getUser());
+			else if(requestCode==PublicHelper.CITY_REQUEST_CODE){
+				//切换区域后设置标题，重新读取问题
+				homeFragment.initArea();
+			}
+			
 		}
 		mTencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
 	}

@@ -36,6 +36,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -56,11 +57,16 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 	private List<Object> crops = new ArrayList<Object>();
 	private GFHandler<CreadPlantFragment> handler = new GFHandler<CreadPlantFragment>(this);
 	private int imageCount;
+	private CheckBox sharecheck;
+	public boolean getcheck(){
+		return sharecheck.isChecked();
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		view = inflater.inflate(R.layout.fragment_create_plant,container, false);
+		sharecheck = (CheckBox)view.findViewById(R.id.sharecheck);
 		this.imageGridView=(GridView)view.findViewById(R.id.imageGridView);
 		this.nyqEditText = (MyEditText)view.findViewById(R.id.content_edit);
 		this.projectImages=new ArrayList<ProjectImage>();

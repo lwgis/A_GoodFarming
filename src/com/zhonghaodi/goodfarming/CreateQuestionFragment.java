@@ -54,6 +54,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
@@ -87,6 +88,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 	private int status;
 	private GFHandler<CreateQuestionFragment> handler = new GFHandler<CreateQuestionFragment>(this);
 	private List<Object> crops = new ArrayList<Object>();
+	private CheckBox sharecheck;
 	public void setStatus(int status) {
 		
 		if(status==0){
@@ -129,6 +131,10 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 			contentEt.setHint("说点啥吧...(200字以内)");
 			loadPlantInfo();
 		}
+	}
+	
+	public boolean getcheck(){
+		return sharecheck.isChecked();
 	}
 
 	public File getCurrentfile() {
@@ -179,6 +185,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		tv2 = (TextView)view.findViewById(R.id.label2);
 		spinnerLayout = (LinearLayout)view.findViewById(R.id.spinnerLayout);
 		myCropsLayout = (LinearLayout)view.findViewById(R.id.myCropsLayout);
+		sharecheck = (CheckBox)view.findViewById(R.id.sharecheck);
 		contentEt = (MyEditText) view.findViewById(R.id.content_edit);
 		contentEt.addTextChangedListener(new TextWatcher() {
 

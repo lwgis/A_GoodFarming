@@ -13,6 +13,22 @@
         android:background="#ffffff"
         android:id="@+id/main"
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+            <CheckBox
+		        android:id="@+id/sharecheck"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="10dip"
+		        android:text="同时分享到朋友圈获取更多积分"
+		        android:button="@drawable/radiobg"
+		        android:checked="true"
+		        android:textColor="#404040" />
+        </LinearLayout>
         <LinearLayout 
             android:id="@+id/myCropsLayout"
             android:layout_width="match_parent"

@@ -132,7 +132,7 @@ public class QuanActivity extends Activity implements HandMessage,OnClickListene
 		pullToRefreshListView.getRefreshableView()
 				.setAdapter(adapter);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
-		//注册一个广播接收器，启动餐桌抖动动画  
+		//注册一个广播接收器
         receiver = new BroadcastReceiver() {
 	    	@Override
 	        public void onReceive(Context ctx, Intent intent) {

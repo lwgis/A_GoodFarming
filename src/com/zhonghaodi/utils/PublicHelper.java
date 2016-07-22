@@ -17,6 +17,7 @@ import android.view.WindowManager;
 public class PublicHelper {
 	
 	public static int WX_THUMB_SIZE = 60;
+	public static int CITY_REQUEST_CODE=200;
 
 	public static String TrimRight(String sString){
         String sResult = "";

@@ -32,6 +32,7 @@ import com.zhonghaodi.customui.GuaGuaKa;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.goodfarming.SecondActivity.TimeCount;
 import com.zhonghaodi.model.Agrotechnical;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Gua;
 import com.zhonghaodi.model.GuaOrder;
@@ -56,6 +57,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
     private GFHandler<RubblerActivity> handler = new GFHandler<RubblerActivity>(this);
     private boolean isToday = false;
     private String serverTime;
+    private int zone;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,8 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		guaGuaKa.setVisibility(View.GONE);
 
 		ordersTextView = (TextView)findViewById(R.id.orders_text);
+		
+		zone = GFAreaUtil.getCityId(this);
  
 		loadData();
     }
@@ -98,7 +102,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getGuaGua();
+				String jsonString = HttpUtil.getGuaGua(zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -110,7 +114,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				msg1.obj = jsonString1;
 				msg1.sendToTarget();
 				
-				String jsonString2 = HttpUtil.getRecentOrders();
+				String jsonString2 = HttpUtil.getRecentOrders(zone);
 				Message msg2 = handler.obtainMessage();
 				msg2.what = 2;
 				msg2.obj = jsonString2;
@@ -128,7 +132,7 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			public void run() {
 
 				String uid = GFUserDictionary.getUserId(getApplicationContext());
-				NetResponse netResponse = HttpUtil.qian(uid);
+				NetResponse netResponse = HttpUtil.qian(uid,zone);
 				Message msg1 = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
 					msg1.what = 1;

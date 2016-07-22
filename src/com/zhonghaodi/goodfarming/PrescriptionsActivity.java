@@ -19,6 +19,7 @@ import com.zhonghaodi.model.Response;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;

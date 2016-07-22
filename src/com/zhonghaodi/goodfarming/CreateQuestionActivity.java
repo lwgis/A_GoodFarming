@@ -8,17 +8,23 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.google.zxing.common.StringUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.goodfarming.RecipesActivity.RecipeLocationListenner;
+import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetImage;
+import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Question;
+import com.zhonghaodi.model.ShareObj;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
@@ -30,6 +36,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration.Status;
 import android.os.Bundle;
@@ -60,6 +67,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	private ExecutorService executorService = Executors.newFixedThreadPool(4);
 	private int imageCount;
 	private boolean isSending;
+	private boolean isshare;
+	private City area;
 
 	public MyTextButton getSendBtn() {
 		return sendBtn;
@@ -76,6 +85,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	LocationClient mLocClient;
 	public QuestionLocationListenner myListener = new QuestionLocationListenner();
 	private int status;
+	private Question question;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +120,9 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	                        	try {
 									String imageName;
 									if (status==0||status==1) {
+										if(index==0 && createQuestionFragment.getcheck()){
+											UILApplication.sharebit = createQuestionFragment.getImages().get(index);
+										}
 										imageName = ImageUtil.uploadImage(createQuestionFragment.getImages().get(index),
 												"questions");
 									}
@@ -150,6 +163,11 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				finish();
 			}
 		});
+		int aid = GFAreaUtil.getCityId(this);
+		if(aid!=0){
+			area = new City();
+			area.setId(aid);
+		}
 		location();
 		sendBtn.setEnabled(false);
 		status = getIntent().getIntExtra("status", 0);
@@ -342,7 +360,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			activity.imageCount++;
 			if (activity.imageCount == activity.createQuestionFragment
 					.getImages().size()) {
-				final Question question = new Question();
+				question = new Question();
+				isshare = createQuestionFragment.getcheck();
 				String content = PublicHelper.TrimRight(activity.createQuestionFragment
 						.getContentString());
 				String zdContent = activity.createQuestionFragment
@@ -354,7 +373,9 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				User writer = new User();
 				writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 				question.setWriter(writer);
-				
+				if(area!=null){
+					question.setZone(area.getId());
+				}
 				Crop crop = new Crop();
 				crop.setId(activity.cropId);
 				if(status==0||status==1){
@@ -382,19 +403,21 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 					@Override
 					public void run() {
 						try {
+							NetResponse response;
 							if(status==0){
-								HttpUtil.sendQuestion(question);
+								response = HttpUtil.sendQuestion(question);
 								MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_DISEASE_ID);
 							}
 							else if(status==1){
-								HttpUtil.sendGossip(question);
+								response = HttpUtil.sendGossip(question);
 								MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_GOSSIP_ID);
 							}
 							else{
-								HttpUtil.sendPlant(question);
+								response = HttpUtil.sendPlant(question);
 							}
 							Message msg = activity.handler.obtainMessage();
 							msg.what = TypeQuestion;
+							msg.obj = response;
 							msg.sendToTarget();
 						} catch (Throwable e) {
 							// TODO Auto-generated catch block
@@ -406,7 +429,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			}
 			break;
 		case TypeNoImage:
-			final Question question = new Question();
+			question = new Question();
+			isshare = createQuestionFragment.getcheck();
 			String content = PublicHelper.TrimRight(activity.createQuestionFragment
 					.getContentString());
 			String zdContent = activity.createQuestionFragment
@@ -418,6 +442,9 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			User writer = new User();
 			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			question.setWriter(writer);
+			if(area!=null){
+				question.setZone(area.getId());
+			}
 			Crop crop = new Crop();
 			crop.setId(activity.cropId);
 			if(status==0||status==1){
@@ -443,19 +470,21 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				@Override
 				public void run() {
 					try {
+						NetResponse response;
 						if(status==0){
-							HttpUtil.sendQuestion(question);
+							response = HttpUtil.sendQuestion(question);
 							MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_DISEASE_ID);
 						}
 						else if(status==1){
-							HttpUtil.sendGossip(question);
+							response = HttpUtil.sendGossip(question);
 							MobclickAgent.onEvent(CreateQuestionActivity.this, UmengConstants.ASK_GOSSIP_ID);
 						}
 						else{
-							HttpUtil.sendPlant(question);
+							response = HttpUtil.sendPlant(question);
 						}
 						Message msg = activity.handler.obtainMessage();
 						msg.what = TypeQuestion;
+						msg.obj=response;
 						msg.sendToTarget();
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
@@ -465,8 +494,41 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			}).start();
 			break;
 		case TypeQuestion:
+			if(msg.obj==null){
+				GFToast.show(getApplicationContext(),"发送失败");
+			}
+			else{
+				NetResponse response = (NetResponse)msg.obj;
+				if(response.getStatus()!=1){
+					GFToast.show(getApplicationContext(),response.getMessage());
+				}
+				else{
+					GFToast.show(getApplicationContext(),"发送成功");
+					if(isshare){
+						Intent in= new Intent();
+						Bundle bundle = new Bundle();
+						bundle.putSerializable("question", question);
+						in.putExtras(bundle);
+						ShareObj shareObj= (ShareObj) GsonUtil
+								.fromJson(response.getResult(), ShareObj.class);
+						if(shareObj==null || shareObj.getUrl().isEmpty()){
+							return;
+						}
+						in.putExtra("url", shareObj.getUrl());
+						if(status==0){
+							in.putExtra("folder", "question");
+						}else if(status==1){
+							in.putExtra("folder", "gossip");
+						}else{
+							in.putExtra("folder", "plantinfo");
+						}
+						in.setAction("sharequestion");
+						sendBroadcast(in);
+					}
+				}
+			}
 			activity.isSending = false;
-			GFToast.show(getApplicationContext(),"发送成功");
+			
 			break;
 		case TypeError:
 			if(msg.obj==null){

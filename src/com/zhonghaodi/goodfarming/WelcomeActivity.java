@@ -11,16 +11,26 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SettingPopupwindow;
 import com.zhonghaodi.customui.SharePopupwindow;
+import com.zhonghaodi.goodfarming.StoresActivity.StoreLocationListenner;
 import com.zhonghaodi.model.AppVersion;
+import com.zhonghaodi.model.City;
+import com.zhonghaodi.model.CityDto;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Recipe;
+import com.zhonghaodi.model.Store;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -54,6 +64,10 @@ import android.widget.TextView;
 public class WelcomeActivity extends Activity implements HandMessage {
 	private final int SPLASH_DISPLAY_LENGHT = 2000;
 	private GFHandler<WelcomeActivity> handler = new GFHandler<WelcomeActivity>(this);
+	// 定位相关
+	private LocationClient mLocClient;
+	public WelcomeLocationListenner myListener = new WelcomeLocationListenner();
+	private double x,y;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -62,6 +76,14 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		if(!UILApplication.checkNetworkState()){
 			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
+		int zone = GFAreaUtil.getCityId(this);
+		if(zone==0){
+			location();
+		}
+		else{
+			sleep();
+		}
+		
 	}
                   
 	@Override
@@ -77,7 +99,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 //		     }  
 //		  }, 1000); 
 		
-		sleep();
+		
 	}
 	
 	@Override
@@ -133,6 +155,18 @@ public class WelcomeActivity extends Activity implements HandMessage {
 				Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 30);
 	}
 	
+	private void location() {
+		
+		mLocClient = new LocationClient(getApplicationContext());
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(5000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+	}
+	
 	private void sleep(){
 		new Handler().postDelayed(new Runnable() {  
             public void run() {  
@@ -150,19 +184,72 @@ public class WelcomeActivity extends Activity implements HandMessage {
 
         WelcomeActivity.this.finish(); 
 	}
+	
+	/**
+	 * 定位SDK监听函数
+	 */
+	public class WelcomeLocationListenner implements BDLocationListener {
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			if (location == null)
+				return;
+			x=location.getLongitude();
+			y=location.getLatitude();
+//			x=118.780813;
+//			y=36.815181;
+			loadArea();
+			mLocClient.stop();
+			
+		}
+
+		public void onReceivePoi(BDLocation poiLocation) {
+		}
+	}
+	
+	public void loadArea(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getAreaString(x, y);
+				Message msg = handler.obtainMessage();
+				msg.what = 0;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+	}
 
 	
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
 		switch (msg.what) {
-
+		case 0:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				CityDto areadto = gson.fromJson(msg.obj.toString(),
+						new TypeToken<CityDto>() {
+						}.getType());
+				if(areadto!=null && areadto.isResult()){
+					GFAreaUtil.saveAreaInfo(this, areadto.getZone());
+				}
+				else{
+					GFAreaUtil.saveAreaInfo(this, new City());
+				}
+				
+			} else {
+				GFAreaUtil.saveAreaInfo(this, new City());
+			}
+			tomain();
+			break;
 		case -1:
 			String errString = msg.obj.toString();
 			GFToast.show(getApplicationContext(),errString);
 			tomain();
 			break;
-
 		default:
 			break;
 		}

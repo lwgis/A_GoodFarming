@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.networking.GFHandler;
@@ -64,7 +65,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 	LocationClient mLocClient;
 	public MiaoLocationListenner myListener = new MiaoLocationListenner();
 	private int page=0;
-	
+	private int zone;
 	//顶部轮播相关
 	private TextView ordersTv;
 	private List<SecondOrder> secondOrders;
@@ -109,6 +110,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 
 			
 		});
+		zone = GFAreaUtil.getCityId(this);
 		seconds = new ArrayList<Second>();
 		adapter = new SecondAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
@@ -142,7 +144,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getNewZfbtOrders();
+				String jsonString = HttpUtil.getNewZfbtOrders(zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 2;
 				msg.obj = jsonString;
@@ -158,7 +160,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getZfbt(x,y,0);
+				String jsonString = HttpUtil.getZfbt(x,y,0,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -175,7 +177,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getZfbt(x,y,page);
+				String jsonString = HttpUtil.getZfbt(x,y,page,zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
