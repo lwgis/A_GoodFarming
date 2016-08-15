@@ -158,7 +158,8 @@ public class ModifyPassActivity extends Activity implements HandMessage,OnClickL
 				user.setAlias(GFUserDictionary.getAlias(getApplicationContext()));
 				user.setThumbnail(GFUserDictionary.getThumbnail(getApplicationContext()));
 				user.setId(GFUserDictionary.getUserId(getApplicationContext()));
-				GFUserDictionary.saveLoginInfo(getApplicationContext(),user, newpass, this);
+				GFUserDictionary.saveLoginInfo(getApplicationContext(),user, newpass, 
+						this,GFUserDictionary.getAuth(getApplicationContext()));
 				this.setResult(4);
 				this.finish();
 				GFToast.show(getApplicationContext(),"密码修改成功");

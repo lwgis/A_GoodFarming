@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            android:text="&lt;返回"
+            android:textColor="#ffffff"
+            android:textSize="20dip" 
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="猜农资详细信息"
+            android:textColor="#FFFFFF"
+            android:textSize="18dip" />
+        
+    </RelativeLayout>
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pull_refresh_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:cacheColorHint="#000000"
+        android:divider="#eaeaea"
+        android:dividerHeight="8dp"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:listSelector="#00000000"
+        android:smoothScrollbar="true"
+        ptr:ptrAnimationStyle="rotate"
+        ptr:ptrHeaderBackground="@null"
+        ptr:ptrHeaderSubTextColor="#00ffff"
+        ptr:ptrHeaderTextColor="#868686" />  
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+	    >
+        <LinearLayout
+	        android:id="@+id/sendlayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="#ffffff" 
+	    	android:visibility="gone"
+	        android:orientation="horizontal"
+	         >
+	
+	        <com.zhonghaodi.customui.MyEditText
+	            android:id="@+id/chat_edit"
+	            style="@style/my_edittext_style"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_marginBottom="5dp"
+	            android:layout_marginTop="5dp"
+	            android:layout_weight="1"
+	            android:background="@null"
+	            android:lines="2"
+	            android:maxLength="200"
+	            android:minHeight="40dp"
+	            android:paddingLeft="5dp"
+	            android:textSize="16dip" 
+	            android:hint=""/>
+	
+	        <com.zhonghaodi.customui.MyTextButton
+	            android:id="@+id/send_meassage_button"
+	            android:layout_width="wrap_content"
+	            android:layout_height="32dp"
+	            android:layout_margin="5dip"
+	            android:background="@null"
+	            android:gravity="center"
+	            android:text="发送"
+	            android:textColor="#444444"
+	            android:textSize="20dip"/>
+	    </LinearLayout>
+	    <LinearLayout
+	        android:id="@+id/resLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="50dip"
+	        android:background="#ffffff" 
+	        android:orientation="horizontal"
+	        >
+	        <com.zhonghaodi.customui.MyTextButton
+	            android:id="@+id/send_button"
+	            android:layout_width="0dip"
+	            android:layout_height="40dp"
+	            android:layout_weight="1"
+	            android:layout_marginBottom="5dp"
+	            android:layout_marginLeft="20dp"
+	            android:layout_marginRight="20dp"
+	            android:layout_marginTop="5dp"
+	            android:background="@drawable/button_shape"
+	            android:text="回答"
+	            android:textColor="#ffffff"
+	            android:textSize="18dip" />
+	        
+	    </LinearLayout>
+	    
+	</RelativeLayout>
+
+</LinearLayout>

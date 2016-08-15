@@ -41,6 +41,7 @@ import android.os.Handler;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.zhonghaodi.goodfarming.UILApplication;
 import com.zhonghaodi.model.Comment;
 import com.zhonghaodi.model.GFMessage;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -74,7 +75,7 @@ public class HttpUtil {
 		HttpGet get = new HttpGet(urlString);
 		get.addHeader("Content-type", "application/json;charset=UTF-8");
 		get.addHeader("Accept-Charset", "utf-8");
-
+		get.addHeader("X-Token",UILApplication.getAuth());
 		try {
 			HttpResponse response = client.execute(get);
 
@@ -115,7 +116,7 @@ public class HttpUtil {
 		HttpGet get = new HttpGet(urlString);
 		get.addHeader("Content-type", "application/json;charset=UTF-8");
 		get.addHeader("Accept-Charset", "utf-8");
-
+		get.addHeader("X-Token",UILApplication.getAuth());
 		try {
 			HttpResponse response = client.execute(get);
 
@@ -159,6 +160,7 @@ public class HttpUtil {
 		StringBuffer sb = new StringBuffer();
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(urlString);
+		get.addHeader("X-Token",UILApplication.getAuth());
 		try {
 			HttpResponse response = client.execute(get);
 
@@ -191,12 +193,11 @@ public class HttpUtil {
 		StringBuffer sb = new StringBuffer();
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpDelete delete = new HttpDelete(urlString);
-		// get.addHeader("Content-type", "application/json;charset=UTF-8");
-		// get.addHeader("Accept-Charset", "utf-8");
+		delete.addHeader("X-Token",UILApplication.getAuth());
 		try {
 			HttpResponse response = client.execute(delete);
 			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode == 200) {
+			if (statusCode == 200 || statusCode == 201) {
 				InputStream inputStream = response.getEntity().getContent();
 				BufferedReader buffer = new BufferedReader(
 						new InputStreamReader(inputStream,
@@ -241,6 +242,7 @@ public class HttpUtil {
 		HttpPost post = new HttpPost(serviceUrl);
 		post.setEntity(entity);
 		post.setHeader("Content-Type", "application/json;charset=UTF-8");
+		post.addHeader("X-Token",UILApplication.getAuth());
 		HttpClientParams.setRedirecting(post.getParams(), false);
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpResponse response = client.execute(post);
@@ -272,12 +274,59 @@ public class HttpUtil {
 			return netResponse;
 		}
 	}
+	
+	public static NetResponse executeUserPost(String serviceUrl, String informjson)
+			throws Throwable {
+		NetResponse netResponse = new NetResponse();
+		StringBuffer sb = new StringBuffer();
+		StringEntity entity = new StringEntity(informjson, "UTF-8");
+		entity.setContentType("application/json;charset=UTF-8");
+		entity.setContentEncoding("UTF-8");
+
+		HttpPost post = new HttpPost(serviceUrl);
+		post.setEntity(entity);
+		post.setHeader("Content-Type", "application/json;charset=UTF-8");
+		HttpClientParams.setRedirecting(post.getParams(), false);
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpResponse response = client.execute(post);
+		System.out.println(response.getStatusLine().getStatusCode());
+		if (response.getStatusLine().getStatusCode() == 201
+				|| response.getStatusLine().getStatusCode() == 200) {
+			InputStream inputStream = response.getEntity().getContent();
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(
+					inputStream, Charset.forName("utf-8")));
+			String line = null;
+			while ((line = buffer.readLine()) != null) {
+				sb.append(line);
+			}
+			inputStream.close();
+			netResponse.setStatus(1);
+			netResponse.setResult(sb.toString());
+			String auth = response.getFirstHeader("X-Token").getValue();
+			netResponse.setAuth(auth);
+			return netResponse;
+		} else {
+			InputStream inputStream = response.getEntity().getContent();
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(
+					inputStream, Charset.forName("utf-8")));
+			String line = null;
+			while ((line = buffer.readLine()) != null) {
+				sb.append(line);
+			}
+			inputStream.close();
+			netResponse.setStatus(0);
+			netResponse.setMessage(sb.toString());
+			return netResponse;
+			
+		}
+	}
 
 	public static NetResponse executeHttpPost(String serviceUrl,
 			List<NameValuePair> paramList) throws Throwable {
 		NetResponse netResponse = new NetResponse();
 		StringBuffer sb = new StringBuffer();
 		HttpPost post = new HttpPost(serviceUrl);
+		post.addHeader("X-Token",UILApplication.getAuth());
 		post.setEntity(new UrlEncodedFormEntity(paramList, HTTP.UTF_8));
 		HttpClientParams.setRedirecting(post.getParams(), false);
 		DefaultHttpClient client = new DefaultHttpClient();
@@ -318,6 +367,7 @@ public class HttpUtil {
 		HttpPut put = new HttpPut(urlString);
 		put.addHeader("Content-Type", "application/json;charset=UTF-8");
 		put.addHeader("Accept-Charset", "utf-8");
+		put.addHeader("X-Token",UILApplication.getAuth());
 		StringEntity entity = new StringEntity(informjson, "UTF-8");
 		entity.setContentType("application/json;charset=UTF-8");
 		entity.setContentEncoding("UTF-8");
@@ -359,6 +409,7 @@ public class HttpUtil {
 		HttpPut put = new HttpPut(urlString);
 		put.addHeader("Content-Type", "application/x-www-form-urlencoded");
 		put.addHeader("Accept-Charset", "utf-8");
+		put.addHeader("X-Token",UILApplication.getAuth());
 		put.setEntity(new UrlEncodedFormEntity(paramList, HTTP.UTF_8));
 		try {
 			HttpResponse response = client.execute(put);
@@ -862,7 +913,7 @@ public class HttpUtil {
 		user.setPassword(password);
 		String jsonString = JsonUtil.convertObjectToJson(user,
 				"yyyy-MM-dd HH:mm:ss", new String[] { User.class.toString() });
-		return HttpUtil.executeHttpPost(RootURL + "users/login", jsonString);
+		return HttpUtil.executeUserPost(RootURL + "users/login", jsonString);
 	}
 	
 	/**
@@ -911,7 +962,7 @@ public class HttpUtil {
 		String urlString = RootURL + "users";
 		String jsonString = JsonUtil.convertObjectToJson(user,
 				"yyyy-MM-dd HH:mm:ss", new String[] { User.class.toString() });
-		return HttpUtil.executeHttpPost(urlString, jsonString);
+		return HttpUtil.executeUserPost(urlString, jsonString);
 	}
 	
 	public static NetResponse modifyUser(User user) throws Throwable {
@@ -2595,6 +2646,108 @@ public class HttpUtil {
 			netResponse.setMessage(e.getMessage());
 			return netResponse;
 		}
+	}
+	
+	/**
+	 * 编辑收货地址
+	 * @param newpass
+	 * @param uid
+	 * @return
+	 */
+	public static NetResponse updateContact(final int cid,
+			final String name,
+			final String phone,
+			final String post,
+			final String address) {
+		String jsonString = null;
+		String urlString = RootURL + "contacts/"+cid;
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return name;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "name";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair);
+		NameValuePair phoneValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return phone;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "phone";
+			}
+		};
+		
+		nameValuePairs.add(phoneValuePair);
+		
+		NameValuePair addressValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return address;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "address";
+			}
+		};
+		
+		nameValuePairs.add(addressValuePair);
+		
+		NameValuePair postValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return post;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "postnumber";
+			}
+		};
+		
+		nameValuePairs.add(postValuePair);
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	/**
+	 * 删除收货地址
+	 * @param cid
+	 * @return
+	 */
+	public static String deleteContact(int cid){
+		String urlString = RootURL + "contacts/"+cid;
+		String result =HttpUtil.executeHttpDelete(urlString);
+		return result;
 	}
 	
 	/**

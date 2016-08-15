@@ -14,10 +14,12 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -27,7 +29,9 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 	private EditText phoneEditText;
 	private EditText postEditText;
 	private EditText addressEditText;
+	private Contact eContact;
 	private GFHandler<ContactActivity> handler = new GFHandler<ContactActivity>(this);
+	private int status=0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,14 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 		phoneEditText = (EditText)findViewById(R.id.phone_edit);
 		postEditText = (EditText)findViewById(R.id.post_edit);
 		addressEditText = (EditText)findViewById(R.id.address_edit);
+		eContact = (Contact)getIntent().getSerializableExtra("contact");
+		if(eContact!=null){
+			status=1;
+			nameEditText.setText(eContact.getName());
+			phoneEditText.setText(eContact.getPhone());
+			postEditText.setText(eContact.getPostnumber());
+			addressEditText.setText(eContact.getAddress());
+		}
 	}
 	
 	@Override
@@ -63,6 +75,8 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 	}
 	
 	public void add(){
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+		imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		final String name = nameEditText.getText().toString();
 		final String phone = phoneEditText.getText().toString();
@@ -85,28 +99,55 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 			return;
 		}
 
-		new Thread(new Runnable() {
+		if(status==0){
+			new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				try {
-					NetResponse netResponse = HttpUtil.addContact(uid,name,phone,post,address);
-					Message msg = handler.obtainMessage();
-					if(netResponse.getStatus()==1){
-						msg.what = 1;
-						msg.obj = netResponse.getResult();
+				@Override
+				public void run() {
+					try {
+						NetResponse netResponse = HttpUtil.addContact(uid,name,phone,post,address);
+						Message msg = handler.obtainMessage();
+						if(netResponse.getStatus()==1){
+							msg.what = 1;
+							msg.obj = netResponse.getResult();
+						}
+						else{
+							msg.what = 0;
+							msg.obj = netResponse.getMessage();
+						}
+						msg.sendToTarget();
+					} catch (Throwable e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					else{
-						msg.what = 0;
-						msg.obj = netResponse.getMessage();
-					}
-					msg.sendToTarget();
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-		}).start();
+			}).start();
+		}
+		else{
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						NetResponse netResponse = HttpUtil.updateContact(eContact.getId(),name,phone,post,address);
+						Message msg = handler.obtainMessage();
+						if(netResponse.getStatus()==1){
+							msg.what = 2;
+							msg.obj = netResponse.getResult();
+						}
+						else{
+							msg.what = 0;
+							msg.obj = netResponse.getMessage();
+						}
+						msg.sendToTarget();
+					} catch (Throwable e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}).start();
+		}
+		
 	}
 
 	@Override
@@ -136,6 +177,21 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 			}
 			break;
 		case 1:
+			if (msg.obj != null) {
+				try {
+					Gson gson = new Gson();
+					Contact contact = gson.fromJson(msg.obj.toString(),
+							new TypeToken<Contact>() {
+							}.getType());
+					ContactActivity.this.finish();
+				} catch (Exception e) {
+					// TODO: handle exception
+					GFToast.show(getApplicationContext(),msg.obj.toString());
+				}
+				
+			}
+			break;
+		case 2:
 			if (msg.obj != null) {
 				try {
 					Gson gson = new Gson();

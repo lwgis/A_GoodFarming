@@ -32,6 +32,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 	private TextView passButton;
 	private GFHandler<LoginFragment> handler = new GFHandler<LoginFragment>(
 			this);
+	private String auth;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +60,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 							if(netResponse.getStatus()==1){
 								msg.what = 1;
 								msg.obj = netResponse.getResult();
+								auth = netResponse.getAuth();
 							}
 							else{
 								msg.what = -1;
@@ -143,7 +145,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 			LoginFragment loginFragment = (LoginFragment) object;
 			LoginUser loginUser = (LoginUser) GsonUtil.fromJson(msg.obj.toString(), LoginUser.class);
 			if (loginUser.getCode()==1) {
-				GFUserDictionary.saveLoginInfo(getActivity(),loginUser.getUser(),loginFragment.passwordEt.getText().toString(),loginFragment.getActivity());
+				GFUserDictionary.saveLoginInfo(getActivity(),loginUser.getUser(),loginFragment.passwordEt.getText().toString(),loginFragment.getActivity(),auth);
 				loginFragment.getActivity().setResult(3);
 				loginFragment.getActivity().finish();
 				Toast.makeText(loginFragment.getActivity(), "登录成功", Toast.LENGTH_SHORT).show();

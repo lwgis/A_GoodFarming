@@ -34,6 +34,7 @@ import com.zhonghaodi.model.Store;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.StoredData;
 import com.zhonghaodi.networking.HttpUtil;
 
 import android.Manifest.permission;
@@ -73,6 +74,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_welcome);
+		StoredData.getThis().markOpenApp();
 		if(!UILApplication.checkNetworkState()){
 			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
@@ -178,6 +180,26 @@ public class WelcomeActivity extends Activity implements HandMessage {
 	}
 	
 	private void tomain(){
+		int mode = StoredData.getThis().getLaunchMode();
+//		if(mode == StoredData.LMODE_AGAIN){
+//			Intent mainIntent = new Intent(WelcomeActivity.this,  
+//	                MainActivity.class);  
+//	        WelcomeActivity.this.startActivity(mainIntent);  
+//
+//	        WelcomeActivity.this.finish(); 
+//		}
+//		else{
+//			Intent mainIntent = new Intent(WelcomeActivity.this,  
+//	                VersionActivity.class);  
+//	        WelcomeActivity.this.startActivity(mainIntent);  
+//
+//	        WelcomeActivity.this.finish(); 
+//		}
+		
+		if(mode == StoredData.LMODE_NEW_INSTALL || mode==StoredData.LMODE_UPDATE){
+			GFUserDictionary.removeUserInfo(this);
+		}
+		
 		Intent mainIntent = new Intent(WelcomeActivity.this,  
                 MainActivity.class);  
         WelcomeActivity.this.startActivity(mainIntent);  

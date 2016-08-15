@@ -207,7 +207,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 		else{
 			loadTime();
 		}
-		startAd();
+//		startAd();
 	}
 	@Override
 	protected void onPause() {

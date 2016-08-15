@@ -355,7 +355,9 @@ public class ModifyInfoActivity extends Activity implements OnClickListener,Hand
 						User.class);
 				if(user1!=null){
 					GFToast.show(getApplicationContext(),"更新成功");
-					GFUserDictionary.saveLoginInfo(getApplicationContext(),user1, GFUserDictionary.getPassword(getApplicationContext()), this);
+					GFUserDictionary.saveLoginInfo(getApplicationContext(),user1, 
+							GFUserDictionary.getPassword(getApplicationContext()), this,
+							GFUserDictionary.getAuth(getApplicationContext()));
 					this.finish();
 				}
 				else{

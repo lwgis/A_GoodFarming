@@ -73,7 +73,7 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 	
 	public void setElementStatus(){
 		if(status==0){
-			titleText.setText("选择主区域");
+			titleText.setText("我在…");
 			goonBtn.setVisibility(View.VISIBLE);
 			int zone = GFAreaUtil.getCityId(this);
 			if(zone!=0){
@@ -84,7 +84,7 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 			adapter.setSelid(zone);
 		}
 		else{
-			titleText.setText("选择副区域");
+			titleText.setText("我还想看看…");
 			goonBtn.setVisibility(View.GONE);
 			int zone2= GFAreaUtil.getCityId1(this);
 			if(zone2==0){
@@ -135,8 +135,14 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 			adapter.notifyDataSetChanged();
 		}
 		else{
-			area2 = areas.get(position);
-			adapter.setSelid(area2.getId());
+			if(area2!=null && area2==areas.get(position)){
+				area2=null;
+				adapter.setSelid(0);
+			}
+			else{
+				area2 = areas.get(position);
+				adapter.setSelid(area2.getId());
+			}
 			adapter.notifyDataSetChanged();
 		}
 	}

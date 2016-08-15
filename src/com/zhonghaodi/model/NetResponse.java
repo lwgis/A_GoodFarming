@@ -9,6 +9,7 @@ public class NetResponse implements Serializable {
 	private int status;
 	private String message;
 	private String result;
+	private String auth;
 	
 	public NetResponse(){
 		
@@ -36,6 +37,14 @@ public class NetResponse implements Serializable {
 
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+	public String getAuth() {
+		return auth;
+	}
+
+	public void setAuth(String auth) {
+		this.auth = auth;
 	}
 	
 }

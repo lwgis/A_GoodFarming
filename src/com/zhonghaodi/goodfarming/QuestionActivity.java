@@ -116,8 +116,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private int status;
 	private MorePopupWindow morePopupWindow;
 	private ImageView agroImageView;
-//	private ImageView favoriteImageView;
-//	private LinearLayout favoriteLayout;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	private int rid;
@@ -130,9 +128,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_question);
 		agroImageView = (ImageView)findViewById(R.id.agro_image);
-//		favoriteLayout = (LinearLayout)findViewById(R.id.favoritelayout);
-//		favoriteImageView = (ImageView)findViewById(R.id.favorite_image);
-//		favoriteLayout.setOnClickListener(this);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
@@ -357,7 +352,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.deleteResponse(qid,rid);
+				String jsonString;// = HttpUtil.deleteResponse(qid,rid);
 				if(status==0){
 					jsonString = HttpUtil.deleteResponse(qid,rid);
 				}

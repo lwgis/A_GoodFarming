@@ -19,10 +19,15 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.R.bool;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -49,6 +54,7 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 	private boolean bSelect = false;
 	private int selected = 0;
 	private Contact mContact;
+	private Contact dContact;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,7 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 				mContact = (Contact)getIntent().getSerializableExtra("mContact");
 			}
 		}
+		registerForContextMenu(gridView);
 		gridView.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
@@ -87,6 +94,69 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 		gridView.setAdapter(adapter);
 	}
 	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		menu.add(0, 0, 0, "编辑");
+		menu.add(0, 1, 0, "删除");
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item 
+                .getMenuInfo();
+		switch (item.getItemId()) {
+		case 0:
+			Contact contact = contacts.get(info.position);
+			Intent intent = new Intent(this, ContactActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("contact", contact);
+			intent.putExtras(bundle);
+			startActivity(intent);
+			break;
+		case 1:
+			dContact = contacts.get(info.position);
+			final Dialog dialog = new Dialog(this, R.style.MyDialog);
+	        //设置它的ContentView
+			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	        View layout = inflater.inflate(R.layout.dialog, null);
+	        dialog.setContentView(layout);
+	        TextView contentView = (TextView)layout.findViewById(R.id.contentTxt);
+	        TextView titleView = (TextView)layout.findViewById(R.id.dialog_title);
+	        Button okBtn = (Button)layout.findViewById(R.id.dialog_button_ok);
+	        okBtn.setText("确定");
+	        okBtn.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();					
+					delete(dContact.getId());
+				}
+			});
+	        Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
+	        cancelButton.setText("取消");
+	        cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+	        titleView.setText("提示");
+	        contentView.setText("确定要删除选中的收货地址吗？");
+	        dialog.show();
+			break;
+
+		default:
+			break;
+		}
+		return super.onContextItemSelected(item);
+	}
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -106,6 +176,13 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 		MobclickAgent.onPause(this);
 	}
 
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		unregisterForContextMenu(gridView);
+	}
+
 	public void loaddata(){
 		new Thread(new Runnable() {
 			
@@ -115,6 +192,20 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 				String jsonString = HttpUtil.getContacts(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
+	private void delete(final int cid){
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.deleteContact(cid);
+				Message msg = handler.obtainMessage();
+				msg.what = 1;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 			}
@@ -245,6 +336,16 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 				
 			} else {
 				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
+			}
+			break;
+		case 1:
+			String strerr = msg.obj.toString();
+			if(!strerr.isEmpty()){
+				GFToast.show(getApplicationContext(),strerr);
+			}
+			else{
+				contacts.remove(dContact);
+				adapter.notifyDataSetChanged();
 			}
 			break;
 		default:

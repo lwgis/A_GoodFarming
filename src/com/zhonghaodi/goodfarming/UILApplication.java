@@ -64,6 +64,7 @@ import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.utils.StoredData;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 /**
@@ -78,6 +79,7 @@ public class UILApplication extends Application {
 	public static String sharefolder;
 	public static int sharequeid;
 	public static Bitmap sharebit;
+	public static String auth;
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
@@ -174,4 +176,10 @@ public class UILApplication extends Application {
             return flag;
     }
  
+    public static String getAuth(){
+    	if(auth==null){
+    		auth=GFUserDictionary.getAuth(applicationContext);
+    	}
+    	return auth;
+    }
 }

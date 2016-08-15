@@ -300,7 +300,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			}
 			fragment.user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
-			GFUserDictionary.saveLoginInfo(getActivity(),user, GFUserDictionary.getPassword(getActivity()), getActivity());	
+			GFUserDictionary.saveLoginInfo(getActivity(),user,
+					GFUserDictionary.getPassword(getActivity()), getActivity(),
+					GFUserDictionary.getAuth(getActivity()));	
 			fragment.functions.clear();
 			Function pointsFunction = new Function("积分使用", PointsActivity.class,R.drawable.jifen);
 			pointsFunction.setDescription(user.getPoint()+"积分");

@@ -24,6 +24,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	
 	private View bchView;
 	private View btcpView;
+	private View cnzView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,7 +38,8 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		nysView.setOnClickListener(this);
 		nyqView = view.findViewById(R.id.layout3);
 		nyqView.setOnClickListener(this);
-
+		cnzView = view.findViewById(R.id.layout4);
+		cnzView.setOnClickListener(this);
 		bchView = view.findViewById(R.id.layout9);
 		bchView.setOnClickListener(this);
 		btcpView = view.findViewById(R.id.layout7);
@@ -84,7 +86,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 			startActivity(intent2);
 			break;
 		case R.id.layout4:
-			Intent intent3 = new Intent(getActivity(), AgrotechnicalActivity.class);
+			Intent intent3 = new Intent(getActivity(), CaicaicaiActivity.class);
 			startActivity(intent3);
 			break;
 		case R.id.layout5:

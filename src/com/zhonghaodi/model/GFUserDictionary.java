@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+import com.zhonghaodi.goodfarming.UILApplication;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,8 +23,9 @@ public class GFUserDictionary {
 	 * @param alias
 	 *            用户昵称
 	 */
-	public static void saveLoginInfo(Context context,final User user,String password,final Activity activity) {
+	public static void saveLoginInfo(Context context,final User user,String password,final Activity activity,String auth) {
 		// 获取SharedPreferences对象
+		UILApplication.auth=auth;
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		// 获取Editor对象
@@ -37,6 +39,7 @@ public class GFUserDictionary {
 		editor.putInt("point", user.getPoint());
 		editor.putString("tjcode", user.getTjCode());
 		editor.putInt("coin", user.getCurrency());
+		editor.putString("auth", auth);
 		String croids = "";
 		if(user.getCrops()!=null && user.getCrops().size()>0){
 			for (Iterator iterator = user.getCrops().iterator(); iterator.hasNext();) {
@@ -92,6 +95,7 @@ public class GFUserDictionary {
 		editor.remove("point");
 		editor.remove("tjcode");
 		editor.remove("coin");
+		editor.remove("auth");
 		// 提交
 		editor.commit();
 	}
@@ -147,5 +151,12 @@ public class GFUserDictionary {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",
 				Context.MODE_PRIVATE);
 		return sharedPre.getInt("coin", 0);
+	}
+	
+	public static String getAuth(Context context) {
+		SharedPreferences sharedPre = context.getSharedPreferences("config",
+				Context.MODE_PRIVATE);
+		String auth = sharedPre.getString("auth", null);
+		return auth;
 	}
 }

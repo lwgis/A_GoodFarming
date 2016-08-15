@@ -1302,7 +1302,8 @@ public class MainActivity extends Activity implements OnClickListener,
 							User.class);
 					if(user1!=null){
 						GFToast.show(activity,"更新成功");
-						GFUserDictionary.saveLoginInfo(activity,user1, GFUserDictionary.getPassword(activity), activity);
+						GFUserDictionary.saveLoginInfo(activity,user1, GFUserDictionary.getPassword(activity),
+								activity,GFUserDictionary.getAuth(activity));
 					}
 					else{
 						GFToast.show(activity,"更新失败");

@@ -326,7 +326,7 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 					MobclickAgent.onEvent(this, UmengConstants.BUY_ALLOWANCE_ID);
 					intent.putExtra("status", 1);
 					if(coin>0){
-						GFToast.show(this, "抢购成功，共花费"+coin+"优惠币");
+						intent.putExtra("message", "共花费"+coin+"优惠币");
 					}
 					startActivity(intent);
 				}

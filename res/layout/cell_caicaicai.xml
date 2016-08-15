@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/background_with_shadow"
+        android:orientation="vertical" >
+        <LinearLayout
+            android:id="@+id/imgLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dip" >
+
+            <com.zhonghaodi.customui.GFImageView
+                android:id="@+id/image1"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder" />
+
+            <com.zhonghaodi.customui.GFImageView
+                android:id="@+id/image2"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder" />
+
+            <com.zhonghaodi.customui.GFImageView
+                android:id="@+id/image3"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imgLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dip"
+            android:visibility="gone">
+
+            <com.zhonghaodi.customui.GFImageView
+                android:id="@+id/image4"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder" />
+
+            <com.zhonghaodi.customui.GFImageView
+                android:id="@+id/image5"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder" />
+
+            <com.zhonghaodi.customui.GFImageView
+                android:id="@+id/image6"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder" />
+        </LinearLayout>
+        
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginBottom="5dip"
+            android:text="内容"
+            android:textColor="#333333"
+            android:textSize="16dip" />
+        
+        <TextView
+            android:id="@+id/answer_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginBottom="5dip"
+            android:text="正确答案："
+            android:textColor="#666666"
+            android:textSize="16dip" />
+        
+        <View  
+		   android:layout_width="match_parent"  
+		   android:layout_height="0.2px" 
+		   android:layout_marginTop="6dip"
+		   android:layout_marginBottom="0dip"
+		   android:layout_marginLeft="6dip"
+		   android:layout_marginRight="6dip"
+		   android:background="#cccccc"  
+		/> 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="5dip"
+            android:focusable="false"
+            >
+            <TextView
+	            android:id="@+id/response_text"
+	            android:layout_width="0dip"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:layout_margin="5dip"
+	             android:paddingTop="5dip"
+               android:paddingBottom="5dip"
+	            android:gravity="center"
+	            android:text="答案(10)"
+	            android:textColor="#808080"
+	            android:textSize="14dip" 
+	            android:focusable="false"
+	            />
+            <View  
+               android:id="@+id/splitline"
+			   android:layout_width="0.2px" 
+			   android:layout_height="match_parent" 
+			   android:layout_marginLeft="6dip"
+			   android:layout_marginTop="0dip"
+			   android:layout_marginBottom="0dip"
+			   android:layout_marginRight="6dip"
+			   android:background="#cccccc"  
+			/>
+            <TextView
+               android:id="@+id/comment_text"
+               android:layout_width="0dip"
+	           android:layout_height="wrap_content"
+	           android:layout_weight="1"
+               android:layout_margin="5dip"
+               android:paddingTop="5dip"
+               android:paddingBottom="5dip"
+	           android:gravity="center"
+               android:text="评论(10)"
+               android:textColor="#808080"
+               android:textSize="14dip" 
+               android:focusable="false"
+               />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

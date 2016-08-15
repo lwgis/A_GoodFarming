@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 public class SecondCodeActivity extends Activity implements HandMessage {
 	private TextView orderinfoView;
+	private TextView messageText;
 	private ImageView qrCodeIv;
 	private GFHandler<SecondCodeActivity> handler = new GFHandler<SecondCodeActivity>(this);
 	private SecondOrder secondOrder;
@@ -32,6 +33,7 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 		setContentView(R.layout.activity_secondcode);
 		orderinfoView = (TextView)findViewById(R.id.ordercontent_text);
 		qrCodeIv = (ImageView)findViewById(R.id.qrcode_image);
+		messageText = (TextView)findViewById(R.id.message_text);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 			
@@ -45,6 +47,10 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 		if(secondOrder!=null){
 			orderinfoView.setText(secondOrder.getSecond().getTitle()+"---1份");
 			loadQR(secondOrder.getSecond().getId(),secondOrder.getUsid());
+		}
+		String mess = getIntent().getStringExtra("message");
+		if(mess!=null){
+			messageText.setText(mess);
 		}
 		status = getIntent().getIntExtra("status", 0);
 	}

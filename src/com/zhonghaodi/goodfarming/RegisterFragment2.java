@@ -54,6 +54,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 	private GFImageButton headGfImageButton;
 	private String headImageName;
 	private boolean isSending = false;
+	private String auth;
 
 	public boolean isSending() {
 		return isSending;
@@ -351,6 +352,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 						if(netResponse.getStatus()==1){
 							msgUser.what = 2;
 							msgUser.obj = netResponse.getResult();
+							auth = netResponse.getAuth();
 						}
 						else{
 							msgUser.what = -1;
@@ -373,7 +375,8 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			LoginUser loginUser = (LoginUser) GsonUtil.fromJson(
 					msg.obj.toString(), LoginUser.class);
 			if (loginUser.getCode() == 1) {
-				GFUserDictionary.saveLoginInfo(getActivity(),loginUser.getUser(),registerFragment2.passwordEt.getText().toString(),registerFragment2.getActivity());
+				GFUserDictionary.saveLoginInfo(getActivity(),loginUser.getUser(),
+						registerFragment2.passwordEt.getText().toString(),registerFragment2.getActivity(),auth);
 				registerFragment2.getActivity().setResult(4);
 				registerFragment2.getActivity().finish();
 				GFToast.show(getActivity(),"注册成功");

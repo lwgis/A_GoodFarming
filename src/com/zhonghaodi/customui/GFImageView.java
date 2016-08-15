@@ -71,6 +71,37 @@ public class GFImageView extends ImageView {
 		this.bitmaps = bitmaps;
 	}
 	private List<NetImage> images;
+	private List<NetImage> images2;
+	public List<NetImage> getImages2() {
+		return images2;
+	}
+	public void setImages2(List<NetImage> images,List<NetImage> images2,final String folder) {
+		this.images = images;
+		this.images2 = images2;
+		if (images!=null&&images.size()>0) {
+			this.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					List<NetImage> imgs = new ArrayList<NetImage>();
+					for (int i = 0; i < GFImageView.this.images.size(); i++) {
+						NetImage image1 = GFImageView.this.images.get(i);
+						imgs.add(image1);
+						NetImage image2 = GFImageView.this.images2.get(i);
+						imgs.add(image2);
+					}
+					Intent it=new Intent(mContext, PhotoViewActivity.class);
+					it.putExtra("images", (Serializable)imgs);
+					it.putExtra("index", index);
+					it.putExtra("folder", folder);
+					mContext.startActivity(it);
+					((Activity)mContext).overridePendingTransition(R.anim.zoomin, 
+	                		0); 
+				}
+			});
+		}
+	}
+	
 
  
 }
