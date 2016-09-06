@@ -20,6 +20,7 @@ public class CaicaicaiHolder {
 	public  LinearLayout imgLayout2;
 	public List<GFImageView> imageViews1;
 	public List<GFImageView> imageViews2;
+	public LinearLayout shareLayout;
 	
 	public CaicaicaiHolder(View view){
 		imageViews1 = new ArrayList<GFImageView>();
@@ -43,6 +44,7 @@ public class CaicaicaiHolder {
 		commentView = (TextView) view.findViewById(R.id.comment_text);
 		imgLayout1 = (LinearLayout) view.findViewById(R.id.imgLayout1);
 		imgLayout2 = (LinearLayout) view.findViewById(R.id.imgLayout2);
+		shareLayout = (LinearLayout)view.findViewById(R.id.sharelayout);
 	}
 	
 	public void hideImageviews(){

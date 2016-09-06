@@ -63,7 +63,8 @@ public class LoginActivity extends Activity {
 				selectFragment(0);
 			}
 		});
-		selectFragment(0);
+		
+		selectFragment(getIntent().getIntExtra("index", 0));
 	}
 	
 	

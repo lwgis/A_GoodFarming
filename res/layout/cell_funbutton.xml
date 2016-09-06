@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <com.zhonghaodi.customui.MyTextButton
+        android:id="@+id/exit_button"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@drawable/button_shape"
+        android:text="退出登录"
+        android:textColor="#ffffff"
+        android:textSize="18dip" 
+        android:onClick="loginOut"/>
+
+</LinearLayout>

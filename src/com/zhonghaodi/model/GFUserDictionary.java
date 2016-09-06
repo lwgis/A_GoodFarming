@@ -99,6 +99,24 @@ public class GFUserDictionary {
 		// 提交
 		editor.commit();
 	}
+	
+	public static void removeAuth(Context context) {
+		// 获取SharedPreferences对象
+		SharedPreferences sharedPre = context.getSharedPreferences("config",
+				Context.MODE_PRIVATE);
+		// 获取Editor对象
+		Editor editor = sharedPre.edit();
+		editor.remove("userid");
+		editor.remove("alias");
+		editor.remove("password");
+		editor.remove("croids");
+		editor.remove("point");
+		editor.remove("tjcode");
+		editor.remove("coin");
+		editor.remove("auth");
+		// 提交
+		editor.commit();
+	}
 
 	public static String getUserId(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("config",

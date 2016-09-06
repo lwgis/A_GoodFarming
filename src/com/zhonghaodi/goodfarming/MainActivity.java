@@ -50,6 +50,7 @@ import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.GFVersionHint;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PointDic;
 import com.zhonghaodi.model.Question;
@@ -132,6 +133,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	public SharePopupwindow sharePopupwindow;
 	private BroadcastReceiver receiver;
 	private IntentFilter filter;
+	private TextView ndsText;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -148,6 +150,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		forumTv = (TextView)findViewById(R.id.forum_text);
 		discoverTv = (TextView) findViewById(R.id.discover_text);
 		meTv = (TextView) findViewById(R.id.me_text);
+		ndsText = (TextView)findViewById(R.id.ndes_text);
 		homeView.setOnClickListener(this);
 		forumView.setOnClickListener(this);
 		discoverView.setOnClickListener(this);
@@ -203,7 +206,18 @@ public class MainActivity extends Activity implements OnClickListener,
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
 		loadPointdics();
+		int ver = getIntent().getIntExtra("ver", 0);
+		if(ver==1){
+			String phone = GFUserDictionary.getPhone(this);
+			if(!TextUtils.isEmpty(phone)){
+				Intent loginit1 = new Intent(MainActivity.this,  
+		                LoginActivity.class);  
+				loginit1.putExtra("index", 1);
+		        this.startActivity(loginit1);  
 
+			}
+			
+		}
 	}
 
 	
@@ -886,6 +900,12 @@ public class MainActivity extends Activity implements OnClickListener,
 		
 		if(bUpdate){
 			tryUpdate();
+		}
+		if(GFVersionHint.getAll(this)){
+			ndsText.setVisibility(View.VISIBLE);
+		}
+		else{
+			ndsText.setVisibility(View.GONE);
 		}
 	}
 

@@ -8,7 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.ZfbtOrder;
+import com.zhonghaodi.model.ZfbtBuy;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -34,7 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class PostOrdersActivity extends Activity implements HandMessage,OnItemClickListener,OnClickListener {
 	private ListView pullToRefreshListView;
-	private List<ZfbtOrder> zfbtOrders;
+	private List<ZfbtBuy> zfbtOrders;
 	private PostOrderAdapter adapter;
 	private LinearLayout emptyLayout;
 	private GFHandler<PostOrdersActivity> handler = new GFHandler<PostOrdersActivity>(this);
@@ -48,7 +48,7 @@ public class PostOrdersActivity extends Activity implements HandMessage,OnItemCl
 		pullToRefreshListView = (ListView) findViewById(R.id.pull_refresh_list);		
 		pullToRefreshListView.setOnItemClickListener(this);		
 		emptyLayout = (LinearLayout)findViewById(R.id.empty_layout);
-		zfbtOrders = new ArrayList<ZfbtOrder>();
+		zfbtOrders = new ArrayList<ZfbtBuy>();
 		adapter = new PostOrderAdapter();
 		pullToRefreshListView.setAdapter(adapter);
 		
@@ -138,7 +138,7 @@ public class PostOrdersActivity extends Activity implements HandMessage,OnItemCl
 			}
 			
 			holderpostorder=(HolderZfbtOrder)convertView.getTag();
-			ZfbtOrder zfbtOrder = zfbtOrders.get(position);
+			ZfbtBuy zfbtOrder = zfbtOrders.get(position);
 			if (zfbtOrder.getSecond().getImage()!=null) {
 				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+zfbtOrder.getSecond().getImage(), holderpostorder.zfbtIv, ImageOptions.optionsNoPlaceholder);
 			}
@@ -178,7 +178,7 @@ public class PostOrdersActivity extends Activity implements HandMessage,OnItemCl
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		// TODO Auto-generated method stub
-		ZfbtOrder order = zfbtOrders.get(position);
+		ZfbtBuy order = zfbtOrders.get(position);
 		Intent intent = new Intent(this, SecondOrderActivity.class);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("order", order);
@@ -192,11 +192,11 @@ public class PostOrdersActivity extends Activity implements HandMessage,OnItemCl
 		// TODO Auto-generated method stub
 		if (msg.obj != null) {
 			Gson gson = new Gson();
-			List<ZfbtOrder> ses = gson.fromJson(msg.obj.toString(),
-					new TypeToken<List<ZfbtOrder>>() {
+			List<ZfbtBuy> ses = gson.fromJson(msg.obj.toString(),
+					new TypeToken<List<ZfbtBuy>>() {
 					}.getType());
 			zfbtOrders.clear();
-			for (ZfbtOrder zfbtOrder : ses) {
+			for (ZfbtBuy zfbtOrder : ses) {
 				zfbtOrders.add(zfbtOrder);
 			}
 			adapter.notifyDataSetChanged();

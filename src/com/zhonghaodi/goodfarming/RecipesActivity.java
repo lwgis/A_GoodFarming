@@ -65,8 +65,7 @@ public class RecipesActivity extends Activity implements HandMessage,OnClickList
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
-				// TODO Auto-generated method stub
-				
+				// TODO Auto-generated method stub				
 			}
 
 			@Override
@@ -77,11 +76,8 @@ public class RecipesActivity extends Activity implements HandMessage,OnClickList
 					pullToRefreshListView.onRefreshComplete();
 					return;
 				}
-				loadMoreData(x,y,recipes.size());
-				
-			}
-
-			
+				loadMoreData(x,y,recipes.size());				
+			}			
 		});
 		recipes = new ArrayList<Recipe>();
 		adapter = new RecipeAdapter();

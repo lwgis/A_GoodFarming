@@ -1,5 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
+import com.google.zxing.common.StringUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyEditText;
@@ -17,6 +18,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,11 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_login, container, false);
 		phoneEt = (MyEditText) view.findViewById(R.id.phone_edit);
+		String phone = GFUserDictionary.getPhone(getActivity());
+		if(!TextUtils.isEmpty(phone)){
+			phoneEt.setText(phone);
+			GFUserDictionary.removeAuth(getActivity());
+		}
 		passwordEt = (MyEditText) view.findViewById(R.id.password_edit);
 		passwordEt.addTextChangedListener(this);
 		phoneEt.addTextChangedListener(this);
@@ -138,7 +145,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 		case -1:
 			if(msg.obj!=null){
 				if(msg.obj.toString().trim().length()>=1)
-					GFToast.show(getActivity().getApplicationContext(),msg.obj.toString());
+					GFToast.show(getActivity(),msg.obj.toString());
 			}
 			break;
 		case 1:

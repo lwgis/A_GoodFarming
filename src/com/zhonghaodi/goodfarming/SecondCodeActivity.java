@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.SecondOrder;
+import com.zhonghaodi.model.ZfbtOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -25,6 +26,7 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 	private ImageView qrCodeIv;
 	private GFHandler<SecondCodeActivity> handler = new GFHandler<SecondCodeActivity>(this);
 	private SecondOrder secondOrder;
+	private ZfbtOrder zfbtOrder;
 	private int status;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +45,25 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 				SecondCodeActivity.this.finish();
 			}
 		});
-		secondOrder = (SecondOrder)getIntent().getSerializableExtra("order");
+		status = getIntent().getIntExtra("status", 0);
+		if(status==0){
+			secondOrder = (SecondOrder)getIntent().getSerializableExtra("order");
+		}
+		else{
+			zfbtOrder = (ZfbtOrder)getIntent().getSerializableExtra("order");
+		}
 		if(secondOrder!=null){
 			orderinfoView.setText(secondOrder.getSecond().getTitle()+"---1份");
 			loadQR(secondOrder.getSecond().getId(),secondOrder.getUsid());
 		}
+		if(zfbtOrder!=null){
+			orderinfoView.setText(zfbtOrder.getSecond().getTitle()+"---1份");
+			loadQR(zfbtOrder.getSecond().getId(),zfbtOrder.getUsid());
+		}
 		String mess = getIntent().getStringExtra("message");
 		if(mess!=null){
 			messageText.setText(mess);
-		}
-		status = getIntent().getIntExtra("status", 0);
+		}	
 	}
 	@Override
 	protected void onResume() {

@@ -4,6 +4,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.GFVersionHint;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
@@ -14,6 +15,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.view.ViewGroup;
 
 public class DiscoverFragment extends Fragment implements OnClickListener {
@@ -25,6 +27,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 	private View bchView;
 	private View btcpView;
 	private View cnzView;
+	private TextView cnzText;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,14 +39,15 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		nzdView.setOnClickListener(this);
 		nysView = view.findViewById(R.id.layout2);
 		nysView.setOnClickListener(this);
-		nyqView = view.findViewById(R.id.layout3);
-		nyqView.setOnClickListener(this);
+//		nyqView = view.findViewById(R.id.layout3);
+//		nyqView.setOnClickListener(this);
 		cnzView = view.findViewById(R.id.layout4);
 		cnzView.setOnClickListener(this);
 		bchView = view.findViewById(R.id.layout9);
 		bchView.setOnClickListener(this);
 		btcpView = view.findViewById(R.id.layout7);
 		btcpView.setOnClickListener(this);
+		cnzText = (TextView)view.findViewById(R.id.ncnz_text);
 		return view;
 	}
 
@@ -52,6 +56,12 @@ public class DiscoverFragment extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onPageStart("发现Fragment");
+		if(GFVersionHint.getCnzcount(getActivity())==0){
+			cnzText.setVisibility(View.VISIBLE);
+		}
+		else{
+			cnzText.setVisibility(View.GONE);
+		}
 	}
 
 

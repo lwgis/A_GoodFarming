@@ -7,7 +7,7 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.SecondOrder;
-import com.zhonghaodi.model.ZfbtOrder;
+import com.zhonghaodi.model.ZfbtBuy;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -35,7 +35,7 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 	private TextView contentTextView;
 	private MyTextButton okButton;
 	private GFHandler<SecondOrderActivity> handler = new GFHandler<SecondOrderActivity>(this);
-	private ZfbtOrder secondOrder;
+	private ZfbtBuy secondOrder;
 	private int status;
 	
 	@Override
@@ -53,7 +53,7 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 		okButton.setOnClickListener(this);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(this);
-		secondOrder = (ZfbtOrder)getIntent().getSerializableExtra("order");
+		secondOrder = (ZfbtBuy)getIntent().getSerializableExtra("order");
 		if(secondOrder!=null){
 			titleView.setText(secondOrder.getSecond().getTitle());
 			ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+secondOrder.getSecond().getImage(), headImageView, ImageOptions.optionsNoPlaceholder);

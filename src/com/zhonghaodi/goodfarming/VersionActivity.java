@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.bitlet.weupnp.Main;
 
+import com.easemob.chat.core.r;
 import com.zhonghaodi.adapter.BannerAdapter;
+import com.zhonghaodi.adapter.VersionAdapter;
 import com.zhonghaodi.customui.GFImageView;
 import com.zhonghaodi.utils.PublicHelper;
 
@@ -22,9 +24,9 @@ public class VersionActivity extends Activity {
 
 	private LinearLayout dotLayout;
 	private ViewPager adViewPager;
-	private List<GFImageView> imageViews;
+	private List<Integer> imgResources;
 	private List<View> dots;
-	private BannerAdapter adapter;
+	private VersionAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,34 +34,33 @@ public class VersionActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_version);
 		dotLayout = (LinearLayout)findViewById(R.id.dot_layout);
+		dotLayout.setVisibility(View.INVISIBLE);
 		adViewPager = (ViewPager)findViewById(R.id.vp);
-		imageViews = new ArrayList<GFImageView>();
+		imgResources = new ArrayList<Integer>();
+		imgResources.add(R.drawable.guide1);
+		imgResources.add(R.drawable.guide2);
 		dots = new ArrayList<View>();
-		for (int i=0;i<3;i++) {
-			
-			GFImageView imageView = new GFImageView(this);
-			if(i==0){
-				imageView.setImageDrawable(getResources().getDrawable(R.drawable.ver1));
-			}else if(i==1){
-				imageView.setImageDrawable(getResources().getDrawable(R.drawable.ver2));
-			}
-			else{
-				imageView.setImageDrawable(getResources().getDrawable(R.drawable.ver3));
-			}			
-			imageView.setIndex(i);
-			imageView.setScaleType(ScaleType.FIT_CENTER);
-			imageViews.add(imageView);
-			
-			View dot = new View(this);
-			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(PublicHelper.dip2px(this, 5),PublicHelper.dip2px(this, 5));
-			layoutParams.setMargins(PublicHelper.dip2px(this, 2), 0, PublicHelper.dip2px(this, 2), 0);
-			dot.setLayoutParams(layoutParams);
-			dot.setBackgroundResource(R.drawable.dot_normal);
-			dot.setVisibility(View.VISIBLE);
-			dotLayout.addView(dot);
-			dots.add(dot);
-		}
-		adapter = new BannerAdapter(imageViews);
+		View dot = new View(this);
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(PublicHelper.dip2px(this, 5),PublicHelper.dip2px(this, 5));
+		layoutParams.setMargins(PublicHelper.dip2px(this, 2), 0, PublicHelper.dip2px(this, 2), 0);
+		dot.setLayoutParams(layoutParams);
+		dot.setBackgroundResource(R.drawable.dot_normal);
+		dot.setVisibility(View.VISIBLE);
+		dotLayout.addView(dot);
+		dots.add(dot);
+		View dot1 = new View(this);
+		dot1.setLayoutParams(layoutParams);
+		dot1.setBackgroundResource(R.drawable.dot_normal);
+		dot1.setVisibility(View.VISIBLE);
+		dotLayout.addView(dot1);
+		dots.add(dot1);
+		View dot2 = new View(this);
+		dot2.setLayoutParams(layoutParams);
+		dot2.setBackgroundResource(R.drawable.dot_normal);
+		dot2.setVisibility(View.VISIBLE);
+		dotLayout.addView(dot2);
+		dots.add(dot2);
+		adapter = new VersionAdapter(imgResources,this);
 		adViewPager.setAdapter(adapter);
 		adViewPager.setOnPageChangeListener(new MyPageChangeListener());
 	}
@@ -83,14 +84,16 @@ public class VersionActivity extends Activity {
 			dots.get(oldPosition).setBackgroundResource(R.drawable.dot_normal);
 			dots.get(position).setBackgroundResource(R.drawable.dot_focused);
 			oldPosition = position;
-			if(position==2){
-				Intent mainIntent = new Intent(VersionActivity.this,  
-						MainActivity.class);  
-				VersionActivity.this.startActivity(mainIntent);  
-
-				VersionActivity.this.finish(); 
-			}
 		}
+	}
+	
+	public void toMain(View view){
+		Intent mainIntent = new Intent(VersionActivity.this,  
+				MainActivity.class);  
+		mainIntent.putExtra("ver", 1);
+		VersionActivity.this.startActivity(mainIntent);  
+
+		VersionActivity.this.finish(); 
 	}
 
 }

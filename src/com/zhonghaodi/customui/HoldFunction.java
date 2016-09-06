@@ -5,7 +5,6 @@ import com.zhonghaodi.goodfarming.R;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import junit.framework.Test;
 
 public class HoldFunction {
 	public ImageView leftIv;

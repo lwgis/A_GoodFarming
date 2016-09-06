@@ -47,6 +47,15 @@ public class PublicHelper {
 
         return wm.getDefaultDisplay().getWidth();
     }
+    
+    public static int getPageCount(int allsize,int size){
+    	if((allsize%size)>0){
+			return allsize/size+1;
+		}
+		else{
+			return allsize/size;
+		}
+    }
 	
 	public static Bitmap getBitmap(String path) throws IOException{
 

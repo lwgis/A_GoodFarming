@@ -53,6 +53,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,13 +79,14 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		if(!UILApplication.checkNetworkState()){
 			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
-		int zone = GFAreaUtil.getCityId(this);
-		if(zone==0){
-			location();
-		}
-		else{
-			sleep();
-		}
+//		int zone = GFAreaUtil.getCityId(this);
+//		if(zone==0){
+//			location();
+//		}
+//		else{
+//			sleep();
+//		}
+		sleep();
 		
 	}
                   
@@ -180,31 +182,23 @@ public class WelcomeActivity extends Activity implements HandMessage {
 	}
 	
 	private void tomain(){
-		int mode = StoredData.getThis().getLaunchMode();
-//		if(mode == StoredData.LMODE_AGAIN){
-//			Intent mainIntent = new Intent(WelcomeActivity.this,  
-//	                MainActivity.class);  
-//	        WelcomeActivity.this.startActivity(mainIntent);  
-//
-//	        WelcomeActivity.this.finish(); 
-//		}
-//		else{
-//			Intent mainIntent = new Intent(WelcomeActivity.this,  
-//	                VersionActivity.class);  
-//	        WelcomeActivity.this.startActivity(mainIntent);  
-//
-//	        WelcomeActivity.this.finish(); 
-//		}
 		
-		if(mode == StoredData.LMODE_NEW_INSTALL || mode==StoredData.LMODE_UPDATE){
-			GFUserDictionary.removeUserInfo(this);
+		if(StoredData.getThis().isFirstOpen()){
+			
+			Intent mainIntent = new Intent(WelcomeActivity.this,  
+	                VersionActivity.class);  
+	        WelcomeActivity.this.startActivity(mainIntent);  
+
+	        WelcomeActivity.this.finish(); 
+		}
+		else{
+			Intent mainIntent = new Intent(WelcomeActivity.this,  
+	                MainActivity.class);  
+	        WelcomeActivity.this.startActivity(mainIntent);  
+
+	        WelcomeActivity.this.finish(); 
 		}
 		
-		Intent mainIntent = new Intent(WelcomeActivity.this,  
-                MainActivity.class);  
-        WelcomeActivity.this.startActivity(mainIntent);  
-
-        WelcomeActivity.this.finish(); 
 	}
 	
 	/**

@@ -469,6 +469,22 @@
             android:name=".CaiActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ZfbtInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ZfbtOrdersActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".CreateZfbtEvaluateActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ZfbtEvaluatesActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity android:name=".wxapi.WXEntryActivity"  
             android:launchMode="singleInstance"  
             android:exported="true"  

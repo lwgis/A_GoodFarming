@@ -282,7 +282,6 @@ public class HttpUtil {
 		StringEntity entity = new StringEntity(informjson, "UTF-8");
 		entity.setContentType("application/json;charset=UTF-8");
 		entity.setContentEncoding("UTF-8");
-
 		HttpPost post = new HttpPost(serviceUrl);
 		post.setEntity(entity);
 		post.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -302,8 +301,10 @@ public class HttpUtil {
 			inputStream.close();
 			netResponse.setStatus(1);
 			netResponse.setResult(sb.toString());
-			String auth = response.getFirstHeader("X-Token").getValue();
-			netResponse.setAuth(auth);
+			if(response.getFirstHeader("X-Token")!=null){
+				String auth = response.getFirstHeader("X-Token").getValue();
+				netResponse.setAuth(auth);
+			}
 			return netResponse;
 		} else {
 			InputStream inputStream = response.getEntity().getContent();
@@ -634,15 +635,26 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/myFavQuestion");
 		return jsonString;
 	}
+	
+	public static String getFavstatus(int qid,String uid) {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "questions/"+qid+"/isfav?uid="+uid);
+		return jsonString;
+	}
 
-	public static String getSingleQuestion(int qid) {
-		String urlString = RootURL + "questions/" + String.valueOf(qid);
+	public static String getSingleQuestion(int qid,int page,long time) {
+		String urlString = RootURL + "questions/" + String.valueOf(qid)+"/responses?page="+page;
+		if(page>0){
+			urlString+="&time="+time;
+		}
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}
 	
-	public static String getSingleGossip(int qid) {
-		String urlString = RootURL + "gossips/" + String.valueOf(qid);
+	public static String getSingleGossip(int qid,int page,long time) {
+		String urlString = RootURL + "gossips/" + String.valueOf(qid)+"/responses?page="+page;
+		if(page>0){
+			urlString+="&time="+time;
+		}
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}
@@ -2258,6 +2270,12 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
+	public static String getZfbtById(int id,double x,double y){
+		String url = RootURL + "zfbt/"+id+"?x="+x+"&y="+y;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
 	public static String getServerTime(){
 		String url = RootURL + "users/time";
 		String jsonString = HttpUtil.executeHttpGet(url);
@@ -2425,6 +2443,86 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 评价政府补贴订单
+	 * @return
+	 */
+	public static NetResponse sendZfbtEvaluate(final String uid,final int zid,final int oid,final int scoring,final String evaluate) {
+		String jsonString = null;
+		String urlString = RootURL + "zfbt/" + zid
+				+ "/order/evaluate";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		nameValuePairs.add(nameValuePair);
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(oid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "oid";
+			}
+		};
+		nameValuePairs.add(nameValuePair1);
+		NameValuePair nameValuePair2 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(scoring);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "scoring";
+			}
+		};
+		nameValuePairs.add(nameValuePair2);
+		NameValuePair nameValuePair3 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return evaluate;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "evaluate";
+			}
+		};
+		nameValuePairs.add(nameValuePair3);
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
 	 * 举报
 	 * @return
 	 */
@@ -2494,6 +2592,17 @@ public class HttpUtil {
 		if(position>0){
 			urlString+="?position="+position;
 		}
+		String jsonString = HttpUtil.executeHttpGet(urlString);
+		return jsonString;
+	}
+	
+	/**
+	 * 获取政府补贴的评价
+	 * @return
+	 */
+	public static String getZfbtEvaluates(int zid) {
+		String urlString = RootURL + "zfbt/" + zid
+				+ "/evaluates";
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}

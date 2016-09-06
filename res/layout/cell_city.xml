@@ -4,12 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/background_with_shadow" >
-    
-    <LinearLayout 
+    android:background="@drawable/select_crop_color" >
+    <TextView
+        android:id="@+id/group_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#38be99"
+        android:gravity="center_vertical|center_horizontal"
+        android:padding="3dip"
+        android:textSize="17dip" 
+        android:text="S"
+        android:textColor="#FFFFFF" />
+    <LinearLayout
+       android:id="@+id/contentLayout"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" 
+       android:orientation="vertical"
+        >
+        <LinearLayout 
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_margin="5dip" 
+       android:layout_margin="6dip" 
        android:orientation="horizontal"
        android:gravity="center_vertical"
        android:paddingTop="5dip"
@@ -34,5 +49,16 @@
 		   android:enabled="false"
 		   />
     </LinearLayout>
-
+	<View  
+	   android:layout_width="match_parent"  
+	   android:layout_height="0.2px" 
+	   android:layout_marginLeft="10dip"
+	   android:layout_marginTop="3dip"
+	   android:layout_marginBottom="3dip"
+	   android:layout_marginRight="0dip"
+	   android:background="#cccccc"  
+	/> 
+        
+    </LinearLayout>
+    
 </LinearLayout>

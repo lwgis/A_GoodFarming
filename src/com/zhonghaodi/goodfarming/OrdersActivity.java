@@ -86,8 +86,7 @@ public class OrdersActivity extends Activity implements OnClickListener {
 			startActivity(intent3);
 			break;
 		case R.id.layout5:
-			Intent intent4 = new Intent(this, MiaoOrdersActivity.class);
-			intent4.putExtra("status", 1);
+			Intent intent4 = new Intent(this, ZfbtOrdersActivity.class);
 			startActivity(intent4);
 			break;
 		case R.id.layout6:

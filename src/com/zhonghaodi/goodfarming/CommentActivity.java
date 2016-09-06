@@ -210,10 +210,10 @@ public class CommentActivity extends Activity implements UrlOnClick,
 				// TODO Auto-generated method stub
 				String jsonString;
 				if(status==0){
-					jsonString = HttpUtil.getSingleQuestion(qid);
+					jsonString = HttpUtil.getSingleQuestion(qid,0,0);
 				}
 				else if(status==1){
-					jsonString = HttpUtil.getSingleGossip(qid);
+					jsonString = HttpUtil.getSingleGossip(qid,0,0);
 				}
 				else{
 					jsonString = HttpUtil.getSinglePlant(qid);

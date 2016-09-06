@@ -108,6 +108,19 @@
                     android:textColor="#808080"
                     android:textSize="12dip" />
             </LinearLayout>
+            <TextView
+                android:id="@+id/ndes_text"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="22dip"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/design_red_point"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@android:color/white"
+                android:textSize="13dip"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout

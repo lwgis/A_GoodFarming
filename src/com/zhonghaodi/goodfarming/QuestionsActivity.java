@@ -30,8 +30,8 @@ public class QuestionsActivity extends Activity implements OnClickListener {
 		lalaguaView.setOnClickListener(this);
 //		View adzwView = findViewById(R.id.layout3);
 //		adzwView.setOnClickListener(this);
-		View wdzzfxView = findViewById(R.id.layout4);
-		wdzzfxView.setOnClickListener(this);
+//		View wdzzfxView = findViewById(R.id.layout4);
+//		wdzzfxView.setOnClickListener(this);
 	}
 	@Override
 	protected void onResume() {
@@ -62,9 +62,9 @@ public class QuestionsActivity extends Activity implements OnClickListener {
 //		case R.id.layout3:
 //			intent.putExtra("status", 3);
 //			break;
-		case R.id.layout4:
-			intent.putExtra("status", 2);
-			break;
+//		case R.id.layout4:
+//			intent.putExtra("status", 2);
+//			break;
 		default:
 			break;
 		}

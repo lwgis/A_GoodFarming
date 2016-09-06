@@ -33,7 +33,7 @@
 	          android:orientation="vertical"
 	          android:background="#e6e7eb"
 	          >
-		    <RelativeLayout 
+		    <!-- <RelativeLayout 
 	            android:id="@+id/layout3"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
 		            android:text="农艺圈"
 		            />
 		        
-		    </RelativeLayout>
+		    </RelativeLayout> -->
 		    <RelativeLayout 
 	            android:id="@+id/layout7"
 		        android:layout_width="match_parent"
@@ -196,7 +196,7 @@
 		            android:layout_width="40dip"
 		            android:layout_height="40dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/nys"
+		            android:src="@drawable/cai"
 		            />
 		        <TextView 
 		            android:id="@+id/avname4"
@@ -209,7 +209,18 @@
 		            android:textSize="18dip"
 		            android:text="猜农资"
 		            />
-		        
+		        <TextView
+	                android:id="@+id/ncnz_text"
+	                android:layout_width="10dp"
+	                android:layout_height="10dp"
+	                android:layout_marginTop="0dp"
+	                android:layout_marginLeft="30dp"
+	                android:background="@drawable/design_red_point"
+	                android:gravity="center"
+	                android:text=""
+	                android:textColor="@android:color/white"
+	                android:textSize="13dip"
+	                android:visibility="gone" />
 		    </RelativeLayout>
 		    
 	       </LinearLayout>

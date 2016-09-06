@@ -6,6 +6,7 @@ public class City implements Serializable {
 
 	private int id;
 	private String name;
+	private String pname;
 	
 	public City(){
 		
@@ -25,6 +26,14 @@ public class City implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getPname() {
+		return pname;
+	}
+
+	public void setPname(String pname) {
+		this.pname = pname;
 	}
 	
 	

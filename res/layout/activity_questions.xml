@@ -128,7 +128,7 @@
 		        
 		    </RelativeLayout>
 		    
-		    <RelativeLayout 
+		    <!-- <RelativeLayout 
 	            android:id="@+id/layout4"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
 		            android:textSize="18dip"
 		            android:text="我的种植分享"
 		            />		        
-		    </RelativeLayout>
+		    </RelativeLayout> -->
 	       </LinearLayout>
     </ScrollView>
 

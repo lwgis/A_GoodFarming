@@ -183,7 +183,6 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 					jsonString = HttpUtil.getMyGossipsString(uid);
 				}
 				else if(status==3){
-//					jsonString = HttpUtil.getAscQuestionsString(uid);
 					jsonString = HttpUtil.getFavorites(uid);
 				}
 				else{
@@ -668,12 +667,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 					for (Question question : questions) {
 						allQuestions.add(question);
 					}
-					if(status==2){
-						adapter.setStatus(1);
-					}
-					else{
-						adapter.setStatus(0);
-					}
+					
 				}
 				else{
 					Gson gs = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -690,7 +684,6 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 					for (FavoriteQuestion favoriteQuestion : questions) {
 						allQuestions.add(favoriteQuestion.getMyquestion());						
 					}
-					adapter.setStatus(0);
 				}
 				
 				adapter.notifyDataSetChanged();

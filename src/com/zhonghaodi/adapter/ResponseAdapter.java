@@ -240,6 +240,12 @@ public class ResponseAdapter extends BaseAdapter {
 			if(question.getAddress()!=null){
 				holder1.addressTextView.setText(question.getAddress());
 			}
+			if(question.isFine()){
+				holder1.jpLayout.setVisibility(View.VISIBLE);
+			}
+			else{
+				holder1.jpLayout.setVisibility(View.GONE);
+			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holder1.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -327,6 +333,12 @@ public class ResponseAdapter extends BaseAdapter {
 			holder2.forwardLayout.setOnClickListener(mClickListener);
 			if(question.getAddress()!=null){
 				holder2.addressTextView.setText(question.getAddress());
+			}
+			if(question.isFine()){
+				holder2.jpLayout.setVisibility(View.VISIBLE);
+			}
+			else{
+				holder2.jpLayout.setVisibility(View.GONE);
 			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
@@ -446,6 +458,12 @@ public class ResponseAdapter extends BaseAdapter {
 			if(question.getAddress()!=null){
 				holder3.addressTextView.setText(question.getAddress());
 			}
+			if(question.isFine()){
+				holder3.jpLayout.setVisibility(View.VISIBLE);
+			}
+			else{
+				holder3.jpLayout.setVisibility(View.GONE);
+			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holder3.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -507,6 +525,12 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant1.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant1.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant1.forwardLayout.setOnClickListener(mClickListener);
+			if(question.isFine()){
+				holderPlant1.jpLayout.setVisibility(View.VISIBLE);
+			}
+			else{
+				holderPlant1.jpLayout.setVisibility(View.GONE);
+			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant1.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -601,6 +625,12 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant2.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant2.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant2.forwardLayout.setOnClickListener(mClickListener);
+			if(question.isFine()){
+				holderPlant2.jpLayout.setVisibility(View.VISIBLE);
+			}
+			else{
+				holderPlant2.jpLayout.setVisibility(View.GONE);
+			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant2.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -719,6 +749,12 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant3.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant3.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant3.forwardLayout.setOnClickListener(mClickListener);
+			if(question.isFine()){
+				holderPlant3.jpLayout.setVisibility(View.VISIBLE);
+			}
+			else{
+				holderPlant3.jpLayout.setVisibility(View.GONE);
+			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant3.levelTextView.setText(question.getWriter().getIdentifier()+"农友");
@@ -861,6 +897,12 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant4.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant4.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant4.forwardLayout.setOnClickListener(mClickListener);
+			if(question.isFine()){
+				holderPlant4.jpLayout.setVisibility(View.VISIBLE);
+			}
+			else{
+				holderPlant4.jpLayout.setVisibility(View.GONE);
+			}
 			switch (question.getWriter().getLevelID()) {
 			case 1:
 				holderPlant4.levelTextView.setText(question.getWriter().getIdentifier()+"农友");

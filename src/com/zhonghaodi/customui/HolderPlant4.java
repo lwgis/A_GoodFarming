@@ -5,6 +5,7 @@ import com.zhonghaodi.goodfarming.R;
 
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class HolderPlant4 {
@@ -30,6 +31,7 @@ public class HolderPlant4 {
 	public	GFImageView imageView9;
 	public TextView forwardTextView;
 	public LinearLayout forwardLayout;
+	public RelativeLayout jpLayout;
 	
 	public HolderPlant4(View view){
 		nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -54,6 +56,7 @@ public class HolderPlant4 {
 		imageView9 = (GFImageView) view.findViewById(R.id.image9);
 		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
 		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
+		jpLayout = (RelativeLayout)view.findViewById(R.id.cainalayout);
 		reSetImageViews();
 	}
 	

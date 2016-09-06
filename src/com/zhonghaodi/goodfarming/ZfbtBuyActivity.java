@@ -1,6 +1,5 @@
 package com.zhonghaodi.goodfarming;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -12,11 +11,11 @@ import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
-import com.zhonghaodi.model.PointOrder;
-import com.zhonghaodi.model.ScoringDic;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.model.Stock;
+import com.zhonghaodi.model.Zfbt;
+import com.zhonghaodi.model.ZfbtOrder;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
@@ -38,16 +37,17 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickListener {
 	
 	private GFHandler<ZfbtBuyActivity> handler = new GFHandler<ZfbtBuyActivity>(this); 
-	private Second product;
+	private Zfbt product;
 	private Stock stock;
 	private Contact mContact;
 	private String uid;
-	private RadioGroup radioGroup;
-	private boolean isConpon=false;
+	private ToggleButton toggleButton;
+	private boolean isConpon=true;
 	private int coin=0;
 
 	@Override
@@ -59,8 +59,8 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 		cancelBtn.setOnClickListener(this);
 		Button okBtn = (MyTextButton)findViewById(R.id.ok_button);
 		okBtn.setOnClickListener(this);
-		radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
-		product = (Second)getIntent().getSerializableExtra("product");
+		toggleButton = (ToggleButton)findViewById(R.id.togglebtn);
+		product = (Zfbt)getIntent().getSerializableExtra("product");
 		stock = (Stock)getIntent().getSerializableExtra("stock");
 		initView();
 	}
@@ -133,22 +133,6 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 		if(stock!=null){
 			if(product.getCoupon()>0 && stock.getUser().isAcceptCoupon()){
 				selconponLayout.setVisibility(View.VISIBLE);
-				radioGroup.removeAllViews();
-				RadioButton radioButton = new RadioButton(this);
-				radioButton.setButtonDrawable(R.drawable.radiobg);
-				radioButton.setId(1000);
-				radioButton.setText("使用优惠币");
-				radioButton.setTextColor(Color.rgb(68, 68, 68));
-				LayoutParams rParams = new LayoutParams((int)getResources().getDimension(R.dimen.conponradio_width),LayoutParams.WRAP_CONTENT);
-				radioGroup.addView(radioButton, rParams);
-				
-				RadioButton radioButton1 = new RadioButton(this);
-				radioButton1.setButtonDrawable(R.drawable.radiobg);
-				radioButton1.setId(1001);
-				radioButton1.setText("不使用优惠币");
-				radioButton1.setTextColor(Color.rgb(68, 68, 68));
-				radioButton1.setChecked(true);
-				radioGroup.addView(radioButton1, rParams);
 			}
 			else{
 				selconponLayout.setVisibility(View.GONE);
@@ -157,22 +141,7 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 		else{
 			if(product.getCoupon()>0){
 				selconponLayout.setVisibility(View.VISIBLE);
-				radioGroup.removeAllViews();
-				RadioButton radioButton = new RadioButton(this);
-				radioButton.setButtonDrawable(R.drawable.radiobg);
-				radioButton.setId(1000);
-				radioButton.setText("使用优惠币");
-				radioButton.setTextColor(Color.rgb(68, 68, 68));
-				LayoutParams rParams = new LayoutParams((int)getResources().getDimension(R.dimen.conponradio_width),LayoutParams.WRAP_CONTENT);
-				radioGroup.addView(radioButton, rParams);
 				
-				RadioButton radioButton1 = new RadioButton(this);
-				radioButton1.setButtonDrawable(R.drawable.radiobg);
-				radioButton1.setId(1001);
-				radioButton1.setText("不使用优惠币");
-				radioButton1.setTextColor(Color.rgb(68, 68, 68));
-				radioButton1.setChecked(true);
-				radioGroup.addView(radioButton1, rParams);
 			}
 			else{
 				selconponLayout.setVisibility(View.GONE);
@@ -241,12 +210,18 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 	
 	public void buyNow(){
 		if(stock!=null){
-			if(product.getCoupon()>0 && stock.getUser().isAcceptCoupon() && radioGroup.getCheckedRadioButtonId()==1000){
+			if(product.getCoupon()>0 && stock.getUser().isAcceptCoupon() && toggleButton.isChecked()){
 				isConpon=true;
 			}
+			else{
+				isConpon=false;
+			}
 		}else{
-			if(product.getCoupon()>0 && radioGroup.getCheckedRadioButtonId()==1000){
+			if(product.getCoupon()>0 && toggleButton.isChecked()){
 				isConpon=true;
+			}
+			else{
+				isConpon=false;
 			}
 		}	
 		
@@ -316,12 +291,12 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 				GFToast.show(getApplicationContext(),"对不起，秒杀产品只能抢购一份");
 			}
 			else{
-				SecondOrder secondOrder = (SecondOrder) GsonUtil.fromJson(
-						msg.obj.toString(), SecondOrder.class);
-				if (secondOrder!=null) {
+				ZfbtOrder zfbtOrder = (ZfbtOrder) GsonUtil.fromJson(
+						msg.obj.toString(), ZfbtOrder.class);
+				if (zfbtOrder!=null) {
 					Intent intent = new Intent(this, SecondCodeActivity.class);
 					Bundle bundle = new Bundle();
-					bundle.putSerializable("order", secondOrder);
+					bundle.putSerializable("order", zfbtOrder);
 					intent.putExtras(bundle);
 					MobclickAgent.onEvent(this, UmengConstants.BUY_ALLOWANCE_ID);
 					intent.putExtra("status", 1);

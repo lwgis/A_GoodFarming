@@ -32,22 +32,22 @@ public class StoredData {
 	  // 标记-打开app,用于产生-是否首次打开
 	  public void markOpenApp() {
 	    // 防止-重复调用
-	    if (isOpenMarked)
-	      return;
-	    isOpenMarked = true;
-	    share = UILApplication.applicationContext.getSharedPreferences("launchmode",Context.MODE_PRIVATE);
-	    String lastVersion = share.getString("lastVersion", "");
+//	    if (isOpenMarked)
+//	      return;
+//	    isOpenMarked = true;
+	    share = UILApplication.applicationContext.getSharedPreferences("gflaunchmode",Context.MODE_PRIVATE);
+	    String lastVersion = share.getString("gflastVersion", "");
 	    String thisVersion = getAppVersion();
 
 	    // 首次启动
 	    if (TextUtils.isEmpty(lastVersion)) {
 	      launchMode = LMODE_NEW_INSTALL;
-	      share.edit().putString("lastVersion", thisVersion).commit();
+	      share.edit().putString("gflastVersion", thisVersion).commit();
 	    }
 	    // 更新
 	    else if (!thisVersion.equals(lastVersion)) {
 	      launchMode = LMODE_UPDATE;
-	      share.edit().putString("lastVersion", thisVersion).commit();
+	      share.edit().putString("gflastVersion", thisVersion).commit();
 	    }
 	    // 二次启动(版本未变)
 	    else

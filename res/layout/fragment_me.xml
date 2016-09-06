@@ -32,16 +32,15 @@
             android:textColor="#FFFFFF"
             android:textSize="20dip" />
         <Button
-            android:id="@+id/cancel_button"
+            android:id="@+id/setting_button"
             android:layout_width="60dp"
             android:layout_height="match_parent" 
             android:textColor="#FFFFFF"
             android:textSize="18dip"
-            android:text="注销"
+            android:text="设置"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="#00000000" 
-            android:onClick="loginOut"/>
+            android:background="#00000000" />
         
 
     </RelativeLayout>

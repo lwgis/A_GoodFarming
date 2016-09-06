@@ -64,33 +64,12 @@
 		              android:textSize="13dip" 
 		              android:focusable="false"
 		              />
-			      <ImageView
-		              android:id="@+id/correct_image"
-		              android:layout_width="20dip"
-		              android:layout_height="20dip"
-		              android:layout_marginTop="2dp"
-		              android:layout_marginLeft="5dip"
-		              android:scaleType="centerCrop"
-		              android:src="@drawable/correct" 
-		              android:focusable="false"
-		              android:visibility="gone"
-		              />
-			      <ImageView
-		              android:id="@+id/reward_image"
-		              android:layout_width="20dip"
-		              android:layout_height="20dip"
-		              android:layout_marginTop="2dp"
-		              android:layout_marginLeft="5dip"
-		              android:scaleType="centerCrop"
-		              android:src="@drawable/reward" 
-		              android:focusable="false"
-		              android:visibility="gone"
-		              />
 			  </LinearLayout>
 	          <TextView
 	              android:id="@+id/time_text"
 	              android:layout_width="wrap_content"
 	              android:layout_height="wrap_content"
+	              android:layout_marginTop="11dip"
 	              android:text="21:37:20"
 	              android:textColor="#808080"
 	              android:textSize="12dip" 
@@ -101,7 +80,10 @@
 	      <View  
 			   android:layout_width="match_parent"  
 			   android:layout_height="0.2px" 
-			   android:layout_margin="6dip"
+			   android:layout_marginLeft="6dip"
+			   android:layout_marginTop="12dip"
+			   android:layout_marginRight="6dip"
+			   android:layout_marginBottom="6dip"
 			   android:background="#cccccc"  
 			/> 
 	
@@ -134,6 +116,30 @@
              android:textColor="#ffffff"
              android:textSize="11dip"
              android:background="@drawable/button_shape"/>
+	    <ImageView
+              android:id="@+id/zhengque_image"
+              android:layout_width="75dp"
+              android:layout_height="30dp"
+              android:layout_marginRight="50dp"
+              android:layout_marginTop="9dp"
+              android:layout_alignParentRight="true"
+              android:padding="2dip"
+              android:scaleType="centerCrop"
+              android:src="@drawable/zhengque" 
+              android:focusable="false"
+              />
+	    <ImageView
+              android:id="@+id/zhongjiang_image"
+              android:layout_width="75dp"
+              android:layout_height="30dp"
+              android:layout_marginRight="50dp"
+              android:layout_marginTop="9dp"
+              android:layout_alignParentRight="true"
+              android:padding="2dip"
+              android:scaleType="centerCrop"
+              android:src="@drawable/zhongjiang" 
+              android:focusable="false"
+              />
 	</RelativeLayout>
 </LinearLayout>
 

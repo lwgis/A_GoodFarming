@@ -14,7 +14,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tencent.connect.share.QQShare;
@@ -42,6 +44,7 @@ import com.zhonghaodi.customui.UrlTextView.UrlOnClick;
 import com.zhonghaodi.goodfarming.AppShareActivity.BaseUiListener;
 import com.zhonghaodi.model.Checkobj;
 import com.zhonghaodi.model.Crop;
+import com.zhonghaodi.model.FavStatusDto;
 import com.zhonghaodi.model.FavoriteQuestion;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -78,6 +81,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.view.PagerAdapter;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -101,7 +105,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		HandMessage,OnClickListener,OnItemClickListener{
 	private PullToRefreshListView pullToRefreshListView;
 	private Question question;
-	private List<FavoriteQuestion> favQuestions;
 	private int questionId;
 	private GFHandler<QuestionActivity> handler = new GFHandler<QuestionActivity>(
 			this);
@@ -121,6 +124,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private int rid;
 	private boolean favoriteStatus=false;
 	private Button favoriteButton;
+	private int page=0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +189,6 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		questionId = getIntent().getIntExtra("questionId", 0);
 		status = getIntent().getIntExtra("status", 0);
 		TextView titleTextView = (TextView)findViewById(R.id.title_text);
-		favQuestions = new ArrayList<FavoriteQuestion>();
 		if(status==0){
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
@@ -210,24 +213,37 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			QuestionActivity.this.startActivityForResult(it, 2);
 			return;
 		}
-		adapter = new ResponseAdapter(this,this,this,uid);
-		pullToRefreshListView.setAdapter(adapter);
+		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView
-				.setOnRefreshListener(new OnRefreshListener<ListView>() {
+				.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 
 					@Override
-					public void onRefresh(
+					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
+						page=0;
 						loadData();
 					}
+
+					@Override
+					public void onPullUpToRefresh(
+							PullToRefreshBase<ListView> refreshView) {
+						int pagecount=PublicHelper.getPageCount(question.getResponsecount(), 20);						
+						if(page<pagecount){
+							page+=1;
+						}
+						loadMoreData();
+					}
+
 				});
 		pullToRefreshListView.setOnItemClickListener(this);
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
+		adapter = new ResponseAdapter(this,this,this,uid);
+		pullToRefreshListView.setAdapter(adapter);
 		loadData();
 		if(uid!=null&&GFUserDictionary.getTjcode(this)==null){
 			loadUser();
 		}	
-		loadFavorites();
+		loadFavStatus();
 		
 	}
 	@Override
@@ -331,13 +347,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		}
 		agroImageView.setDrawingCacheEnabled(true);
 	}
-	public void loadFavorites(){
+	public void loadFavStatus(){
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String jsonString= HttpUtil.getFavorites(uid);
+				String jsonString= HttpUtil.getFavstatus(questionId,uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 11;
 				msg.obj = jsonString;
@@ -379,12 +395,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 
 				@Override
 				public void run() {
+					page=0;
 					loadData();
 					if(uid!=null&&GFUserDictionary.getTjcode(QuestionActivity.this)==null){
 						loadUser();
 						
 					}	
-					loadFavorites();
+					loadFavStatus();
 				}
 			}, 1000);
 		}
@@ -432,16 +449,41 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				// TODO Auto-generated method stub
 				String jsonString;
 				if(status==0){
-					jsonString = HttpUtil.getSingleQuestion(questionId);
+					jsonString = HttpUtil.getSingleQuestion(questionId,0,0);
 				}
 				else if(status==1){
-					jsonString = HttpUtil.getSingleGossip(questionId);
+					jsonString = HttpUtil.getSingleGossip(questionId,0,0);
 				}
 				else{
 					jsonString = HttpUtil.getSinglePlant(questionId);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+
+	}
+	
+	private void loadMoreData() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String jsonString;
+				if(status==0){
+					jsonString = HttpUtil.getSingleQuestion(questionId,page,question.getLastTime());
+				}
+				else if(status==1){
+					jsonString = HttpUtil.getSingleGossip(questionId,page,question.getLastTime());
+				}
+				else{
+					jsonString = HttpUtil.getSinglePlant(questionId);
+				}
+				Message msg = handler.obtainMessage();
+				msg.what = 2;
 				msg.obj = jsonString;
 				msg.sendToTarget();
 			}
@@ -982,6 +1024,26 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			pullToRefreshListView.onRefreshComplete();
 			loadImage();
 			break;
+		case 2:
+			Gson gson1 = new Gson();
+			String jsonString1 = (String) msg.obj;
+			Question q = gson1.fromJson(jsonString1, Question.class);
+			if(q==null){
+				GFToast.show(getApplicationContext(),"获取更多回复失败");
+			}
+			else{
+				question.setLastTime(q.getLastTime());
+				question.setResponsecount(q.getResponsecount());
+				if(q.getResponses()!=null && q.getResponses().size()>0){
+					for (Iterator iterator = q.getResponses().iterator(); iterator.hasNext();) {
+						Response response = (Response) iterator.next();
+						question.getResponses().add(response);
+					}
+					adapter.notifyDataSetChanged();
+				}
+			}
+			pullToRefreshListView.onRefreshComplete();
+			break;
 		case 3:
 			String strerr = msg.obj.toString();
 			if(!strerr.isEmpty()){
@@ -1041,6 +1103,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 			break;
 		case 7:
+			page = 0;
 			loadData();
 			if(adapter.ismContains()){
 				GFToast.show(getApplicationContext(),"回复成功");
@@ -1108,7 +1171,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				String jString = (String) msg.obj;
 				PostResponse reportResponse = gson2.fromJson(jString, PostResponse.class);
 				if(reportResponse.isResult()){
-					loadFavorites();
+					loadFavStatus();
 				}
 				else{
 					GFToast.show(this,reportResponse.getMessage());
@@ -1121,18 +1184,14 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		case 11:
 			if (msg.obj != null) {
 				Gson gs = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-				List<FavoriteQuestion> questions = gs.fromJson(msg.obj.toString(),
-						new TypeToken<List<FavoriteQuestion>>() {
+				FavStatusDto status = gs.fromJson(msg.obj.toString(),
+						new TypeToken<FavStatusDto>() {
 						}.getType());
-				favQuestions.clear();
 				favoriteStatus=false;
 				favoriteButton.setText("收藏");
-				for (FavoriteQuestion favoriteQuestion : questions) {
-					favQuestions.add(favoriteQuestion);
-					if(favoriteQuestion.getMyquestion().getId()==questionId){
-						favoriteStatus=true;
-						favoriteButton.setText("已收藏");
-					}
+				if(status!=null && status.isResult()){
+					favoriteStatus=true;
+					favoriteButton.setText("已收藏");
 				}
 				
 			} else {

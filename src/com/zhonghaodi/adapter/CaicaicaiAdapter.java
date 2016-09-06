@@ -14,6 +14,7 @@ import com.zhonghaodi.networking.ImageOptions;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
@@ -23,11 +24,13 @@ public class CaicaicaiAdapter extends BaseAdapter {
 	
 	private List<Caicaicai> cailist;
 	private Context mContext;
+	private OnClickListener mClickListener;
 	
-	public CaicaicaiAdapter(List<Caicaicai> cais,Context context) {
+	public CaicaicaiAdapter(List<Caicaicai> cais,Context context,OnClickListener listener) {
 		// TODO Auto-generated constructor stub
 		cailist = cais;
 		mContext = context;
+		mClickListener = listener;
 	}
 
 	@Override
@@ -61,6 +64,8 @@ public class CaicaicaiAdapter extends BaseAdapter {
 		}
 		holder = (CaicaicaiHolder)convertView.getTag();
 		holder.hideImageviews();
+		holder.shareLayout.setTag(caicaicai);
+		holder.shareLayout.setOnClickListener(mClickListener);
 		if(caicaicai.getStatus()==0){
 			holder.imgLayout2.setVisibility(View.GONE);
 			holder.answerView.setVisibility(View.GONE);
@@ -87,7 +92,7 @@ public class CaicaicaiAdapter extends BaseAdapter {
 			holder.commentView.setVisibility(View.VISIBLE);
 			holder.contentView.setText(caicaicai.getContent());
 			holder.responseView.setText("答案（"+caicaicai.getResponseCount()+"）");
-			holder.commentView.setText("评论（"+caicaicai.getCommentCount()+"）");
+			holder.commentView.setText("评价（"+caicaicai.getCommentCount()+"）");
 			holder.answerView.setText("正确答案："+caicaicai.getShowAnswer());
 			if(caicaicai.getAttachments1()!=null && caicaicai.getAttachments1().size()>0){
 				if(caicaicai.getAttachments1().size()==1){

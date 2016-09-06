@@ -36,8 +36,8 @@ public class CaiResponseAdapter extends BaseAdapter {
 			timeTv = (TextView) view.findViewById(R.id.time_text);
 			nameTv = (TextView) view.findViewById(R.id.name_text);
 			levelTextView = (TextView) view.findViewById(R.id.level_text);
-			correctImg = (ImageView) view.findViewById(R.id.correct_image);
-			rewardImg = (ImageView) view.findViewById(R.id.reward_image);
+			correctImg = (ImageView) view.findViewById(R.id.zhengque_image);
+			rewardImg = (ImageView) view.findViewById(R.id.zhongjiang_image);
 		}
 	}
 	

@@ -43,7 +43,6 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 	private SecondOrderAdapter adapter;
 	private LinearLayout emptyLayout;
 	private GFHandler<MiaoOrdersActivity> handler = new GFHandler<MiaoOrdersActivity>(this);
-	int status;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -57,11 +56,6 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 		secondOrders = new ArrayList<SecondOrder>();
 		adapter = new SecondOrderAdapter();
 		pullToRefreshListView.setAdapter(adapter);
-		status = getIntent().getIntExtra("status", 0);
-		if(status==1){
-			TextView titleTextView = (TextView)findViewById(R.id.title_text);
-			titleTextView.setText("政府补贴产品订单");
-		}
 		loadData();
 	}
 	
@@ -88,12 +82,7 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 			@Override
 			public void run() {
 				String jsonString;
-				if(status==0){
-					jsonString = HttpUtil.getMySeconds(uid);
-				}
-				else{
-					jsonString = HttpUtil.getMyZfbts(uid);
-				}
+				jsonString = HttpUtil.getMySeconds(uid);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -164,11 +153,14 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 			holdersecondorder.nzdTv.setText(secondOrder.getSecond().getNzd().getAlias());
 			holdersecondorder.countPriceTv.setText("￥"+String.valueOf(secondOrder.getSecond().getNprice())+" X 1份");
 			holdersecondorder.sumPriceTv.setText("共￥"+String.valueOf(secondOrder.getSecond().getNprice()));
-			if(secondOrder.getStatus()==1){
-				holdersecondorder.statusTv.setText("交易完成");
+			if(secondOrder.getStatus()==0){
+				holdersecondorder.statusTv.setText("等待发货");
+			}
+			else if(secondOrder.getStatus()==1){
+				holdersecondorder.statusTv.setText("交易成功");
 			}
 			else{
-				holdersecondorder.statusTv.setText("交易未完成");
+				holdersecondorder.statusTv.setText("已评价");
 			}
 			holdersecondorder.timeTv.setText("时间:"+secondOrder.getTime());
 			return convertView;
@@ -195,9 +187,6 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("order", secondOrder);
 			intent.putExtras(bundle);
-			if(status==1){
-				intent.putExtra("status", status);
-			}
 			startActivity(intent);
 		}
 	}
@@ -229,7 +218,4 @@ public class MiaoOrdersActivity extends Activity implements HandMessage,OnItemCl
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-
-	
-
 }

@@ -23,7 +23,9 @@ public class Question implements Serializable {
 	private Crop cate;
 	private int agree;
 	private int forwards;
-	private int zone;
+	private Integer zone;
+	private boolean fine;
+	private long lastTime;
 	public List<Response> getResponses() {
 		return responses;
 	}
@@ -163,12 +165,28 @@ public class Question implements Serializable {
 		this.forwards = forwards;
 	}
 
-	public int getZone() {
+	public Integer getZone() {
 		return zone;
 	}
 
-	public void setZone(int zone) {
+	public void setZone(Integer zone) {
 		this.zone = zone;
+	}
+
+	public boolean isFine() {
+		return fine;
+	}
+
+	public void setFine(boolean fine) {
+		this.fine = fine;
+	}
+
+	public long getLastTime() {
+		return lastTime;
+	}
+
+	public void setLastTime(long lastTime) {
+		this.lastTime = lastTime;
 	}
 	
 }

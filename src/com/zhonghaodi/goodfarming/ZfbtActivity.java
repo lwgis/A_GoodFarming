@@ -23,6 +23,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.Second;
 import com.zhonghaodi.model.SecondOrder;
+import com.zhonghaodi.model.Zfbt;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
@@ -55,7 +56,7 @@ import android.widget.ImageView.ScaleType;
 public class ZfbtActivity extends Activity implements HandMessage,OnClickListener,OnItemClickListener {
 	
 	private PullToRefreshListView pullToRefreshListView;
-	private List<Second> seconds;
+	private List<Zfbt> zfbts;
 	private SecondAdapter adapter;
 	private GFHandler<ZfbtActivity> handler = new GFHandler<ZfbtActivity>(this);
 	private double x;
@@ -93,17 +94,17 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			public void onPullUpToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// TODO Auto-generated method stub
-				if(seconds.size()==0){
+				if(zfbts.size()==0){
 					pullToRefreshListView.onRefreshComplete();
 					return;
 				}
-				int k =seconds.size()%20;
+				int k =zfbts.size()%20;
 				if(k==0){
-					page = seconds.size()/20;
+					page = zfbts.size()/20;
 					loadMoreData(x,y,page);
 				}
 				else{
-					page = seconds.size()/20+1;
+					page = zfbts.size()/20+1;
 					loadMoreData(x,y,page);
 				}
 			}
@@ -111,7 +112,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			
 		});
 		zone = GFAreaUtil.getCityId(this);
-		seconds = new ArrayList<Second>();
+		zfbts = new ArrayList<Zfbt>();
 		adapter = new SecondAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
 		location();
@@ -238,21 +239,23 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		ordersTv.setText(strOrders);
 	}
 	
-	class HolderSecond {
+	class HolderZfbt {
 		public ImageView secondIv;
 		public TextView titleTv;
 		public TextView oldPriceTv;
 		public TextView newPriceTv;
 		public TextView countTv;
+		public TextView acountTv;
 		public TextView timeTv;
 		public TextView nzdTv;
-		 public HolderSecond(View view){
+		 public HolderZfbt(View view){
 			 secondIv=(ImageView)view.findViewById(R.id.second_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
 			 oldPriceTv=(TextView)view.findViewById(R.id.oldprice_text);
 			 newPriceTv=(TextView)view.findViewById(R.id.newprice_text);
 			 oldPriceTv.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG );
 			 countTv = (TextView)view.findViewById(R.id.count_text);
+			 acountTv = (TextView)view.findViewById(R.id.acount_text);
 			 timeTv = (TextView)view.findViewById(R.id.time_text);
 			 nzdTv=(TextView)view.findViewById(R.id.nzd_text);
 		 }
@@ -263,13 +266,13 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return seconds.size();
+			return zfbts.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
-			return seconds.get(position);
+			return zfbts.get(position);
 		}
 
 		@Override
@@ -282,25 +285,26 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub 
-			HolderSecond holdersecond;;
+			HolderZfbt holderzfbt;;
 			if(convertView==null){
 				convertView = LayoutInflater.from(ZfbtActivity.this)
-						.inflate(R.layout.cell_second, parent, false);
-				holdersecond = new HolderSecond(convertView);
-				convertView.setTag(holdersecond);
+						.inflate(R.layout.cell_zfbt, parent, false);
+				holderzfbt = new HolderZfbt(convertView);
+				convertView.setTag(holderzfbt);
 			}
 			
-			holdersecond=(HolderSecond)convertView.getTag();
-			Second second = seconds.get(position);
+			holderzfbt=(HolderZfbt)convertView.getTag();
+			Zfbt second = zfbts.get(position);
 			if (second.getImage()!=null) {
-				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/big/"+second.getImage(), holdersecond.secondIv, ImageOptions.optionsNoPlaceholder);
+				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/big/"+second.getImage(), holderzfbt.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
-			holdersecond.titleTv.setText(second.getTitle());
-			holdersecond.nzdTv.setText(second.getNzd().getAlias());
-			holdersecond.oldPriceTv.setText("￥"+String.valueOf(second.getOprice()));
-			holdersecond.newPriceTv.setText("￥"+String.valueOf(second.getNprice()));
-			holdersecond.countTv.setText("数量："+String.valueOf(second.getCount()));
-			holdersecond.timeTv.setText("时间"+second.getStarttime());
+			holderzfbt.titleTv.setText(second.getTitle());
+			holderzfbt.nzdTv.setText(second.getNzd().getAlias());
+			holderzfbt.oldPriceTv.setText("￥"+String.valueOf(second.getOprice()));
+			holderzfbt.newPriceTv.setText("￥"+String.valueOf(second.getNprice()));
+			holderzfbt.countTv.setText("库存："+String.valueOf(second.getCount()));
+			holderzfbt.acountTv.setText("销售量："+String.valueOf(second.getAcount()));
+			holderzfbt.timeTv.setText("时间"+second.getStarttime());
 			return convertView;
 		}
 		
@@ -310,13 +314,10 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		Second second = seconds.get(position-1);
-		if(second!=null){
-			Intent intent = new Intent(this,SecondActivity.class);
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("second", second);
-			intent.putExtras(bundle);
-			intent.putExtra("status", 1);
+		Zfbt zfbt = zfbts.get(position-1);
+		if(zfbt!=null){
+			Intent intent = new Intent(this,ZfbtInfoActivity.class);
+			intent.putExtra("zid", zfbt.getId());
 			intent.putExtra("x", x);
 			intent.putExtra("y", y);
 			startActivity(intent);
@@ -336,16 +337,16 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		case 0:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
-				List<Second> ses = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<Second>>() {
+				List<Zfbt> bts = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Zfbt>>() {
 						}.getType());
-				seconds.clear();
-				for (Second second : ses) {
-					seconds.add(second);
+				zfbts.clear();
+				for (Zfbt bt : bts) {
+					zfbts.add(bt);
 				}
 				adapter.notifyDataSetChanged();
 				pullToRefreshListView.onRefreshComplete();
-				if(seconds.size()==0){
+				if(zfbts.size()==0){
 					GFToast.show(getApplicationContext(),"附近没有种好地补贴商品抢购活动！");
 				}
 				
@@ -358,15 +359,15 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		case 1:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
-				List<Second> ses = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<Second>>() {
+				List<Zfbt> btss = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Zfbt>>() {
 						}.getType());
-				for (Second second : ses) {
-					seconds.add(second);
+				for (Zfbt bt : btss) {
+					zfbts.add(bt);
 				}
 				adapter.notifyDataSetChanged();
 				pullToRefreshListView.onRefreshComplete();
-				if(seconds.size()==0){
+				if(zfbts.size()==0){
 					GFToast.show(getApplicationContext(),"附近没有种好地补贴商品抢购活动！");
 				}
 				

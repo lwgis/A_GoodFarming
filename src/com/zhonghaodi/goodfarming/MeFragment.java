@@ -9,6 +9,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HoldFunction;
+import com.zhonghaodi.customui.HolderLogout;
 import com.zhonghaodi.customui.HolderMeInfo;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.Function;
@@ -32,6 +33,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	private ArrayList<Function> functions;
 	private PullToRefreshListView pullToRefreshList;
 	private MyTextButton siginButton;
+	private Button settingBtn;
 	private MeAdapter adapter;
 	private GFHandler<MeFragment> handler = new GFHandler<MeFragment>(this);
 	private ShareContainer shareContainer;
@@ -67,6 +70,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		functions = new ArrayList<Function>();
 		siginButton = (MyTextButton)view.findViewById(R.id.sigin_button);
 		siginButton.setOnClickListener(this);
+		settingBtn = (Button)view.findViewById(R.id.setting_button);
+		settingBtn.setOnClickListener(this);
 		pullToRefreshList.setAdapter(adapter);
 		pullToRefreshList.setOnRefreshListener(new OnRefreshListener<ListView>() {
 
@@ -84,6 +89,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					return;
 				}
 				Function function = functions.get(position-2);
+				if(function==null){
+					return;
+				}
 
 				Intent it=new Intent();
 				it.setClass(getActivity(), function.getActivityClass());
@@ -172,7 +180,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		@Override
 		public int getViewTypeCount() {
 			// TODO Auto-generated method stub
-			return 2;
+			return 3;
 		}
 
 		@Override
@@ -180,13 +188,19 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			if (position == 0) {
 				return 0;
 			}
-			return 1;
+			else if(position==functions.size()){
+				return 2;
+			}
+			else{
+				return 1;
+			}		
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			HolderMeInfo holderMeInfo;
 			HoldFunction holdFunction;
+			HolderLogout outHolder;
 			int cellType = getItemViewType(position);
 			if (convertView == null) {
 				switch (cellType) {
@@ -201,6 +215,12 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					convertView=LayoutInflater.from(MeFragment.this.getActivity()).inflate(R.layout.cell_function, parent, false);
 					holdFunction=new HoldFunction(convertView);
 					convertView.setTag(holdFunction);
+					break;
+				case 2:
+					convertView=LayoutInflater.from(MeFragment.this.getActivity()).inflate(R.layout.cell_funbutton, parent, false);
+					outHolder = new HolderLogout(convertView);
+					convertView.setTag(outHolder);
+					break;
 				default:
 					break;
 				}
@@ -236,6 +256,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					holdFunction.desTv.setVisibility(View.VISIBLE);
 					holdFunction.desTv.setText(functions.get(position-1).getDescription());
 				}
+				break;
+			case 2:
+				outHolder = (HolderLogout)convertView.getTag();
 				break;
 			default:
 				break;
@@ -282,6 +305,13 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			intent2.putExtra("content", HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());
 			getActivity().startActivity(intent2);
 			break;
+		case R.id.setting_button:
+			Intent it = new Intent(getActivity(), InformationActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("user", user);
+			it.putExtras(bundle);
+			getActivity().startActivity(it);
+			break;
 		default:
 			break;
 		}
@@ -317,11 +347,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			fragment.functions.add(cartFunction);
 			Function shareFunction = new Function("邀请好友赚积分",AppShareActivity.class,R.drawable.appshare);
 			fragment.functions.add(shareFunction);
-			Function minfoFunction = new Function("资料设置", InformationActivity.class,R.drawable.me_s);
-			fragment.functions.add(minfoFunction);				
+//			Function minfoFunction = new Function("资料设置", InformationActivity.class,R.drawable.me_s);
+//			fragment.functions.add(minfoFunction);				
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
 			fragment.functions.add(feedbackFunction);
-
+			fragment.functions.add(null);
 			fragment.pullToRefreshList.onRefreshComplete();
 			adapter.notifyDataSetChanged();
 			break;

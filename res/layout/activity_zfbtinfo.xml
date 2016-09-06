@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:background="@null"
+            android:text="&lt;返回"
+            android:textColor="#ffffff"
+            android:textSize="20dip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="商品信息"
+            android:textColor="#FFFFFF"
+            android:textSize="18dip" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <com.zhonghaodi.customui.ScrollListView 
+            android:id="@+id/stocks_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:cacheColorHint="#000000"
+	        android:divider="#eaeaea"
+	        android:dividerHeight="8dp"
+	        android:fadingEdge="none"
+	        android:fastScrollEnabled="false"
+	        android:footerDividersEnabled="false"
+	        android:headerDividersEnabled="false"
+	        android:listSelector="#00000000"
+	        android:smoothScrollbar="true"
+            >
+            
+        </com.zhonghaodi.customui.ScrollListView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dip" >
+
+            <com.zhonghaodi.customui.MyTextButton
+                android:id="@+id/buy_button"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape"
+                android:text="抢购"
+                android:textColor="#ffffff"
+                android:textSize="18dip"
+                android:visibility="gone" />
+
+            <com.zhonghaodi.customui.MyTextButton
+                android:id="@+id/time_button"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_order_shape"
+                android:text="时间"
+                android:textColor="#ffffff"
+                android:textSize="18dip" 
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
