@@ -98,7 +98,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 			titleTextView.setText("我的收藏");
 		}
 		else if(status==2){
-			titleTextView.setText("我的种植分享");
+			titleTextView.setText("我的赶大集");
 		}
 		
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
@@ -129,7 +129,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 
 				});
 		allQuestions = new ArrayList<Question>();
-		adapter = new QuestionAdpter(allQuestions,this,this);
+		adapter = new QuestionAdpter(allQuestions,this,this,status);
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);
 		loadNewMyDate();
 		this.pullToRefreshListView
@@ -667,7 +667,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 					for (Question question : questions) {
 						allQuestions.add(question);
 					}
-					
+					adapter.setStatus(status);
 				}
 				else{
 					Gson gs = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -684,6 +684,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 					for (FavoriteQuestion favoriteQuestion : questions) {
 						allQuestions.add(favoriteQuestion.getMyquestion());						
 					}
+					adapter.setStatus(0);
 				}
 				
 				adapter.notifyDataSetChanged();

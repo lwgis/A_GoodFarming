@@ -216,7 +216,7 @@ public class CommentActivity extends Activity implements UrlOnClick,
 					jsonString = HttpUtil.getSingleGossip(qid,0,0);
 				}
 				else{
-					jsonString = HttpUtil.getSinglePlant(qid);
+					jsonString = HttpUtil.getSinglePlant(qid,0,0);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 3;

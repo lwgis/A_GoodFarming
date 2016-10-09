@@ -27,6 +27,7 @@ import com.duguang.baseanimation.ui.customview.serchfly.KeywordsFlow;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.api.NoDoubleClickListener;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.GuaGuaKa;
 import com.zhonghaodi.customui.MyTextButton;
@@ -35,6 +36,7 @@ import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Gua;
+import com.zhonghaodi.model.GuaGuaTipDto;
 import com.zhonghaodi.model.GuaOrder;
 import com.zhonghaodi.model.GuaResult;
 import com.zhonghaodi.model.NetResponse;
@@ -52,12 +54,15 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
     private TextView ordersTextView;
     private LinearLayout startLayout;
     private MyTextButton startButton;
+    private TextView tipTv;
+    private TextView numberTv;
     private boolean isOpen = false;
     private boolean isStart = false;
     private GFHandler<RubblerActivity> handler = new GFHandler<RubblerActivity>(this);
     private boolean isToday = false;
     private String serverTime;
     private int zone;
+    private int guanumber=0;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,13 +74,27 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		
 		startLayout = (LinearLayout)findViewById(R.id.start_layout);
 		startButton = (MyTextButton)findViewById(R.id.start_btn);
-		startButton.setOnClickListener(this);
+		startButton.setOnClickListener(new NoDoubleClickListener() {
+			
+			@Override
+			public void onNoDoubleClick(View v) {
+				// TODO Auto-generated method stub
+				if(guanumber<=0){
+					GFToast.show(getApplicationContext(),"不要太过执着了，明天再来试试吧。");
+				}
+				else{
+					chouqian();
+				}
+			}
+		});
 		
 		guaGuaKa = (GuaGuaKa)findViewById(R.id.guagua);
 		guaGuaKa.setmWipeListener(this);
 		guaGuaKa.setVisibility(View.GONE);
 
 		ordersTextView = (TextView)findViewById(R.id.orders_text);
+		tipTv = (TextView)findViewById(R.id.guatip_text);
+		numberTv = (TextView)findViewById(R.id.guanumber_text);
 		
 		zone = GFAreaUtil.getCityId(this);
  
@@ -102,6 +121,13 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			
 			@Override
 			public void run() {
+				String uid = GFUserDictionary.getUserId(getApplicationContext());
+				String jsonString4 = HttpUtil.getGuaGuaTip(uid, zone);
+				Message msg4 = handler.obtainMessage();
+				msg4.what = 4;
+				msg4.obj = jsonString4;
+				msg4.sendToTarget();
+				
 				String jsonString = HttpUtil.getGuaGua(zone);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
@@ -288,14 +314,6 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 			feedKeywordsFlow(keywordsFlow, keywords);
 			keywordsFlow.go2Show(KeywordsFlow.ANIMATION_IN);
 			break;
-		case R.id.start_btn:
-			if(isToday){
-				GFToast.show(getApplicationContext(),"今天已经刮过了，明天再来哟。");
-			}
-			else{
-				chouqian();
-			}
-			break;
 
 		default:
 			break;
@@ -407,9 +425,23 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 				checkToday(timeString);
 			}
 			break;
-//		case -1:
-//			GFToast.show("刮奖取消错误!");
-//			break;
+		case 4:
+			if(msg.obj!=null){
+
+				Gson gson = new Gson();
+				GuaGuaTipDto tipDto = gson.fromJson(msg.obj.toString(),
+						new TypeToken<GuaGuaTipDto>() {
+						}.getType());
+				if(tipDto!=null){
+					tipTv.setText("拼手气赢奖品"+tipDto.getPoints()+"积分刮一次");
+					numberTv.setText("您还有"+tipDto.getNumbers()+"次机会");
+					guanumber = tipDto.getNumbers();
+				}
+			}
+			else{
+				GFToast.show(getApplicationContext(),"连接服务器失败,请稍候再试!");
+			}
+			break;
 
 		default:
 			break;

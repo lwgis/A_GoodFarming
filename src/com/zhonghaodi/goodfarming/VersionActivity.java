@@ -9,30 +9,40 @@ import com.easemob.chat.core.r;
 import com.zhonghaodi.adapter.BannerAdapter;
 import com.zhonghaodi.adapter.VersionAdapter;
 import com.zhonghaodi.customui.GFImageView;
+import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.req.VersionPageReq;
 import com.zhonghaodi.utils.PublicHelper;
+import com.zhonghaodi.view.VersionPageView;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ImageView.ScaleType;
 
-public class VersionActivity extends Activity {
+public class VersionActivity extends Activity implements VersionPageView {
 
 	private LinearLayout dotLayout;
 	private ViewPager adViewPager;
 	private List<Integer> imgResources;
 	private List<View> dots;
 	private VersionAdapter adapter;
+	private VersionPageReq req;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_version);
+		req = new VersionPageReq(this);
+		if(!TextUtils.isEmpty(GFUserDictionary.getUserId(this))){
+			req.loadToken(GFUserDictionary.getUserId(this), GFUserDictionary.getPhone(this));
+		}
 		dotLayout = (LinearLayout)findViewById(R.id.dot_layout);
 		dotLayout.setVisibility(View.INVISIBLE);
 		adViewPager = (ViewPager)findViewById(R.id.vp);
@@ -63,6 +73,7 @@ public class VersionActivity extends Activity {
 		adapter = new VersionAdapter(imgResources,this);
 		adViewPager.setAdapter(adapter);
 		adViewPager.setOnPageChangeListener(new MyPageChangeListener());
+		
 	}
 	
 	private class MyPageChangeListener implements OnPageChangeListener {
@@ -90,10 +101,14 @@ public class VersionActivity extends Activity {
 	public void toMain(View view){
 		Intent mainIntent = new Intent(VersionActivity.this,  
 				MainActivity.class);  
-		mainIntent.putExtra("ver", 1);
 		VersionActivity.this.startActivity(mainIntent);  
-
 		VersionActivity.this.finish(); 
+	}
+
+	@Override
+	public void savetoken(String token) {
+		// TODO Auto-generated method stub
+		GFUserDictionary.saveTokenInfo(this, token);
 	}
 
 }

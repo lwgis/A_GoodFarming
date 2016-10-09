@@ -18,6 +18,7 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -121,7 +123,10 @@ public class CreateZfbtEvaluateActivity extends Activity implements HandMessage,
 			GFToast.show(getApplicationContext(),"请输入评价意见");
 			return;
 		}
-		
+		InputMethodManager im = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		sendButton.setEnabled(false);
 		new Thread(new Runnable() {
 

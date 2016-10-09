@@ -13,10 +13,16 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.QuestionAdpter;
+import com.zhonghaodi.api.DiseaseListView;
+import com.zhonghaodi.api.GossipListView;
+import com.zhonghaodi.api.PlantListView;
 import com.zhonghaodi.api.ShareContainer;
+import com.zhonghaodi.customui.DiseasePopupWindow;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.customui.GossipPopupWindow;
 import com.zhonghaodi.customui.MorePopupWindow;
+import com.zhonghaodi.customui.PlantPopupWindow;
 import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
@@ -24,6 +30,7 @@ import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.SpinnerDto;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
@@ -58,25 +65,30 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-public class HomeFragment extends Fragment implements HandMessage,OnClickListener,OnCreateContextMenuListener {
+public class HomeFragment extends Fragment implements HandMessage,
+			OnClickListener,OnCreateContextMenuListener,DiseaseListView,GossipListView,PlantListView {
 	private PullToRefreshListView pullToRefreshListView;
 	private ArrayList<Question> allQuestions;
 	private QuestionAdpter adapter;
 	private GFHandler<HomeFragment> handler = new GFHandler<HomeFragment>(this);
-	private int bAll = 0;
+	private int displayStatus= 0;
 	private TextView diseaseTextView;
-	private TextView cropTextView;
+	private TextView plantTextView;
 	private TextView gossipTextView;
 	private View messageView;
 	private TextView countTv;
-	private TextView titleTv;
 	private Question selectQuestion;
 	private PopupWindow popupWindow;
 	private View popView;
-	private int page=0;
+	private DiseasePopupWindow diseasePopupWindow;
+	private GossipPopupWindow gossipPopupWindow;
+	private PlantPopupWindow plantPopupWindow;
 	private ShareContainer shareContainer;
 	private City area1;
 	private String zonestr;
+	private int diseaseStatus;//0病害问题1我的作物2精品问题
+	private int gossipStatus;//0拉拉呱1精品拉拉呱
+	private int plantStatus;//0全部赶大集1精品赶大集
 
 	public ShareContainer getShareContainer() {
 		return shareContainer;
@@ -93,23 +105,24 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		Button questionButton = (Button) view
 				.findViewById(R.id.question_button);
-		titleTv = (TextView)view.findViewById(R.id.title_txt);
-//		titleTv.setOnClickListener(this);
 		questionButton.setOnClickListener(this);
 		popView = inflater.inflate(R.layout.popupwindow_question, container,
 				false);
 		popupWindow = new PopupWindow(popView, DpTransform.dip2px(
-				getActivity(), 180), DpTransform.dip2px(getActivity(), 100));
+				getActivity(), 180), DpTransform.dip2px(getActivity(), 150));
 		popupWindow.setBackgroundDrawable(new BitmapDrawable());
 		popupWindow.setFocusable(true);
 		Button newQueBtn = (Button)popView.findViewById(R.id.btn_question);
 		newQueBtn.setOnClickListener(this);
 		Button newGossipBtn = (Button)popView.findViewById(R.id.btn_gossip);
 		newGossipBtn.setOnClickListener(this);
+		Button newPlantBtn = (Button)popView.findViewById(R.id.btn_plant);
+		newPlantBtn.setOnClickListener(this);
+		
 		diseaseTextView = (TextView)view.findViewById(R.id.disease_text);
 		diseaseTextView.setOnClickListener(this);
-		cropTextView = (TextView)view.findViewById(R.id.mycrop_text);
-		cropTextView.setOnClickListener(this);
+		plantTextView = (TextView)view.findViewById(R.id.plant_text);
+		plantTextView.setOnClickListener(this);
 		gossipTextView = (TextView)view.findViewById(R.id.gossip_text);
 		gossipTextView.setOnClickListener(this);
 		messageView = view.findViewById(R.id.message_layout);
@@ -124,13 +137,13 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					@Override
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-						if(bAll==0)
+						if(displayStatus==0)
 							loadNewQuestion();
-						else if(bAll==1){
+						else if(displayStatus==1){
 							loadNewGossips();
 						}
-						else if(bAll==2){
-							loadNewCropQuestions();
+						else if(displayStatus==2){
+							loadNewPlant();
 						}
 					}
 
@@ -142,23 +155,25 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 						}
 						Question question = allQuestions.get(allQuestions
 								.size() - 1);
-						if(bAll==0)
+						if(displayStatus==0)
 							loadMoreQuestion(question.getId());
-						else if(bAll==1){
+						else if(displayStatus==1){
 							loadMoreGossips(question.getId());
 						}
-						else if(bAll==2){
-							loadMoreCropQuestions(question.getId());
+						else if(displayStatus==2){
+							loadMorePlant(question.getId());
 						}
 					}
 
 				});
 		allQuestions = new ArrayList<Question>();
-		adapter = new QuestionAdpter(allQuestions,getActivity(),HomeFragment.this);
+		adapter = new QuestionAdpter(allQuestions,getActivity(),HomeFragment.this,displayStatus);
 		HomeFragment.this.pullToRefreshListView.getRefreshableView()
 				.setAdapter(adapter);
-		initArea();
-		
+		diseaseStatus = 0;
+		gossipStatus = 0;
+		plantStatus = 0;
+		initArea();		
 		this.pullToRefreshListView
 				.setOnItemClickListener(new OnItemClickListener() {
 
@@ -171,8 +186,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 									QuestionActivity.class);
 							it.putExtra("questionId", allQuestions
 									.get(position - 1).getId());
-							if(bAll==1||bAll==2){
-								it.putExtra("status", bAll);
+							if(displayStatus==1 || displayStatus==2){
+								it.putExtra("status", displayStatus);
 							}
 							getActivity().startActivity(it);
 						}
@@ -185,6 +200,9 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					}
 				});
 		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
+		diseasePopupWindow = new DiseasePopupWindow(this, diseaseStatus, getActivity());
+		gossipPopupWindow = new GossipPopupWindow(this, gossipStatus, getActivity());
+		plantPopupWindow = new PlantPopupWindow(this, plantStatus, getActivity());
 		return view;
 	}
 	
@@ -258,167 +276,297 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
         dialog.show();
 		return super.onContextItemSelected(item);
 	}
+	
+	@Override
+	public void changeDiseaseStatus(SpinnerDto spinnerDto) {
+		// TODO Auto-generated method stub
+		diseaseStatus = spinnerDto.getId();
+		diseaseTextView.setText(spinnerDto.getName()+"▼");
+		loadNewQuestion();
+	}
+	@Override
+	public void changeGossipStatus(SpinnerDto spinnerDto) {
+		// TODO Auto-generated method stub
+		gossipStatus = spinnerDto.getId();
+		loadNewGossips();
+	}
+	
+	@Override
+	public void selectArea() {
+		// TODO Auto-generated method stub
+		Intent cityIntent = new Intent(getActivity(), CityActivity.class);
+		getActivity().startActivityForResult(cityIntent, PublicHelper.CITY_REQUEST_CODE);
+	}
+	
+	@Override
+	public void changePlantStatus(SpinnerDto spinnerDto) {
+		// TODO Auto-generated method stub
+		plantStatus = spinnerDto.getId();
+		loadNewPlant();
+	}
+	
+	public void resetArea(){
+		zonestr="";
+		int cityid = GFAreaUtil.getCity(getActivity());
+		if(cityid!=0){
+			zonestr+=cityid;
+		}
+		loadNewGossips();
+	}
+	
 	public void initArea(){
 		zonestr="";
-		int cityid = GFAreaUtil.getCityId(getActivity());
-		int zone1 = GFAreaUtil.getCityId1(getActivity());
+		int cityid = GFAreaUtil.getCity(getActivity());
 		if(cityid!=0){
-			area1 = new City();
-			area1.setId(cityid);
-			area1.setName(GFAreaUtil.getCityName(getActivity()));
-			titleTv.setText(area1.getName());
 			zonestr+=cityid;
-			if(zone1!=0){
-				zonestr+=","+zone1;
-			}
 		}
-		else{
-			if(zone1!=0){
-				zonestr+=zone1;
-			}
-		}
+//		int zone1 = GFAreaUtil.getCityId1(getActivity());
+//		if(cityid!=0){
+//			area1 = new City();
+//			area1.setId(cityid);
+//			area1.setName(GFAreaUtil.getCityName(getActivity()));
+//			titleTv.setText(area1.getName());
+//			zonestr+=cityid;
+//			if(zone1!=0){
+//				zonestr+=","+zone1;
+//			}
+//		}
+//		else{
+//			if(zone1!=0){
+//				zonestr+=zone1;
+//			}
+//		}
 		loadNewQuestion();
 		selectTextView(diseaseTextView);
-		bAll=0;
+		displayStatus=0;
 	}
 
 	public void loadNewQuestion() {
-		new Thread(new Runnable() {
+		if(diseaseStatus==0){
+			new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				String jsonString;
-				jsonString = HttpUtil.getQuestionsString(zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
-	
-	private void loadNewCropQuestions(){
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				String jsonString;
-				int zone=0;
-				if(area1!=null){
-					zone = area1.getId();
+				@Override
+				public void run() {
+					String jsonString;
+					jsonString = HttpUtil.getQuestionsString("");
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = jsonString;
+					msg.sendToTarget();
 				}
-				String uid = GFUserDictionary.getUserId(getActivity());
-				jsonString = HttpUtil.getAscQuestionsString(uid,zone);
-				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
+			}).start();
+		}
+		else if(diseaseStatus==1){
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					String jsonString;
+					int zone=0;
+					if(area1!=null){
+						zone = area1.getId();
+					}
+					String uid = GFUserDictionary.getUserId(getActivity());
+					jsonString = HttpUtil.getAscQuestionsString(uid,zone);
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
+		else{
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					String jsonString;
+					jsonString = HttpUtil.getQuestionfinesString("");
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
 	}
 
 	private void loadMoreQuestion(final int qid) {
-		new Thread(new Runnable() {
+		if(diseaseStatus==0){
+			new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				String jsonString;
-				int zone=0;
-				if(area1!=null){
-					zone = area1.getId();
+				@Override
+				public void run() {
+					String jsonString;
+					int zone=0;
+					if(area1!=null){
+						zone = area1.getId();
+					}
+					jsonString = HttpUtil.getQuestionsString(qid,"");
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
 				}
-				jsonString = HttpUtil.getQuestionsString(qid,zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
-	
-	private void loadMoreCropQuestions(final int qid){
-		new Thread(new Runnable() {
+			}).start();
+		}
+		else if(diseaseStatus==1){
+			new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				String jsonString;
-				int zone=0;
-				if(area1!=null){
-					zone = area1.getId();
+				@Override
+				public void run() {
+					String jsonString;
+					int zone=0;
+					if(area1!=null){
+						zone = area1.getId();
+					}
+					String uid = GFUserDictionary.getUserId(getActivity());
+					jsonString = HttpUtil.getAscQuestionsString(uid,qid,zone);
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
 				}
-				String uid = GFUserDictionary.getUserId(getActivity());
-				jsonString = HttpUtil.getAscQuestionsString(uid,qid,zone);
-				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
+			}).start();
+		}
+		else{
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					String jsonString;
+					int zone=0;
+					if(area1!=null){
+						zone = area1.getId();
+					}
+					jsonString = HttpUtil.getQuestionfinesString(qid,"");
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
 	}
-	
+
 	private void loadNewGossips() {
-		new Thread(new Runnable() {
+		if(gossipStatus==0){
+			new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				
-				String jsonString = HttpUtil.getGossipsString(zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
+				@Override
+				public void run() {
+					
+					String jsonString = HttpUtil.getGossipsString(zonestr);
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
+		else{
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					
+					String jsonString = HttpUtil.getGossipfinesString(zonestr);
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
 	}
 
 	private void loadMoreGossips(final int qid) {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				
-				String jsonString = HttpUtil.getGossipsString(qid,zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
+		if(gossipStatus==0){
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					
+					String jsonString = HttpUtil.getGossipsString(qid,zonestr);
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
+		else{
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					
+					String jsonString = HttpUtil.getGossipfinesString(qid,zonestr);
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
 	}
 	
 	private void loadNewPlant() {
-		new Thread(new Runnable() {
+		if(plantStatus==0){
+			new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				int zone=0;
-				if(area1!=null){
-					zone = area1.getId();
+				@Override
+				public void run() {
+					int zone=0;
+					String jsonString = HttpUtil.getPlant(zone);
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = jsonString;
+					msg.sendToTarget();
 				}
-				String jsonString = HttpUtil.getPlant(zone);
-				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
+			}).start();
+		}
+		else{
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					int zone=0;
+					String jsonString = HttpUtil.getPlantfines(zone);
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
 	}
 
 	private void loadMorePlant(final int qid) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int zone=0;
-				if(area1!=null){
-					zone = area1.getId();
+		if(plantStatus==0){
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					int zone=0;
+					String jsonString = HttpUtil.getMorePlant(qid,zone);
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
 				}
-				String jsonString = HttpUtil.getMorePlant(qid,zone);
-				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
+			}).start();
+		}
+		else{
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					int zone=0;
+					String jsonString = HttpUtil.getMorePlantfines(qid,zone);
+					Message msg = handler.obtainMessage();
+					msg.what = 1;
+					msg.obj = jsonString;
+					msg.sendToTarget();
+				}
+			}).start();
+		}
 	}
 	
 	/**
@@ -463,10 +611,10 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			@Override
 			public void run() {
 				String jsonString;
-				if(bAll==0){
+				if(displayStatus==0){
 					jsonString = HttpUtil.deleteQuestion(qid);
 				}
-				else if(bAll==1){
+				else if(displayStatus==1){
 					jsonString = HttpUtil.deleteGossip(qid);
 				}
 				else{
@@ -506,14 +654,23 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			break;
 			
 		case R.id.disease_text:
-			if(bAll!=0){
+			if(displayStatus!=0){
 				selectTextView(v);
 				loadNewQuestion();
-				bAll = 0;
-			}	
+				displayStatus = 0;
+			}
+			else{
+				if(diseasePopupWindow.isShowing()){
+					diseasePopupWindow.dismiss();
+				}
+				else{
+
+					diseasePopupWindow.showAsDropDown(v, 0, 0);
+				}
+			}
 			break;
 		case R.id.gossip_text:
-			if(bAll!=1){
+			if(displayStatus!=1){
 				String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 				if(uid==null){
 					Intent intent = new Intent(getActivity(),LoginActivity.class);
@@ -521,14 +678,20 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 				else{
 					selectTextView(v);
-					loadNewGossips();
-					
-					bAll = 1;
+					loadNewGossips();					
+					displayStatus = 1;
 				}
-			}			
+			}
+			else{
+				if (gossipPopupWindow.isShowing()) {
+					gossipPopupWindow.dismiss();
+				} else {
+					gossipPopupWindow.showAsDropDown(v,0,0);
+				}
+			}
 			break;
-		case R.id.mycrop_text:
-			if(bAll!=2){
+		case R.id.plant_text:
+			if(displayStatus!=2){
 				String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 				if(uid1==null){
 					Intent intent = new Intent(getActivity(),LoginActivity.class);
@@ -536,26 +699,19 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				}
 				else{
 					selectTextView(v);
-					loadNewCropQuestions();
-					bAll = 2;
+					loadNewPlant();
+					displayStatus = 2;
 				}
-			}			
+			}
+			else{
+				if (plantPopupWindow.isShowing()) {
+					plantPopupWindow.dismiss();
+				} else {
+					plantPopupWindow.showAsDropDown(v,0,0);
+				}
+			}
 			break;
-		case R.id.head_image:
-//			if(GFUserDictionary.getUserId()==null){
-//				GFToast.show("请您先登录！");
-//				return;
-//			}
-//			User user = (User)v.getTag();
-//			if(user.getLevelID()!=1){
-//				Intent it2 = new Intent();
-//				it2.setClass(getActivity(), ChatActivity.class);
-//				it2.putExtra("userName", user.getPhone());
-//				it2.putExtra("title", user.getAlias());
-//				it2.putExtra("thumbnail", user.getThumbnail());
-//				startActivity(it2);
-//			}
-			break;
+
 		case R.id.btn_question:
 			popupWindow.dismiss();
 			Intent it = new Intent();
@@ -578,6 +734,17 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				intent.putExtra("status", 1);
 			}
 			getActivity().startActivity(intent);
+			break;
+		case R.id.btn_plant:
+			popupWindow.dismiss();
+			Intent intent1 = new Intent();
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
+				intent1.setClass(getActivity(), LoginActivity.class);
+			}
+			else {
+				intent1.setClass(getActivity(), CreatePlantActivity.class);
+			}
+			getActivity().startActivity(intent1);
 			break;
 		case R.id.plantzan_layout:
 			selectQuestion = (Question)v.getTag();
@@ -616,9 +783,9 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			else {				
 				Question q = (Question)v.getTag();
 				String folder;
-				if(bAll==0){
+				if(displayStatus==0){
 					folder="question";
-				}else if(bAll==1){
+				}else if(displayStatus==1){
 					folder="gossip";
 				}else{
 					folder="plantinfo";
@@ -626,10 +793,6 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 				shareContainer.shareQuestionWindow(q, folder);			
 			}
 			
-			break;
-		case R.id.title_txt:
-			Intent cityIntent = new Intent(getActivity(), CityActivity.class);
-			getActivity().startActivityForResult(cityIntent, PublicHelper.CITY_REQUEST_CODE);
 			break;
 		default:
 			break;
@@ -639,8 +802,8 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 	public void selectTextView(View view){
 		diseaseTextView.setTextColor(Color.rgb(128, 128, 128));
 		diseaseTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
-		cropTextView.setTextColor(Color.rgb(128, 128, 128));
-		cropTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		plantTextView.setTextColor(Color.rgb(128, 128, 128));
+		plantTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		gossipTextView.setTextColor(Color.rgb(128, 128, 128));
 		gossipTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
 		
@@ -663,7 +826,12 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 					for (Question question : questions) {
 						allQuestions.add(question);
 					}
-					
+					if(displayStatus==0 || displayStatus==3){
+						adapter.setStatus(0);
+					}
+					else{
+						adapter.setStatus(displayStatus);
+					}
 					adapter.notifyDataSetChanged();
 				} else {
 					GFToast.show(getActivity(), "连接服务器失败,请稍候再试!");
@@ -711,6 +879,4 @@ public class HomeFragment extends Fragment implements HandMessage,OnClickListene
 			}
 	
 	}
-
-
 }

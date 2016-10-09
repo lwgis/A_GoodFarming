@@ -81,6 +81,7 @@ public class UILApplication extends Application {
 	public static Bitmap sharebit;
 	public static String auth;
 
+
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {

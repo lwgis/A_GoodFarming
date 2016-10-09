@@ -3,6 +3,8 @@ package com.zhonghaodi.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.zhonghaodi.networking.GFDate;
+
 import android.R.integer;
 
 public class User implements Serializable {
@@ -26,6 +28,7 @@ public class User implements Serializable {
 	private boolean teamwork;
 	private int tjcoin;
 	private int recCount;
+	private String time;
 	
 	
 	public User() {
@@ -197,6 +200,14 @@ public class User implements Serializable {
 
 	public void setRecCount(int recCount) {
 		this.recCount = recCount;
+	}
+
+	public String getTime() {
+		return GFDate.getStandardDate(time);
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 }

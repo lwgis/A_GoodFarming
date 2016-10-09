@@ -201,7 +201,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			favoriteButton.setVisibility(View.GONE);
 		}
 		else{
-			titleTextView.setText("种植分享详细信息");
+			titleTextView.setText("赶大集详细信息");
 			sendBtn.setText("评论");
 			favoriteButton.setVisibility(View.GONE);
 		}
@@ -424,6 +424,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			     },  998);  
 			}
 		}
+		mTencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
 	}
 	
 	public void loadUser() {
@@ -455,7 +456,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					jsonString = HttpUtil.getSingleGossip(questionId,0,0);
 				}
 				else{
-					jsonString = HttpUtil.getSinglePlant(questionId);
+					jsonString = HttpUtil.getSinglePlant(questionId,0,0);
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
@@ -480,7 +481,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					jsonString = HttpUtil.getSingleGossip(questionId,page,question.getLastTime());
 				}
 				else{
-					jsonString = HttpUtil.getSinglePlant(questionId);
+					jsonString = HttpUtil.getSinglePlant(questionId,page,question.getLastTime());
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = 2;
@@ -552,7 +553,17 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			public void run() {
 				try {
 					HttpUtil.sharePoint(GFUserDictionary.getUserId(QuestionActivity.this), UILApplication.shareUrl);
-					
+					if(UILApplication.sharestatus==1){
+						if(UILApplication.sharefolder.contains("question")){
+							HttpUtil.addForwardcount("question", questionId);
+						}
+						else if(UILApplication.sharefolder.contains("gossip")){
+							HttpUtil.addForwardcount("gossip", questionId);
+						}
+						else{
+							HttpUtil.addForwardcount("plantinfo",questionId);
+						}
+					}
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					Message msg = handler.obtainMessage();
@@ -569,12 +580,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		im.hideSoftInputFromWindow(findViewById(android.R.id.content)
 				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		UILApplication.sharequeid = questionId;
 		morePopupWindow = new MorePopupWindow(this,this);
 		if(isMore){
 			morePopupWindow.showReport();
+			UILApplication.sharestatus=0;
 		}
 		else{
 			morePopupWindow.hideReport();
+			UILApplication.sharestatus=1;
 		}
 		morePopupWindow.setFocusable(true);
 		morePopupWindow.setOutsideTouchable(true);
@@ -624,24 +638,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			return;
 		}
 		switch (v.getId()) {
-		case R.id.head_image:
-//			if(GFUserDictionary.getUserId()==null){
-//				GFToast.show("请您先登录！");
-//				return;
-//			}
-//			User user = (User)v.getTag();
-//			if(user.getLevelID()!=1){
-//				Intent it = new Intent();
-//				it.setClass(this, ChatActivity.class);
-//				it.putExtra("userName", user.getPhone());
-//				it.putExtra("title", user.getAlias());
-//				it.putExtra("thumbnail", user.getThumbnail());
-//				startActivity(it);
-//			}
-			break;
-//		case R.id.share_button:
-//			popmorewindow(false);
-//			break;
+		
 		case R.id.zan_layout:
 			if(GFUserDictionary.getUserId(getApplicationContext())==null){
 				GFToast.show(getApplicationContext(),"请您先登录！");
@@ -764,6 +761,10 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				GFToast.show(this, "回复应不少于5个字");
 				return;
 			}
+			InputMethodManager im = (InputMethodManager) this
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+					im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+					.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			Response response = new Response();
 			response.setContent(GFString.htmlToStr(mzEditText.getText().toString()));
 			User writer = new User();
@@ -772,24 +773,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			sendResponse(response, questionId);
 			mzEditText.setText("");
 			mzEditText.setFocusable(false);
-			
-			Timer timer = new Timer();  
-		     timer.schedule(new TimerTask()  
-		     {  
-		           
-		         public void run()  
-		         {  
-		        	 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
-		 			 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
-		         }  
-		           
-		     },  998);
+
 			sendLayout.setVisibility(View.GONE);
 			resLayout.setVisibility(View.VISIBLE);
 			break;
 		case R.id.prescription_button:
-			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
-			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
+			InputMethodManager im1 = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+			im1.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS); 
 			Intent intent = new Intent(this,PrescriptionsActivity.class);
 			this.startActivityForResult(intent, 100);
 			break;
@@ -813,12 +803,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			WXWebpageObject webpage = new WXWebpageObject();
 			if(status==0){
 				webpage.webpageUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+				UILApplication.sharefolder = "question";
 			}
 			else if(status==1){
 				webpage.webpageUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+				UILApplication.sharefolder = "gossip";
 			}
 			else{
 				webpage.webpageUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+				UILApplication.sharefolder = "plantinfo";
 			}
 			UILApplication.shareUrl = webpage.webpageUrl;
 			WXMediaMessage msg = new WXMediaMessage(webpage);
@@ -834,8 +827,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			Bitmap b = agroImageView.getDrawingCache();			 			             
 			Bitmap bitmap = Bitmap.createScaledBitmap(b, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
 			msg.thumbData = PublicHelper.bmpToByteArray(bitmap, true);
-			bitmap.recycle();
-			
+			bitmap.recycle();			
 			SendMessageToWX.Req req = new SendMessageToWX.Req();
 			req.transaction = buildTransaction("webpage");
 			req.message = msg;
@@ -851,12 +843,15 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			WXWebpageObject webpage1 = new WXWebpageObject();
 			if(status==0){
 				webpage1.webpageUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+				UILApplication.sharefolder = "question";
 			}
 			else if(status==1){
 				webpage1.webpageUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+				UILApplication.sharefolder = "gossip";
 			}
 			else{
 				webpage1.webpageUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+				UILApplication.sharefolder = "plantinfo";
 			}
 			UILApplication.shareUrl = webpage1.webpageUrl;
 			WXMediaMessage msg1 = new WXMediaMessage(webpage1);
@@ -872,8 +867,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			Bitmap b1 = agroImageView.getDrawingCache();
 			Bitmap bitmap1 = Bitmap.createScaledBitmap(b1, PublicHelper.WX_THUMB_SIZE, PublicHelper.WX_THUMB_SIZE, true);
 			msg1.thumbData = PublicHelper.bmpToByteArray(bitmap1, true);
-			bitmap1.recycle();
-			
+			bitmap1.recycle();			
 			SendMessageToWX.Req req1 = new SendMessageToWX.Req();
 			req1.transaction = buildTransaction("webpage");
 			req1.message = msg1;
@@ -893,26 +887,44 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				content2 = question.getContent();
 			}
 		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  content2);
-		    
+		    String imgurl;
 		    if(status==0){
 				UILApplication.shareUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+				UILApplication.sharefolder = "question";
+				if(question.getAttachments()!=null && question.getAttachments().size()>0){
+			    	imgurl = HttpUtil.ImageUrl+"questions/small/"
+							+ question.getAttachments().get(0)
+							.getUrl();
+			    }
+			    else{
+			    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
+			    }
 			}
 			else if(status==1){
 				UILApplication.shareUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+				UILApplication.sharefolder = "gossip";
+				if(question.getAttachments()!=null && question.getAttachments().size()>0){
+			    	imgurl = HttpUtil.ImageUrl+"questions/small/"
+							+ question.getAttachments().get(0)
+							.getUrl();
+			    }
+			    else{
+			    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
+			    }
 			}
 			else{
 				UILApplication.shareUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+				UILApplication.sharefolder = "plantinfo";
+				if(question.getAttachments()!=null && question.getAttachments().size()>0){
+			    	imgurl = HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(0)
+							.getUrl();
+			    }
+			    else{
+			    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
+			    }
 			}
-		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  UILApplication.shareUrl);
-		    String imgurl;
-		    if(question.getAttachments()!=null && question.getAttachments().size()>0){
-		    	imgurl = HttpUtil.ImageUrl+"questions/small/"
-						+ question.getAttachments().get(0)
-						.getUrl();
-		    }
-		    else{
-		    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
-		    }
+		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  UILApplication.shareUrl);		    
 		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgurl);
 		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
 		    mTencent.shareToQQ(this, params, new BaseUiListener());
@@ -931,32 +943,63 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				content3 = question.getContent();
 			}
 		    params1.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, content3);//选填
+		    String imgurl1;
+		    ArrayList<String> urlsList = new ArrayList<String>();
 		    if(status==0){
 		    	UILApplication.shareUrl = HttpUtil.ViewUrl+"question/detail?id="+questionId;
+		    	UILApplication.sharefolder = "question";
+		    	if(question.getAttachments()!=null && question.getAttachments().size()>0){
+			    	imgurl1 = HttpUtil.ImageUrl+"questions/small/"
+							+ question.getAttachments().get(0)
+							.getUrl();
+			    	for(int i=0;i<question.getAttachments().size();i++){
+			    		urlsList.add(HttpUtil.ImageUrl+"questions/small/"
+								+ question.getAttachments().get(i)
+								.getUrl());
+			    	}
+			    }
+			    else{
+			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
+			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    }
 			}
 			else if(status==1){
 				UILApplication.shareUrl = HttpUtil.ViewUrl+"gossip/detail?id="+questionId;
+				UILApplication.sharefolder = "gossip";
+				if(question.getAttachments()!=null && question.getAttachments().size()>0){
+			    	imgurl1 = HttpUtil.ImageUrl+"questions/small/"
+							+ question.getAttachments().get(0)
+							.getUrl();
+			    	for(int i=0;i<question.getAttachments().size();i++){
+			    		urlsList.add(HttpUtil.ImageUrl+"questions/small/"
+								+ question.getAttachments().get(i)
+								.getUrl());
+			    	}
+			    }
+			    else{
+			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
+			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    }
 			}
 			else{
 				UILApplication.shareUrl = HttpUtil.ViewUrl+"plantinfo/detail?id="+questionId;
+				UILApplication.sharefolder = "plantinfo";
+				if(question.getAttachments()!=null && question.getAttachments().size()>0){
+			    	imgurl1 = HttpUtil.ImageUrl+"plant/small/"
+							+ question.getAttachments().get(0)
+							.getUrl();
+			    	for(int i=0;i<question.getAttachments().size();i++){
+			    		urlsList.add(HttpUtil.ImageUrl+"plant/small/"
+								+ question.getAttachments().get(i)
+								.getUrl());
+			    	}
+			    }
+			    else{
+			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
+			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    }
 			}
-		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填
-		    ArrayList<String> urlsList = new ArrayList<String>();		    
-		    String imgurl1;
-		    if(question.getAttachments()!=null && question.getAttachments().size()>0){
-		    	imgurl1 = HttpUtil.ImageUrl+"questions/small/"
-						+ question.getAttachments().get(0)
-						.getUrl();
-		    	for(int i=0;i<question.getAttachments().size();i++){
-		    		urlsList.add(HttpUtil.ImageUrl+"questions/small/"
-							+ question.getAttachments().get(i)
-							.getUrl());
-		    	}
-		    }
-		    else{
-		    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
-		    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
-		    }
+		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填		    
 		    params1.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgurl1);		    
 		    params1.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urlsList);
 		    mTencent.shareToQzone(this, params1, new BaseUiListener());
@@ -1105,24 +1148,25 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		case 7:
 			page = 0;
 			loadData();
-			if(adapter.ismContains()){
-				GFToast.show(getApplicationContext(),"回复成功");
-			}
-			else{
-				boolean less = GFDate.lessTenMinutes(question.getStime());
-				int point = GFPointDictionary.getResponsePoint(getApplicationContext());
-				if(point>0){
-					if(less){
-						GFToast.show(getApplicationContext(),"回复成功,10分钟内回答双倍积分+"+(2*point)+" ^-^");
-					}
-					else{
-						GFToast.show(getApplicationContext(),"回复成功,积分+"+point+" ^-^");
-					}
-				}
-				else{
-					GFToast.show(getApplicationContext(),"回复成功");
-				}
-			}
+			GFToast.show(getApplicationContext(),"回复成功");
+//			if(adapter.ismContains()){
+//				GFToast.show(getApplicationContext(),"回复成功");
+//			}
+//			else{
+//				boolean less = GFDate.lessTenMinutes(question.getStime());
+//				int point = GFPointDictionary.getResponsePoint(getApplicationContext());
+//				if(point>0){
+//					if(less){
+//						GFToast.show(getApplicationContext(),"回复成功,10分钟内回答双倍积分+"+(2*point)+" ^-^");
+//					}
+//					else{
+//						GFToast.show(getApplicationContext(),"回复成功,积分+"+point+" ^-^");
+//					}
+//				}
+//				else{
+//					GFToast.show(getApplicationContext(),"回复成功");
+//				}
+//			}
 			break;
 		case 0:
 			if(msg.obj!=null){

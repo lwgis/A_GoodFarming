@@ -10,12 +10,15 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ public class FeedBackActivity extends Activity implements HandMessage,OnClickLis
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feedback);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		cancelButton = (MyTextButton)findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(this);
 		sendBtn = (MyTextButton)findViewById(R.id.send_button);
@@ -112,6 +116,10 @@ public class FeedBackActivity extends Activity implements HandMessage,OnClickLis
 			this.finish();
 			break;
 		case R.id.send_button:
+			InputMethodManager im = (InputMethodManager) this
+			.getSystemService(Context.INPUT_METHOD_SERVICE);
+			im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+			.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			send();
 			break;
 		default:

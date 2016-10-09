@@ -152,7 +152,12 @@ public class PointOrdersActivity extends Activity implements OnItemClickListener
 				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"commodities/small/"+pointOrder.getCommodity().getImage(), holderpointorder.pointIv, ImageOptions.optionsNoPlaceholder);
 			}
 			holderpointorder.titleTv.setText(pointOrder.getCommodity().getName());
-			holderpointorder.pointTv.setText("积分："+pointOrder.getCommodity().getPoint());
+			if(pointOrder.getCommodity().getExchange()==null || pointOrder.getCommodity().getExchange()==0){
+				holderpointorder.pointTv.setText("积分："+String.valueOf(pointOrder.getCommodity().getPoint()));
+			}
+			else{
+				holderpointorder.pointTv.setText("推荐币："+String.valueOf(pointOrder.getCommodity().getTjcoin()==null?0:pointOrder.getCommodity().getTjcoin()));
+			}
 			if(pointOrder.getStatus()==1){
 				holderpointorder.statusTv.setText("已发货");
 			}

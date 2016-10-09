@@ -225,7 +225,6 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 				File fileCache = ImageOptions.getCache(getActivity());
 				Intent intent = new Intent();
 				intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-				// intent.addCategory(Intent.CATEGORY_DEFAULT);
 				currentfile = new File(fileCache.getPath() + "/"
 						+ UUID.randomUUID().toString() + ".jpg");
 				if (currentfile.exists()) {

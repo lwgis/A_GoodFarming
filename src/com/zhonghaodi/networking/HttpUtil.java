@@ -38,6 +38,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
@@ -76,6 +77,41 @@ public class HttpUtil {
 		get.addHeader("Content-type", "application/json;charset=UTF-8");
 		get.addHeader("Accept-Charset", "utf-8");
 		get.addHeader("X-Token",UILApplication.getAuth());
+		try {
+			HttpResponse response = client.execute(get);
+
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == 200) {
+				InputStream inputStream = response.getEntity().getContent();
+				BufferedReader buffer = new BufferedReader(
+						new InputStreamReader(inputStream,
+								Charset.forName("utf-8")));
+				String line = null;
+				while ((line = buffer.readLine()) != null) {
+					sb.append(line);
+				}
+				inputStream.close();
+				return sb.toString();
+			} else {
+				// TODO 返回错误信息
+				
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			// TODO 返回协议错误信息
+		} catch (IOException e) {
+			e.printStackTrace();
+			// TODO 返回网络错误
+		}
+		return null;
+	}
+	
+	public static String executeHttpGetNotToken(String urlString) {
+		StringBuffer sb = new StringBuffer();
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpGet get = new HttpGet(urlString);
+		get.addHeader("Content-type", "application/json;charset=UTF-8");
+		get.addHeader("Accept-Charset", "utf-8");
 		try {
 			HttpResponse response = client.execute(get);
 
@@ -360,6 +396,44 @@ public class HttpUtil {
 			return netResponse;
 		}
 	}
+	
+	public static NetResponse nottokenHttpPost(String serviceUrl,
+			List<NameValuePair> paramList) throws Throwable {
+		NetResponse netResponse = new NetResponse();
+		StringBuffer sb = new StringBuffer();
+		HttpPost post = new HttpPost(serviceUrl);
+		post.setEntity(new UrlEncodedFormEntity(paramList, HTTP.UTF_8));
+		HttpClientParams.setRedirecting(post.getParams(), false);
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpResponse response = client.execute(post);
+		System.out.println(response.getStatusLine().getStatusCode());
+		if (response.getStatusLine().getStatusCode() == 201
+				|| response.getStatusLine().getStatusCode() == 200) {
+			InputStream inputStream = response.getEntity().getContent();
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(
+					inputStream, Charset.forName("utf-8")));
+			String line = null;
+			while ((line = buffer.readLine()) != null) {
+				sb.append(line);
+			}
+			inputStream.close();
+			netResponse.setStatus(1);
+			netResponse.setResult(sb.toString());
+			return netResponse;
+		} else {
+			InputStream inputStream = response.getEntity().getContent();
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(
+					inputStream, Charset.forName("utf-8")));
+			String line = null;
+			while ((line = buffer.readLine()) != null) {
+				sb.append(line);
+			}
+			inputStream.close();
+			netResponse.setStatus(0);
+			netResponse.setMessage(sb.toString());
+			return netResponse;
+		}
+	}
 
 	public static String executeHttpPut(String urlString, String informjson)
 			throws Throwable {
@@ -547,6 +621,20 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
+	public static String getQuestionfinesString(String zone) {
+		String url = RootURL + "questions/fines";
+		url=url+"?zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getQuestionfinesString(int qid,String zone) {
+		String url = RootURL+ "questions/fines?fromid=" + qid;
+		url=url+"&zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
 	public static String getMyQuestionsString(String uid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/questions");
 		return jsonString;
@@ -607,6 +695,14 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
+	public static String getPlantfines(int zone) {
+		String url = RootURL + "plantinfo/fines";
+		if(zone!=0){
+			url = url + "?zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
 
 	public static String getMorePlant(int qid,int zone) {
 		String url = RootURL+ "plantinfo?fromid=" + qid;
@@ -616,17 +712,49 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
+	public static String getMorePlantfines(int qid,int zone) {
+		String url = RootURL+ "plantinfo/fines?fromid=" + qid;
+		if(zone!=0){
+			url = url + "&zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
 	
 	public static String getGossipsString(String zone) {
 		String url = RootURL + "gossips";
-		url=url+"?zone="+zone;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"?zone="+zone;
+		}		
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 
 	public static String getGossipsString(int qid,String zone) {
 		String url = RootURL+ "gossips?fromid=" + qid;
-		url=url+"&zone="+zone;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"&zone="+zone;
+		}
+		
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	
+	public static String getGossipfinesString(String zone) {
+		String url = RootURL + "gossips/fines";
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"?zone="+zone;
+		}		
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+
+	public static String getGossipfinesString(int qid,String zone) {
+		String url = RootURL+ "gossips/fines?fromid=" + qid;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"&zone="+zone;
+		}
+		
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
@@ -659,8 +787,11 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getSinglePlant(int qid) {
-		String urlString = RootURL + "plantinfo/" + String.valueOf(qid);
+	public static String getSinglePlant(int qid,int page,long time) {
+		String urlString = RootURL + "plantinfo/" + String.valueOf(qid)+"/responses?page="+page;
+		if(page>0){
+			urlString+="&time="+time;
+		}
 		String jsonString = HttpUtil.executeHttpGet(urlString);
 		return jsonString;
 	}
@@ -1788,6 +1919,14 @@ public class HttpUtil {
 		
 	}
 	
+	public static String getRecommendeds(String uid){
+		
+		String urlString = RootURL + "users/"+uid+"/recommends";
+		String result =HttpUtil.executeHttpGetNotToken(urlString);
+		return result;
+		
+	}
+	
 	public static NetResponse follow(String uid,Nys nys){
 		String urlString = RootURL + "users/"+uid+"/follow";
 		Gson sGson=new Gson();
@@ -2176,6 +2315,70 @@ public class HttpUtil {
 		}
 	}
 	
+	public static NetResponse buyZfbt2(final String uid,int sid,final boolean coupon,final int cid){
+		
+		String jsonString = null;
+		String urlString = RootURL + "zfbt/"+sid+"/buy2";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair nameValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair1);
+		NameValuePair nameValuePair2 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(coupon);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "useCoupon";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair2);
+		NameValuePair nameValuePair4 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(cid);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "cid";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair4);
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
 	public static NetResponse confirmZfbtOrder(final String uid,int mid,final int oid){
 		
 		String jsonString = null;
@@ -2284,7 +2487,7 @@ public class HttpUtil {
 	
 	public static String getAppVersion(){
 		String url = RootURL + "apps/android";
-		String jsonString = HttpUtil.executeHttpGet(url);
+		String jsonString = HttpUtil.executeHttpGetNotToken(url);
 		return jsonString;
 	}
 	
@@ -2614,7 +2817,7 @@ public class HttpUtil {
 	 */
 	public static String getCommodities(int position,String uid,int zone){
 		
-		String urlString = RootURL + "commodities?position="+position+"&uid="+uid;
+		String urlString = RootURL + "commodities/all?position="+position+"&uid="+uid;
 		if(zone!=0){
 			urlString=urlString+"&zone="+zone;
 		}
@@ -3004,6 +3207,21 @@ public class HttpUtil {
 			netResponse.setMessage(e.getMessage());
 			return netResponse;
 		}
+	}
+	
+	/**
+	 * 获取刮刮乐提示信息
+	 * @return
+	 */
+	public static String getGuaGuaTip(String uid,int zone){
+		
+		String urlString = RootURL + "guagua/myTimes?uid="+uid;
+		if(zone!=0){
+			urlString = urlString+"?zone="+zone;
+		}
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+		
 	}
 	
 	/**
@@ -3460,6 +3678,64 @@ public class HttpUtil {
 		};
 		
 		nameValuePairs.add(cotentValuePair1);
+		
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	public static NetResponse shareQuestion(final int id) {
+		String urlString = RootURL + "share/question";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(id);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "id";
+			}
+		};		
+		nameValuePairs.add(uidValuePair1);
+				
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	public static NetResponse shareGossip(final int id) {
+		String urlString = RootURL + "share/gossip";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(id);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "id";
+			}
+		};		
+		nameValuePairs.add(uidValuePair1);
 		
 		try {
 			return HttpUtil.executeHttpPost(urlString, nameValuePairs);

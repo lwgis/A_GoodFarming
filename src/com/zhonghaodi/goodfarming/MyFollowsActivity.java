@@ -13,6 +13,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Nys;
+import com.zhonghaodi.model.Store;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
@@ -42,7 +43,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MyFollowsActivity extends Activity implements HandMessage,OnClickListener {
 	private ListView gridView;
-	private List<Nys> nyss;
+	private List<Store> nyss;
 	private NysAdapter adapter;
 	private GFHandler<MyFollowsActivity> handler = new GFHandler<MyFollowsActivity>(this);
 	private String uid;
@@ -84,12 +85,13 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 					int position, long id) {
 				// TODO Auto-generated method stub
 				NysHolder nHolder = (NysHolder)view.getTag();
-				Nys nys = nyss.get(position);
+				Store nys = nyss.get(position);
 				if(nys.getLevelID()==3){
 					Intent intent = new Intent(MyFollowsActivity.this, NzdActivity.class);
 					Bundle bundle = new Bundle();
-					User user = (User)nys;
-					bundle.putSerializable("store", user);
+//					User user = (User)nys;
+//					Store store = (Store)user;
+					bundle.putSerializable("store", nys);
 					if(nHolder.followButton.getVisibility()==view.GONE){
 						intent.putExtra("bfollow", true);
 					}
@@ -113,7 +115,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				
 			}
 		});
-		nyss = new ArrayList<Nys>();
+		nyss = new ArrayList<Store>();
 		adapter = new NysAdapter();
 		gridView.setAdapter(adapter);
 		status = getIntent().getIntExtra("status", 0);
@@ -276,7 +278,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 				convertView.setTag(nysHolder);
 			}
 			nysHolder = (NysHolder)convertView.getTag();
-			Nys nys = nyss.get(position);
+			Store nys = nyss.get(position);
 			ImageLoader.getInstance().displayImage(
 					HttpUtil.ImageUrl+"users/small/"
 							+ nys.getThumbnail(),
@@ -330,11 +332,11 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 		case 0:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
-				List<Nys> nyss1 = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<Nys>>() {
+				List<Store> nyss1 = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Store>>() {
 						}.getType());
 				nysactivity.nyss.clear();
-				for (Nys nys : nyss1) {
+				for (Store nys : nyss1) {
 					nysactivity.nyss.add(nys);
 				}
 				
@@ -347,11 +349,11 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 		case 1:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
-				List<Nys> nyss1 = gson.fromJson(msg.obj.toString(),
-						new TypeToken<List<Nys>>() {
+				List<Store> nyss1 = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<Store>>() {
 						}.getType());
 				nysactivity.nyss.clear();
-				for (Nys nys : nyss1) {
+				for (Store nys : nyss1) {
 					nysactivity.nyss.add(nys);
 				}
 				nysactivity.adapter.notifyDataSetChanged();

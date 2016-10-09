@@ -111,7 +111,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 
 			
 		});
-		zone = GFAreaUtil.getCityId(this);
+		zone = GFAreaUtil.getCity(this);
 		zfbts = new ArrayList<Zfbt>();
 		adapter = new SecondAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
@@ -213,10 +213,10 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return;
-//			x=location.getLongitude();
-//			y=location.getLatitude();
-			x=118.798632;
-			y=36.858719;
+			x=location.getLongitude();
+			y=location.getLatitude();
+//			x=118.798632;
+//			y=36.858719;
 			if(progressDialog!=null){
 				progressDialog.dismiss();
 			}
@@ -248,6 +248,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 		public TextView acountTv;
 		public TextView timeTv;
 		public TextView nzdTv;
+		public TextView couponTv;
 		 public HolderZfbt(View view){
 			 secondIv=(ImageView)view.findViewById(R.id.second_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
@@ -258,6 +259,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			 acountTv = (TextView)view.findViewById(R.id.acount_text);
 			 timeTv = (TextView)view.findViewById(R.id.time_text);
 			 nzdTv=(TextView)view.findViewById(R.id.nzd_text);
+			 couponTv = (TextView)view.findViewById(R.id.coupon_text);
 		 }
 	}
 	
@@ -298,13 +300,36 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			if (second.getImage()!=null) {
 				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/big/"+second.getImage(), holderzfbt.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
+			boolean bmin = false;
+			boolean bmax = false;
+			if(second.getCoupon()!=null && second.getCoupon()>0){
+				bmin = true;
+			}
+			if(second.getCouponMax()!=null && second.getCouponMax()>0){
+				bmax = true;
+			}
+			if(!bmin && !bmax){
+				holderzfbt.couponTv.setVisibility(View.GONE);
+			}
+			if(!bmin && bmax){
+				holderzfbt.couponTv.setVisibility(View.VISIBLE);
+				holderzfbt.couponTv.setText("可使用优惠币最多："+second.getCouponMax());
+			}
+			if(bmin && bmax){
+				holderzfbt.couponTv.setVisibility(View.VISIBLE);
+				holderzfbt.couponTv.setText("可使用优惠币："+second.getCoupon()+"--"+second.getCouponMax());
+			}
+			if(bmin && !bmax){
+				holderzfbt.couponTv.setVisibility(View.VISIBLE);
+				holderzfbt.couponTv.setText("可使用优惠币最少："+second.getCoupon());
+			}
 			holderzfbt.titleTv.setText(second.getTitle());
 			holderzfbt.nzdTv.setText(second.getNzd().getAlias());
 			holderzfbt.oldPriceTv.setText("￥"+String.valueOf(second.getOprice()));
 			holderzfbt.newPriceTv.setText("￥"+String.valueOf(second.getNprice()));
 			holderzfbt.countTv.setText("库存："+String.valueOf(second.getCount()));
 			holderzfbt.acountTv.setText("销售量："+String.valueOf(second.getAcount()));
-			holderzfbt.timeTv.setText("时间"+second.getStarttime());
+			holderzfbt.timeTv.setText("时间："+second.getStarttime());
 			return convertView;
 		}
 		
@@ -347,7 +372,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 				adapter.notifyDataSetChanged();
 				pullToRefreshListView.onRefreshComplete();
 				if(zfbts.size()==0){
-					GFToast.show(getApplicationContext(),"附近没有种好地补贴商品抢购活动！");
+					GFToast.show(getApplicationContext(),"附近没有超实惠商品抢购活动！");
 				}
 				
 			} else {
@@ -368,7 +393,7 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 				adapter.notifyDataSetChanged();
 				pullToRefreshListView.onRefreshComplete();
 				if(zfbts.size()==0){
-					GFToast.show(getApplicationContext(),"附近没有种好地补贴商品抢购活动！");
+					GFToast.show(getApplicationContext(),"附近没有超实惠商品抢购活动！");
 				}
 				
 			} else {

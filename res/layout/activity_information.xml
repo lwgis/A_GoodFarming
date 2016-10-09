@@ -27,6 +27,10 @@
             android:gravity="center"
             android:text="资料设置"
             android:textColor="#FFFFFF"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textSize="20dip" />
     </RelativeLayout>
     <ScrollView 

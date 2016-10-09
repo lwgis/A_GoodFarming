@@ -55,15 +55,24 @@ public class SecondCodeActivity extends Activity implements HandMessage {
 		if(secondOrder!=null){
 			orderinfoView.setText(secondOrder.getSecond().getTitle()+"---1份");
 			loadQR(secondOrder.getSecond().getId(),secondOrder.getUsid());
+			String mess = getIntent().getStringExtra("message");
+			if(mess!=null){
+				messageText.setText(mess);
+			}	
 		}
 		if(zfbtOrder!=null){
 			orderinfoView.setText(zfbtOrder.getSecond().getTitle()+"---1份");
 			loadQR(zfbtOrder.getSecond().getId(),zfbtOrder.getUsid());
+			String str = "总共消费:";
+			if(zfbtOrder.getPrice()!=null && zfbtOrder.getPrice()>0){
+				str+="￥"+zfbtOrder.getPrice();
+			}
+			if(zfbtOrder.getCoupon()>0){
+				str+=",优惠币"+zfbtOrder.getCoupon()+"个";
+			}
+			messageText.setText(str);
 		}
-		String mess = getIntent().getStringExtra("message");
-		if(mess!=null){
-			messageText.setText(mess);
-		}	
+		
 	}
 	@Override
 	protected void onResume() {

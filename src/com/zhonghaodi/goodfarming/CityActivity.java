@@ -80,8 +80,8 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 		MySectionIndexer indexer;
 		if(status==0){
 			titleText.setText("我在…");
-			goonBtn.setVisibility(View.VISIBLE);
-			int zone = GFAreaUtil.getCityId(this);
+			goonBtn.setVisibility(View.GONE);
+			int zone = GFAreaUtil.getCity(this);
 			if(zone!=0){
 				area1 = new City();
 				area1.setId(zone);
@@ -97,35 +97,35 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 	                R.layout.cell_group_crop, cityListView, false)); 
 		}
 		else{
-			titleText.setText("我还想看看…");
-			goonBtn.setVisibility(View.GONE);
-			int zone2= GFAreaUtil.getCityId1(this);
-			if(zone2==0){
-				area2 = areas.get(0);
-			}
-			else{
-				area2 = new City();
-				area2.setId(zone2);
-				area2.setName(GFAreaUtil.getCityName1(this));
-			}
-			for (Iterator iterator = areas.iterator(); iterator.hasNext();) {
-				City city = (City) iterator.next();
-				if(city.getId()==area1.getId()){
-					areas.remove(city);
-					counts[0]=counts[0]-1;
-					break;
-				}
-			}
-			indexer = new MySectionIndexer(sections, counts);
-			adapter = new CityAdapter(areas, this, indexer);
-			adapter.setSelid(area2.getId());
-			cityListView.setAdapter(adapter);
-	        cityListView.setOnScrollListener(adapter);
-	      //設置頂部固定頭部  
-	        cityListView.setPinnedHeaderView(LayoutInflater.from(this).inflate(    
-	                R.layout.cell_group_crop, cityListView, false)); 
-	        Animation animation = AnimationUtils.loadAnimation(this, R.anim.push_bottom_in);
-	        cityListView.startAnimation(animation);
+//			titleText.setText("我还想看看…");
+//			goonBtn.setVisibility(View.GONE);
+//			int zone2= GFAreaUtil.getCityId1(this);
+//			if(zone2==0){
+//				area2 = areas.get(0);
+//			}
+//			else{
+//				area2 = new City();
+//				area2.setId(zone2);
+//				area2.setName(GFAreaUtil.getCityName1(this));
+//			}
+//			for (Iterator iterator = areas.iterator(); iterator.hasNext();) {
+//				City city = (City) iterator.next();
+//				if(city.getId()==area1.getId()){
+//					areas.remove(city);
+//					counts[0]=counts[0]-1;
+//					break;
+//				}
+//			}
+//			indexer = new MySectionIndexer(sections, counts);
+//			adapter = new CityAdapter(areas, this, indexer);
+//			adapter.setSelid(area2.getId());
+//			cityListView.setAdapter(adapter);
+//	        cityListView.setOnScrollListener(adapter);
+//	      //設置頂部固定頭部  
+//	        cityListView.setPinnedHeaderView(LayoutInflater.from(this).inflate(    
+//	                R.layout.cell_group_crop, cityListView, false)); 
+//	        Animation animation = AnimationUtils.loadAnimation(this, R.anim.push_bottom_in);
+//	        cityListView.startAnimation(animation);
 		}      
 	}
 	
@@ -194,7 +194,7 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 		case R.id.ok_button:
 			if(status==0){
 				if(area1==null){
-					showMessage("请选择一个主区域");
+					showMessage("请选择一个区域");
 					return;
 				}
 				GFAreaUtil.saveAreaInfo(this, area1);

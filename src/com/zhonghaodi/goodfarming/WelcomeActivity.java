@@ -79,14 +79,14 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		if(!UILApplication.checkNetworkState()){
 			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
-//		int zone = GFAreaUtil.getCityId(this);
-//		if(zone==0){
-//			location();
-//		}
-//		else{
-//			sleep();
-//		}
-		sleep();
+		int zone = GFAreaUtil.getCity(this);
+		if(zone==0){
+			location();
+		}
+		else{
+			sleep();
+		}
+//		sleep();
 		
 	}
                   

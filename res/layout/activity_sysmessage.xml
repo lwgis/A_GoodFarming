@@ -28,6 +28,10 @@
             android:gravity="center"
             android:text="系统消息"
             android:textColor="#FFFFFF"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textSize="20dip" />
         <ImageView 
             android:id="@+id/clear_button"

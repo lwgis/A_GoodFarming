@@ -125,7 +125,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 		agrotechnicals = new ArrayList<Agrotechnical>();
 		adapter = new AgroAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
-		zone = GFAreaUtil.getCityId(getActivity());
+		zone = GFAreaUtil.getCity(getActivity());
 		loadCategory();
 		return view;
 	}

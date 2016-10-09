@@ -163,7 +163,12 @@ public class CommodityActivity extends Activity implements OnClickListener,HandM
 					bigImageView.setIndex(0);
 					bigImageView.setImages(images,"commodities");
 					nameTextView.setText(commodity.getName());
-					pointTextView.setText("积分："+commodity.getPoint());
+					if(commodity.getExchange()==null || commodity.getExchange()==0){
+						pointTextView.setText("积分："+commodity.getPoint());
+					}
+					else{
+						pointTextView.setText("推荐币："+(commodity.getTjcoin()==null?0:commodity.getTjcoin()));
+					}
 					if(commodity.getLevels()!=null && commodity.getLevels().size()>0){
 						levelTextView.setVisibility(View.VISIBLE);
 						
@@ -206,9 +211,17 @@ public class CommodityActivity extends Activity implements OnClickListener,HandM
 					return;
 				}
 			}
-			if(user.getPoint()<commodity.getPoint()){
-				GFToast.show(getApplicationContext(),"您的积分不够，继续努力哟。");
-				return;
+			if(commodity.getExchange()==0){
+				if(user.getPoint()<commodity.getPoint()){
+					GFToast.show(getApplicationContext(),"您的积分不够，继续努力哟。");
+					return;
+				}
+			}
+			else{
+				if(user.getTjcoin()<commodity.getTjcoin()){
+					GFToast.show(getApplicationContext(),"您的推荐币不足，继续努力哟。");
+					return;
+				}
 			}
 			exchange();
 			break;

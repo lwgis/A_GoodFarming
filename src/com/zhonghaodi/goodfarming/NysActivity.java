@@ -12,6 +12,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.CustomRelativeLayout;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.Holder1;
@@ -25,6 +26,7 @@ import com.zhonghaodi.customui.QuanHolder;
 import com.zhonghaodi.customui.QuanHolder3;
 import com.zhonghaodi.customui.QuanHolder6;
 import com.zhonghaodi.customui.QuanHolder9;
+import com.zhonghaodi.customui.WaitingPopupWindow;
 import com.zhonghaodi.model.Comment;
 import com.zhonghaodi.model.Follow;
 import com.zhonghaodi.model.Function;
@@ -50,6 +52,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -85,6 +88,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	private View clickView;
 	private TextView titleView;
 	private int page = 0;
+	private WaitingPopupWindow waitingPopupWindow;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -117,7 +121,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					@Override
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
-						loadData();
+						loadNewDate();
 					}
 
 					@Override
@@ -137,6 +141,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 					}
 
 				});
+		waitingPopupWindow = new WaitingPopupWindow(this);
 		adapter = new NysAdapter();
 		allQuestions = new ArrayList<Question>();
 		pullToRefreshList.getRefreshableView().setAdapter(adapter);
@@ -189,6 +194,8 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 	 * 读取农技达人的朋友圈文章最新20条
 	 */
 	private void loadNewDate() {
+		waitingPopupWindow.showAtLocation(findViewById(R.id.contentlayout), 
+				Gravity.CENTER, 0, 300);
 		page=0;
 		new Thread(new Runnable() {
 
@@ -962,6 +969,7 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			nysactivity.user = (Nys) GsonUtil
 					.fromJson(msg.obj.toString(), Nys.class);
 			titleView.setText(user.getLevel().getName());
+			adapter.notifyDataSetChanged();
 			loadNewDate();
 			
 			break;
@@ -1011,6 +1019,9 @@ public class NysActivity extends Activity implements HandMessage,OnClickListener
 			break;
 			
 		case 3:
+			if(waitingPopupWindow.isShowing()){
+				waitingPopupWindow.dismiss();
+			}
 			if (msg.obj != null) {
 				Gson gson = new Gson();
 				List<Question> questions = gson.fromJson(msg.obj.toString(),

@@ -184,8 +184,7 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name=".AgrotechnicalActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"  
+            android:name=".AgrotechnicalActivity" 
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" 
             >
         </activity>
@@ -342,7 +341,7 @@
         <activity
             android:name=".FeedBackActivity"
             android:screenOrientation="portrait" 
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".GuaConfirmActivity"
@@ -485,6 +484,10 @@
             android:name=".ZfbtEvaluatesActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".RecommendedActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity android:name=".wxapi.WXEntryActivity"  
             android:launchMode="singleInstance"  
             android:exported="true"  
@@ -545,6 +548,7 @@
             android:value="lwgis#goodfarming" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService" />        
+        <!-- <meta-data android:value="57295cd9e0f55aa51a001212" android:name="UMENG_APPKEY"></meta-data> -->
         <meta-data android:value="572bef3167e58eeefe002485" android:name="UMENG_APPKEY"></meta-data>
         <!-- <meta-data android:value="channel_value" android:name="UMENG_CHANNEL"/> -->
         <meta-data android:value="Zhonghaodi" android:name="UMENG_CHANNEL"/>

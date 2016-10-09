@@ -73,6 +73,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 	private WebView webview;
 	private FrameLayout mFullscreenContainer;  
     private LinearLayout mContentView;  
+    private LinearLayout mainView;
     private View mCustomView = null;
     private LinearLayout sendLayout;
 	private LinearLayout resLayout;
@@ -85,6 +86,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_agrotechnical);
 		agroImageView = (ImageView)findViewById(R.id.agro_image);
+		mainView = (LinearLayout)findViewById(R.id.main);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 
@@ -270,6 +272,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
                 return;  
             }  
             if (PublicHelper.getPhoneAndroidSDK() >= 14) {  
+            	
                 mFullscreenContainer.addView(view);  
                 mCustomView = view;  
                 mCustomViewCallback = callback;  
@@ -279,6 +282,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
                 mFullscreenContainer.bringToFront();  
   
                 setRequestedOrientation(mOriginalOrientation);  
+                mainView.setSystemUiVisibility(View.INVISIBLE); 
             }  
   
         }  
@@ -286,6 +290,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
   
         public void onHideCustomView() {  
             mContentView.setVisibility(View.VISIBLE);  
+            
             if (mCustomView == null) {  
                 return;  
             }  
@@ -300,6 +305,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
             // Show the content view.  
   
             setRequestedOrientation(mOriginalOrientation);  
+            mainView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         }  
   
     }  
@@ -424,6 +430,8 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 				GFToast.show(this, "回复应不少于5个字");
 				return;
 			}
+			InputMethodManager im = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+			im.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 			Response response = new Response();
 			response.setContent(GFString.htmlToStr(mzEditText.getText().toString()));
 			User writer = new User();
@@ -433,17 +441,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 			mzEditText.setText("");
 			mzEditText.setFocusable(false);
 			
-			Timer timer = new Timer();  
-		     timer.schedule(new TimerTask()  
-		     {  
-		           
-		         public void run()  
-		         {  
-		        	 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
-		 			 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS); 
-		         }  
-		           
-		     },  998);
+			
 			sendLayout.setVisibility(View.GONE);
 			resLayout.setVisibility(View.VISIBLE);
 			break;

@@ -28,6 +28,10 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="选择作物种类"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="#FFFFFF"
             android:textSize="18dip" />
 

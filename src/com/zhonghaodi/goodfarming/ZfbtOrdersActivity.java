@@ -8,6 +8,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.map.Text;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -103,10 +104,10 @@ public class ZfbtOrdersActivity extends Activity implements HandMessage,OnItemCl
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return;
-//			x=location.getLongitude();
-//			y=location.getLatitude();
-			x=118.798632;
-			y=36.858719;
+			x=location.getLongitude();
+			y=location.getLatitude();
+//			x=118.798632;
+//			y=36.858719;
 			mLocClient.stop();
 			
 		}
@@ -165,8 +166,16 @@ public class ZfbtOrdersActivity extends Activity implements HandMessage,OnItemCl
 		zfbtOrders.clear();
 		for (Iterator iterator = cOrders.iterator(); iterator.hasNext();) {
 			ZfbtOrder order = (ZfbtOrder) iterator.next();
-			if(order.getStatus()==disStatus){
-				zfbtOrders.add(order);
+			
+			if(disStatus==0){
+				if(order.getStatus()==0 || order.getStatus()==3){
+					zfbtOrders.add(order);
+				}
+			}
+			else{
+				if(order.getStatus()==disStatus){
+					zfbtOrders.add(order);
+				}
 			}
 		}
 		adapter.notifyDataSetChanged();
@@ -181,19 +190,21 @@ public class ZfbtOrdersActivity extends Activity implements HandMessage,OnItemCl
 	class HolderSecondOrder {
 		public ImageView secondIv;
 		public TextView titleTv;
-		public TextView nzdTv;
+//		public TextView nzdTv;
 		public TextView countPriceTv;
 		public TextView sumPriceTv;
 		public TextView statusTv;
 		public TextView timeTv;
+		public TextView posterTv;
 		 public HolderSecondOrder(View view){
 			 secondIv=(ImageView)view.findViewById(R.id.second_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
-			 nzdTv = (TextView)view.findViewById(R.id.nzd_text);
+//			 nzdTv = (TextView)view.findViewById(R.id.nzd_text);
 			 countPriceTv=(TextView)view.findViewById(R.id.countprice_text);
 			 sumPriceTv=(TextView)view.findViewById(R.id.sumprice_text);
 			 statusTv = (TextView)view.findViewById(R.id.status_text);
 			 timeTv = (TextView)view.findViewById(R.id.time_text);
+			 posterTv = (TextView)view.findViewById(R.id.poster_text);
 		 }
 	}
 	
@@ -224,7 +235,7 @@ public class ZfbtOrdersActivity extends Activity implements HandMessage,OnItemCl
 			HolderSecondOrder holdersecondorder;;
 			if(convertView==null){
 				convertView = LayoutInflater.from(ZfbtOrdersActivity.this)
-						.inflate(R.layout.cell_order, parent, false);
+						.inflate(R.layout.cell_zfbtorder, parent, false);
 				holdersecondorder = new HolderSecondOrder(convertView);
 				convertView.setTag(holdersecondorder);
 			}
@@ -235,19 +246,35 @@ public class ZfbtOrdersActivity extends Activity implements HandMessage,OnItemCl
 				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+zfbtOrder.getSecond().getImage(), holdersecondorder.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
 			holdersecondorder.titleTv.setText(zfbtOrder.getSecond().getTitle());
-			holdersecondorder.nzdTv.setText(zfbtOrder.getSecond().getNzd().getAlias());
-			holdersecondorder.countPriceTv.setText("￥"+String.valueOf(zfbtOrder.getSecond().getNprice())+" X 1份");
-			holdersecondorder.sumPriceTv.setText("共￥"+String.valueOf(zfbtOrder.getSecond().getNprice()));
+//			holdersecondorder.nzdTv.setText(zfbtOrder.getSecond().getNzd().getAlias());
+			holdersecondorder.countPriceTv.setVisibility(View.GONE);
+			String str = "总价:";
+			if(zfbtOrder.getPrice()!=null && zfbtOrder.getPrice()>0){
+				str+="￥"+zfbtOrder.getPrice();
+			}
+			if(zfbtOrder.getCoupon()>0){
+				str+=",优惠币"+zfbtOrder.getCoupon()+"个";
+			}
+			holdersecondorder.sumPriceTv.setText(str);
 			if(zfbtOrder.getStatus()==0){
 				holdersecondorder.statusTv.setText("待发货");
 			}
 			else if(zfbtOrder.getStatus()==1){
 				holdersecondorder.statusTv.setText("待评价");
 			}
-			else{
+			else if(zfbtOrder.getStatus()==2){
 				holdersecondorder.statusTv.setText("已评价");
 			}
+			else{
+				holdersecondorder.statusTv.setText("已到农资店");
+			}
 			holdersecondorder.timeTv.setText("时间:"+zfbtOrder.getTime());
+			if(zfbtOrder.getNzd()==null){
+				holdersecondorder.posterTv.setText("发货农资店：分配中...");
+			}
+			else{
+				holdersecondorder.posterTv.setText("发货农资店："+zfbtOrder.getNzd().getAlias());
+			}
 			return convertView;
 		}
 		
@@ -286,7 +313,7 @@ public class ZfbtOrdersActivity extends Activity implements HandMessage,OnItemCl
 		// TODO Auto-generated method stub
 		ZfbtOrder zfbtOrder = zfbtOrders.get(position);
 		if(zfbtOrder!=null){
-			if(zfbtOrder.getStatus()==0){
+			if(zfbtOrder.getStatus()==0 || zfbtOrder.getStatus()==3){
 				Intent intent = new Intent(this, SecondCodeActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putSerializable("order", zfbtOrder);

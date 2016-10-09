@@ -155,11 +155,20 @@ public class PostOrdersActivity extends Activity implements HandMessage,OnItemCl
 				holderpostorder.contactTv.setVisibility(View.GONE);
 				holderpostorder.addressTv.setVisibility(View.GONE);
 			}
-			if(zfbtOrder.getStatus()==1){
-				holderpostorder.statusTv.setText("交易完成");
-			}
-			else{
-				holderpostorder.statusTv.setText("交易未完成");
+			
+			switch (zfbtOrder.getStatus()) {
+			case 0:
+				holderpostorder.statusTv.setText("未发货");
+				break;
+			case 1:
+				holderpostorder.statusTv.setText("已送达");
+				break;
+			case 2:
+				holderpostorder.statusTv.setText("已完成");
+				break;
+
+			default:
+				break;
 			}
 			holderpostorder.timeTv.setText("时间:"+zfbtOrder.getTime());
 			return convertView;

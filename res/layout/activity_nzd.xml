@@ -32,8 +32,14 @@
             android:textColor="#FFFFFF"
             android:textSize="18dip" />
     </RelativeLayout>
-
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
+	<LinearLayout 
+	    android:id="@+id/contentlayout"
+	    android:layout_width="match_parent"
+	    android:layout_height="0dip"
+	    android:layout_weight="1"
+	    android:orientation="vertical"
+	    >
+	    <com.handmark.pulltorefresh.library.PullToRefreshListView
 	        xmlns:ptr="http://schemas.android.com/apk/res-auto"
 	        android:id="@+id/pull_refresh_list"
 	        android:layout_width="match_parent"
@@ -52,5 +58,5 @@
 	        ptr:ptrHeaderSubTextColor="#00ffff"
 	        ptr:ptrHeaderTextColor="#868686"
 	         />
-
+	</LinearLayout>
 </LinearLayout>

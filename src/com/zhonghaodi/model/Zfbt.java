@@ -8,6 +8,7 @@ public class Zfbt extends Second implements Serializable {
 	private Integer coupon;
 	private List<NetImage>attachments;
 	private List<Stock> stocks;
+	private Integer couponMax;
 	
 	public Zfbt() {
 		// TODO Auto-generated constructor stub
@@ -36,6 +37,14 @@ public class Zfbt extends Second implements Serializable {
 
 	public void setStocks(List<Stock> stocks) {
 		this.stocks = stocks;
+	}
+
+	public Integer getCouponMax() {
+		return couponMax;
+	}
+
+	public void setCouponMax(Integer couponMax) {
+		this.couponMax = couponMax;
 	}
 	
 }

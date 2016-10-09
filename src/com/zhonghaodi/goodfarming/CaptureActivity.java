@@ -17,6 +17,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.RecipeOrder;
 import com.zhonghaodi.model.SecondOrder;
+import com.zhonghaodi.model.ZfbtBuy;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -373,8 +374,8 @@ public final class CaptureActivity extends Activity implements
 		case 2:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
-				SecondOrder secondOrder = gson.fromJson(msg.obj.toString(),
-						new TypeToken<SecondOrder>() {
+				ZfbtBuy secondOrder = gson.fromJson(msg.obj.toString(),
+						new TypeToken<ZfbtBuy>() {
 						}.getType());
 				Intent intent = new Intent(CaptureActivity.this, SecondOrderActivity.class);
 				Bundle bundle = new Bundle();

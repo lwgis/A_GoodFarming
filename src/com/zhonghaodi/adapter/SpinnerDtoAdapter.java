@@ -1,0 +1,78 @@
+package com.zhonghaodi.adapter;
+
+import java.util.List;
+
+import com.zhonghaodi.customui.SpinnerHolder;
+import com.zhonghaodi.goodfarming.R;
+import com.zhonghaodi.model.SpinnerDto;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+
+public class SpinnerDtoAdapter extends BaseAdapter {
+
+	private List<SpinnerDto> mList;
+    private Context mContext;
+    private int selectId;
+    
+    public SpinnerDtoAdapter(List<SpinnerDto> list,Context context,int id) {
+		// TODO Auto-generated constructor stub
+    	mList = list;
+    	mContext = context;
+    	selectId = id;
+	}
+	
+	public int getSelectId() {
+		return selectId;
+	}
+
+
+
+	public void setSelectId(int selectId) {
+		this.selectId = selectId;
+	}
+
+	@Override
+	public int getCount() {
+		// TODO Auto-generated method stub
+		return mList.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		// TODO Auto-generated method stub
+		return mList.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		// TODO Auto-generated method stub
+		return mList.get(position).getId();
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		// TODO Auto-generated method stub
+		SpinnerHolder spinnerHolder;
+		SpinnerDto spinnerDto = null;
+		spinnerDto = mList.get(position);
+		convertView = LayoutInflater.from(mContext)
+				.inflate(R.layout.cell_spinnerdto, parent, false);
+		spinnerHolder = new SpinnerHolder(convertView);
+		convertView.setTag(spinnerHolder);
+		spinnerHolder=(SpinnerHolder)convertView.getTag();
+		
+		spinnerHolder.nameTv.setText(spinnerDto.getName());
+		if(selectId == spinnerDto.getId()){
+			spinnerHolder.selectRd.setChecked(true);
+		}
+		else{
+			spinnerHolder.selectRd.setChecked(false);
+		}
+		return convertView;
+	}
+
+}

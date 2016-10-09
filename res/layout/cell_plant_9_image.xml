@@ -94,6 +94,7 @@
                 android:layout_alignParentRight="true"
                 android:gravity="right"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
                 <TextView
 	                android:id="@+id/crop_text"
@@ -299,6 +300,7 @@
                	android:layout_weight="1"
                    android:orientation="horizontal"
                    android:gravity="center_horizontal"
+                   android:visibility="gone"
                    >
                    <ImageView
                     android:id="@+id/zanIv"
@@ -333,6 +335,7 @@
 				   android:layout_marginBottom="0dip"
 				   android:layout_marginRight="6dip"
 				   android:background="#cccccc"  
+				   android:visibility="gone"
 				/>
            	  <LinearLayout 
                 android:id="@+id/forward_layout"

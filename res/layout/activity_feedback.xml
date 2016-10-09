@@ -32,16 +32,15 @@
             android:textSize="18dip" />
 
     </RelativeLayout>
-    <LinearLayout 
+    <RelativeLayout 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         >
         <com.zhonghaodi.customui.MyEditText
 	        android:id="@+id/content_edit"
 	        style="@style/my_edittext_style"
 	        android:layout_width="fill_parent"
-	        android:layout_height="320dp"
+	        android:layout_height="220dp"
 	        android:layout_marginLeft="5dp"
 	        android:layout_marginRight="5dp"
 	        android:layout_marginTop="5dp"
@@ -59,10 +58,11 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
+            android:layout_below="@+id/content_edit"
             android:background="@drawable/button_shape"
             android:text="发送"
             android:textColor="#ffffff"
             android:textSize="18dip" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

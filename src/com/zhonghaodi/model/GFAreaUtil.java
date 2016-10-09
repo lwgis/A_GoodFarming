@@ -56,7 +56,15 @@ public class GFAreaUtil {
 		editor1.commit();
 	}
 
+	//原来的提问等都是通过此方法获取分区的，现在需要屏蔽
 	public static int getCityId(Context context) {
+//		SharedPreferences sharedPre = context.getSharedPreferences("areaconfig",
+//				Context.MODE_PRIVATE);
+//		int id = sharedPre.getInt("cityid", 0);
+		return 0;
+	}
+	//临时增加此方法只给拉拉呱和田间地头使用
+	public static int getCity(Context context) {
 		SharedPreferences sharedPre = context.getSharedPreferences("areaconfig",
 				Context.MODE_PRIVATE);
 		int id = sharedPre.getInt("cityid", 0);

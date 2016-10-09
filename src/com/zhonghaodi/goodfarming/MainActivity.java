@@ -185,6 +185,11 @@ public class MainActivity extends Activity implements OnClickListener,
 	    				shareQue = (Question)intent.getSerializableExtra("question");
 	    				String url = intent.getStringExtra("url");
 	    				UILApplication.sharefolder = intent.getStringExtra("folder");
+	    				UILApplication.sharestatus=1;
+	    				String[] strs = url.split("id=");
+	    				if(strs!=null && strs[1]!=null){
+	    					UILApplication.sharequeid = Integer.parseInt(strs[1].trim());
+	    				}	    				
 	    				Bitmap bitmap = UILApplication.sharebit;
 	    				if(shareQue==null){
 	    					return;
@@ -206,8 +211,8 @@ public class MainActivity extends Activity implements OnClickListener,
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
 		loadPointdics();
-		int ver = getIntent().getIntExtra("ver", 0);
-		if(ver==1){
+		String auth = GFUserDictionary.getAuth(this);
+		if(TextUtils.isEmpty(auth)){
 			String phone = GFUserDictionary.getPhone(this);
 			if(!TextUtils.isEmpty(phone)){
 				Intent loginit1 = new Intent(MainActivity.this,  
@@ -491,7 +496,8 @@ public class MainActivity extends Activity implements OnClickListener,
 			discoverFragment = new DiscoverFragment();
 		}
 		if (meFragment == null) {
-			meFragment = new MeFragment(this);
+			meFragment = new MeFragment();
+			meFragment.setShareContainer(this);
 		}
 		// transction.hide(homeFragment);
 		// transction.hide(forumFragment);
@@ -510,6 +516,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		case 0:
 			if (homeFragment == null) {
 				homeFragment = new HomeFragment();
+				homeFragment.setShareContainer(this);
 			}
 			transction.replace(R.id.content, homeFragment);
 			homeIv.setImageResource(R.drawable.home_s);
@@ -533,7 +540,8 @@ public class MainActivity extends Activity implements OnClickListener,
 			break;
 		case 3:
 			if (meFragment == null) {
-				meFragment = new MeFragment(this);
+				meFragment = new MeFragment();
+				meFragment.setShareContainer(this);
 			}
 			transction.replace(R.id.content, meFragment);
 			meIv.setImageResource(R.drawable.me_s);
@@ -964,7 +972,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			}
 			else if(requestCode==PublicHelper.CITY_REQUEST_CODE){
 				//切换区域后设置标题，重新读取问题
-				homeFragment.initArea();
+				homeFragment.resetArea();
 			}
 			
 		}

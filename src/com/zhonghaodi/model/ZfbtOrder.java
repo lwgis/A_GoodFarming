@@ -11,6 +11,8 @@ public class ZfbtOrder implements Serializable {
 	private Integer status;
 	private Double price;
 	private String time;
+	private User nzd;
+	private int coupon;
 	
 	
 	public ZfbtOrder() {
@@ -71,6 +73,22 @@ public class ZfbtOrder implements Serializable {
 
 	public void setSecond(Zfbt second) {
 		this.second = second;
+	}
+
+	public User getNzd() {
+		return nzd;
+	}
+
+	public void setNzd(User nzd) {
+		this.nzd = nzd;
+	}
+
+	public int getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(int coupon) {
+		this.coupon = coupon;
 	}
 
 	@Override

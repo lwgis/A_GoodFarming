@@ -89,7 +89,12 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 					public void onPullUpToRefresh(
 							PullToRefreshBase<GridView> refreshView) {
 						int count = commodities.size();
-						loadMoredata(count);
+						if(count%20==0){
+							loadMoredata(count);
+						}
+						else{
+							pullToRefreshGridView.onRefreshComplete();
+						}
 					}
 
 				});
@@ -214,7 +219,12 @@ public class CommoditiesActivity extends Activity implements HandMessage,OnItemC
 							+ commodity.getImage(),
 							commdityHolder.imageView, ImageOptions.options);
 			commdityHolder.nameTextView.setText(commodity.getName());
-			commdityHolder.pointTextView.setText("积分："+String.valueOf(commodity.getPoint()));
+			if(commodity.getExchange()==null || commodity.getExchange()==0){
+				commdityHolder.pointTextView.setText("积分："+String.valueOf(commodity.getPoint()));
+			}
+			else{
+				commdityHolder.pointTextView.setText("推荐币："+String.valueOf(commodity.getTjcoin()==null?0:commodity.getTjcoin()));
+			}
 			
 			if(commodity.getLevels()!=null && commodity.getLevels().size()>0){
 				String levelsStr = "";

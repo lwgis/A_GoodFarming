@@ -5,6 +5,7 @@ import com.zhonghaodi.goodfarming.R;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class HolderMeInfo {
@@ -19,6 +20,7 @@ public class HolderMeInfo {
 	public ImageView qrImageView;
 	public View guanzhuView;
 	public View fensiView;
+	public LinearLayout recLayout;
 	public HolderMeInfo(View view){
 		headIv=(RoundedImageView)view.findViewById(R.id.head_image);
 		titleTv=(TextView)view.findViewById(R.id.title_text);
@@ -31,5 +33,6 @@ public class HolderMeInfo {
 		reccountTv = (TextView)view.findViewById(R.id.reccount_text);
 		tjcoinTv = (TextView)view.findViewById(R.id.tjcoin_text);
 		qrImageView=(ImageView)view.findViewById(R.id.qrcode_img);
+		recLayout = (LinearLayout)view.findViewById(R.id.reclayout);
 	}
 }

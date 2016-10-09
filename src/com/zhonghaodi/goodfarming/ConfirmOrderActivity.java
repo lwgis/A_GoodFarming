@@ -95,7 +95,12 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 		}
 		
 		cTextView.setText(commodity.getName());
-		poinTextView.setText("积分："+commodity.getPoint());
+		if(commodity.getExchange()==null || commodity.getExchange()==0){
+			poinTextView.setText("积分："+commodity.getPoint());
+		}
+		else{
+			poinTextView.setText("推荐币："+(commodity.getTjcoin()==null?0:commodity.getTjcoin()));
+		}
 		desTextView.setText(commodity.getDescription());
 		mCommodity = commodity;
 	}

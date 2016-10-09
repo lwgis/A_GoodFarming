@@ -26,6 +26,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +55,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public MeFragment(ShareContainer container){
-		shareContainer = container;
+	public MeFragment(){
+		
 	}
 
 	@Override
@@ -106,7 +107,9 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					getActivity().startActivity(it);
 				}
 				else if(function.getName().equals("邀请好友赚积分")){
-					shareContainer.popupShareWindow(user);
+					if(shareContainer!=null){
+						shareContainer.popupShareWindow(user);
+					}					
 				}
 				else if(function.getName().equals("我的订单")){
 					it.putExtra("level", user.getLevel().getId());
@@ -241,9 +244,10 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo.guanzhuView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
 				holderMeInfo.tjcodeTv.setText(user.getTjCode());
-				holderMeInfo.reccountTv.setText(String.valueOf(user.getRecCount()));
+				holderMeInfo.reccountTv.setText(Html.fromHtml("<u>"+String.valueOf(user.getRecCount())+"</u>"));
 				holderMeInfo.tjcoinTv.setText(String.valueOf(user.getTjcoin()));
 				holderMeInfo.qrImageView.setOnClickListener(MeFragment.this);
+				holderMeInfo.recLayout.setOnClickListener(MeFragment.this);
 				break;
 			case 1:
 				holdFunction=(HoldFunction)convertView.getTag();
@@ -296,6 +300,10 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			Intent intent1 = new Intent(getActivity(), MyFollowsActivity.class);
 			getActivity().startActivity(intent1);
 			break;
+		case R.id.reclayout:
+			Intent intent3 = new Intent(getActivity(), RecommendedActivity.class);
+			getActivity().startActivity(intent3);
+			break;
 		case R.id.sigin_button:
 			siginButton.setEnabled(false);
 			signin();
@@ -322,37 +330,35 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	public void handleMessage(Message msg, Object object) {
 		switch (msg.what) {
 		case 1:
-			MeFragment fragment = (MeFragment) object;
+			
 			if (msg.obj == null) {
-				Toast.makeText(fragment.getActivity(), "获取失败,请稍后再试",
+				Toast.makeText(getActivity(), "获取失败,请稍后再试",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			fragment.user = (User) GsonUtil
+			user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
 			GFUserDictionary.saveLoginInfo(getActivity(),user,
 					GFUserDictionary.getPassword(getActivity()), getActivity(),
 					GFUserDictionary.getAuth(getActivity()));	
-			fragment.functions.clear();
-			Function pointsFunction = new Function("积分使用", PointsActivity.class,R.drawable.jifen);
-			pointsFunction.setDescription(user.getPoint()+"积分");
-			fragment.functions.add(pointsFunction);
+			functions.clear();
+//			Function pointsFunction = new Function("积分使用", PointsActivity.class,R.drawable.jifen);
+//			pointsFunction.setDescription(user.getPoint()+"积分");
+//			fragment.functions.add(pointsFunction);
 			Function questionFunction = new Function("我的提问", QuestionsActivity.class,R.drawable.myquestions);
-			fragment.functions.add(questionFunction);
+			functions.add(questionFunction);
 			Function favFunction = new Function("我的收藏", MyQuestionsActivity.class,R.drawable.shoucang);
-			fragment.functions.add(favFunction);
+			functions.add(favFunction);
 			Function ordersFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
-			fragment.functions.add(ordersFunction);
+			functions.add(ordersFunction);
 			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.yhbsh);
-			fragment.functions.add(cartFunction);
+			functions.add(cartFunction);
 			Function shareFunction = new Function("邀请好友赚积分",AppShareActivity.class,R.drawable.appshare);
-			fragment.functions.add(shareFunction);
-//			Function minfoFunction = new Function("资料设置", InformationActivity.class,R.drawable.me_s);
-//			fragment.functions.add(minfoFunction);				
+			functions.add(shareFunction);			
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
-			fragment.functions.add(feedbackFunction);
-			fragment.functions.add(null);
-			fragment.pullToRefreshList.onRefreshComplete();
+			functions.add(feedbackFunction);
+			functions.add(null);
+			pullToRefreshList.onRefreshComplete();
 			adapter.notifyDataSetChanged();
 			break;
 		case 2:
@@ -371,5 +377,13 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			break;
 		}
 		
+	}
+
+	public ShareContainer getShareContainer() {
+		return shareContainer;
+	}
+
+	public void setShareContainer(ShareContainer shareContainer) {
+		this.shareContainer = shareContainer;
 	}
 }

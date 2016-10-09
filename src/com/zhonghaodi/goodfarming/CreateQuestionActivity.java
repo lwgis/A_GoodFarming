@@ -163,11 +163,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				finish();
 			}
 		});
-		int aid = GFAreaUtil.getCityId(this);
-		if(aid!=0){
-			area = new City();
-			area.setId(aid);
-		}
+		
 		location();
 		sendBtn.setEnabled(false);
 		status = getIntent().getIntExtra("status", 0);
@@ -175,7 +171,15 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			showFragment(0);
 		}
 		else if(status==1){
-			showFragment(1);
+			//不选择分类直接进入提问页,话题分类强行设置为其他
+			cropId=99;
+			int aid = GFAreaUtil.getCity(this);
+			if(aid!=0){
+				area = new City();
+				area.setId(aid);
+			}
+			showFragment(3);
+			setTitle("创建话题");
 		}
 		else{
 			showFragment(2);
@@ -309,14 +313,12 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 						cursor.close();
 				}
 				 else {
-					 createQuestionFragment.getCurrentGFimageButton()
-						.setImageFilePath(uri.getPath());
+					 createQuestionFragment.getCurrentGFimageButton().setImageFilePath(uri.getPath());
 				}
 			}
 			// 相机
 			if (requestCode == 3) {
-				String imgPath = createQuestionFragment.getCurrentfile()
-						.getPath();
+				String imgPath = createQuestionFragment.getCurrentfile().getPath();
 				createQuestionFragment.getCurrentGFimageButton()
 						.setImageFilePath(imgPath);
 			}

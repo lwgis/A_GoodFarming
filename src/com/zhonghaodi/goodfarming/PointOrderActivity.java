@@ -115,7 +115,12 @@ public class PointOrderActivity extends Activity implements OnClickListener,Hand
 						+ commodity.getImage(),
 						cImageView, ImageOptions.options);
 		cTextView.setText(commodity.getName());
-		poinTextView.setText("积分："+commodity.getPoint());
+		if(commodity.getExchange()==null || commodity.getExchange()==0){
+			poinTextView.setText("积分："+commodity.getPoint());
+		}
+		else{
+			poinTextView.setText("推荐币："+(commodity.getTjcoin()==null?0:commodity.getTjcoin()));
+		}
 		desTextView.setText(commodity.getDescription());
 		
 		nameTextView.setText("姓名："+pointOrder.getContact().getName());

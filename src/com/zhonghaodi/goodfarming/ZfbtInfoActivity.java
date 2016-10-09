@@ -208,13 +208,30 @@ public class ZfbtInfoActivity extends Activity implements HandMessage,OnClickLis
 			countTextView.setText("库存："+String.valueOf(zfbt.getCount()));
 			acountTextView.setText("销售量："+String.valueOf(zfbt.getAcount()));
 			contentTextView.setText(zfbt.getContent());
-			couponTextView.setText("可使用优惠币："+zfbt.getCoupon());
-			if(zfbt.getCoupon()>0){
-				couponTextView.setVisibility(View.VISIBLE);
+			boolean bmin = false;
+			boolean bmax = false;
+			if(zfbt.getCoupon()!=null && zfbt.getCoupon()>0){
+				bmin = true;
 			}
-			else{
+			if(zfbt.getCouponMax()!=null && zfbt.getCouponMax()>0){
+				bmax = true;
+			}
+			if(!bmin && !bmax){
 				couponTextView.setVisibility(View.GONE);
 			}
+			if(!bmin && bmax){
+				couponTextView.setVisibility(View.VISIBLE);
+				couponTextView.setText("可使用优惠币最多："+zfbt.getCouponMax());
+			}
+			if(bmin && bmax){
+				couponTextView.setVisibility(View.VISIBLE);
+				couponTextView.setText("可使用优惠币："+zfbt.getCoupon()+"--"+zfbt.getCouponMax());
+			}
+			if(bmin && !bmax){
+				couponTextView.setVisibility(View.VISIBLE);
+				couponTextView.setText("可使用优惠币最少："+zfbt.getCoupon());
+			}
+			
 		}
 		if(zfbt.getAttachments()==null || zfbt.getAttachments().size()<=1){
 			headImage.setVisibility(View.VISIBLE);
@@ -302,13 +319,14 @@ public class ZfbtInfoActivity extends Activity implements HandMessage,OnClickLis
 			this.finish();
 			break;
 		case R.id.buy_button:
-			if(zfbt.getStocks()!=null && zfbt.getStocks().size()>0 && selectStock==null){
-				GFToast.show(this, "请选择发货的农资店！");
-				stockList.smoothScrollToPositionFromTop(1, 30, 300);
-			}
-			else{
-				buy();
-			}
+//			if(zfbt.getStocks()!=null && zfbt.getStocks().size()>0 && selectStock==null){
+//				GFToast.show(this, "请选择发货的农资店！");
+//				stockList.smoothScrollToPositionFromTop(1, 30, 300);
+//			}
+//			else{
+//				buy();
+//			}
+			buy();
 			break;
 		case R.id.evaluateBtn:
 			Intent intent = new Intent(this, ZfbtEvaluatesActivity.class);
@@ -473,7 +491,7 @@ public class ZfbtInfoActivity extends Activity implements HandMessage,OnClickLis
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return zfbt.getStocks().size();
+			return 0;
 		}
 
 		@Override

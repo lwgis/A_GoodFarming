@@ -80,6 +80,19 @@ public class GFUserDictionary {
 			}
 		});
 	}
+	
+	public static void saveTokenInfo(Context context,String auth) {
+		// 获取SharedPreferences对象
+		UILApplication.auth=auth;
+		SharedPreferences sharedPre = context.getSharedPreferences("config",
+				Context.MODE_PRIVATE);
+		// 获取Editor对象
+		Editor editor = sharedPre.edit();
+		editor.putString("auth", auth);
+		// 提交
+		editor.commit();
+		
+	}
 
 	public static void removeUserInfo(Context context) {
 		// 获取SharedPreferences对象

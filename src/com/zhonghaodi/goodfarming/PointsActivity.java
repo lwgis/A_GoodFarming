@@ -14,7 +14,7 @@ import android.widget.Button;
 public class PointsActivity extends Activity implements OnClickListener {
 
 	private View commodityView;
-	private View rubblerView;
+//	private View rubblerView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +31,8 @@ public class PointsActivity extends Activity implements OnClickListener {
 		});
 		commodityView = findViewById(R.id.layout6);
 		commodityView.setOnClickListener(this);
-		rubblerView = findViewById(R.id.layout8);
-		rubblerView.setOnClickListener(this);
+//		rubblerView = findViewById(R.id.layout8);
+//		rubblerView.setOnClickListener(this);
 	}
 
 	@Override
@@ -44,17 +44,17 @@ public class PointsActivity extends Activity implements OnClickListener {
 			Intent intent5 = new Intent(this, CommoditiesActivity.class);
 			startActivity(intent5);
 			break;
-		case R.id.layout8:
-			int point = GFUserDictionary.getPoint(this.getApplicationContext());
-			int guagua = GFPointDictionary.getGuaguaPoint(this);
-			if(point>=guagua){
-				Intent intent7 = new Intent(this, RubblerActivity.class);
-				startActivity(intent7);
-			}
-			else{
-				GFToast.show(this.getApplicationContext(),"您的积分不足！");
-			}
-			break;
+//		case R.id.layout8:
+//			int point = GFUserDictionary.getPoint(this.getApplicationContext());
+//			int guagua = GFPointDictionary.getGuaguaPoint(this);
+//			if(point>=guagua){
+//				Intent intent7 = new Intent(this, RubblerActivity.class);
+//				startActivity(intent7);
+//			}
+//			else{
+//				GFToast.show(this.getApplicationContext(),"您的积分不足！");
+//			}
+//			break;
 		default:
 			break;
 		}

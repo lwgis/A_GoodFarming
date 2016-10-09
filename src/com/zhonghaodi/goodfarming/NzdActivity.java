@@ -17,14 +17,18 @@ import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.customui.Holder_r1;
 import com.zhonghaodi.customui.Holder_r2;
 import com.zhonghaodi.customui.Holder_r3;
+import com.zhonghaodi.customui.WaitingPopupWindow;
 import com.zhonghaodi.model.Follow;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.NetResponse;
+import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Recipe;
 import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.Store;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -36,6 +40,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +66,7 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 	private View clickview;
 	private int page = 0;
 	private GFHandler<NzdActivity> handler = new GFHandler<NzdActivity>(this);
+	private WaitingPopupWindow waitingPopupWindow;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -82,6 +88,7 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 				finish();
 			}
 		});
+		waitingPopupWindow = new WaitingPopupWindow(this);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView
@@ -136,7 +143,7 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		allQuestions = new ArrayList<Question>();
 		adapter = new NzdQAdapter();
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
-		loadData();
+		loadUser();
 	}
 	
 	@Override
@@ -155,9 +162,28 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		MobclickAgent.onPause(this);
 	}
 	
+	/**
+	 * 读取农技达人信息
+	 */
+	public void loadUser() {
+		allQuestions.clear();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getUser(id);				
+				Message msg = handler.obtainMessage();
+				msg.what = 4;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
 	private void loadData(){
 		allQuestions.clear();
 		page=0;
+		waitingPopupWindow.showAtLocation(findViewById(R.id.contentlayout), 
+				Gravity.CENTER, 0, 150);
 		new Thread(new Runnable() {
 
 			@Override
@@ -846,6 +872,9 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 			}
 			break;
 		case 0:
+			if(waitingPopupWindow.isShowing()){
+				waitingPopupWindow.dismiss();
+			}
 			if (msg.obj != null) {
 				Gson gson = new Gson();
 				List<Question> questions = gson.fromJson(msg.obj.toString(),
@@ -929,7 +958,18 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 						Toast.LENGTH_SHORT).show();
 			}
 			break;
-
+		case 4:
+			if (msg.obj == null) {
+				Toast.makeText(this, "获取失败,请稍后再试",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+			store = (Store) GsonUtil
+					.fromJson(msg.obj.toString(), Store.class);
+			adapter.notifyDataSetChanged();
+			loadData();
+			
+			break;
 		default:
 			break;
 		}

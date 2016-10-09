@@ -26,8 +26,8 @@ public class NzdsActivity extends Activity implements OnClickListener {
 		});
 		View questionView = findViewById(R.id.layout1);
 		questionView.setOnClickListener(this);
-		View lalaguaView = findViewById(R.id.layout2);
-		lalaguaView.setOnClickListener(this);
+//		View lalaguaView = findViewById(R.id.layout2);
+//		lalaguaView.setOnClickListener(this);
 		View miaoView = findViewById(R.id.layout5);
 		miaoView.setOnClickListener(this);
 	}

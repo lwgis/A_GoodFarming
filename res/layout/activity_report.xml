@@ -29,6 +29,10 @@
             android:gravity="center"
             android:text="举报"
             android:textColor="#FFFFFF"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textSize="18dip" />
 
     </RelativeLayout>

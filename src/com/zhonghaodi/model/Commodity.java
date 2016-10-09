@@ -25,6 +25,10 @@ public class Commodity implements Serializable {
 	
 	private List<Level> levels;
 	
+	private Integer tjcoin;
+	
+	private Integer exchange;
+	
 	public Commodity(){
 		
 	}
@@ -83,6 +87,22 @@ public class Commodity implements Serializable {
 
 	public void setLevels(List<Level> levels) {
 		this.levels = levels;
+	}	
+
+	public Integer getTjcoin() {
+		return tjcoin;
+	}
+
+	public void setTjcoin(Integer tjcoin) {
+		this.tjcoin = tjcoin;
+	}
+
+	public Integer getExchange() {
+		return exchange;
+	}
+
+	public void setExchange(Integer exchange) {
+		this.exchange = exchange;
 	}
 
 	@Override

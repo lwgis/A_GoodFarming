@@ -56,7 +56,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 	private  final int TypeImage = 2;
 	private  final int TypeNoImage = 3;
 	private  final int TypeError = -1;
-	private SelectCropFragment selectCropFragment = null;
+//	private SelectCropFragment selectCropFragment = null;
 	private CreadPlantFragment createPlantFragment = null;
 	private MyTextButton sendBtn;
 	private ArrayList<NetImage> netImages;
@@ -159,7 +159,8 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 		}
 		location();
 		sendBtn.setEnabled(false);
-		showFragment(0);
+		showFragment(1);
+		setTitle("创建话题");
 	}
 	
 	@Override
@@ -181,22 +182,22 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 	public void showFragment(int index) {
 		FragmentTransaction transation = this.getFragmentManager()
 				.beginTransaction();
-		if (selectCropFragment == null) {
-			selectCropFragment = new SelectCropFragment();
-//			transation.add(R.id.content_view, selectCropFragment);
-		}
+//		if (selectCropFragment == null) {
+//			selectCropFragment = new SelectCropFragment();
+////			transation.add(R.id.content_view, selectCropFragment);
+//		}
 		if (createPlantFragment == null) {
 			createPlantFragment = new CreadPlantFragment();
 //			transation.add(R.id.content_view, createPlantFragment);
 		}
 		switch (index) {
-		case 0:
-			if (selectCropFragment == null) {
-				selectCropFragment = new SelectCropFragment();
-			}
-			transation.replace(R.id.content_view, selectCropFragment);
-			setTitle("选择农作物种类");
-			break;
+//		case 0:
+//			if (selectCropFragment == null) {
+//				selectCropFragment = new SelectCropFragment();
+//			}
+//			transation.replace(R.id.content_view, selectCropFragment);
+//			setTitle("选择农作物种类");
+//			break;
 		case 1:
 			if (createPlantFragment == null) {
 				createPlantFragment = new CreadPlantFragment();
@@ -325,9 +326,10 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				question.setWriter(writer);
 				
 				Crop crop = new Crop();
-				crop.setId(this.cropId);
+				crop.setId(9);
 				//设置分享类别
-				Crop crop2 = (Crop)createPlantFragment.getCropTextView().getTag();
+				Crop crop2 = new Crop();
+				crop2.setId(1000);
 				question.setCate(crop2);					
 				//设置作物类别
 				question.setCrop(crop);
@@ -371,10 +373,11 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			question.setWriter(writer);
 			Crop crop = new Crop();
-			crop.setId(cropId);
+			crop.setId(9);
 			//设置分享类别
-			Crop crop2 = (Crop)createPlantFragment.getCropTextView().getTag();
-			question.setCate(crop2);			
+			Crop crop2 = new Crop();
+			crop2.setId(1000);
+			question.setCate(crop2);					
 			//设置作物类别
 			question.setCrop(crop);
 			question.setInform("0");

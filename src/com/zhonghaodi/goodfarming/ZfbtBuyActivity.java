@@ -49,6 +49,8 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 	private ToggleButton toggleButton;
 	private boolean isConpon=true;
 	private int coin=0;
+	private LinearLayout selconponLayout;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,12 +103,33 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 		TextView priceText = (TextView)findViewById(R.id.price_text);
 		priceText.setText("优惠价：￥"+product.getNprice());
 		TextView conponText = (TextView)findViewById(R.id.conpon_text);
-		if(product.getCoupon()>0){
-			conponText.setVisibility(View.VISIBLE);
-			conponText.setText("优惠币："+product.getCoupon());
+		selconponLayout = (LinearLayout)findViewById(R.id.selconponlayout);
+		boolean bmin = false;
+		boolean bmax = false;
+		if(product.getCoupon()!=null && product.getCoupon()>0){
+			bmin = true;
 		}
-		else{
+		if(product.getCouponMax()!=null && product.getCouponMax()>0){
+			bmax = true;
+		}
+		if(!bmin && !bmax){
 			conponText.setVisibility(View.GONE);
+			selconponLayout.setVisibility(View.GONE);
+		}
+		if(!bmin && bmax){
+			conponText.setVisibility(View.VISIBLE);
+			conponText.setText("可使用优惠币最多："+product.getCouponMax());
+			selconponLayout.setVisibility(View.VISIBLE);
+		}
+		if(bmin && bmax){
+			conponText.setVisibility(View.VISIBLE);
+			conponText.setText("可使用优惠币："+product.getCoupon()+"--"+product.getCouponMax());
+			selconponLayout.setVisibility(View.VISIBLE);
+		}
+		if(bmin && !bmax){
+			conponText.setVisibility(View.VISIBLE);
+			conponText.setText("可使用优惠币最少："+product.getCoupon());
+			selconponLayout.setVisibility(View.VISIBLE);
 		}
 		LinearLayout stockLayout = (LinearLayout)findViewById(R.id.storelayout);
 		if(stock!=null){
@@ -129,25 +152,6 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 		TextView setTextView = (TextView)findViewById(R.id.setaddress_text);
 		setTextView.setOnClickListener(this);
 		loadContacts();
-		LinearLayout selconponLayout = (LinearLayout)findViewById(R.id.selconponlayout);
-		if(stock!=null){
-			if(product.getCoupon()>0 && stock.getUser().isAcceptCoupon()){
-				selconponLayout.setVisibility(View.VISIBLE);
-			}
-			else{
-				selconponLayout.setVisibility(View.GONE);
-			}
-		}
-		else{
-			if(product.getCoupon()>0){
-				selconponLayout.setVisibility(View.VISIBLE);
-				
-			}
-			else{
-				selconponLayout.setVisibility(View.GONE);
-			}
-		}
-		
 	}
 	
 	public void loadContacts(){
@@ -209,29 +213,16 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 	}
 	
 	public void buyNow(){
-		if(stock!=null){
-			if(product.getCoupon()>0 && stock.getUser().isAcceptCoupon() && toggleButton.isChecked()){
-				isConpon=true;
-			}
-			else{
-				isConpon=false;
-			}
-		}else{
-			if(product.getCoupon()>0 && toggleButton.isChecked()){
-				isConpon=true;
-			}
-			else{
-				isConpon=false;
-			}
-		}	
 		
-		if(isConpon){
-			if(product.getCoupon()>GFUserDictionary.getCoin(ZfbtBuyActivity.this)){
-				GFToast.show(ZfbtBuyActivity.this, "您的优惠币余额不足");
-				return;
+		if(selconponLayout.getVisibility()==View.GONE){
+			isConpon = false;
+		}
+		else{
+			if(toggleButton.isChecked()){
+				isConpon = true;
 			}
 			else{
-				coin = product.getCoupon();
+				isConpon = false;
 			}
 		}
 		new Thread(new Runnable() {
@@ -240,11 +231,7 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 			public void run() {
 				
 				NetResponse netResponse;
-				String nzd=null;
-				if(stock!=null){
-					nzd = stock.getUser().getId();
-				}
-				netResponse = HttpUtil.buyZfbt(uid,product.getId(),coin,nzd,mContact.getId());
+				netResponse = HttpUtil.buyZfbt2(uid,product.getId(),isConpon,mContact.getId());
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
 					msg.what = 1;
@@ -300,9 +287,6 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 					intent.putExtras(bundle);
 					MobclickAgent.onEvent(this, UmengConstants.BUY_ALLOWANCE_ID);
 					intent.putExtra("status", 1);
-					if(coin>0){
-						intent.putExtra("message", "共花费"+coin+"优惠币");
-					}
 					startActivity(intent);
 				}
 				else{

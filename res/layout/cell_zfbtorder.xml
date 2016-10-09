@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/background_with_shadow"
+        android:orientation="horizontal" >
+
+        <com.makeramen.RoundedImageView
+            android:id="@+id/second_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            android:src="@drawable/recipe" 
+            app:border_color="#FFFFFF"
+        	app:border_width="1dip"
+        	app:corner_radius="10dp"
+        	app:mutate_background="true"
+        	app:oval="false"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="药方名称"
+                    android:textColor="#000000"
+                    android:textSize="18dip" />
+                <!-- <TextView
+                    android:id="@+id/nzd_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="农资店名称"
+                    android:textColor="#666666"
+                    android:textSize="12dip" /> -->
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/countprice_text"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:text="￥100.00 X 1"
+                    android:textColor="#444444"
+                    android:textSize="15dip" />
+                
+                <TextView
+                    android:id="@+id/sumprice_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dip"
+                    android:singleLine="true"
+                    android:text="共￥100.00"
+                    android:textColor="#ffff0000"
+                    android:textSize="15dip" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal" >
+                <TextView
+                  android:id="@+id/time_text"
+                   android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                  android:layout_marginTop="5dp"
+                  android:singleLine="true"
+                  android:text="时间：2015-10-11 12:00:00"
+                  android:textColor="#444444"
+                  android:textSize="13dip" />
+                <TextView
+                  android:id="@+id/status_text"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="5dp"
+                  android:layout_marginRight="5dip"
+                  android:singleLine="true"
+                  android:text="交易完成"
+                  android:textColor="#444444"
+                  android:textSize="15dip" />
+            </LinearLayout>   
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal" >
+                <TextView
+                  android:id="@+id/poster_text"
+                  android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:layout_marginTop="5dp"
+                  android:singleLine="true"
+                  android:text="发货农资店"
+                  android:textColor="#444444"
+                  android:textSize="13dip" />
+            </LinearLayout>      
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

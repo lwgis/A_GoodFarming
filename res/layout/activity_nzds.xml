@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="附近农资店"
+            android:text="附近的服务"
             android:textColor="#FFFFFF"
             android:textSize="20dip" />
     </RelativeLayout>
@@ -99,7 +99,7 @@
 		            />
 		        
 		    </RelativeLayout>
-		    <RelativeLayout 
+		    <!-- <RelativeLayout 
 	            android:id="@+id/layout2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
 		            android:text="附近配方团购"
 		            />
 		        
-		    </RelativeLayout>
+		    </RelativeLayout> -->
 	       </LinearLayout>
     </ScrollView>
 
