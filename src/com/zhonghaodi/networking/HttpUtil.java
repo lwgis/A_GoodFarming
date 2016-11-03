@@ -1798,7 +1798,14 @@ public class HttpUtil {
 	public static String getAreaString(double x,double y) {
 		
 		String url = RootURL + "zone/my?x="+x+"&y="+y;
-		String jsonString = HttpUtil.executeHttpGet(url);
+		String jsonString = HttpUtil.executeHttpGetNotToken(url);
+		return jsonString;
+	}
+	
+	public static String getAdvertising() {
+		
+		String url = RootURL + "launch/online";
+		String jsonString = HttpUtil.executeHttpGetNotToken(url);
 		return jsonString;
 	}
 	
@@ -2315,7 +2322,7 @@ public class HttpUtil {
 		}
 	}
 	
-	public static NetResponse buyZfbt2(final String uid,int sid,final boolean coupon,final int cid){
+	public static NetResponse buyZfbt2(final String uid,int sid,final boolean coupon,final int coupons,final int cid){
 		
 		String jsonString = null;
 		String urlString = RootURL + "zfbt/"+sid+"/buy2";
@@ -2331,7 +2338,7 @@ public class HttpUtil {
 			@Override
 			public String getName() {
 				// TODO Auto-generated method stub
-				return "uid";
+				return "uid"; 	
 			}
 		};
 		
@@ -2352,6 +2359,22 @@ public class HttpUtil {
 		};
 		
 		nameValuePairs.add(nameValuePair2);
+		NameValuePair nameValuePair3 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return String.valueOf(coupons);
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "coupons";
+			}
+		};
+		
+		nameValuePairs.add(nameValuePair3);
 		NameValuePair nameValuePair4 = new NameValuePair() {
 
 			@Override

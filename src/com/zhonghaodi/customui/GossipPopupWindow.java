@@ -65,7 +65,7 @@ public class GossipPopupWindow extends PopupWindow {
 		datas.add(spinnerDto);
 		spinnerDto = new SpinnerDto();
 		spinnerDto.setId(1);
-		spinnerDto.setName("精华拉拉呱");
+		spinnerDto.setName("精选拉拉呱");
 		datas.add(spinnerDto);
 		
 		adapter = new SpinnerDtoAdapter(datas, context, displayid);
@@ -74,7 +74,7 @@ public class GossipPopupWindow extends PopupWindow {
 		//设置SelectPicPopupWindow的View  
         this.setContentView(mainview);  
         //设置SelectPicPopupWindow弹出窗体的宽  
-        this.setWidth(DpTransform.dip2px(context, 160));  
+        this.setWidth(DpTransform.dip2px(context, 130));  
         //设置SelectPicPopupWindow弹出窗体的高  
         this.setHeight(DpTransform.dip2px(context, 141));  
         //设置SelectPicPopupWindow弹出窗体可点击  

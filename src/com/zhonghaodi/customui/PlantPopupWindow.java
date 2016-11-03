@@ -53,7 +53,7 @@ public class PlantPopupWindow extends PopupWindow {
 		datas.add(spinnerDto);
 		spinnerDto = new SpinnerDto();
 		spinnerDto.setId(1);
-		spinnerDto.setName("精华赶大集");
+		spinnerDto.setName("精选赶大集");
 		datas.add(spinnerDto);
 		
 		adapter = new SpinnerDtoAdapter(datas, context, displayid);
@@ -62,7 +62,7 @@ public class PlantPopupWindow extends PopupWindow {
 		//设置SelectPicPopupWindow的View  
         this.setContentView(mainview);  
         //设置SelectPicPopupWindow弹出窗体的宽  
-        this.setWidth(DpTransform.dip2px(context, 160));  
+        this.setWidth(DpTransform.dip2px(context, 130));  
         //设置SelectPicPopupWindow弹出窗体的高  
         this.setHeight(DpTransform.dip2px(context, 100));  
         //设置SelectPicPopupWindow弹出窗体可点击  

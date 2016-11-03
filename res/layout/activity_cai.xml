@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="猜农资详细信息"
+            android:text="猜一猜详细信息"
             android:textColor="#FFFFFF"
             android:layout_marginLeft="50dip"
             android:layout_marginRight="50dip"

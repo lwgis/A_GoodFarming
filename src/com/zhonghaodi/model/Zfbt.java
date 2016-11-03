@@ -5,22 +5,15 @@ import java.util.List;
 
 public class Zfbt extends Second implements Serializable {
 
-	private Integer coupon;
+	private int coupon;
 	private List<NetImage>attachments;
 	private List<Stock> stocks;
-	private Integer couponMax;
+	private int couponMax;
+	private boolean useCoupon;
 	
 	public Zfbt() {
 		// TODO Auto-generated constructor stub
 		super();
-	}
-
-	public Integer getCoupon() {
-		return coupon;
-	}
-
-	public void setCoupon(Integer coupon) {
-		this.coupon = coupon;
 	}
 
 	public List<NetImage> getAttachments() {
@@ -39,11 +32,27 @@ public class Zfbt extends Second implements Serializable {
 		this.stocks = stocks;
 	}
 
-	public Integer getCouponMax() {
+	public boolean isUseCoupon() {
+		return useCoupon;
+	}
+
+	public void setUseCoupon(boolean useCoupon) {
+		this.useCoupon = useCoupon;
+	}
+
+	public int getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(int coupon) {
+		this.coupon = coupon;
+	}
+
+	public int getCouponMax() {
 		return couponMax;
 	}
 
-	public void setCouponMax(Integer couponMax) {
+	public void setCouponMax(int couponMax) {
 		this.couponMax = couponMax;
 	}
 	

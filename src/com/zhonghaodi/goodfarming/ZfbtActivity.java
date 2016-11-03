@@ -300,29 +300,14 @@ public class ZfbtActivity extends Activity implements HandMessage,OnClickListene
 			if (second.getImage()!=null) {
 				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/big/"+second.getImage(), holderzfbt.secondIv, ImageOptions.optionsNoPlaceholder);
 			}
-			boolean bmin = false;
-			boolean bmax = false;
-			if(second.getCoupon()!=null && second.getCoupon()>0){
-				bmin = true;
-			}
-			if(second.getCouponMax()!=null && second.getCouponMax()>0){
-				bmax = true;
-			}
-			if(!bmin && !bmax){
+			if(!second.isUseCoupon()){
 				holderzfbt.couponTv.setVisibility(View.GONE);
 			}
-			if(!bmin && bmax){
-				holderzfbt.couponTv.setVisibility(View.VISIBLE);
-				holderzfbt.couponTv.setText("可使用优惠币最多："+second.getCouponMax());
-			}
-			if(bmin && bmax){
+			else{
 				holderzfbt.couponTv.setVisibility(View.VISIBLE);
 				holderzfbt.couponTv.setText("可使用优惠币："+second.getCoupon()+"--"+second.getCouponMax());
 			}
-			if(bmin && !bmax){
-				holderzfbt.couponTv.setVisibility(View.VISIBLE);
-				holderzfbt.couponTv.setText("可使用优惠币最少："+second.getCoupon());
-			}
+			
 			holderzfbt.titleTv.setText(second.getTitle());
 			holderzfbt.nzdTv.setText(second.getNzd().getAlias());
 			holderzfbt.oldPriceTv.setText("￥"+String.valueOf(second.getOprice()));

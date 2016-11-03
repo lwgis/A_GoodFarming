@@ -208,28 +208,12 @@ public class ZfbtInfoActivity extends Activity implements HandMessage,OnClickLis
 			countTextView.setText("库存："+String.valueOf(zfbt.getCount()));
 			acountTextView.setText("销售量："+String.valueOf(zfbt.getAcount()));
 			contentTextView.setText(zfbt.getContent());
-			boolean bmin = false;
-			boolean bmax = false;
-			if(zfbt.getCoupon()!=null && zfbt.getCoupon()>0){
-				bmin = true;
-			}
-			if(zfbt.getCouponMax()!=null && zfbt.getCouponMax()>0){
-				bmax = true;
-			}
-			if(!bmin && !bmax){
+			if(!zfbt.isUseCoupon()){
 				couponTextView.setVisibility(View.GONE);
 			}
-			if(!bmin && bmax){
-				couponTextView.setVisibility(View.VISIBLE);
-				couponTextView.setText("可使用优惠币最多："+zfbt.getCouponMax());
-			}
-			if(bmin && bmax){
+			else{
 				couponTextView.setVisibility(View.VISIBLE);
 				couponTextView.setText("可使用优惠币："+zfbt.getCoupon()+"--"+zfbt.getCouponMax());
-			}
-			if(bmin && !bmax){
-				couponTextView.setVisibility(View.VISIBLE);
-				couponTextView.setText("可使用优惠币最少："+zfbt.getCoupon());
 			}
 			
 		}
@@ -270,25 +254,26 @@ public class ZfbtInfoActivity extends Activity implements HandMessage,OnClickLis
 				dots.add(dot);
 			}
 			
-			evaluaTextView.setText("评价："+zfbt.getSumcount());
-			
-			if(zfbt.getSumcount()>0){
-				haoProgressBar.setProgress(zfbt.getHaocount()*100/zfbt.getSumcount());
-				zhongProgressBar.setProgress(zfbt.getZhongcount()*100/zfbt.getSumcount());
-				chaProgressBar.setProgress(zfbt.getChacount()*100/zfbt.getSumcount());
-				evaluateLayout.setVisibility(View.VISIBLE);
-			}
-			else{
-				haoProgressBar.setProgress(0);
-				zhongProgressBar.setProgress(0);
-				chaProgressBar.setProgress(0);
-				evaluateLayout.setVisibility(View.GONE);
-			}
-			
 			adapter = new BannerAdapter(imageViews);
 			adViewPager.setAdapter(adapter);
 			adViewPager.setOnPageChangeListener(new MyPageChangeListener());			
 		}
+		
+		evaluaTextView.setText("评价："+zfbt.getSumcount());
+		
+		if(zfbt.getSumcount()>0){
+			haoProgressBar.setProgress(zfbt.getHaocount()*100/zfbt.getSumcount());
+			zhongProgressBar.setProgress(zfbt.getZhongcount()*100/zfbt.getSumcount());
+			chaProgressBar.setProgress(zfbt.getChacount()*100/zfbt.getSumcount());
+			evaluateLayout.setVisibility(View.VISIBLE);
+		}
+		else{
+			haoProgressBar.setProgress(0);
+			zhongProgressBar.setProgress(0);
+			chaProgressBar.setProgress(0);
+			evaluateLayout.setVisibility(View.GONE);
+		}
+		
 		stockList.addHeaderView(bannerView);
 		sAdapter = new StockAdapter();
 		stockList.setAdapter(sAdapter);	

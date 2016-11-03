@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="猜农资"
+            android:text="猜一猜"
             android:textColor="#FFFFFF"
             android:textSize="18dip" />
     </RelativeLayout>

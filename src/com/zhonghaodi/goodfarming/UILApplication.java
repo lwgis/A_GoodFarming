@@ -16,9 +16,13 @@
 package com.zhonghaodi.goodfarming;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import android.R.integer;
@@ -58,12 +62,14 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.model.Advertising;
 import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.utils.FileUtils;
 import com.zhonghaodi.utils.StoredData;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
@@ -95,25 +101,25 @@ public class UILApplication extends Application {
 		initImageLoader(getApplicationContext());
 		SDKInitializer.initialize(getApplicationContext());		
 		EMChat.getInstance().init(getApplicationContext());
-		EMChat.getInstance().setDebugMode(true); 
+//		EMChat.getInstance().setDebugMode(true); 
 	}
 	
 	
     
 	public static void initImageLoader(Context context) {
 		
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				context).threadPriority(Thread.NORM_PRIORITY - 2)
-				.denyCacheImageMultipleSizesInMemory()
-				.memoryCache(new UsingFreqLimitedMemoryCache(10 * 1024 * 1024))
-				.memoryCacheSize(10 * 1024 * 1024)
-				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
-				.diskCacheSize(200 * 1024 * 1024)				
-				.diskCacheFileCount(300)
-				.tasksProcessingOrder(QueueProcessingType.LIFO)
-				.writeDebugLogs() // Remove for release app
-				.build();
-		ImageLoader.getInstance().init(config);
+		try {
+			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+					.threadPriority(Thread.NORM_PRIORITY - 2).denyCacheImageMultipleSizesInMemory()
+					.memoryCache(new UsingFreqLimitedMemoryCache(10 * 1024 * 1024)).memoryCacheSize(10 * 1024 * 1024)
+					.diskCacheFileNameGenerator(new Md5FileNameGenerator()).diskCacheSize(200 * 1024 * 1024)
+					.diskCacheFileCount(300).tasksProcessingOrder(QueueProcessingType.LIFO).writeDebugLogs() // Remove for release app
+					.build();
+			ImageLoader.getInstance().init(config);
+		} catch (Exception e) {
+			// TODO: handle exception
+			
+		}
 	}
 	
 	/** 
@@ -183,4 +189,67 @@ public class UILApplication extends Application {
     	}
     	return auth;
     }
+
+    public void downloadAds(final List<Advertising> ads){
+    	new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					List<String> filenames = new ArrayList<String>();
+					for (Iterator iterator = ads.iterator(); iterator.hasNext();) {
+						Advertising advertising = (Advertising) iterator.next();
+						filenames.add(advertising.getUrl());
+						File f = new File(FileUtils.cacheDir + advertising.getUrl());						
+						if (f.exists()) {
+							continue;
+						}
+						Bitmap bitmap = ImageLoader.getInstance()
+								.loadImageSync(HttpUtil.ImageUrl + "launch/big/" + advertising.getUrl());
+						if (bitmap != null) {
+							saveMyBitmap(bitmap, advertising.getUrl());
+						}
+					} 
+					//删除过期的广告图片
+					File[] files = FileUtils.cacheDir.listFiles();
+					if(files!=null && files.length>0){
+						for(File f:files){
+							if(!filenames.contains(f.getName())){
+								f.delete();
+							}
+						}
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+				}			
+			}
+		}).start();
+    }
+    
+    public void saveMyBitmap(Bitmap mBitmap,String bitName)  {
+        File f = new File(FileUtils.cacheDir+File.separator+bitName);
+        FileOutputStream fOut = null;
+        try {
+                fOut = new FileOutputStream(f);
+        } catch (FileNotFoundException e) {
+                e.printStackTrace();
+        }
+        if(bitName.contains(".jpg")||bitName.contains(".JPG")){
+        	mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        }
+        else{
+        	mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+        }
+        try {
+                fOut.flush();
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+        try {
+                fOut.close();
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+    }
+
 }

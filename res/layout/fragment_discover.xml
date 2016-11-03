@@ -116,7 +116,7 @@
 		            android:paddingLeft="10dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
-		            android:text="猜农资"
+		            android:text="猜一猜"
 		            />
 		        <TextView
 	                android:id="@+id/ncnz_text"

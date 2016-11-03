@@ -56,7 +56,7 @@ public class DiseasePopupWindow extends PopupWindow {
 		datas.add(spinnerDto);
 		spinnerDto = new SpinnerDto();
 		spinnerDto.setId(2);
-		spinnerDto.setName("精华问题");
+		spinnerDto.setName("精选问题");
 		datas.add(spinnerDto);
 		adapter = new SpinnerDtoAdapter(datas, context, displayid);
 		listView.setAdapter(adapter);
@@ -64,7 +64,7 @@ public class DiseasePopupWindow extends PopupWindow {
 		//设置SelectPicPopupWindow的View  
         this.setContentView(mainview);  
         //设置SelectPicPopupWindow弹出窗体的宽  
-        this.setWidth(DpTransform.dip2px(context, 150));  
+        this.setWidth(DpTransform.dip2px(context, 130));  
         //设置SelectPicPopupWindow弹出窗体的高  
         this.setHeight(DpTransform.dip2px(context, 141));  
         //设置SelectPicPopupWindow弹出窗体可点击  

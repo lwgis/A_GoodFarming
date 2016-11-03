@@ -158,13 +158,16 @@ public class PostOrdersActivity extends Activity implements HandMessage,OnItemCl
 			
 			switch (zfbtOrder.getStatus()) {
 			case 0:
-				holderpostorder.statusTv.setText("未发货");
+				holderpostorder.statusTv.setText("待发货");
 				break;
 			case 1:
 				holderpostorder.statusTv.setText("已送达");
 				break;
 			case 2:
 				holderpostorder.statusTv.setText("已完成");
+				break;
+			case 3:
+				holderpostorder.statusTv.setText("已到店");
 				break;
 
 			default:

@@ -24,14 +24,20 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.UmengConstants;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -45,9 +51,8 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 	private Zfbt product;
 	private Stock stock;
 	private Contact mContact;
+	private EditText couponEt;
 	private String uid;
-	private ToggleButton toggleButton;
-	private boolean isConpon=true;
 	private int coin=0;
 	private LinearLayout selconponLayout;
 	
@@ -61,7 +66,7 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 		cancelBtn.setOnClickListener(this);
 		Button okBtn = (MyTextButton)findViewById(R.id.ok_button);
 		okBtn.setOnClickListener(this);
-		toggleButton = (ToggleButton)findViewById(R.id.togglebtn);
+		couponEt = (EditText)findViewById(R.id.coupons_edit);
 		product = (Zfbt)getIntent().getSerializableExtra("product");
 		stock = (Stock)getIntent().getSerializableExtra("stock");
 		initView();
@@ -104,33 +109,17 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 		priceText.setText("优惠价：￥"+product.getNprice());
 		TextView conponText = (TextView)findViewById(R.id.conpon_text);
 		selconponLayout = (LinearLayout)findViewById(R.id.selconponlayout);
-		boolean bmin = false;
-		boolean bmax = false;
-		if(product.getCoupon()!=null && product.getCoupon()>0){
-			bmin = true;
-		}
-		if(product.getCouponMax()!=null && product.getCouponMax()>0){
-			bmax = true;
-		}
-		if(!bmin && !bmax){
+		if(!product.isUseCoupon()){
 			conponText.setVisibility(View.GONE);
 			selconponLayout.setVisibility(View.GONE);
 		}
-		if(!bmin && bmax){
-			conponText.setVisibility(View.VISIBLE);
-			conponText.setText("可使用优惠币最多："+product.getCouponMax());
-			selconponLayout.setVisibility(View.VISIBLE);
-		}
-		if(bmin && bmax){
+		else{
 			conponText.setVisibility(View.VISIBLE);
 			conponText.setText("可使用优惠币："+product.getCoupon()+"--"+product.getCouponMax());
+			couponEt.setHint(product.getCoupon()+"--"+product.getCouponMax());
 			selconponLayout.setVisibility(View.VISIBLE);
 		}
-		if(bmin && !bmax){
-			conponText.setVisibility(View.VISIBLE);
-			conponText.setText("可使用优惠币最少："+product.getCoupon());
-			selconponLayout.setVisibility(View.VISIBLE);
-		}
+		
 		LinearLayout stockLayout = (LinearLayout)findViewById(R.id.storelayout);
 		if(stock!=null){
 			stockLayout.setVisibility(View.VISIBLE);
@@ -211,27 +200,43 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 			break;
 		}
 	}
-	
+
 	public void buyNow(){
 		
-		if(selconponLayout.getVisibility()==View.GONE){
-			isConpon = false;
-		}
-		else{
-			if(toggleButton.isChecked()){
-				isConpon = true;
+		InputMethodManager im = (InputMethodManager) this
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+				im.hideSoftInputFromWindow(findViewById(android.R.id.content)
+				.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		
+		if(product.isUseCoupon()){
+			String valuestr = couponEt.getText().toString();
+			if(TextUtils.isEmpty(valuestr)){
+				coin=0;
 			}
 			else{
-				isConpon = false;
+				coin = Integer.parseInt(valuestr);
+			}
+			int min=0,max=0;
+			min = product.getCoupon();
+			max = product.getCouponMax();
+//			if(product.getCoupon()!=null){
+//			}
+//			if(product.getCouponMax()!=null){
+//			}
+			if(coin<min||coin>max){
+				GFToast.show(this, "可使用优惠币个数应在"+product.getCoupon()+"--"+product.getCouponMax()+"范围内");
+				couponEt.setText("");
+				return;
 			}
 		}
+		
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				
 				NetResponse netResponse;
-				netResponse = HttpUtil.buyZfbt2(uid,product.getId(),isConpon,mContact.getId());
+				netResponse = HttpUtil.buyZfbt2(uid,product.getId(),product.isUseCoupon(),coin,mContact.getId());
 				Message msg = handler.obtainMessage();
 				if(netResponse.getStatus()==1){
 					msg.what = 1;

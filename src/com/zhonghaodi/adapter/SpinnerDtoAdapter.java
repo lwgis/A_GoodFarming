@@ -7,6 +7,7 @@ import com.zhonghaodi.goodfarming.R;
 import com.zhonghaodi.model.SpinnerDto;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,10 +68,10 @@ public class SpinnerDtoAdapter extends BaseAdapter {
 		
 		spinnerHolder.nameTv.setText(spinnerDto.getName());
 		if(selectId == spinnerDto.getId()){
-			spinnerHolder.selectRd.setChecked(true);
+			spinnerHolder.nameTv.setTextColor(Color.rgb(56, 190, 153));
 		}
 		else{
-			spinnerHolder.selectRd.setChecked(false);
+			spinnerHolder.nameTv.setTextColor(Color.rgb(128,128,128));
 		}
 		return convertView;
 	}

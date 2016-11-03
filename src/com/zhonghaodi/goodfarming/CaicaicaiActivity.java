@@ -29,7 +29,7 @@ import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
 import com.zhonghaodi.model.Caicaicai;
 import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.GFVersionHint;
+import com.zhonghaodi.model.GFVersionAndAds;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.req.CaicaicaiReq;
@@ -101,8 +101,8 @@ public class CaicaicaiActivity extends Activity implements OnClickListener,OnIte
 		caiListView.getRefreshableView().setAdapter(adapter);
 		req = new CaicaicaiReq(this);
 		req.loadCaicaicai(0);
-		if(GFVersionHint.getCnzcount(this)==0){
-			GFVersionHint.saveCnzHintInfo(this, 1);
+		if(GFVersionAndAds.getCnzcount(this)==0){
+			GFVersionAndAds.saveCnzHintInfo(this, 1);
 		}
 		
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);

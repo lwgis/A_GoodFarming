@@ -50,7 +50,7 @@ import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.GFVersionHint;
+import com.zhonghaodi.model.GFVersionAndAds;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PointDic;
 import com.zhonghaodi.model.Question;
@@ -909,7 +909,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		if(bUpdate){
 			tryUpdate();
 		}
-		if(GFVersionHint.getAll(this)){
+		if(GFVersionAndAds.getAll(this)){
 			ndsText.setVisibility(View.VISIBLE);
 		}
 		else{

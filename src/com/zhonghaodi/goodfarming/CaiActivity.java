@@ -117,7 +117,7 @@ public class CaiActivity extends Activity implements OnClickListener,CaiView {
 			}
 		});
 		registerForContextMenu(pullToRefreshListView.getRefreshableView());
-		req = new CaiReq(this);
+		req = new CaiReq(this,this);
 		if(caiid!=0)
 			req.loadCaicaicai(caiid);
 		wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
@@ -506,6 +506,7 @@ public class CaiActivity extends Activity implements OnClickListener,CaiView {
 			headHolder.commentView.setTextColor(Color.rgb(56, 190, 153));
 			headHolder.commentView.setVisibility(View.VISIBLE);
 			headHolder.contentView.setText(caicaicai.getContent());
+			headHolder.responseView.setTextColor(Color.rgb(128, 128, 128));
 			headHolder.responseView.setText("答案（"+caicaicai.getResponseCount()+"）");
 			headHolder.responseView.setOnClickListener(this);
 			headHolder.commentView.setText("评价（"+caicaicai.getCommentCount()+"）");

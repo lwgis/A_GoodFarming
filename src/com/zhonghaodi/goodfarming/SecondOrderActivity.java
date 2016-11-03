@@ -58,7 +58,14 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 			titleView.setText(secondOrder.getSecond().getTitle());
 			ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+secondOrder.getSecond().getImage(), headImageView, ImageOptions.optionsNoPlaceholder);
 			countpriceView.setText("￥"+String.valueOf(secondOrder.getSecond().getNprice())+" X 1份");
-			sumPriceView.setText("共￥"+secondOrder.getPrice());
+			String str = "金额:";
+			if(secondOrder.getPrice()!=null && secondOrder.getPrice()>0){
+				str+="￥"+secondOrder.getPrice();
+			}
+			if(secondOrder.getCoupon()>0){
+				str+=",优惠币"+secondOrder.getCoupon()+"个";
+			}
+			sumPriceView.setText(str);
 			timeTextView.setText("时间："+secondOrder.getTime());
 			contentTextView.setText(secondOrder.getSecond().getContent());
 		}
@@ -179,19 +186,27 @@ public class SecondOrderActivity extends Activity implements HandMessage,OnClick
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
-		if (msg.obj != null) {
-			String jsString = msg.obj.toString();
-			if(jsString!=""){
-				Toast.makeText(this, "订单确认出错",
-						Toast.LENGTH_SHORT).show();
+		switch (msg.what) {
+		case 0:
+			if (msg.obj != null) {
+				String jsString = msg.obj.toString();
+				if(jsString!=""){
+					GFToast.show(getApplicationContext(),"订单确认出错");
+				}
+				else{
+					GFToast.show(getApplicationContext(),"交易成功");
+				}
+				
+			} else {
+				GFToast.show(getApplicationContext(),"订单确认出错");
 			}
-			else{
-				GFToast.show(getApplicationContext(),"交易成功");
-			}
-			
-		} else {
-			Toast.makeText(this, "订单确认出错",
-					Toast.LENGTH_SHORT).show();
+			break;
+		case -1:
+			GFToast.show(getApplicationContext(),"订单确认出错");
+			break;
+
+		default:
+			break;
 		}
 		
 		this.setResult(2);

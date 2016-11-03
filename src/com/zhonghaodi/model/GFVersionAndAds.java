@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class GFVersionHint {
+public class GFVersionAndAds {
 	
 	public static void saveCnzHintInfo(Context context,int count) {
 		// 获取SharedPreferences对象
@@ -23,6 +23,17 @@ public class GFVersionHint {
 		// 提交
 		editor.commit();
 		
+	}
+	
+	public static void saveAdstime(Context context,long time){
+		// 获取SharedPreferences对象
+		SharedPreferences sharedPre = context.getSharedPreferences("hintconfig",
+				Context.MODE_PRIVATE);
+		// 获取Editor对象
+		Editor editor = sharedPre.edit();
+		editor.putLong("adstime", time);
+		// 提交
+		editor.commit();
 	}
 	
 	public static int getCnzcount(Context context) {
@@ -41,5 +52,12 @@ public class GFVersionHint {
 			b=true;
 		}
 		return b;
+	}
+	
+	public static long getAdstime(Context context){
+		SharedPreferences sharedPre = context.getSharedPreferences("hintconfig",
+				Context.MODE_PRIVATE);
+		long time = sharedPre.getLong("adstime", 0);
+		return time;
 	}
 }

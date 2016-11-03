@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:layout_margin="2dp"
         android:orientation="vertical"
-        android:background="#dddddd"
         >
         <ListView
 	        android:id="@+id/pull_refresh_list"
@@ -41,10 +40,10 @@
 		    android:layout_width="match_parent"
 		    android:layout_height="36dp"
 		    android:layout_margin="2dp"
-		    android:text="设置区域"
-		    android:textSize="18dp"
-		    android:textColor="#FFFFFF"
-		    android:background="@drawable/button_shape"
+		    android:text="区域设置"
+		    android:textSize="20dp"
+		    android:textColor="#808080"
+		    android:background="@null"
 		    />
     </LinearLayout>   
 </LinearLayout>

@@ -19,5 +19,7 @@ public class UmengConstants {
 	public static String REPLY_GOSSIP_ID="reply_gossip";
 	public static String REPLY_PLANT_ID="reply_plant";
 	public static String REPLY_AGRO_ID="reply_forum";
+	public static String REPLY_GUESS_ID="reply_guess";
+	public static String COMMENT_GUESS_ID="comment_guess";
 	
 }

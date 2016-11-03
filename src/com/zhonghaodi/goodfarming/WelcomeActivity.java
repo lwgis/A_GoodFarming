@@ -1,13 +1,12 @@
 package com.zhonghaodi.goodfarming;
 
 import java.io.File;
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,78 +15,77 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
-import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.customui.SettingPopupwindow;
-import com.zhonghaodi.customui.SharePopupwindow;
-import com.zhonghaodi.goodfarming.StoresActivity.StoreLocationListenner;
-import com.zhonghaodi.model.AppVersion;
+import com.zhonghaodi.model.Advertising;
 import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.CityDto;
 import com.zhonghaodi.model.GFAreaUtil;
-import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.Recipe;
-import com.zhonghaodi.model.Store;
-import com.zhonghaodi.model.UserCrop;
+import com.zhonghaodi.model.GFVersionAndAds;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.FileUtils;
 import com.zhonghaodi.utils.StoredData;
 import com.zhonghaodi.networking.HttpUtil;
-
-import android.Manifest.permission;
-import android.R.integer;
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class WelcomeActivity extends Activity implements HandMessage {
+	
 	private final int SPLASH_DISPLAY_LENGHT = 2000;
 	private GFHandler<WelcomeActivity> handler = new GFHandler<WelcomeActivity>(this);
 	// 定位相关
 	private LocationClient mLocClient;
 	public WelcomeLocationListenner myListener = new WelcomeLocationListenner();
 	private double x,y;
+	private ImageView img;
+	private TextView timer_text;
+	private boolean isad;
+	private int recLen = 3;
+	Timer timer = new Timer();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_welcome);
+		isad = false;
+		img = (ImageView)findViewById(R.id.ad_image);
+		timer_text = (TextView)findViewById(R.id.timer_count);
+		timer_text.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				timer.cancel(); 
+				tomain();
+			}
+		});
 		StoredData.getThis().markOpenApp();
 		if(!UILApplication.checkNetworkState()){
 			GFToast.show(getApplicationContext(),"没有有效的网络连接");
 		}
+		
 		int zone = GFAreaUtil.getCity(this);
 		if(zone==0){
 			location();
 		}
-		else{
-			sleep();
+		long delta_time = (new Date().getTime())-GFVersionAndAds.getAdstime(this);
+		if(delta_time>(60*60*1000)){
+			loadAdvertising();
 		}
-//		sleep();
-		
+		else{
+			tomain();
+		}	
 	}
                   
 	@Override
@@ -96,14 +94,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		super.onResume();
 		MobclickAgent.onPageStart("启动页");
 		MobclickAgent.onResume(this);
-//		 new Handler().postDelayed(new Runnable(){  
-//		     public void run() {  
-//		     //execute the task  
-//		    	 popupwindow();
-//		     }  
-//		  }, 1000); 
-		
-		
+
 	}
 	
 	@Override
@@ -113,50 +104,12 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		MobclickAgent.onPageEnd("启动页");
 		MobclickAgent.onPause(this);
 	}
-	public void popupwindow(){
-		final SettingPopupwindow settingPopupwindow = new SettingPopupwindow(this);
-		OnClickListener clickListener = new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				SharedPreferences sharedPre = WelcomeActivity.this.getSharedPreferences("test",
-						Context.MODE_PRIVATE);
-				String surl = settingPopupwindow.serviceEditText.getText().toString();
-				String iurl = settingPopupwindow.imageEditText.getText().toString();
-				if(!surl.isEmpty()){
-					HttpUtil.RootURL = surl;
-				}
-				if(!iurl.isEmpty()){
-					HttpUtil.ImageUrl = iurl;
-				}
-				// 获取Editor对象
-				Editor editor = sharedPre.edit();
-				// 设置参数
-				editor.putString("serviceurl", HttpUtil.RootURL);
-				editor.putString("imageurl", HttpUtil.ImageUrl);
-				// 提交
-				editor.commit();
-				settingPopupwindow.dismiss();
-				sleep();
-			}
-		};
-		settingPopupwindow.setlistener(clickListener);
-		SharedPreferences sharedPre = WelcomeActivity.this.getSharedPreferences("test",
-				Context.MODE_PRIVATE);
-		String serviceurl = sharedPre.getString("serviceurl", "");
-		if(serviceurl.isEmpty()){
-			serviceurl = HttpUtil.RootURL;
-		}
-		String imageurl = sharedPre.getString("imageurl", "");
-		if(imageurl.isEmpty())
-		{
-			imageurl = HttpUtil.ImageUrl;
-		}
-		settingPopupwindow.serviceEditText.setText(serviceurl);
-		settingPopupwindow.imageEditText.setText(imageurl);
-		settingPopupwindow.showAtLocation(findViewById(R.id.welcome), 
-				Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 30);
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+
 	}
 	
 	private void location() {
@@ -174,11 +127,20 @@ public class WelcomeActivity extends Activity implements HandMessage {
 	private void sleep(){
 		new Handler().postDelayed(new Runnable() {  
             public void run() {  
-                 
-                tomain();
+                if(!isad){
+                	tomain();
+                } 
+                else{
+                	countdown();
+                }
             }  
   
         }, SPLASH_DISPLAY_LENGHT); 
+	}
+	
+	private void countdown(){
+		timer_text.setVisibility(View.VISIBLE);
+    	timer.schedule(task, 1000, 1000);
 	}
 	
 	private void tomain(){
@@ -208,17 +170,15 @@ public class WelcomeActivity extends Activity implements HandMessage {
 
 		@Override
 		public void onReceiveLocation(BDLocation location) {
-			if (location == null)
+			if (location == null){
 				return;
+			}				
 			x=location.getLongitude();
 			y=location.getLatitude();
-//			x=118.780813;
-//			y=36.815181;
 			loadArea();
 			mLocClient.stop();
 			
 		}
-
 		public void onReceivePoi(BDLocation poiLocation) {
 		}
 	}
@@ -237,7 +197,71 @@ public class WelcomeActivity extends Activity implements HandMessage {
 			}
 		}).start();
 	}
-
+	
+	public void loadAdvertising(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getAdvertising();
+				Message msg = handler.obtainMessage();
+				msg.what = 1;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+				
+			}
+		}).start();
+	}
+	
+	private void displaydeafult(){
+		img.setImageResource(R.drawable.welcome);
+	}
+	
+	private void displayAdvertisings(List<Advertising> ads){
+		
+		Advertising advertising = chanceSelect(ads);
+		
+        try {
+			FileUtils.cacheDir = new File(Environment.getExternalStorageDirectory().getPath() + "/goodfarming/ads/");
+			if (!FileUtils.cacheDir.exists()) {
+				FileUtils.cacheDir.mkdirs();
+			}
+			File imagefile = new File(FileUtils.cacheDir + File.separator + advertising.getUrl());
+			if (!imagefile.exists()) {
+				displaydeafult();
+				sleep();
+				UILApplication application = (UILApplication) getApplication();
+				application.downloadAds(ads);
+			} else {
+				ImageLoader.getInstance()
+						.displayImage("file://" + FileUtils.cacheDir + File.separator + advertising.getUrl(), img);
+				isad = true;
+				long time = (new Date()).getTime();
+				GFVersionAndAds.saveAdstime(this, time);
+				sleep();
+			} 
+		} catch (Exception e) {
+			// TODO: handle exception
+			displaydeafult();
+			sleep();
+		}
+	}
+	
+	public Advertising chanceSelect(List<Advertising> ads){
+		Integer sum = 0;
+		List<Advertising> advertisings = new ArrayList<Advertising>();
+		for (Iterator iterator = ads.iterator(); iterator.hasNext();) {
+			Advertising advertising = (Advertising) iterator.next();
+			sum+=advertising.getSort();
+			for(int i=0;i<advertising.getSort();i++){
+				advertisings.add(advertising);
+			}
+		}
+		Collections.shuffle(advertisings);
+		Integer rand=new Random().nextInt(sum);
+		return advertisings.get(rand);
+	}
+	
 	
 	@Override
 	public void handleMessage(Message msg, Object object) {
@@ -259,7 +283,24 @@ public class WelcomeActivity extends Activity implements HandMessage {
 			} else {
 				GFAreaUtil.saveAreaInfo(this, new City());
 			}
-			tomain();
+			break;
+		case 1:
+			if(msg.obj!=null){
+				Gson gson = new Gson();
+				List<Advertising> advertisings = gson.fromJson(msg.obj.toString(), 
+						new TypeToken<List<Advertising>>() {}.getType());
+				if(advertisings!=null && advertisings.size()>0){
+					displayAdvertisings(advertisings);
+				}
+				else{
+					displaydeafult();
+					sleep();
+				}
+			}
+			else{
+				displaydeafult();
+				sleep();
+			}
 			break;
 		case -1:
 			String errString = msg.obj.toString();
@@ -270,5 +311,24 @@ public class WelcomeActivity extends Activity implements HandMessage {
 			break;
 		}
 	}
+	
+	TimerTask task = new TimerTask() {  
+        @Override  
+        public void run() {  
+  
+            runOnUiThread(new Runnable() {      // UI thread  
+                @Override  
+                public void run() {  
+                    recLen--;  
+                    timer_text.setText(recLen+"跳过");  
+                    if(recLen < 1){  
+                        timer.cancel();  
+                        timer_text.setVisibility(View.GONE);  
+                        tomain();
+                    }  
+                }  
+            });  
+        }  
+    };
 
 }

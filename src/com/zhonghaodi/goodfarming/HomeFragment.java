@@ -42,6 +42,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
@@ -281,7 +282,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 	public void changeDiseaseStatus(SpinnerDto spinnerDto) {
 		// TODO Auto-generated method stub
 		diseaseStatus = spinnerDto.getId();
-		diseaseTextView.setText(spinnerDto.getName()+"▼");
+		diseaseTextView.setText(spinnerDto.getName());
 		loadNewQuestion();
 	}
 	@Override
@@ -665,7 +666,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 				}
 				else{
 
-					diseasePopupWindow.showAsDropDown(v, 0, 0);
+					diseasePopupWindow.showAsDropDown((View)v.getParent(), 0, 0);
 				}
 			}
 			break;
@@ -686,7 +687,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 				if (gossipPopupWindow.isShowing()) {
 					gossipPopupWindow.dismiss();
 				} else {
-					gossipPopupWindow.showAsDropDown(v,0,0);
+					gossipPopupWindow.showAsDropDown((View)v.getParent(),0,0);
 				}
 			}
 			break;
@@ -707,7 +708,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 				if (plantPopupWindow.isShowing()) {
 					plantPopupWindow.dismiss();
 				} else {
-					plantPopupWindow.showAsDropDown(v,0,0);
+					plantPopupWindow.showAsDropDown((View)v.getParent(),0,0);
 				}
 			}
 			break;
@@ -800,15 +801,23 @@ public class HomeFragment extends Fragment implements HandMessage,
 	}
 	
 	public void selectTextView(View view){
+		Drawable drawable = getResources().getDrawable(R.drawable.dropdown);
+		drawable.setBounds(0, 0, PublicHelper.dip2px(getActivity(), 15), PublicHelper.dip2px(getActivity(), 15)); 
 		diseaseTextView.setTextColor(Color.rgb(128, 128, 128));
-		diseaseTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		diseaseTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
+		diseaseTextView.setCompoundDrawables(null, null, drawable, null);
 		plantTextView.setTextColor(Color.rgb(128, 128, 128));
-		plantTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		plantTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
+		plantTextView.setCompoundDrawables(null, null, drawable, null);
 		gossipTextView.setTextColor(Color.rgb(128, 128, 128));
-		gossipTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar));
+		gossipTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
+		gossipTextView.setCompoundDrawables(null, null, drawable, null);
 		
 		TextView selectTextView = (TextView)view;
 		selectTextView.setTextColor(Color.rgb(56, 190, 153));
+		Drawable drawable1 = getResources().getDrawable(R.drawable.dropdown_s);
+		drawable1.setBounds(0, 0, PublicHelper.dip2px(getActivity(), 15), PublicHelper.dip2px(getActivity(), 15)); 
+		selectTextView.setCompoundDrawables(null, null, drawable1, null);
 	}
 
 	@Override

@@ -22,17 +22,20 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.UmengConstants;
 import com.zhonghaodi.view.CaiView;
 
+import android.content.Context;
 import android.os.Message;
 
 public class CaiReq implements HandMessage {
 
 	private CaiView view;
 	private GFHandler<CaiReq> handler;
+	private Context context;
 	
-	public CaiReq(CaiView v) {
+	public CaiReq(CaiView v,Context c) {
 		// TODO Auto-generated constructor stub
 		view = v;
 		handler = new GFHandler<CaiReq>(this);
+		context = c;
 	}
 	
 	public void loadCaicaicai(final int id){
@@ -184,6 +187,7 @@ public class CaiReq implements HandMessage {
 		case 1:
 			NetResponse netResponse = (NetResponse)msg.obj;
 			if(netResponse.getStatus()==1){
+				MobclickAgent.onEvent(context, UmengConstants.REPLY_GUESS_ID);
 				view.refrenshCai();
 			}
 			else{
@@ -193,6 +197,7 @@ public class CaiReq implements HandMessage {
 		case 2:
 			NetResponse netResponse1 = (NetResponse)msg.obj;
 			if(netResponse1.getStatus()==1){
+				MobclickAgent.onEvent(context, UmengConstants.COMMENT_GUESS_ID);
 				view.refrenshCai();
 			}
 			else{

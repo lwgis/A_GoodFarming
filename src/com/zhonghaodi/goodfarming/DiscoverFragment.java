@@ -4,7 +4,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.GFVersionHint;
+import com.zhonghaodi.model.GFVersionAndAds;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GsonUtil;
@@ -86,7 +86,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener,HandMe
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onPageStart("发现Fragment");
-		if(GFVersionHint.getCnzcount(getActivity())==0){
+		if(GFVersionAndAds.getCnzcount(getActivity())==0){
 			cnzText.setVisibility(View.VISIBLE);
 		}
 		else{

@@ -33,4 +33,16 @@ public class ImageOptions {
 	public static File getCache(Context context){
 		return StorageUtils.getCacheDirectory(context);
 	}
+	
+	public static DisplayImageOptions optionswelcom = new DisplayImageOptions.Builder()
+			.showImageOnLoading(R.drawable.welcome)
+			.showImageForEmptyUri(R.drawable.welcome)
+			.showImageOnFail(R.drawable.welcome)
+			.cacheInMemory(true)
+			.cacheOnDisk(true)
+			.considerExifParams(true)
+			.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+			.bitmapConfig(Bitmap.Config.RGB_565)
+//			.displayer(new RoundedBitmapDisplayer(20))
+			.build();
 }
