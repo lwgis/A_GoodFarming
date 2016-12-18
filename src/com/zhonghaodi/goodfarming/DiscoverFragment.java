@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.view.ViewGroup;
 
 public class DiscoverFragment extends Fragment implements OnClickListener,HandMessage {
@@ -165,6 +164,9 @@ public class DiscoverFragment extends Fragment implements OnClickListener,HandMe
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
+		if(getActivity()==null){
+			return;
+		}
 		if(msg.what==1){			
 			user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);

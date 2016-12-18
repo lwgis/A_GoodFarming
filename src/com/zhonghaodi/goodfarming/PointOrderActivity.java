@@ -96,13 +96,16 @@ public class PointOrderActivity extends Activity implements OnClickListener,Hand
 		String statusString = "";
 		switch (pointOrder.getStatus()) {
 		case 0:
-			statusString="未出库";
+			statusString="配货中";
 			break;
 		case 1:
 			statusString="已发货";
 			break;
 		case 2:
-			statusString="已完成";
+			statusString="交易完成";
+			break;
+		case 3:
+			statusString="已到农资店";
 			break;
 		default:
 			break;
@@ -133,15 +136,15 @@ public class PointOrderActivity extends Activity implements OnClickListener,Hand
 		else{
 			bottomLayout.setVisibility(View.GONE);
 		}
-		
-		if(pointOrder.getStatus()!=0){
-			kdLayout.setVisibility(View.VISIBLE);
-			gongsiTextView.setText("快递公司："+pointOrder.getExpress().getExpname());
-			codeTextView.setText("运单编号："+pointOrder.getExpress().getCode());
-		}
-		else{
-			kdLayout.setVisibility(View.GONE);
-		}
+		kdLayout.setVisibility(View.GONE);
+//		if(pointOrder.getStatus()!=0){
+//			kdLayout.setVisibility(View.VISIBLE);
+//			gongsiTextView.setText("快递公司："+pointOrder.getExpress().getExpname());
+//			codeTextView.setText("运单编号："+pointOrder.getExpress().getCode());
+//		}
+//		else{
+//			kdLayout.setVisibility(View.GONE);
+//		}
 		
 	}
 	

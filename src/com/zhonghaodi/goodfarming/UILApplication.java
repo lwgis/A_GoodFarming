@@ -67,6 +67,7 @@ import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.User;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.utils.FileUtils;
@@ -78,6 +79,7 @@ import com.zhonghaodi.networking.GFHandler.HandMessage;
  */
 public class UILApplication extends Application {
 	ArrayList<Activity> list = new ArrayList<Activity>(); 
+	public static User user;
 	public static int sendcount=0;
 	public static Context applicationContext;
 	public static String shareUrl="";
@@ -86,6 +88,13 @@ public class UILApplication extends Application {
 	public static int sharequeid;
 	public static Bitmap sharebit;
 	public static String auth;
+	
+	public static int displayStatus;//0病害1拉拉呱2赶大集
+	public static int diseaseStatus;//0病害问题1我的作物
+//	public static int contenStatus;//0查看全部1只看精选
+	
+	public static int fineStatus;
+	public static int finediseaseStatus;
 
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)

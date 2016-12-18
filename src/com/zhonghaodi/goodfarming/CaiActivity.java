@@ -151,11 +151,13 @@ public class CaiActivity extends Activity implements OnClickListener,CaiView {
 	}
 	
 	public void loadImage(Caicaicai caicaicai){
-		ImageLoader.getInstance().displayImage(
-				HttpUtil.ImageUrl+"cai/small/"
-						+ caicaicai.getAttachments1().get(0).getUrl(),
-				caiImageView, ImageOptions.optionsNoPlaceholder);
-		caiImageView.setDrawingCacheEnabled(true);
+		if(caicaicai.getAttachments1()!=null && caicaicai.getAttachments1().size()>0){
+			ImageLoader.getInstance().displayImage(
+					HttpUtil.ImageUrl+"cai/small/"
+							+ caicaicai.getAttachments1().get(0).getUrl(),
+					caiImageView, ImageOptions.optionsNoPlaceholder);
+			caiImageView.setDrawingCacheEnabled(true);
+		}
 	}
 	
 	public void popwindow(){

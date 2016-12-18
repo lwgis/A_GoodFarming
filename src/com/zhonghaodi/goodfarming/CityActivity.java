@@ -46,7 +46,6 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 	private MyTextButton okBtn;
 	private int status;
 	private City area1,area2;
-	private PinnedHeaderListView mCurrentListView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,6 @@ public class CityActivity extends Activity implements OnItemClickListener,CityVi
 		titleText = (TextView)findViewById(R.id.title_text);
 		cityListView = (PinnedHeaderListView)findViewById(R.id.pull_refresh_list);
 		cityListView.setOnItemClickListener(this);
-		mCurrentListView = cityListView;
 		areas = new ArrayList<City>();
 		status=0;
 		req = new CityReq(this);

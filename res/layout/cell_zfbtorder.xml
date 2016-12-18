@@ -110,7 +110,7 @@
                   android:layout_marginTop="5dp"
                   android:layout_marginRight="5dip"
                   android:singleLine="true"
-                  android:text="交易完成"
+                  android:text=""
                   android:textColor="#444444"
                   android:textSize="15dip" />
             </LinearLayout>   

@@ -375,6 +375,7 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 			LoginUser loginUser = (LoginUser) GsonUtil.fromJson(
 					msg.obj.toString(), LoginUser.class);
 			if (loginUser.getCode() == 1) {
+				UILApplication.user = loginUser.getUser();
 				GFUserDictionary.saveLoginInfo(getActivity(),loginUser.getUser(),
 						registerFragment2.passwordEt.getText().toString(),registerFragment2.getActivity(),auth);
 				registerFragment2.getActivity().setResult(4);

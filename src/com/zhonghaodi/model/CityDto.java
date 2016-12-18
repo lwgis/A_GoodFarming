@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class CityDto implements Serializable {
 
 	private boolean result;
-	private City zone;
+	private Province zone;
 	
 	public CityDto(){
 		
@@ -21,14 +21,15 @@ public class CityDto implements Serializable {
 		this.result = result;
 	}
 
-
-	public City getZone() {
+	public Province getZone() {
 		return zone;
 	}
 
-	public void setZone(City zone) {
+
+	public void setZone(Province zone) {
 		this.zone = zone;
 	}
+
 
 	@Override
 	public String toString() {

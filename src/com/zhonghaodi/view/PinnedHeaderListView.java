@@ -129,23 +129,26 @@ public class PinnedHeaderListView extends ListView {
 
             case PinnedHeaderAdapter.PINNED_HEADER_PUSHED_UP: {
                 View firstView = getChildAt(0);
-                int bottom = firstView.getBottom();
-                int itemHeight = firstView.getHeight();
-                int headerHeight = mHeaderView.getHeight();
-                int y;
-                int alpha;
-                if (bottom < headerHeight) {
-                    y = (bottom - headerHeight);
-                    alpha = MAX_ALPHA * (headerHeight + y) / headerHeight;
-                } else {
-                    y = 0;
-                    alpha = MAX_ALPHA;
+                if(firstView!=null){
+                	int bottom = firstView.getBottom();
+                    int itemHeight = firstView.getHeight();
+                    int headerHeight = mHeaderView.getHeight();
+                    int y;
+                    int alpha;
+                    if (bottom < headerHeight) {
+                        y = (bottom - headerHeight);
+                        alpha = MAX_ALPHA * (headerHeight + y) / headerHeight;
+                    } else {
+                        y = 0;
+                        alpha = MAX_ALPHA;
+                    }
+                    mAdapter.configurePinnedHeader(mHeaderView, position, alpha);
+                    if (mHeaderView.getTop() != y) {
+                        mHeaderView.layout(0, y, mHeaderViewWidth, mHeaderViewHeight + y);
+                    }
+                    mHeaderViewVisible = true;
                 }
-                mAdapter.configurePinnedHeader(mHeaderView, position, alpha);
-                if (mHeaderView.getTop() != y) {
-                    mHeaderView.layout(0, y, mHeaderViewWidth, mHeaderViewHeight + y);
-                }
-                mHeaderViewVisible = true;
+                
                 break;
             }
         }

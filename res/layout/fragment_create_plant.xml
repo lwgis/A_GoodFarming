@@ -77,7 +77,7 @@
             android:layout_marginTop="5dp"
             android:background="#ffffff"
             android:gravity="top"
-            android:hint="分享经验，收获快乐"
+            android:hint="骑上小毛驴，乐呵赶大集"
             android:padding="1dp"
             android:maxLength="200"
             android:textColor="#333333" />

@@ -74,17 +74,21 @@
 	            android:id="@+id/layout2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="2dip"
+		        android:layout_marginTop="10dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg2"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="20dip"
+		            android:layout_height="20dip"
 		            android:scaleType="fitXY"
 		            android:src="@drawable/pay"
+		            android:layout_marginLeft="10dp"
+	            	android:layout_marginTop="10dp"
+	            	android:layout_marginBottom="10dp"
+	            	android:layout_gravity="center_vertical"
 		            />
 		        <TextView 
 		            android:id="@+id/avname2"
@@ -96,6 +100,7 @@
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="当面付"
+		            android:layout_gravity="center_vertical"
 		            />
 		        
 		    </RelativeLayout>
@@ -110,10 +115,14 @@
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg5"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="20dip"
+		            android:layout_height="20dip"
 		            android:scaleType="fitXY"
 		            android:src="@drawable/nzdupdate"
+		            android:layout_marginLeft="10dp"
+	            	android:layout_marginTop="10dp"
+	            	android:layout_marginBottom="10dp"
+	            	android:layout_gravity="center_vertical"
 		            />
 		        <TextView 
 		            android:id="@+id/avname5"
@@ -125,6 +134,7 @@
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="农资店收付"
+		            android:layout_gravity="center_vertical"
 		            />
 		        
 		    </RelativeLayout>
@@ -139,10 +149,14 @@
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg3"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="20dip"
+		            android:layout_height="20dip"
 		            android:scaleType="fitXY"
 		            android:src="@drawable/exchange"
+		            android:layout_marginLeft="10dp"
+	            	android:layout_marginTop="10dp"
+	            	android:layout_marginBottom="10dp"
+	            	android:layout_gravity="center_vertical"
 		            />
 		        <TextView 
 		            android:id="@+id/avname3"
@@ -154,6 +168,7 @@
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="积分兑换"
+		            android:layout_gravity="center_vertical"
 		            />
 		        
 		    </RelativeLayout>

@@ -132,6 +132,9 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 		}
 		List<Category_disease> cDiseases = new ArrayList<Category_disease>();
 		for (Disease disease : allDiseases) {
+			if(disease.getCategory()==null){
+				continue;
+			}
 			boolean b = false;
 			for (int i = 0; i < cDiseases.size(); i++) {
 				if(cDiseases.get(i).getId()==disease.getCategory().getId()){
@@ -172,7 +175,7 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 		if(allDiseases!=null && allDiseases.size()>0){
 			
 			for (Disease disease : allDiseases) {
-				if (disease.getCategory().getId()==categoryid) {
+				if (disease.getCategory()!=null&&disease.getCategory().getId()==categoryid) {
 					diseases.add(disease);
 				}
 			}

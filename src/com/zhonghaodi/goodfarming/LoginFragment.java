@@ -152,6 +152,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 			LoginFragment loginFragment = (LoginFragment) object;
 			LoginUser loginUser = (LoginUser) GsonUtil.fromJson(msg.obj.toString(), LoginUser.class);
 			if (loginUser.getCode()==1) {
+				UILApplication.user = loginUser.getUser();
 				GFUserDictionary.saveLoginInfo(getActivity(),loginUser.getUser(),loginFragment.passwordEt.getText().toString(),loginFragment.getActivity(),auth);
 				loginFragment.getActivity().setResult(3);
 				loginFragment.getActivity().finish();

@@ -58,6 +58,10 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_welcome);
+		UILApplication.displayStatus=0;
+		UILApplication.diseaseStatus = 0;
+		UILApplication.fineStatus = 0;
+		UILApplication.finediseaseStatus = 0;
 		isad = false;
 		img = (ImageView)findViewById(R.id.ad_image);
 		timer_text = (TextView)findViewById(R.id.timer_count);
@@ -175,6 +179,8 @@ public class WelcomeActivity extends Activity implements HandMessage {
 			}				
 			x=location.getLongitude();
 			y=location.getLatitude();
+//			x=118.798632;
+//			y=36.858719;
 			loadArea();
 			mLocClient.stop();
 			
@@ -274,7 +280,10 @@ public class WelcomeActivity extends Activity implements HandMessage {
 						new TypeToken<CityDto>() {
 						}.getType());
 				if(areadto!=null && areadto.isResult()){
-					GFAreaUtil.saveAreaInfo(this, areadto.getZone());
+					City city = new City();
+					city.setId((int)areadto.getZone().getCode());
+					city.setName(areadto.getZone().getName());
+					GFAreaUtil.saveAreaInfo(this, city);
 				}
 				else{
 					GFAreaUtil.saveAreaInfo(this, new City());

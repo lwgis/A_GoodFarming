@@ -1260,7 +1260,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		}
 		@Override
 		public void onCancel() {
-			GFToast.show(QuestionActivity.this, "分享取消");
+
 		}
 		@Override
 		public void onComplete(Object arg0) {

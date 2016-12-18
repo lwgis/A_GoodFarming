@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zhonghaodi.adapter.SpinnerDtoAdapter;
-import com.zhonghaodi.api.GossipListView;
+import com.zhonghaodi.api.ContentListView;
 import com.zhonghaodi.goodfarming.R;
 import com.zhonghaodi.model.SpinnerDto;
 
@@ -19,16 +19,17 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class GossipPopupWindow extends PopupWindow {
+public class ContentPopupWindow extends PopupWindow {
 	private View mainview;
 	private ListView listView;
 	private Button areaBtn;
+	private Button diseaseBtn;
 	private List<SpinnerDto> datas;
-	private GossipListView gossipListView;
+	private ContentListView gossipListView;
 	private int displayid;
 	private SpinnerDtoAdapter adapter;
 
-	public GossipPopupWindow(GossipListView gView,int id,Context context) {
+	public ContentPopupWindow(ContentListView gView,int id,Context context,OnClickListener clickListener) {
 		// TODO Auto-generated constructor stub
 		LayoutInflater inflater = (LayoutInflater) context  
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -42,7 +43,7 @@ public class GossipPopupWindow extends PopupWindow {
 				SpinnerDto spinnerDto = datas.get(position);
 				adapter.setSelectId(spinnerDto.getId());
 				adapter.notifyDataSetChanged();
-				gossipListView.changeGossipStatus(spinnerDto);
+				gossipListView.changeContentStatus(spinnerDto);
 				dismiss();
 			}
 		});
@@ -56,16 +57,18 @@ public class GossipPopupWindow extends PopupWindow {
 				gossipListView.selectArea();
 			}
 		});
+		diseaseBtn = (Button)mainview.findViewById(R.id.diseasebtn);
+		diseaseBtn.setOnClickListener(clickListener);
 		gossipListView = gView;
 		displayid = id;
 		datas = new ArrayList<SpinnerDto>();
 		SpinnerDto spinnerDto = new SpinnerDto();
 		spinnerDto.setId(0);
-		spinnerDto.setName("全部拉拉呱");
+		spinnerDto.setName("查看全部");
 		datas.add(spinnerDto);
 		spinnerDto = new SpinnerDto();
 		spinnerDto.setId(1);
-		spinnerDto.setName("精选拉拉呱");
+		spinnerDto.setName("只看精选");
 		datas.add(spinnerDto);
 		
 		adapter = new SpinnerDtoAdapter(datas, context, displayid);
@@ -74,9 +77,9 @@ public class GossipPopupWindow extends PopupWindow {
 		//设置SelectPicPopupWindow的View  
         this.setContentView(mainview);  
         //设置SelectPicPopupWindow弹出窗体的宽  
-        this.setWidth(DpTransform.dip2px(context, 130));  
+        this.setWidth(DpTransform.dip2px(context, 120));  
         //设置SelectPicPopupWindow弹出窗体的高  
-        this.setHeight(DpTransform.dip2px(context, 141));  
+        this.setHeight(DpTransform.dip2px(context, 188));  
         //设置SelectPicPopupWindow弹出窗体可点击  
         this.setFocusable(true);   
         //实例化一个ColorDrawable颜色为半透明  

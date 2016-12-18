@@ -9,61 +9,65 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="#38be99" >
-        
-        <RelativeLayout
-            android:id="@+id/message_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="5dip"
-             >
-
-            <ImageView
-                android:id="@+id/message_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/message" />
-
-            <TextView
-                android:id="@+id/count_text"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="0dp"
-                android:background="@drawable/design_red_point"
-                android:gravity="center"
-                android:text="70"
-                android:textColor="@android:color/white"
-                android:textSize="13dip"
-                android:visibility="gone" />
-
-        </RelativeLayout>
 
         <TextView
             android:id="@+id/title_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_width="70dip"
+            android:layout_height="match_parent"
+            android:layout_margin="5dip"
             android:gravity="center"
-            android:text="试用版172"
+            android:text="地区"
             android:textColor="#FFFFFF"
-            android:textSize="18dip" />
-
-        <Button
-            android:id="@+id/question_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dip"
-            android:background="#00000000"
-            android:gravity="center"
-            android:text="我要提问"
-            android:textColor="#ffffff"
-            android:textSize="18dip" />
+            android:drawablePadding="0dip"
+            android:textSize="16dip" 
+            android:singleLine="true"
+            android:ellipsize="end"
+            />
+		<LinearLayout android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:orientation="horizontal"
+		    >
+		    <RelativeLayout
+	            android:id="@+id/message_layout"
+	            android:layout_width="45dip"
+	            android:layout_height="wrap_content"
+	            android:layout_margin="5dip"
+	             >
+					
+	            <ImageView
+	                android:id="@+id/message_image"
+	                android:layout_width="30dp"
+	                android:layout_height="30dp"
+	                android:layout_centerVertical="true"
+	                android:layout_gravity="center_horizontal"
+	                android:scaleType="fitXY"
+	                android:src="@drawable/bell" />
+	
+	            <TextView
+	                android:id="@+id/count_text"
+	                android:layout_width="15dp"
+	                android:layout_height="15dp"
+	                android:layout_marginLeft="15dp"
+	                android:layout_marginTop="0dp"
+	                android:background="@drawable/design_red_point"
+	                android:gravity="center"
+	                android:text="70"
+	                android:textColor="@android:color/white"
+	                android:textSize="8sp"
+	                android:visibility="gone" />
+	
+	        </RelativeLayout>
+	        <ImageView
+	                android:id="@+id/question_button"
+	                android:layout_width="30dp"
+	                android:layout_height="30dp"
+	                android:layout_marginRight="5dip"
+	                android:layout_gravity="center_vertical"
+	                android:src="@drawable/plus" />
+		    
+		</LinearLayout>      
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -84,11 +88,10 @@
 	           android:layout_width="wrap_content"
 	           android:layout_height="match_parent"
 	           android:layout_gravity="center_horizontal"
-	           android:text="全部问题"
+	           android:text="病害问题"
 	           android:textColor="#38be99"
 	           android:gravity="center"
 	           android:padding="8dip"
-	           android:drawablePadding="5dip"
 	           android:textSize="18dip" />
         </LinearLayout>
 		<LinearLayout 
@@ -107,7 +110,6 @@
 	           android:textColor="#000000"
 	           android:gravity="center"
 	           android:padding="8dip"
-	           android:drawablePadding="5dip"
 	           android:textSize="18dip" />
         </LinearLayout>
 		<LinearLayout 
@@ -126,7 +128,6 @@
 	           android:textColor="#000000"
 	           android:gravity="center"
 	           android:padding="8dip"
-	           android:drawablePadding="5dip"
 	           android:textSize="18dip" />
         </LinearLayout>      
     </LinearLayout>

@@ -37,19 +37,24 @@
             android:id="@+id/imgLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dip" >
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="5dp"
+             >
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image1"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder" />
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image2"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
@@ -57,8 +62,8 @@
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image3"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder" />
         </LinearLayout>
@@ -67,20 +72,24 @@
             android:id="@+id/imgLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dip"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="5dp"
             android:visibility="gone">
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image4"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder" />
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image5"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
@@ -88,8 +97,8 @@
 
             <com.zhonghaodi.customui.GFImageView
                 android:id="@+id/image6"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder" />
         </LinearLayout>

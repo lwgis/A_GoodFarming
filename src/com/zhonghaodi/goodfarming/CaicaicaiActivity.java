@@ -128,42 +128,41 @@ public class CaicaicaiActivity extends Activity implements OnClickListener,OnIte
 	}
 	
 	public void loadImage(Caicaicai caicaicai){
-//		ImageLoader.getInstance().displayImage(
-//				HttpUtil.ImageUrl+"cai/small/"
-//						+ caicaicai.getAttachments1().get(0).getUrl(),
-//				caiImageView, ImageOptions.optionsNoPlaceholder);
-		ImageLoader.getInstance().loadImage(HttpUtil.ImageUrl+"cai/small/"
-				+ caicaicai.getAttachments1().get(0).getUrl(), new ImageLoadingListener() {
-			
-			@Override
-			public void onLoadingStarted(String arg0, View arg1) {
-				// TODO Auto-generated method stub
+		
+		if(caicaicai.getAttachments1()!=null && caicaicai.getAttachments1().size()>0){
+			ImageLoader.getInstance().loadImage(HttpUtil.ImageUrl+"cai/small/"
+					+ caicaicai.getAttachments1().get(0).getUrl(), new ImageLoadingListener() {
 				
-			}
-			
-			@Override
-			public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
-				// TODO Auto-generated method stub
+				@Override
+				public void onLoadingStarted(String arg0, View arg1) {
+					// TODO Auto-generated method stub
+					
+				}
 				
-			}
-			
-			@Override
-			public void onLoadingComplete(String arg0, View arg1, Bitmap arg2) {
-				// TODO Auto-generated method stub
-				int WX_THUMB_SIZE = 60;
-				Bitmap b = arg2;	             
-				bitmap = Bitmap.createScaledBitmap(b, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
-				data = PublicHelper.bmpToByteArray(bitmap, true);
-				bitmap.recycle();
-				popwindow();
-			}
-			
-			@Override
-			public void onLoadingCancelled(String arg0, View arg1) {
-				// TODO Auto-generated method stub
+				@Override
+				public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
+					// TODO Auto-generated method stub
+					
+				}
 				
-			}
-		});
+				@Override
+				public void onLoadingComplete(String arg0, View arg1, Bitmap arg2) {
+					// TODO Auto-generated method stub
+					int WX_THUMB_SIZE = 60;
+					Bitmap b = arg2;	             
+					bitmap = Bitmap.createScaledBitmap(b, WX_THUMB_SIZE, WX_THUMB_SIZE, true);
+					data = PublicHelper.bmpToByteArray(bitmap, true);
+					bitmap.recycle();
+					popwindow();
+				}
+				
+				@Override
+				public void onLoadingCancelled(String arg0, View arg1) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
 		caiImageView.setDrawingCacheEnabled(true);
 	}
 	

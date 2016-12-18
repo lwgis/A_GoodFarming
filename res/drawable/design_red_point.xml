@@ -6,8 +6,8 @@
 
     <padding
         android:bottom="1dp"
-        android:left="2dp"
-        android:right="2dp"
+        android:left="1dp"
+        android:right="1dp"
         android:top="1dp" />
 
     <solid android:color="#ee0000" />
@@ -17,7 +17,7 @@
         android:color="@android:color/white" />
 
     <size
-        android:height="15dp"
-        android:width="15dp" />
+        android:height="10dp"
+        android:width="10dp" />
 
 </shape>

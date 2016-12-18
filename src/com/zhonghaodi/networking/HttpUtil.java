@@ -63,12 +63,17 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-//	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
-//	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
-//	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
-	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage8/";
-	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
+	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
+	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
+	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
+	
+//	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+//	public static String ImageUrl = "http://121.40.62.120/appimage8/";
+//	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
+	
+//	public static String RootURL = "http://115.28.154.159:8088/dfyy/rest/";
+//	public static String ImageUrl = "http://121.40.62.120/appimage8/";
+//	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 
 	public static String executeHttpGet(String urlString) {
 		StringBuffer sb = new StringBuffer();
@@ -623,14 +628,18 @@ public class HttpUtil {
 	
 	public static String getQuestionfinesString(String zone) {
 		String url = RootURL + "questions/fines";
-		url=url+"?zone="+zone;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"?zone="+zone;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
 	public static String getQuestionfinesString(int qid,String zone) {
 		String url = RootURL+ "questions/fines?fromid=" + qid;
-		url=url+"&zone="+zone;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"?zone="+zone;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
@@ -677,6 +686,15 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
+	
+	public static String getAscQuestionsfine(String uid,int zone) {
+		String url = RootURL + "users/"+uid+"/ascquestions/fines";
+		if(zone!=0){
+			url = url + "?zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
 
 	public static String getAscQuestionsString(String uid,int qid,int zone) {
 		String url = RootURL+ "users/"+uid+"/ascquestions?fromid=" + qid;
@@ -687,35 +705,44 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getPlant(int zone) {
-		String url = RootURL + "plantinfo";
+	public static String getAscQuestionsfine(String uid,int qid,int zone) {
+		String url = RootURL+ "users/"+uid+"/ascquestions/fines?fromid=" + qid;
 		if(zone!=0){
-			url = url + "?zone="+zone;
+			url = url + "&zone="+zone;
 		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
-	public static String getPlantfines(int zone) {
+	
+	public static String getPlant(String zone) {
+		String url = RootURL + "plantinfo";
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"?zone="+zone;
+		}
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+	public static String getPlantfines(String zone) {
 		String url = RootURL + "plantinfo/fines";
-		if(zone!=0){
-			url = url + "?zone="+zone;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"?zone="+zone;
 		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 
-	public static String getMorePlant(int qid,int zone) {
+	public static String getMorePlant(int qid,String zone) {
 		String url = RootURL+ "plantinfo?fromid=" + qid;
-		if(zone!=0){
-			url = url + "&zone="+zone;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"&zone="+zone;
 		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
-	public static String getMorePlantfines(int qid,int zone) {
+	public static String getMorePlantfines(int qid,String zone) {
 		String url = RootURL+ "plantinfo/fines?fromid=" + qid;
-		if(zone!=0){
-			url = url + "&zone="+zone;
+		if(!TextUtils.isEmpty(zone)){
+			url=url+"&zone="+zone;
 		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;

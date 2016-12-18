@@ -48,15 +48,11 @@ public class DiseasePopupWindow extends PopupWindow {
 		datas = new ArrayList<SpinnerDto>();
 		SpinnerDto spinnerDto = new SpinnerDto();
 		spinnerDto.setId(0);
-		spinnerDto.setName("全部问题");
+		spinnerDto.setName("病害问题");
 		datas.add(spinnerDto);
 		spinnerDto = new SpinnerDto();
 		spinnerDto.setId(1);
 		spinnerDto.setName("我的作物");
-		datas.add(spinnerDto);
-		spinnerDto = new SpinnerDto();
-		spinnerDto.setId(2);
-		spinnerDto.setName("精选问题");
 		datas.add(spinnerDto);
 		adapter = new SpinnerDtoAdapter(datas, context, displayid);
 		listView.setAdapter(adapter);
@@ -66,7 +62,7 @@ public class DiseasePopupWindow extends PopupWindow {
         //设置SelectPicPopupWindow弹出窗体的宽  
         this.setWidth(DpTransform.dip2px(context, 130));  
         //设置SelectPicPopupWindow弹出窗体的高  
-        this.setHeight(DpTransform.dip2px(context, 141));  
+        this.setHeight(DpTransform.dip2px(context, 98));  
         //设置SelectPicPopupWindow弹出窗体可点击  
         this.setFocusable(true);   
         //实例化一个ColorDrawable颜色为半透明  
@@ -74,5 +70,9 @@ public class DiseasePopupWindow extends PopupWindow {
         //设置SelectPicPopupWindow弹出窗体的背景  
         this.setBackgroundDrawable(dw);
 	}
-
+	
+	public void reset(){
+		adapter.setSelectId(0);
+		adapter.notifyDataSetChanged();
+	}
 }

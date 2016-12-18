@@ -105,12 +105,14 @@ public class PointOrdersActivity extends Activity implements OnItemClickListener
 		public TextView pointTv;
 		public TextView statusTv;
 		public TextView timeTv;
+		public TextView posterTv;
 		 public HolderPointOrder(View view){
 			 pointIv=(ImageView)view.findViewById(R.id.point_image);
 			 titleTv=(TextView)view.findViewById(R.id.title_text);
 			 pointTv = (TextView)view.findViewById(R.id.point_text);
 			 statusTv = (TextView)view.findViewById(R.id.status_text);
 			 timeTv = (TextView)view.findViewById(R.id.time_text);
+			 posterTv = (TextView)view.findViewById(R.id.poster_text);
 		 }
 	}
 	
@@ -162,12 +164,21 @@ public class PointOrdersActivity extends Activity implements OnItemClickListener
 				holderpointorder.statusTv.setText("已发货");
 			}
 			else if(pointOrder.getStatus()==0){
-				holderpointorder.statusTv.setText("未出库");
+				holderpointorder.statusTv.setText("配货中");
 			}
 			else if(pointOrder.getStatus()==2){
-				holderpointorder.statusTv.setText("已收货");
+				holderpointorder.statusTv.setText("交易完成");
+			}
+			else{
+				holderpointorder.statusTv.setText("已到农资店");
 			}
 			holderpointorder.timeTv.setText("时间:"+pointOrder.getTime());
+			if(pointOrder.getNzd()==null){
+				holderpointorder.posterTv.setText("发货农资店：分配中...");
+			}
+			else{
+				holderpointorder.posterTv.setText("发货农资店："+pointOrder.getNzd().getAlias());
+			}
 			return convertView;
 		}
 		

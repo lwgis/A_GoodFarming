@@ -85,7 +85,7 @@ public class QuestionAdpter extends BaseAdapter {
 	public int getItemViewType(int position) {
 		// TODO Auto-generated method stub
 		Question question = allQuestions.get(position);
-		if(status==0||status==1){
+		if(status==0||status==1||status==3){
 			if (question.getAttachments()==null||question.getAttachments().size() == 0) {
 				return 0;
 			}
@@ -196,7 +196,7 @@ public class QuestionAdpter extends BaseAdapter {
 			
 			holder1.countTv.setText("已有" + question.getResponsecount()
 					+ "个答案");
-			if(status==0){
+			if(status==0 || status==3){
 				if(question.getCrop()!=null){
 					holder1.cropTv.setVisibility(View.VISIBLE);
 					holder1.cropTv.setText(question.getCrop().getName());

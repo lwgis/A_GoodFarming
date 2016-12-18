@@ -19,12 +19,13 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
 import com.zhonghaodi.goodfarming.R;
 
-
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 
 public class CommonUtils {
 
@@ -124,5 +125,5 @@ public class CommonUtils {
 		else
 			return "";
 	}
-
+	
 }

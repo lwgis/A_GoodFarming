@@ -40,7 +40,6 @@ import android.widget.Toast;
 
 public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	
-	private User user;
 	private ArrayList<Function> functions;
 	private PullToRefreshListView pullToRefreshList;
 	private MyTextButton siginButton;
@@ -48,13 +47,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	private MeAdapter adapter;
 	private GFHandler<MeFragment> handler = new GFHandler<MeFragment>(this);
 	private ShareContainer shareContainer;
-	public User getUser() {
-		return user;
-	}
 
-	public void setUser(User user) {
-		this.user = user;
-	}
 	public MeFragment(){
 		
 	}
@@ -98,7 +91,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				it.setClass(getActivity(), function.getActivityClass());
 				if(function.getName().equals("优惠币使用") || function.getName().equals("资料设置")){
 					Bundle bundle = new Bundle();
-					bundle.putSerializable("user", user);
+					bundle.putSerializable("user", getUser());
 					it.putExtras(bundle);
 					getActivity().startActivity(it);
 				}
@@ -108,11 +101,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				}
 				else if(function.getName().equals("邀请好友赚积分")){
 					if(shareContainer!=null){
-						shareContainer.popupShareWindow(user);
+						shareContainer.popupShareWindow(getUser());
 					}					
 				}
 				else if(function.getName().equals("我的订单")){
-					it.putExtra("level", user.getLevel().getId());
+					it.putExtra("level", getUser().getLevel().getId());
 					getActivity().startActivity(it);
 				}
 				else{
@@ -162,7 +155,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 
 		@Override
 		public int getCount() {
-			if (user == null) {
+			if (getUser() == null) {
 				return 0;
 			}
 			return functions.size() + 1;
@@ -234,18 +227,18 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 				holderMeInfo = (HolderMeInfo) convertView.getTag();
 				ImageLoader.getInstance().displayImage(
 						HttpUtil.ImageUrl+"users/small/"
-								+ user.getThumbnail(), holderMeInfo.headIv,
+								+ getUser().getThumbnail(), holderMeInfo.headIv,
 						ImageOptions.optionsNoPlaceholder);
-				User u1= user;
-				holderMeInfo.titleTv.setText(user.getAlias());
-				holderMeInfo.youhuibiTv.setText(String.valueOf(user.getCurrency()));
-				holderMeInfo.fensiTv.setText(String.valueOf(user.getFanscount()));
+				User u1= getUser();
+				holderMeInfo.titleTv.setText(getUser().getAlias());
+				holderMeInfo.youhuibiTv.setText(String.valueOf(getUser().getCurrency()));
+				holderMeInfo.fensiTv.setText(String.valueOf(getUser().getFanscount()));
 				holderMeInfo.fensiView.setOnClickListener(MeFragment.this);
 				holderMeInfo.guanzhuView.setOnClickListener(MeFragment.this);
-				holderMeInfo.guanzhuTv.setText(String.valueOf(user.getFollowcount()));
-				holderMeInfo.tjcodeTv.setText(user.getTjCode());
-				holderMeInfo.reccountTv.setText(Html.fromHtml("<u>"+String.valueOf(user.getRecCount())+"</u>"));
-				holderMeInfo.tjcoinTv.setText(String.valueOf(user.getTjcoin()));
+				holderMeInfo.guanzhuTv.setText(String.valueOf(getUser().getFollowcount()));
+				holderMeInfo.tjcodeTv.setText(getUser().getTjCode());
+				holderMeInfo.reccountTv.setText(Html.fromHtml("<u>"+String.valueOf(getUser().getRecCount())+"</u>"));
+				holderMeInfo.tjcoinTv.setText(String.valueOf(getUser().getTjcoin()));
 				holderMeInfo.qrImageView.setOnClickListener(MeFragment.this);
 				holderMeInfo.recLayout.setOnClickListener(MeFragment.this);
 				break;
@@ -310,13 +303,13 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			break;
 		case R.id.qrcode_img:
 			Intent intent2 = new Intent(getActivity(), AppdownActivity.class);
-			intent2.putExtra("content", HttpUtil.ViewUrl+"appshare?code="+user.getTjCode());
+			intent2.putExtra("content", HttpUtil.ViewUrl+"appshare?code="+getUser().getTjCode());
 			getActivity().startActivity(intent2);
 			break;
 		case R.id.setting_button:
 			Intent it = new Intent(getActivity(), InformationActivity.class);
 			Bundle bundle = new Bundle();
-			bundle.putSerializable("user", user);
+			bundle.putSerializable("user", getUser());
 			it.putExtras(bundle);
 			getActivity().startActivity(it);
 			break;
@@ -325,9 +318,20 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		}
 		
 	}
+	
+	private User getUser(){
+		return UILApplication.user;
+	}
+	
+	private void setUser(User u){
+		UILApplication.user=u;
+	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
+		if(getActivity()==null){
+			return;
+		}
 		switch (msg.what) {
 		case 1:
 			
@@ -336,26 +340,24 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			user = (User) GsonUtil
+			User user = (User) GsonUtil
 					.fromJson(msg.obj.toString(), User.class);
+			setUser(user);
 			GFUserDictionary.saveLoginInfo(getActivity(),user,
 					GFUserDictionary.getPassword(getActivity()), getActivity(),
 					GFUserDictionary.getAuth(getActivity()));	
 			functions.clear();
-//			Function pointsFunction = new Function("积分使用", PointsActivity.class,R.drawable.jifen);
-//			pointsFunction.setDescription(user.getPoint()+"积分");
-//			fragment.functions.add(pointsFunction);
-			Function questionFunction = new Function("我的提问", QuestionsActivity.class,R.drawable.myquestions);
+			Function questionFunction = new Function("我的提问", QuestionsActivity.class,R.drawable.myquestions1);
 			functions.add(questionFunction);
-			Function favFunction = new Function("我的收藏", MyQuestionsActivity.class,R.drawable.shoucang);
+			Function favFunction = new Function("我的收藏", MyQuestionsActivity.class,R.drawable.shoucang1);
 			functions.add(favFunction);
-			Function ordersFunction = new Function("我的订单", OrdersActivity.class,R.drawable.store);
+			Function ordersFunction = new Function("我的订单", OrdersActivity.class,R.drawable.order1);
 			functions.add(ordersFunction);
-			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.yhbsh);
+			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.yhbsh1);
 			functions.add(cartFunction);
-			Function shareFunction = new Function("邀请好友赚积分",AppShareActivity.class,R.drawable.appshare);
+			Function shareFunction = new Function("邀请好友赚积分",AppShareActivity.class,R.drawable.appshare1);
 			functions.add(shareFunction);			
-			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report);
+			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report1);
 			functions.add(feedbackFunction);
 			functions.add(null);
 			pullToRefreshList.onRefreshComplete();
@@ -366,7 +368,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			if(msg.obj!=null){
 				MobclickAgent.onEvent(getActivity(), UmengConstants.USER_SIGNIN_ID);
 				GFToast.show(getActivity().getApplicationContext(),msg.obj.toString());
-				loadData();
+//				loadData();
 			}
 			else{
 				GFToast.show(getActivity().getApplicationContext(),"连接服务器失败,请稍候再试!");

@@ -27,6 +27,8 @@ public class PointOrder implements Serializable{
 	
 	private Express express;
 	
+	private User nzd;
+	
 	public PointOrder(){
 		
 	}
@@ -93,6 +95,14 @@ public class PointOrder implements Serializable{
 
 	public void setExpress(Express express) {
 		this.express = express;
+	}
+
+	public User getNzd() {
+		return nzd;
+	}
+
+	public void setNzd(User nzd) {
+		this.nzd = nzd;
 	}
 
 	@Override

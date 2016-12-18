@@ -34,13 +34,16 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 import com.zhonghaodi.utils.UmengConstants;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.Gravity;
@@ -56,6 +59,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 public class AgrotechnicalActivity extends Activity implements OnClickListener,HandMessage {
@@ -70,6 +74,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 	private ImageView agroImageView;
 	private Bitmap bitmap;
 	private byte[] data;
+	private ProgressBar bar;
 	private WebView webview;
 	private FrameLayout mFullscreenContainer;  
     private LinearLayout mContentView;  
@@ -85,6 +90,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_agrotechnical);
+		bar = (ProgressBar)findViewById(R.id.myProgressBar);
 		agroImageView = (ImageView)findViewById(R.id.agro_image);
 		mainView = (LinearLayout)findViewById(R.id.main);
 		Button cancelBtn = (Button) findViewById(R.id.cancel_button);
@@ -145,7 +151,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
             getWindow().setFlags(0x1000000, 0x1000000);  
         }  
 		webview.loadUrl(HttpUtil.ViewUrl+"agrotechnical/detail?id="+id+"&f=1");
-//        webview.loadUrl("http://player.youku.com/embed/XMTU4ODM5NjM5Ng==");
+//        webview.loadUrl("https://m.douyu.com/635213");
 		loadImage();
 	}
 	
@@ -155,12 +161,15 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
         webview  = (WebView)findViewById(R.id.webView);
 	}
 	
+	@SuppressWarnings("deprecation")
+	@SuppressLint("SetJavaScriptEnabled")
 	private void initWebView(){
 		WebSettings settings = webview.getSettings();  
+		settings.setDomStorageEnabled(true);
         settings.setJavaScriptEnabled(true);  
         settings.setJavaScriptCanOpenWindowsAutomatically(true);  
+        settings.setUseWideViewPort(true);
         settings.setPluginState(PluginState.ON);  
-//        settings.setPluginsEnabled(true); 
         settings.setAllowFileAccess(true);  
         settings.setLoadWithOverviewMode(true);  
   
@@ -267,6 +276,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
   
         public void onShowCustomView(View view, int requestedOrientation,  
                 WebChromeClient.CustomViewCallback callback) {  
+        	
             if (mCustomView != null) {  
                 callback.onCustomViewHidden();  
                 return;  
@@ -284,11 +294,11 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
                 setRequestedOrientation(mOriginalOrientation);  
                 mainView.setSystemUiVisibility(View.INVISIBLE); 
             }  
-  
         }  
         
   
         public void onHideCustomView() {  
+        	
             mContentView.setVisibility(View.VISIBLE);  
             
             if (mCustomView == null) {  
@@ -306,7 +316,21 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
   
             setRequestedOrientation(mOriginalOrientation);  
             mainView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            super.onHideCustomView();
         }  
+        
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress == 100) {
+                bar.setVisibility(View.GONE);
+            } else {
+                if (View.INVISIBLE == bar.getVisibility()) {
+                    bar.setVisibility(View.VISIBLE);
+                }
+                bar.setProgress(newProgress);
+            }
+            super.onProgressChanged(view, newProgress);
+        }
   
     }  
   
@@ -317,7 +341,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
             // TODO Auto-generated method stub  
             view.loadUrl(url);  
             return super.shouldOverrideUrlLoading(view, url);  
-        }  
+        } 
   
     }
     

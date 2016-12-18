@@ -66,17 +66,19 @@
 	            android:id="@+id/layout7"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="8dip"
+		        android:layout_marginTop="13dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg7"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="18dip"
+		            android:layout_height="18dip"
+		            android:layout_marginLeft="10dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/youhui"
+		            android:src="@drawable/youhui1"
+		            android:layout_centerVertical="true"
 		            />
 		        <TextView 
 		            android:id="@+id/avname7"
@@ -84,28 +86,39 @@
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
 		            android:layout_toRightOf="@+id/avimg7"
-		            android:paddingLeft="10dip"
+		            android:paddingLeft="14dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="超实惠"
 		            />
-		        
+		        <ImageView 
+		           android:id="@+id/right"
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
 		    </RelativeLayout>
 		    <RelativeLayout 
 	            android:id="@+id/layout4"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="3dip"
+		        android:layout_marginTop="20dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg4"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="18dip"
+		            android:layout_height="18dip"
+		            android:layout_marginLeft="10dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/cai"
+		            android:src="@drawable/cai1"
+		            android:layout_centerVertical="true"
 		            />
 		        <TextView 
 		            android:id="@+id/avname4"
@@ -113,7 +126,7 @@
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
 		            android:layout_toRightOf="@+id/avimg4"
-		            android:paddingLeft="10dip"
+		            android:paddingLeft="14dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="猜一猜"
@@ -123,29 +136,40 @@
 	                android:layout_width="10dp"
 	                android:layout_height="10dp"
 	                android:layout_marginTop="0dp"
-	                android:layout_marginLeft="30dp"
+	                android:layout_marginLeft="20dp"
 	                android:background="@drawable/design_red_point"
 	                android:gravity="center"
 	                android:text=""
 	                android:textColor="@android:color/white"
 	                android:textSize="13dip"
 	                android:visibility="gone" />
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
 		    </RelativeLayout>
 		    <RelativeLayout 
 	            android:id="@+id/layout8"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="3dip"
+		        android:layout_marginTop="0dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg8"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="22dip"
+		            android:layout_height="22dip"
+		            android:layout_marginLeft="10dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/guaguale"
+		            android:src="@drawable/guaguale1"
+		            android:layout_centerVertical="true"
 		            />
 		        <TextView 
 		            android:id="@+id/avname8"
@@ -158,23 +182,33 @@
 		            android:textSize="18dip"
 		            android:text="刮刮乐"
 		            />
-		        
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
 		    </RelativeLayout>
 		    <RelativeLayout 
 	            android:id="@+id/layout2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="8dip"
+		        android:layout_marginTop="20dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg2"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="24dip"
+		            android:layout_height="24dip"
+		            android:layout_marginLeft="10dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/nys"
+		            android:src="@drawable/nys1"
+		            android:layout_centerVertical="true"
 		            />
 		        <TextView 
 		            android:id="@+id/avname2"
@@ -182,28 +216,38 @@
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
 		            android:layout_toRightOf="@+id/avimg2"
-		            android:paddingLeft="10dip"
+		            android:paddingLeft="8dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="专家和农技达人"
 		            />
-		        
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
 		    </RelativeLayout>
 		    <RelativeLayout 
 	            android:id="@+id/layout1"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="3dip"
+		        android:layout_marginTop="0dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg1"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="24dip"
+		            android:layout_height="24dip"
+		            android:layout_marginLeft="10dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/store"
+		            android:src="@drawable/store1"
+		            android:layout_centerVertical="true"
 		            />
 		        <TextView 
 		            android:id="@+id/avname1"
@@ -211,29 +255,39 @@
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
 		            android:layout_toRightOf="@+id/avimg1"
-		            android:paddingLeft="10dip"
+		            android:paddingLeft="8dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="附近的服务"
 		            />
-		        
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
 		    </RelativeLayout>
 		    
 		    <RelativeLayout 
 	            android:id="@+id/layout9"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="8dip"
+		        android:layout_marginTop="20dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg9"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="24dip"
+		            android:layout_height="24dip"
+		            android:layout_marginLeft="10dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/ktsb"
+		            android:src="@drawable/ktsb1"
+		            android:layout_centerVertical="true"
 		            />
 		        <TextView 
 		            android:id="@+id/avname9"
@@ -245,23 +299,34 @@
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="看图识病"
-		            />		        
+		            />
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />		        
 		    </RelativeLayout>		    
 		    <RelativeLayout 
 	            android:id="@+id/layout6"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="3dip"
+		        android:layout_marginTop="0dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"
 		        >
 		        <ImageView 
 		            android:id="@+id/avimg6"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
+		            android:layout_width="20dip"
+		            android:layout_height="20dip"
+		            android:layout_marginLeft="10dip"
 		            android:scaleType="fitXY"
-		            android:src="@drawable/scorestore"
+		            android:src="@drawable/storestore1"
+		            android:layout_centerVertical="true"
 		            />
 		        <TextView 
 		            android:id="@+id/avname6"
@@ -269,7 +334,7 @@
 		            android:layout_height="40dip"
 		            android:gravity="center_vertical"
 		            android:layout_toRightOf="@+id/avimg6"
-		            android:paddingLeft="10dip"
+		            android:paddingLeft="14dip"
 		            android:textColor="#444444"
 		            android:textSize="18dip"
 		            android:text="积分商城"
@@ -279,12 +344,21 @@
 		            android:layout_width="match_parent"
 		            android:layout_height="wrap_content"
 		            android:layout_centerVertical="true"
-		            android:paddingRight="10dip"
+		            android:paddingRight="50dip"
 		            android:layout_toRightOf="@+id/avname6"
 		            android:gravity="right"
 		            android:text=""
 		            android:textSize="14dip"
 		            android:textColor="#38be99" />
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
 		        
 		    </RelativeLayout>
 	       </LinearLayout>

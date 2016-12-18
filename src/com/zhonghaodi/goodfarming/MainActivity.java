@@ -92,6 +92,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -100,18 +101,22 @@ import android.widget.TextView;
 public class MainActivity extends Activity implements OnClickListener,
 		EMEventListener,ShareContainer {
 	private HomeFragment homeFragment;
+	private FineFragment fineFragment;
 	private ForumFragment forumFragment;
 	private DiscoverFragment discoverFragment;
 	private MeFragment meFragment;
 	private ImageView homeIv;	
+	private ImageView fineIv;
 	private ImageView forumIv;
 	private ImageView discoverIv;
 	private ImageView meIv;
 	private TextView homeTv;
+	private TextView fineTv;
 	private TextView forumTv;
 	private TextView discoverTv;
 	private TextView meTv;
 	private View homeView;	
+	private View fineView;
 	private View forumView;
 	private View discoverView;
 	private View meView;
@@ -126,7 +131,6 @@ public class MainActivity extends Activity implements OnClickListener,
 	private TextView proTextView1;
 	private TextView proTextView2;
 	private long lastClick;
-	private User user;
 	public IWXAPI wxApi;
 	public Tencent mTencent;
 	private Question shareQue;
@@ -134,24 +138,34 @@ public class MainActivity extends Activity implements OnClickListener,
 	private BroadcastReceiver receiver;
 	private IntentFilter filter;
 	private TextView ndsText;
+	
+	public ArrayList<Question> allQuestions;
+	public ArrayList<Question> fineQuestions;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		allQuestions = new ArrayList<Question>();
+		fineQuestions = new ArrayList<Question>();
 		homeView = findViewById(R.id.home_layout);
+		fineView = findViewById(R.id.fine_layout);
 		forumView = findViewById(R.id.forum_layout);
 		discoverView = findViewById(R.id.discover_layout);
 		meView = findViewById(R.id.me_layout);
 		homeIv = (ImageView) findViewById(R.id.home_image);
+		fineIv = (ImageView)findViewById(R.id.fine_image);
 		forumIv = (ImageView)findViewById(R.id.forum_image);
 		discoverIv = (ImageView) findViewById(R.id.discover_image);
 		meIv = (ImageView) findViewById(R.id.me_image);
 		homeTv = (TextView) findViewById(R.id.home_text);
+		fineTv = (TextView)findViewById(R.id.fine_text);
 		forumTv = (TextView)findViewById(R.id.forum_text);
 		discoverTv = (TextView) findViewById(R.id.discover_text);
 		meTv = (TextView) findViewById(R.id.me_text);
 		ndsText = (TextView)findViewById(R.id.ndes_text);
 		homeView.setOnClickListener(this);
+		fineView.setOnClickListener(this);
 		forumView.setOnClickListener(this);
 		discoverView.setOnClickListener(this);
 		meView.setOnClickListener(this);
@@ -220,9 +234,26 @@ public class MainActivity extends Activity implements OnClickListener,
 				loginit1.putExtra("index", 1);
 		        this.startActivity(loginit1);  
 
-			}
-			
+			}			
 		}
+		String userid = GFUserDictionary.getUserId(this);
+		if(!TextUtils.isEmpty(userid)){
+			loadUser(userid);
+		}
+	}
+	
+	public void loadUser(final String uid) {
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String jsonString = HttpUtil.getUser(uid);
+				Message msg = handler.obtainMessage();
+				msg.what=8;
+				msg.obj = jsonString;
+				msg.sendToTarget();
+			}
+		}).start();
 	}
 
 	
@@ -249,7 +280,6 @@ public class MainActivity extends Activity implements OnClickListener,
 										MainActivity.this,
 										new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage });
 						EMChat.getInstance().setAppInited();
-//						forumFragment.loadData();
 						isLogin = true;
 					}
 
@@ -489,6 +519,10 @@ public class MainActivity extends Activity implements OnClickListener,
 			homeFragment = new HomeFragment();
 			homeFragment.setShareContainer(this);
 		}
+		if (fineFragment == null) {
+			fineFragment = new FineFragment();
+			fineFragment.setShareContainer(this);
+		}
 		if (forumFragment == null) {
 			forumFragment = new ForumFragment();
 		}
@@ -499,15 +533,18 @@ public class MainActivity extends Activity implements OnClickListener,
 			meFragment = new MeFragment();
 			meFragment.setShareContainer(this);
 		}
-		// transction.hide(homeFragment);
-		// transction.hide(forumFragment);
-		// transction.hide(discoverFragment);
-		// transction.hide(meFragment);
+		
+//		 transction.hide(homeFragment);
+//		 transction.hide(forumFragment);
+//		 transction.hide(discoverFragment);
+//		 transction.hide(meFragment);
 		homeIv.setImageResource(R.drawable.home);
+		fineIv.setImageResource(R.drawable.fine);
 		forumIv.setImageResource(R.drawable.tian);
 		discoverIv.setImageResource(R.drawable.discover);
 		meIv.setImageResource(R.drawable.me);
 		homeTv.setTextColor(Color.rgb(128, 128, 128));
+		fineTv.setTextColor(Color.rgb(128, 128, 128));
 		forumTv.setTextColor(Color.rgb(128, 128, 128));
 		discoverTv.setTextColor(Color.rgb(128, 128, 128));
 		meTv.setTextColor(Color.rgb(128, 128, 128));
@@ -523,6 +560,15 @@ public class MainActivity extends Activity implements OnClickListener,
 			homeTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 1:
+			if (fineFragment == null) {
+				fineFragment = new FineFragment();
+				fineFragment.setShareContainer(this);
+			}
+			transction.replace(R.id.content, fineFragment);
+			fineIv.setImageResource(R.drawable.fine_s);
+			fineTv.setTextColor(Color.rgb(12, 179, 136));
+			break;
+		case 2:
 			if (forumFragment == null) {
 				forumFragment = new ForumFragment();
 			}
@@ -530,7 +576,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			forumIv.setImageResource(R.drawable.tian_s);
 			forumTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
-		case 2:
+		case 3:
 			if (discoverFragment == null) {
 				discoverFragment = new DiscoverFragment();
 			}
@@ -538,7 +584,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			discoverIv.setImageResource(R.drawable.discover_s);
 			discoverTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
-		case 3:
+		case 4:
 			if (meFragment == null) {
 				meFragment = new MeFragment();
 				meFragment.setShareContainer(this);
@@ -561,7 +607,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	@Override
 	public void popupShareWindow(User user) {
 		// TODO Auto-generated method stub
-		this.user = user;
+		
 		UILApplication.sharestatus = 0;
 		sharePopupwindow = new SharePopupwindow(this,this);
     	sharePopupwindow.setFocusable(true);
@@ -671,6 +717,14 @@ public class MainActivity extends Activity implements OnClickListener,
 		
 		shareCirclefriends(url, content, content, bitmap);
 	}
+	
+	public boolean preChangeStatus(){
+		if(System.currentTimeMillis() - lastClick > 1000)
+			return true;
+		else {
+			return false;
+		}
+	}
 
 	/**
 	 * 点击事件
@@ -679,7 +733,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		//大于一秒方个通过  
-        if (System.currentTimeMillis() - lastClick <= 1000)  
+        if (!preChangeStatus())  
         {  
             return;  
         }  
@@ -688,8 +742,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			seletFragmentIndex(0);
 			
 		}
-		if (v == forumView && pageIndex != 1) {
-			
+		if (v == fineView && pageIndex != 1) {
 			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
 				Intent it = new Intent();
 				it.setClass(this, LoginActivity.class);
@@ -697,20 +750,31 @@ public class MainActivity extends Activity implements OnClickListener,
 				return;
 			}
 			seletFragmentIndex(1);
-		}
-		if (v == discoverView && pageIndex != 2) {
-
-			seletFragmentIndex(2);
 			
 		}
-		if (v == meView && pageIndex != 3) {
+		if (v == forumView && pageIndex != 2) {
+			
 			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
 				Intent it = new Intent();
 				it.setClass(this, LoginActivity.class);
 				startActivityForResult(it, 0);
 				return;
 			}
+			seletFragmentIndex(2);
+		}
+		if (v == discoverView && pageIndex != 3) {
+
 			seletFragmentIndex(3);
+			
+		}
+		if (v == meView && pageIndex != 4) {
+			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
+				Intent it = new Intent();
+				it.setClass(this, LoginActivity.class);
+				startActivityForResult(it, 0);
+				return;
+			}
+			seletFragmentIndex(4);
 		}
 		
 		switch (v.getId()) {
@@ -720,7 +784,7 @@ public class MainActivity extends Activity implements OnClickListener,
 				return;
 			}
 			if(UILApplication.sharestatus==0){
-				shareWeixin(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(), "种好地APP:让种地不再难",
+				shareWeixin(HttpUtil.ViewUrl+"appshare?code="+UILApplication.user.getTjCode(), "种好地APP:让种地不再难",
 						"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
 						BitmapFactory.decodeResource(this.getResources(), R.drawable.app108));
 			}
@@ -764,7 +828,7 @@ public class MainActivity extends Activity implements OnClickListener,
 				return;
 			}
 			if(UILApplication.sharestatus==0){
-				shareCirclefriends(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(), 
+				shareCirclefriends(HttpUtil.ViewUrl+"appshare?code="+UILApplication.user.getTjCode(), 
 						"种好地APP:让种地不再难", 
 						"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
 						BitmapFactory.decodeResource(this.getResources(), R.drawable.app108));
@@ -796,7 +860,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.img_share_qq:
 			if(UILApplication.sharestatus==0){
-				shareQQ(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(),
+				shareQQ(HttpUtil.ViewUrl+"appshare?code="+UILApplication.user.getTjCode(),
 			    		"种好地APP:让种地不再难", 
 			    		"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
 			    		"http://121.40.62.120/appimage/apps/appicon.png");
@@ -835,7 +899,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_3_1440519318/550");
 			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_4_1440519318/550");
 			    urlsList.add("http://pp.myapp.com/ma_pic2/0/shot_12109155_5_1440519318/550");
-			    shareQZone(HttpUtil.ViewUrl+"appshare?code="+user.getTjCode(), 
+			    shareQZone(HttpUtil.ViewUrl+"appshare?code="+UILApplication.user.getTjCode(), 
 			    		"种好地APP:让种地不再难", 
 			    		"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
 			    		urlsList,null);
@@ -937,12 +1001,12 @@ public class MainActivity extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode==3) {
-			seletFragmentIndex(3);
+			seletFragmentIndex(4);
 			initEm();
 			
 		}
 		if(resultCode==4){
-			seletFragmentIndex(3);
+			seletFragmentIndex(4);
 			initEm();
 			
 			Intent it1 = new Intent(this,
@@ -956,7 +1020,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		if(resultCode == RESULT_OK){
 			if(requestCode==100){
 				ArrayList<Crop> selectCrops = data.getParcelableArrayListExtra("crops");
-				meFragment.getUser().setCrops(null);
+				UILApplication.user.setCrops(null);
 				if (selectCrops!=null&&selectCrops.size()>0) {
 					String cropString = "";
 					List<UserCrop> userCrops = new ArrayList<UserCrop>();
@@ -966,9 +1030,9 @@ public class MainActivity extends Activity implements OnClickListener,
 						userCrop.setCrop(c);
 						userCrops.add(userCrop);
 					}
-					meFragment.getUser().setCrops(userCrops);
+					UILApplication.user.setCrops(userCrops);
 				}
-				updateCrops(meFragment.getUser());
+				updateCrops(UILApplication.user);
 			}
 			else if(requestCode==PublicHelper.CITY_REQUEST_CODE){
 				//切换区域后设置标题，重新读取问题
@@ -1391,6 +1455,12 @@ public class MainActivity extends Activity implements OnClickListener,
 				break;
 			case 7:
 				activity.homeFragment.setUnreadMessageCount();
+				break;
+			case 8:
+				if(msg.obj!=null){
+					UILApplication.user = (User) GsonUtil.fromJson(msg.obj.toString(), User.class);
+				}
+				
 				break;
 			default:
 				break;

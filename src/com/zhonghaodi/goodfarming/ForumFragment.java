@@ -1,19 +1,10 @@
 package com.zhonghaodi.goodfarming;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMConversation;
-import com.easemob.chat.EMMessage;
-import com.easemob.chat.EMMessage.Type;
-import com.easemob.chat.TextMessageBody;
-import com.easemob.exceptions.EaseMobException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -22,28 +13,18 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.customui.HoldMessage;
-import com.zhonghaodi.customui.Holder1;
-import com.zhonghaodi.customui.Holder2;
-import com.zhonghaodi.customui.Holder3;
-import com.zhonghaodi.customui.HolderResponse;
 import com.zhonghaodi.model.Agrotechnical;
 import com.zhonghaodi.model.Category_disease;
 import com.zhonghaodi.model.ComparatorSort;
-import com.zhonghaodi.model.Disease;
 import com.zhonghaodi.model.GFAreaUtil;
-import com.zhonghaodi.model.GFMessage;
-import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.User;
-import com.zhonghaodi.networking.GFDate;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 
-import android.R.integer;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
@@ -77,6 +58,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	private GFHandler<ForumFragment> handler = new GFHandler<ForumFragment>(this);
 	private int categoryid=1;
 	private int zone=0;
+	private CustomProgressDialog progressDialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,6 +67,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 		View view = inflater.inflate(R.layout.fragment_forum, container,
 				false);
 		tabLayout = (LinearLayout)view.findViewById(R.id.tabhost);
+		progressDialog = new CustomProgressDialog(getActivity(), "请稍后...");
 		pullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
 		
 		pullToRefreshListView.setOnItemClickListener(new OnItemClickListener() {
@@ -145,6 +128,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	}
 
 	public void loadCategory(){
+		progressDialog.show();
 		new Thread(new Runnable() {
 			
 			@Override
@@ -344,14 +328,19 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		selectTextView(v);
+		progressDialog.show();
 		loadData();
 	}
 
 	@Override
 	public void handleMessage(Message msg, Object object) {
 		// TODO Auto-generated method stub
+		if(getActivity()==null){
+			return;
+		}
 		switch (msg.what) {
 		case 0:
+			progressDialog.dismiss();
 		case 1:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
@@ -365,6 +354,9 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 					agrotechnicals.add(agrotechnical);
 				}
 				adapter.notifyDataSetChanged();
+				if (msg.what == 0) {
+					pullToRefreshListView.getRefreshableView().setSelection(0);
+				}
 				
 			} else {
 				GFToast.show(getActivity().getApplicationContext(),"连接服务器失败,请稍候再试!");
@@ -372,6 +364,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			pullToRefreshListView.onRefreshComplete();
 			break;
 		case 2:
+			
 			if(msg.obj!=null){
 				Gson gson = new Gson();
 				categorys = gson.fromJson(msg.obj.toString(),
@@ -379,6 +372,9 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 						}.getType());
 				createTabViews();
 				loadData();
+			}
+			else{
+				progressDialog.dismiss();
 			}
 			
 			break;

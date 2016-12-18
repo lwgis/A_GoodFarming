@@ -14,17 +14,18 @@
 
         <ImageView
             android:id="@+id/left_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:layout_gravity="center_vertical" />
 
         <TextView
             android:id="@+id/title_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="功能"
@@ -41,12 +42,13 @@
 
         <ImageView
             android:id="@+id/right_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="15dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/arrow" />
+            android:src="@drawable/rightarrow" />
     </LinearLayout>
 
 </LinearLayout>
