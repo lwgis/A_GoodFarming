@@ -1,6 +1,7 @@
 package com.zhonghaodi.goodfarming;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,10 +57,9 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 	private  final int TypeImage = 2;
 	private  final int TypeNoImage = 3;
 	private  final int TypeError = -1;
-//	private SelectCropFragment selectCropFragment = null;
 	private CreadPlantFragment createPlantFragment = null;
 	private MyTextButton sendBtn;
-	private ArrayList<NetImage> netImages;
+	private NetImage[] netImages;
 	private GFHandler<CreatePlantActivity> handler = new GFHandler<CreatePlantActivity>(this);
 	private ExecutorService executorService = Executors.newFixedThreadPool(4);
 	private int imageCount;
@@ -89,7 +89,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 		super.setContentView(R.layout.activity_create_question);
 		titleTv = (TextView) findViewById(R.id.title_text);
 		isSending = false;
-		netImages = new ArrayList<NetImage>();
+//		netImages = new ArrayList<NetImage>();
 		Button cancelButton = (Button) findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(new OnClickListener() {
 
@@ -104,7 +104,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 			public void onClick(View v) {
 				isSending = true;
 				sendBtn.setEnabled(false);
-				netImages = new ArrayList<NetImage>();
+				netImages = new NetImage[createPlantFragment.getProjectImages().size()];
 				if (createPlantFragment.getProjectImages()!=null&&createPlantFragment.getProjectImages().size()>0) {
 					imageCount = 0;
 					for (int i = 0; i <createPlantFragment.getProjectImages()
@@ -127,7 +127,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 									}
 									NetImage netImage = new NetImage();
 									netImage.setUrl(imageName.trim());
-									netImages.add(netImage);
+									netImages[index] = netImage;
 									Message msg = handler.obtainMessage();
 									msg.what = TypeImage;
 									msg.obj = imageName.trim();
@@ -152,7 +152,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				finish();
 			}
 		});
-		int aid = GFAreaUtil.getCityId(this);
+		int aid = GFAreaUtil.getCity(this);
 		if(aid!=0){
 			area = new City();
 			area.setId(aid);
@@ -182,31 +182,16 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 	public void showFragment(int index) {
 		FragmentTransaction transation = this.getFragmentManager()
 				.beginTransaction();
-//		if (selectCropFragment == null) {
-//			selectCropFragment = new SelectCropFragment();
-////			transation.add(R.id.content_view, selectCropFragment);
-//		}
+
 		if (createPlantFragment == null) {
 			createPlantFragment = new CreadPlantFragment();
-//			transation.add(R.id.content_view, createPlantFragment);
 		}
 		switch (index) {
-//		case 0:
-//			if (selectCropFragment == null) {
-//				selectCropFragment = new SelectCropFragment();
-//			}
-//			transation.replace(R.id.content_view, selectCropFragment);
-//			setTitle("选择农作物种类");
-//			break;
 		case 1:
 			if (createPlantFragment == null) {
 				createPlantFragment = new CreadPlantFragment();
 			}
 			transation.replace(R.id.content_view, createPlantFragment);
-//			transation.setCustomAnimations(R.anim.fragment_rightin,
-//					R.anim.fragment_fadeout);
-//			transation.show(createPlantFragment);
-//			transation.hide(selectCropFragment);
 			break;
 		default:
 			break;
@@ -321,6 +306,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				isshare = createPlantFragment.getcheck();
 				String content = PublicHelper.TrimRight(createPlantFragment.getContent());
 				question.setContent(content);
+				question.setDeal(createPlantFragment.getDeal());
 				User writer = new User();
 				writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 				question.setWriter(writer);
@@ -328,8 +314,9 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 				Crop crop = new Crop();
 				crop.setId(9);
 				//设置分享类别
-				Crop crop2 = new Crop();
-				crop2.setId(1000);
+				Crop crop2 = (Crop)createPlantFragment.getCropTextView().getTag();
+//				Object obj = createPlantFragment.getCropTextView().getTag();
+//				crop2.setId(obj.);
 				question.setCate(crop2);					
 				//设置作物类别
 				question.setCrop(crop);
@@ -337,7 +324,7 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 					question.setZone(area.getId());
 				}
 				question.setInform("0");
-				question.setAttachments(netImages);
+				question.setAttachments(Arrays.asList(netImages));
 				if(x>=73&&x<=136){
 					question.setX(x);
 				}
@@ -369,14 +356,16 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 			question = new Question();
 			String content = PublicHelper.TrimRight(createPlantFragment.getContent());
 			question.setContent(content);
+			question.setDeal(createPlantFragment.getDeal());
 			User writer = new User();
 			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			question.setWriter(writer);
 			Crop crop = new Crop();
 			crop.setId(9);
 			//设置分享类别
-			Crop crop2 = new Crop();
-			crop2.setId(1000);
+			Crop crop2 = (Crop)createPlantFragment.getCropTextView().getTag();
+//			Crop crop2 = new Crop();
+//			crop2.setId(1000);
 			question.setCate(crop2);					
 			//设置作物类别
 			question.setCrop(crop);

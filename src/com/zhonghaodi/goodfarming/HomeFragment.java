@@ -1,12 +1,9 @@
 package com.zhonghaodi.goodfarming;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
@@ -14,33 +11,28 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.QuestionAdpter;
 import com.zhonghaodi.api.DiseaseListView;
-import com.zhonghaodi.api.ContentListView;
+import com.zhonghaodi.api.FairListView;
 import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.DiseasePopupWindow;
 import com.zhonghaodi.customui.DpTransform;
+import com.zhonghaodi.customui.FairPopupWindow;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.customui.ContentPopupWindow;
-import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
-import com.zhonghaodi.model.NetResponse;
-import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.SpinnerDto;
 import com.zhonghaodi.model.User;
-import com.zhonghaodi.networking.GFHandler;
-import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.req.FrmHomeReq;
 import com.zhonghaodi.utils.PublicHelper;
-import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.view.FrmHomeView;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -58,12 +50,11 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-public class HomeFragment extends Fragment implements HandMessage,
-			OnClickListener,OnCreateContextMenuListener,DiseaseListView {
+public class HomeFragment extends Fragment implements FrmHomeView,
+			OnClickListener,OnCreateContextMenuListener,DiseaseListView,FairListView {
 	private PullToRefreshListView pullToRefreshListView;
 	
 	private QuestionAdpter adapter;
-	private GFHandler<HomeFragment> handler = new GFHandler<HomeFragment>(this);
 	private TextView titleView;
 	private TextView diseaseTextView;
 	private TextView plantTextView;
@@ -74,9 +65,9 @@ public class HomeFragment extends Fragment implements HandMessage,
 	private PopupWindow popupWindow;
 	private View popView;
 	private DiseasePopupWindow diseasePopupWindow;
+	private FairPopupWindow fairPopupWindow;
 	private ShareContainer shareContainer;
-	private City area1;
-	private String zonestr;
+	private FrmHomeReq req;
 	
 
 	public ShareContainer getShareContainer() {
@@ -92,6 +83,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
+		req = new FrmHomeReq(this, getActivity());
 		ImageView questionButton = (ImageView) view
 				.findViewById(R.id.question_button);
 		questionButton.setOnClickListener(this);
@@ -121,7 +113,6 @@ public class HomeFragment extends Fragment implements HandMessage,
 		messageView = view.findViewById(R.id.message_layout);
 		messageView.setOnClickListener(this);
 		countTv = (TextView) view.findViewById(R.id.count_text);
-		
 		pullToRefreshListView = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
@@ -132,12 +123,12 @@ public class HomeFragment extends Fragment implements HandMessage,
 					public void onPullDownToRefresh(
 							PullToRefreshBase<ListView> refreshView) {
 						if(UILApplication.displayStatus==0)
-							loadNewQuestion();
+							req.loadNewQuestion();
 						else if(UILApplication.displayStatus==1){
-							loadNewGossips();
+							req.loadNewGossips();
 						}
 						else if(UILApplication.displayStatus==2){
-							loadNewPlant();
+							req.loadNewPlant(UILApplication.fairStatus);
 						}
 					}
 
@@ -149,12 +140,12 @@ public class HomeFragment extends Fragment implements HandMessage,
 						}
 						Question question = getAllQuestions().get(getAllQuestions().size() - 1);
 						if(UILApplication.displayStatus==0)
-							loadMoreQuestion(question.getId());
+							req.loadMoreQuestion(question.getId());
 						else if(UILApplication.displayStatus==1){
-							loadMoreGossips(question.getId());
+							req.loadMoreGossips(question.getId());
 						}
 						else if(UILApplication.displayStatus==2){
-							loadMorePlant(question.getId());
+							req.loadMorePlant(question.getId(),UILApplication.fairStatus);
 						}
 					}
 
@@ -171,25 +162,18 @@ public class HomeFragment extends Fragment implements HandMessage,
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
-						if (GFUserDictionary.getUserId(getActivity().getApplicationContext()) != null){
-							Intent it = new Intent(getActivity(),
-									QuestionActivity.class);
-							it.putExtra("questionId", getAllQuestions().get(position - 1).getId());
-							if(UILApplication.displayStatus==1 || UILApplication.displayStatus==2){
-								it.putExtra("status", UILApplication.displayStatus);
-							}
-							getActivity().startActivity(it);
+						Intent it = new Intent(getActivity(),
+								QuestionActivity.class);
+						it.putExtra("questionId", getAllQuestions().get(position - 1).getId());
+						if(UILApplication.displayStatus==1 || UILApplication.displayStatus==2){
+							it.putExtra("status", UILApplication.displayStatus);
 						}
-						else{
-							Intent it = new Intent(getActivity(),
-									LoginActivity.class);
-							getActivity().startActivity(it);
-						}
-						
+						getActivity().startActivity(it);
 					}
 				});
 		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
 		diseasePopupWindow = new DiseasePopupWindow(this, UILApplication.diseaseStatus, getActivity());
+		fairPopupWindow = new FairPopupWindow(this, UILApplication.fairStatus, getActivity(),1);
 		return view;
 	}
 	
@@ -245,7 +229,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				dialog.dismiss();
-				delete(selectQuestion.getId());
+				req.delete(selectQuestion.getId());
 			}
 		});
         Button cancelButton = (Button)layout.findViewById(R.id.dialog_button_cancel);
@@ -290,39 +274,64 @@ public class HomeFragment extends Fragment implements HandMessage,
 		}
 		UILApplication.diseaseStatus = spinnerDto.getId();
 		diseaseTextView.setText(spinnerDto.getName());		
-		loadNewQuestion();		
+		req.loadNewQuestion();		
+	}
+	
+	@Override
+	public void changePlantStatus(SpinnerDto spinnerDto) {
+		// TODO Auto-generated method stub
+		if(spinnerDto.getId()==-1){
+			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
+				Intent intent2 = new Intent();
+				intent2.setClass(getActivity(), LoginActivity.class);
+				getActivity().startActivity(intent2);
+				
+			}
+			else{
+				Intent sfIntent = new Intent(getActivity(),SearchFairActivity.class);
+				getActivity().startActivity(sfIntent);
+			}
+			return;
+		}
+		if(spinnerDto.getId()==0){
+			UILApplication.fairStatus = 0;
+		}
+		else{
+			UILApplication.fairStatus=spinnerDto.getId();
+		}
+		req.loadNewPlant(UILApplication.fairStatus);
 	}
 	
 	
 	public void resetArea(){
-		zonestr="";
+		req.zonestr="";
 		int cityid = GFAreaUtil.getCity(getActivity());
 		String name = GFAreaUtil.getCityName(getActivity());
 		if(cityid!=0){
-			zonestr+=cityid;
+			req.zonestr+=cityid;
 			
 		}
 		if(!TextUtils.isEmpty(name)){
 			titleView.setText(name);
 		}
 		if(UILApplication.displayStatus==1){
-			loadNewGossips();
+			req.loadNewGossips();
 		}	
 	}
 	
 	public void initArea(){
-		zonestr="";
+		req.zonestr="";
 		int cityid = GFAreaUtil.getCity(getActivity());
 		String name = GFAreaUtil.getCityName(getActivity());
 		if(cityid!=0){
-			zonestr+=cityid;
+			req.zonestr+=cityid;
 		}
 		if(!TextUtils.isEmpty(name)){
 			titleView.setText(name);
 		}
 		if(UILApplication.displayStatus==0){
 			if(getAllQuestions().size()==0){
-				loadNewQuestion();
+				req.loadNewQuestion();
 			}
 			selectTextView(diseaseTextView);
 			if(UILApplication.diseaseStatus==0){
@@ -334,14 +343,14 @@ public class HomeFragment extends Fragment implements HandMessage,
 		}			
 		else if(UILApplication.displayStatus==1){
 			if(getAllQuestions().size()==0){
-				loadNewGossips();
+				req.loadNewGossips();
 			}
 			
 			selectTextView(gossipTextView);
 		}
 		else if(UILApplication.displayStatus==2){
 			if(getAllQuestions().size()==0){
-				loadNewPlant();
+				req.loadNewPlant(UILApplication.fairStatus);
 			}
 			
 			selectTextView(plantTextView);
@@ -349,141 +358,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 
 	}
 
-	public void loadNewQuestion() {
-		if(UILApplication.diseaseStatus==0){
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					String jsonString;
-					jsonString = HttpUtil.getQuestionsString("");
-					Message msg = handler.obtainMessage();
-					msg.what = 0;
-					msg.obj = jsonString;
-					msg.sendToTarget();
-				}
-			}).start();
-		}
-		else{
-			
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					String jsonString;
-					int zone=0;
-					if(area1!=null){
-						zone = area1.getId();
-					}
-					String uid = GFUserDictionary.getUserId(getActivity());
-					jsonString = HttpUtil.getAscQuestionsString(uid,zone);
-					Message msg = handler.obtainMessage();
-					msg.what = 0;
-					msg.obj = jsonString;
-					msg.sendToTarget();
-				}
-			}).start();
-		}
-		
-	}
-
-	private void loadMoreQuestion(final int qid) {
-		if(UILApplication.diseaseStatus==0){
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					String jsonString;
-					int zone=0;
-					if(area1!=null){
-						zone = area1.getId();
-					}
-					jsonString = HttpUtil.getQuestionsString(qid,"");
-					Message msg = handler.obtainMessage();
-					msg.what = 1;
-					msg.obj = jsonString;
-					msg.sendToTarget();
-				}
-			}).start();
-		}
-		else{
-			
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					String jsonString;
-					int zone=0;
-					if(area1!=null){
-						zone = area1.getId();
-					}
-					String uid = GFUserDictionary.getUserId(getActivity());
-					jsonString = HttpUtil.getAscQuestionsString(uid,qid,zone);
-					Message msg = handler.obtainMessage();
-					msg.what = 1;
-					msg.obj = jsonString;
-					msg.sendToTarget();
-				}
-			}).start();
-		}
-	}
-
-	private void loadNewGossips() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				
-				String jsonString = HttpUtil.getGossipsString(zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
-
-	private void loadMoreGossips(final int qid) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				
-				String jsonString = HttpUtil.getGossipsString(qid,zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
 	
-	private void loadNewPlant() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				int zone=0;
-				String jsonString = HttpUtil.getPlant(zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
-
-	private void loadMorePlant(final int qid) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int zone=0;
-				String jsonString = HttpUtil.getMorePlant(qid,zonestr);
-				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
 	
 	/**
 	 * 显示未读信息数
@@ -521,36 +396,13 @@ public class HomeFragment extends Fragment implements HandMessage,
 		}
 	}
 	
-	private void delete(final int qid){
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				String jsonString;
-				if(UILApplication.displayStatus==0){
-					jsonString = HttpUtil.deleteQuestion(qid);
-				}
-				else if(UILApplication.displayStatus==1){
-					jsonString = HttpUtil.deleteGossip(qid);
-				}
-				else{
-					jsonString = HttpUtil.deletePlant(qid);
-				}
-				Message msg = handler.obtainMessage();
-				msg.what = 3;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
+	
 	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.title_txt:
-//			Intent cityIntent = new Intent(getActivity(), CityActivity.class);
-//			getActivity().startActivityForResult(cityIntent, PublicHelper.CITY_REQUEST_CODE);
 			Intent cityIntent = new Intent(getActivity(), ProvinceActivity.class);
 			getActivity().startActivityForResult(cityIntent, PublicHelper.CITY_REQUEST_CODE);
 			break;
@@ -578,7 +430,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 		case R.id.disease_text:
 			if(UILApplication.displayStatus!=0){
 				selectTextView(v);
-				loadNewQuestion();
+				req.loadNewQuestion();
 				UILApplication.displayStatus = 0;
 			}
 			else{
@@ -594,31 +446,28 @@ public class HomeFragment extends Fragment implements HandMessage,
 		case R.id.gossip_text:
 			if(UILApplication.displayStatus!=1){
 				String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
-				if(uid==null){
-					Intent intent = new Intent(getActivity(),LoginActivity.class);
-					getActivity().startActivity(intent);
-				}
-				else{
-					selectTextView(v);
-					loadNewGossips();					
-					UILApplication.displayStatus = 1;
-				}
+				selectTextView(v);
+				req.loadNewGossips();					
+				UILApplication.displayStatus = 1;
 			}
 			break;
 		case R.id.plant_text:
 			if(UILApplication.displayStatus!=2){
 				String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
-				if(uid1==null){
-					Intent intent = new Intent(getActivity(),LoginActivity.class);
-					getActivity().startActivity(intent);
+				selectTextView(v);
+				req.loadNewPlant(UILApplication.fairStatus);
+				UILApplication.displayStatus = 2;
+			}
+			else{
+				if(fairPopupWindow.isShowing()){
+					fairPopupWindow.dismiss();
 				}
 				else{
-					selectTextView(v);
-					loadNewPlant();
-					UILApplication.displayStatus = 2;
+
+					fairPopupWindow.showAsDropDown((View)v.getParent(), 
+							0, 0);
 				}
 			}
-			
 			break;
 
 		case R.id.btn_question:
@@ -662,24 +511,7 @@ public class HomeFragment extends Fragment implements HandMessage,
 				GFToast.show(getActivity(),"不能给自己的分享点赞。");
 				return;
 			}
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					NetResponse netResponse=HttpUtil.agreePlant(selectQuestion.getId(),uid2);
-					Message msg = handler.obtainMessage();
-					if(netResponse.getStatus()==1){
-						msg.what = 9;
-						msg.obj = netResponse.getResult();
-					}
-					else{
-						msg.what = 0;
-						msg.obj = netResponse.getMessage();
-					}
-					msg.sendToTarget();
-				}
-			}).start();
+			req.dianZan(selectQuestion,uid2);
 			break;
 		case R.id.forward_layout:
 			
@@ -703,7 +535,6 @@ public class HomeFragment extends Fragment implements HandMessage,
 			}
 			
 			break;
-		
 		default:
 			break;
 		}
@@ -717,12 +548,13 @@ public class HomeFragment extends Fragment implements HandMessage,
 		diseaseTextView.setCompoundDrawables(null, null, drawable, null);
 		plantTextView.setTextColor(Color.rgb(128, 128, 128));
 		plantTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
+		plantTextView.setCompoundDrawables(null, null, drawable, null);
 		gossipTextView.setTextColor(Color.rgb(128, 128, 128));
 		gossipTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
 		
 		TextView selectTextView = (TextView)view;
 		selectTextView.setTextColor(Color.rgb(56, 190, 153));
-		if(selectTextView.getId()==R.id.disease_text){
+		if(selectTextView.getId()==R.id.disease_text || selectTextView.getId()==R.id.plant_text){
 			Drawable drawable1 = getResources().getDrawable(R.drawable.dropdown_s);
 			drawable1.setBounds(0, 0, PublicHelper.dip2px(getActivity(), 15), PublicHelper.dip2px(getActivity(), 15)); 
 			selectTextView.setCompoundDrawables(null, null, drawable1, null);
@@ -737,80 +569,54 @@ public class HomeFragment extends Fragment implements HandMessage,
 		return UILApplication.user;
 	}
 
-	@Override
-	public void handleMessage(Message msg,Object object) {
-			if(getActivity()==null){
-				return;
-			}
-			if(msg.what==0||msg.what==1){
-				if (msg.obj != null) {
-					Gson gson = new Gson();
-					List<Question> questions = gson.fromJson(msg.obj.toString(),
-							new TypeToken<List<Question>>() {
-							}.getType());
-					if (msg.what == 0) {
-						getAllQuestions().clear();
-					}
-
-					for (Question question : questions) {
-						if(question.getWriter()!=null){
-							getAllQuestions().add(question);
-						}						
-					}
-					if(UILApplication.displayStatus==0 || UILApplication.displayStatus==3){
-						adapter.setStatus(0);
-					}
-					else{
-						adapter.setStatus(UILApplication.displayStatus);
-					}
-					adapter.notifyDataSetChanged();
-					if (msg.what == 0) {
-						pullToRefreshListView.getRefreshableView().setSelection(0);
-					}
-				} else {
-//					GFToast.show(getActivity(), "连接服务器失败,请稍候再试!");
-				}
-				pullToRefreshListView.onRefreshComplete();
-			}
-			else if(msg.what==3){
-				
-				String str = msg.obj.toString();
-				if(!str.isEmpty()){
-					GFToast.show(getActivity().getApplicationContext(),str);
-				}
-				else{
-					getAllQuestions().remove(selectQuestion);
-					adapter.notifyDataSetChanged();
-				}
-				
-			}
-			else if(msg.what==9){
-				if(msg.obj!=null){
-					Gson gson2 = new Gson();
-					String jString = (String) msg.obj;
-					PostResponse reportResponse = gson2.fromJson(jString, PostResponse.class);
-					if(reportResponse == null){
-						GFToast.show(getActivity(),"点赞操作错误");
-					}
-					else{
-						if(reportResponse.isResult()){
-							selectQuestion.setAgree(selectQuestion.getAgree()+1);
-							adapter.notifyDataSetChanged();
-						}
-						else{
-							GFToast.show(getActivity(),reportResponse.getMessage());
-						}
-					}
-				}
-				else{
-					GFToast.show(getActivity(),"点赞操作错误");
-				}
-			}
-			else if(msg.what==-1){
-				if(msg.obj!=null){
-					GFToast.show(getActivity(),msg.obj.toString());
-				}
-			}
 	
+
+	@Override
+	public void showMessage(String mess) {
+		// TODO Auto-generated method stub
+		GFToast.show(getActivity(),mess);
 	}
+
+	@Override
+	public void onLoaded(int what, List<Question> questions) {
+		// TODO Auto-generated method stub
+		if(questions!=null){
+			if (what == 0) {
+				getAllQuestions().clear();
+			}
+
+			for (Question question : questions) {
+				if(question.getWriter()!=null){
+					getAllQuestions().add(question);
+				}						
+			}
+			if(UILApplication.displayStatus==0 || UILApplication.displayStatus==3){
+				adapter.setStatus(0);
+			}
+			else{
+				adapter.setStatus(UILApplication.displayStatus);
+			}
+			adapter.notifyDataSetChanged();
+			if (what == 0) {
+				pullToRefreshListView.getRefreshableView().setSelection(0);
+			}
+		}
+		pullToRefreshListView.onRefreshComplete();
+	}
+
+	@Override
+	public void onDeleted() {
+		// TODO Auto-generated method stub
+		getAllQuestions().remove(selectQuestion);
+		adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onZan() {
+		// TODO Auto-generated method stub
+		selectQuestion.setAgree(selectQuestion.getAgree()+1);
+		adapter.notifyDataSetChanged();
+	}
+
+	
 }

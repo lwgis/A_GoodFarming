@@ -48,6 +48,7 @@ import com.zhonghaodi.model.FavStatusDto;
 import com.zhonghaodi.model.FavoriteQuestion;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetMessage;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.model.Prescription;
@@ -97,6 +98,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -124,6 +126,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	private int rid;
 	private boolean favoriteStatus=false;
 	private Button favoriteButton;
+	private Button finishButton;
+	private RelativeLayout bottomLayout;
 	private int page=0;
 
 	@Override
@@ -145,6 +149,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		});
 		favoriteButton = (Button)findViewById(R.id.share_button);
 		favoriteButton.setOnClickListener(this);
+		finishButton = (Button)findViewById(R.id.finish_button);
+		finishButton.setOnClickListener(this);
 		Button sendBtn = (Button) findViewById(R.id.send_button);
 		sendBtn.setOnClickListener(new OnClickListener() {
 
@@ -154,7 +160,12 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 					return;
 				}
 				if (GFUserDictionary.getUserId(getApplicationContext()) != null) {
-
+					if(status==2){
+						Intent intent = new Intent(QuestionActivity.this,PlantResponseActivity.class);
+						intent.putExtra("qid", questionId);
+						startActivity(intent);
+						return;
+					}
 					resLayout.setVisibility(View.GONE);
 					sendLayout.setVisibility(View.VISIBLE);
 					if(status==0){
@@ -180,6 +191,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		});
 		sendLayout = (LinearLayout)findViewById(R.id.sendlayout);
 		resLayout = (LinearLayout)findViewById(R.id.resLayout);
+		bottomLayout = (RelativeLayout)findViewById(R.id.bottomLayout);
 		mzEditText = (MyEditText)findViewById(R.id.chat_edit);
 		sendTextButton = (MyTextButton)findViewById(R.id.send_meassage_button);
 		sendTextButton.setOnClickListener(this);
@@ -193,26 +205,24 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
 			favoriteButton.setVisibility(View.VISIBLE);
+			finishButton.setVisibility(View.GONE);
 			
 		}
 		else if(status==1){
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
 			favoriteButton.setVisibility(View.GONE);
+			finishButton.setVisibility(View.GONE);
 		}
 		else{
 			titleTextView.setText("赶大集详细信息");
 			sendBtn.setText("评论");
 			favoriteButton.setVisibility(View.GONE);
+			finishButton.setVisibility(View.GONE);
 		}
 		
 		uid=GFUserDictionary.getUserId(getApplicationContext());
-		if(uid==null){
-			Intent it = new Intent(QuestionActivity.this,
-					LoginActivity.class);
-			QuestionActivity.this.startActivityForResult(it, 2);
-			return;
-		}
+
 		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView
 				.setOnRefreshListener(new OnRefreshListener2<ListView>() {
@@ -546,6 +556,30 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			}
 		}).start();
 	}
+	
+	public void finishQuestion(){
+		
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				NetResponse netResponse = HttpUtil.finishQue(questionId,uid);
+				Message msg = handler.obtainMessage();
+				if(netResponse.getStatus()==1){
+					msg.what = 12;
+					msg.obj = netResponse.getResult();
+				}
+				else{
+					msg.what = 0;
+					msg.obj = netResponse.getMessage();
+				}
+				msg.sendToTarget();
+			}
+		}).start();
+	}
+	
 	private void sharePoint(){
 		new Thread(new Runnable() {
 
@@ -897,7 +931,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 							.getUrl();
 			    }
 			    else{
-			    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
+			    	imgurl = HttpUtil.ImageUrl+"apps/appicon.png";
 			    }
 			}
 			else if(status==1){
@@ -909,7 +943,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 							.getUrl();
 			    }
 			    else{
-			    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
+			    	imgurl = HttpUtil.ImageUrl+"apps/appicon.png";
 			    }
 			}
 			else{
@@ -921,7 +955,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 							.getUrl();
 			    }
 			    else{
-			    	imgurl = "http://121.40.62.120/appimage/apps/appicon.png";
+			    	imgurl = HttpUtil.ImageUrl+"apps/appicon.png";
 			    }
 			}
 		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  UILApplication.shareUrl);		    
@@ -959,8 +993,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			    	}
 			    }
 			    else{
-			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
-			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    	imgurl1 = HttpUtil.ImageUrl+"apps/appicon.png";
+			    	urlsList.add(HttpUtil.ImageUrl+"apps/appicon.png");
 			    }
 			}
 			else if(status==1){
@@ -977,8 +1011,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			    	}
 			    }
 			    else{
-			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
-			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    	imgurl1 = HttpUtil.ImageUrl+"apps/appicon.png";
+			    	urlsList.add(HttpUtil.ImageUrl+"apps/appicon.png");
 			    }
 			}
 			else{
@@ -995,8 +1029,8 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			    	}
 			    }
 			    else{
-			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
-			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    	imgurl1 = HttpUtil.ImageUrl+"apps/appicon.png";
+			    	urlsList.add(HttpUtil.ImageUrl+"apps/appicon.png");
 			    }
 			}
 		    params1.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl);//必填		    
@@ -1015,6 +1049,9 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			break;
 		case R.id.forward_layout:
 			popmorewindow(false);
+			break;
+		case R.id.finish_button:
+			finishQuestion();
 			break;
 		default:
 			break;
@@ -1058,6 +1095,14 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			else if(question.getStatus()!=1){
 				if(question.getWriter().getId().equals(uid)){
 					adapter.setmContains(true);
+					if(question.isFinished()){
+						finishButton.setVisibility(View.GONE);
+						bottomLayout.setVisibility(View.GONE);
+					}
+					else{
+						finishButton.setVisibility(View.VISIBLE);
+						bottomLayout.setVisibility(View.VISIBLE);
+					}
 				}
 				adapter.notifyDataSetChanged();
 			}
@@ -1149,24 +1194,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			page = 0;
 			loadData();
 			GFToast.show(getApplicationContext(),"回复成功");
-//			if(adapter.ismContains()){
-//				GFToast.show(getApplicationContext(),"回复成功");
-//			}
-//			else{
-//				boolean less = GFDate.lessTenMinutes(question.getStime());
-//				int point = GFPointDictionary.getResponsePoint(getApplicationContext());
-//				if(point>0){
-//					if(less){
-//						GFToast.show(getApplicationContext(),"回复成功,10分钟内回答双倍积分+"+(2*point)+" ^-^");
-//					}
-//					else{
-//						GFToast.show(getApplicationContext(),"回复成功,积分+"+point+" ^-^");
-//					}
-//				}
-//				else{
-//					GFToast.show(getApplicationContext(),"回复成功");
-//				}
-//			}
+
 			break;
 		case 0:
 			if(msg.obj!=null){
@@ -1236,6 +1264,25 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				if(status!=null && status.isResult()){
 					favoriteStatus=true;
 					favoriteButton.setText("已收藏");
+				}
+				
+			} else {
+				
+			}
+			break;
+		case 12:
+			if (msg.obj != null) {
+				Gson gs = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+				NetMessage status = gs.fromJson(msg.obj.toString(),
+						new TypeToken<NetMessage>() {
+						}.getType());
+				if(status!=null && status.isResult()){
+					question.setFinished(true);
+					finishButton.setVisibility(View.GONE);
+					bottomLayout.setVisibility(View.GONE);
+				}
+				else{
+					GFToast.show(QuestionActivity.this, "操作失败");
 				}
 				
 			} else {

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#38be99" >
+
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:background="@null"
+            android:text="&lt;返回"
+            android:textColor="#ffffff"
+            android:textSize="20dip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="评论"
+            android:textColor="#FFFFFF"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="18dip" />
+        <com.zhonghaodi.customui.MyTextButton
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="#eeeeee"
+            android:textSize="20dip" 
+            android:layout_marginRight="5dp"/>
+    </RelativeLayout>
+	<ScrollView 
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp" 
+	    android:layout_weight="1"
+	    android:background="#ffffff"
+	    >
+	
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" 
+	        android:paddingTop="6dip"
+	        android:background="#ffffff"
+	        android:id="@+id/main"
+	        >
+	        <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="16dip"
+	            android:layout_marginRight="16dip"
+	            android:layout_marginBottom="10dip"
+		        android:background="#FFFFFF"
+		        android:orientation="vertical" >
+		     
+		     <com.zhonghaodi.customui.MyEditText
+	            android:id="@+id/content_edit"
+	            style="@style/my_edittext_style"
+	            android:layout_width="fill_parent"
+	            android:layout_height="160dp"
+	            android:layout_marginTop="5dp"
+	            android:background="#ffffff"
+	            android:gravity="top"
+	            android:hint="给点意见吧"
+	            android:padding="1dp"
+	            android:maxLength="200"
+	            android:textColor="#333333" />
+		
+		    <GridView
+		        android:id="@+id/imageGridView"
+		        android:layout_width="fill_parent"
+		        android:layout_height="80dp"
+		        android:background="#ffffff"
+		        android:numColumns="4" 
+		        android:listSelector="@null"/>
+		
+			</LinearLayout>
+	    </LinearLayout>
+	</ScrollView>
+    
+</LinearLayout>

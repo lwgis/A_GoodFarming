@@ -3,7 +3,6 @@ package com.zhonghaodi.goodfarming;
 import java.util.ArrayList;
 import java.util.List;
 
-import u.aly.bf;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

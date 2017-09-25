@@ -137,6 +137,7 @@ public class LoginFragment extends Fragment implements TextWatcher, HandMessage 
 			loginBtn.setEnabled(false);
 //			loginBtn.setEnabled(true);
 		}
+		
 	}
 
 	@Override

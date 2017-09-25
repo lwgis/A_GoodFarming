@@ -62,7 +62,7 @@
 		            />
 		        
 		    </RelativeLayout> -->
-		    <RelativeLayout 
+		    <!-- <RelativeLayout 
 	            android:id="@+id/layout7"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
@@ -101,12 +101,12 @@
 		           android:layout_alignParentRight="true"
 		           android:layout_centerVertical="true"
 		           />
-		    </RelativeLayout>
+		    </RelativeLayout> -->
 		    <RelativeLayout 
 	            android:id="@+id/layout4"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="20dip"
+		        android:layout_marginTop="13dip"
 		        android:background="@drawable/background_with_shadow"
 		        android:padding="5dip"
 		        android:clickable="true"

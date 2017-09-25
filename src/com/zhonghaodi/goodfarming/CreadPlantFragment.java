@@ -39,6 +39,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.view.ViewGroup;
@@ -58,6 +60,7 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 	private GFHandler<CreadPlantFragment> handler = new GFHandler<CreadPlantFragment>(this);
 	private int imageCount;
 	private CheckBox sharecheck;
+	private RadioGroup radioGroup;
 	public boolean getcheck(){
 		return sharecheck.isChecked();
 	}
@@ -69,6 +72,7 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 		sharecheck = (CheckBox)view.findViewById(R.id.sharecheck);
 		this.imageGridView=(GridView)view.findViewById(R.id.imageGridView);
 		this.nyqEditText = (MyEditText)view.findViewById(R.id.content_edit);
+		this.radioGroup = (RadioGroup)view.findViewById(R.id.radioGroup);
 		this.projectImages=new ArrayList<ProjectImage>();
 		this.reportAdapter=new AddImageAdapter(getActivity(),projectImages);
 		this.imageGridView.setAdapter(reportAdapter);
@@ -161,7 +165,7 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getPlantInfoCropsString();
+				String jsonString = HttpUtil.getFairCatesString();
 				if(jsonString!=null){
 					if (!jsonString.equals("")) {
 						Message msg = handler.obtainMessage();
@@ -293,4 +297,10 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 		this.cropTextView = cropTextView;
 	}
 
+	public String getDeal(){
+		int id = radioGroup.getCheckedRadioButtonId();
+		RadioButton radioButton = (RadioButton)view.findViewById(id);
+		
+		return radioButton.getText().toString();
+	}
 }

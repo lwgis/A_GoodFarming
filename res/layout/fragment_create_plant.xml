@@ -38,14 +38,13 @@
             android:layout_marginBottom="10dip"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:visibility="gone"
-            >
+	            >
             <TextView
 	            android:layout_width="match_parent"
 	            android:layout_height="20dp"
 	            android:gravity="left"
 	            android:layout_margin="3dip"
-	            android:text="分享类别"
+	            android:text="类别"
 	            android:textColor="#808080"
 	            android:textSize="17dip" />
             
@@ -60,6 +59,35 @@
 	            android:textSize="18dip" 
 	            android:background="@drawable/spinner_back"/>
         </LinearLayout>
+        <RadioGroup android:id="@+id/radioGroup" android:contentDescription="" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            >
+		     <RadioButton 
+		         android:layout_width="wrap_content" 
+		         android:layout_height="wrap_content" 
+		         android:id="@+id/radiobuy" 
+		         android:button="@drawable/radiobg"
+		         android:text="求购" 
+		         android:textColor="#404040"
+		         android:checked="true"
+		         android:layout_marginRight="10dp"
+		         >
+		         
+		     </RadioButton>
+		     <RadioButton 
+		         android:layout_width="wrap_content" 
+		         android:layout_height="wrap_content" 
+		         android:id="@+id/radiosale" 
+		         android:button="@drawable/radiobg"
+		         android:textColor="#404040"
+		         android:text="出售"
+		         android:layout_marginLeft="10dp"
+		         ></RadioButton>    
+		</RadioGroup>
         <LinearLayout
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"

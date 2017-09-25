@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
-import com.zhonghaodi.goodfarming.MainActivity.MainHandler;
+//import com.zhonghaodi.goodfarming.MainActivity.MainHandler;
 import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFPointDictionary;

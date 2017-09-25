@@ -126,6 +126,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 							LoginActivity.class);
 					AgrotechnicalActivity.this.startActivity(it);
 				}
+				
 			}
 		});
 		sendLayout = (LinearLayout)findViewById(R.id.sendlayout);

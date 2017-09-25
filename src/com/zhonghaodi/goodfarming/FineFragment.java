@@ -165,24 +165,17 @@ public class FineFragment extends Fragment implements HandMessage,
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						// TODO Auto-generated method stub
-						if (GFUserDictionary.getUserId(getActivity().getApplicationContext()) != null){
-							Intent it = new Intent(getActivity(),
-									QuestionActivity.class);
-							it.putExtra("questionId", getfineQuestions().get(position - 1).getId());
-							if(UILApplication.fineStatus==1){
-								it.putExtra("status", 1);
-							}
-							if(UILApplication.fineStatus==2){
-								it.putExtra("status", 2);
-							}
-							getActivity().startActivity(it);
+
+						Intent it = new Intent(getActivity(),
+								QuestionActivity.class);
+						it.putExtra("questionId", getfineQuestions().get(position - 1).getId());
+						if(UILApplication.fineStatus==1){
+							it.putExtra("status", 1);
 						}
-						else{
-							Intent it = new Intent(getActivity(),
-									LoginActivity.class);
-							getActivity().startActivity(it);
+						if(UILApplication.fineStatus==2){
+							it.putExtra("status", 2);
 						}
-						
+						getActivity().startActivity(it);
 					}
 				});
 		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
@@ -519,29 +512,35 @@ public class FineFragment extends Fragment implements HandMessage,
 		case R.id.gossip_text:
 			if(UILApplication.fineStatus!=1){
 				String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
-				if(uid==null){
-					Intent intent = new Intent(getActivity(),LoginActivity.class);
-					getActivity().startActivity(intent);
-				}
-				else{
-					selectTextView(v);
-					loadNewGossips();					
-					UILApplication.fineStatus = 1;
-				}
+//				if(uid==null){
+//					Intent intent = new Intent(getActivity(),LoginActivity.class);
+//					getActivity().startActivity(intent);
+//				}
+//				else{
+//					selectTextView(v);
+//					loadNewGossips();					
+//					UILApplication.fineStatus = 1;
+//				}
+				selectTextView(v);
+				loadNewGossips();					
+				UILApplication.fineStatus = 1;
 			}
 			break;
 		case R.id.plant_text:
 			if(UILApplication.fineStatus!=2){
 				String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
-				if(uid1==null){
-					Intent intent = new Intent(getActivity(),LoginActivity.class);
-					getActivity().startActivity(intent);
-				}
-				else{
-					selectTextView(v);
-					loadNewPlant();
-					UILApplication.fineStatus = 2;
-				}
+//				if(uid1==null){
+//					Intent intent = new Intent(getActivity(),LoginActivity.class);
+//					getActivity().startActivity(intent);
+//				}
+//				else{
+//					selectTextView(v);
+//					loadNewPlant();
+//					UILApplication.fineStatus = 2;
+//				}
+				selectTextView(v);
+				loadNewPlant();
+				UILApplication.fineStatus = 2;
 			}
 			
 			break;

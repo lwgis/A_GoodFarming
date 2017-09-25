@@ -35,18 +35,35 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textSize="18dip" />
-        <Button
-            android:id="@+id/share_button"
+        <RelativeLayout 
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_marginRight="5dip"
-            android:background="#00000000"
             android:gravity="center"
-            android:text="收藏"
-            android:textColor="#ffffff"
-            android:textSize="18dip" />
+            >
+            <Button
+	            android:id="@+id/share_button"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:background="#00000000"
+	            android:gravity="center"
+	            android:text="收藏"
+	            android:textColor="#ffffff"
+	            android:textSize="18dip" />
+            <Button
+	            android:id="@+id/finish_button"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:background="#00000000"
+	            android:gravity="center"
+	            android:text="完成"
+	            android:textColor="#ffffff"
+	            android:textSize="18dip" />
+        </RelativeLayout>
+        
     </RelativeLayout>
     <FrameLayout 
         android:layout_width="match_parent"
@@ -88,6 +105,7 @@
 	        ptr:ptrHeaderTextColor="#868686" />
 	</FrameLayout>    
 	<RelativeLayout 
+	    android:id="@+id/bottomLayout"
 	    android:layout_width="match_parent"
         android:layout_height="wrap_content"
 	    >

@@ -10,6 +10,7 @@ public class Zfbt extends Second implements Serializable {
 	private List<Stock> stocks;
 	private int couponMax;
 	private boolean useCoupon;
+	private Category category;
 	
 	public Zfbt() {
 		// TODO Auto-generated constructor stub
@@ -54,6 +55,14 @@ public class Zfbt extends Second implements Serializable {
 
 	public void setCouponMax(int couponMax) {
 		this.couponMax = couponMax;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 	
 }

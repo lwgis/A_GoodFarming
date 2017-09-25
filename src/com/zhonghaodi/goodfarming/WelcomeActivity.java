@@ -26,8 +26,10 @@ import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFVersionAndAds;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.req.WelcomeReq;
 import com.zhonghaodi.utils.FileUtils;
 import com.zhonghaodi.utils.StoredData;
+import com.zhonghaodi.view.WelcomeView;
 import com.zhonghaodi.networking.HttpUtil;
 import android.app.Activity;
 import android.content.Intent;
@@ -40,10 +42,9 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class WelcomeActivity extends Activity implements HandMessage {
+public class WelcomeActivity extends Activity implements WelcomeView {
 	
 	private final int SPLASH_DISPLAY_LENGHT = 2000;
-	private GFHandler<WelcomeActivity> handler = new GFHandler<WelcomeActivity>(this);
 	// 定位相关
 	private LocationClient mLocClient;
 	public WelcomeLocationListenner myListener = new WelcomeLocationListenner();
@@ -52,6 +53,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 	private TextView timer_text;
 	private boolean isad;
 	private int recLen = 3;
+	private WelcomeReq req;
 	Timer timer = new Timer();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,8 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		UILApplication.diseaseStatus = 0;
 		UILApplication.fineStatus = 0;
 		UILApplication.finediseaseStatus = 0;
+		
+		req = new WelcomeReq(this);
 		isad = false;
 		img = (ImageView)findViewById(R.id.ad_image);
 		timer_text = (TextView)findViewById(R.id.timer_count);
@@ -85,7 +89,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		}
 		long delta_time = (new Date().getTime())-GFVersionAndAds.getAdstime(this);
 		if(delta_time>(60*60*1000)){
-			loadAdvertising();
+			req.loadAdvertising();
 		}
 		else{
 			tomain();
@@ -181,7 +185,7 @@ public class WelcomeActivity extends Activity implements HandMessage {
 			y=location.getLatitude();
 //			x=118.798632;
 //			y=36.858719;
-			loadArea();
+			req.loadArea(x,y);
 			mLocClient.stop();
 			
 		}
@@ -189,69 +193,10 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		}
 	}
 	
-	public void loadArea(){
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				String jsonString = HttpUtil.getAreaString(x, y);
-				Message msg = handler.obtainMessage();
-				msg.what = 0;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-				
-			}
-		}).start();
-	}
-	
-	public void loadAdvertising(){
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				String jsonString = HttpUtil.getAdvertising();
-				Message msg = handler.obtainMessage();
-				msg.what = 1;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-				
-			}
-		}).start();
-	}
-	
 	private void displaydeafult(){
 		img.setImageResource(R.drawable.welcome);
 	}
 	
-	private void displayAdvertisings(List<Advertising> ads){
-		
-		Advertising advertising = chanceSelect(ads);
-		
-        try {
-			FileUtils.cacheDir = new File(Environment.getExternalStorageDirectory().getPath() + "/goodfarming/ads/");
-			if (!FileUtils.cacheDir.exists()) {
-				FileUtils.cacheDir.mkdirs();
-			}
-			File imagefile = new File(FileUtils.cacheDir + File.separator + advertising.getUrl());
-			if (!imagefile.exists()) {
-				displaydeafult();
-				sleep();
-				UILApplication application = (UILApplication) getApplication();
-				application.downloadAds(ads);
-			} else {
-				ImageLoader.getInstance()
-						.displayImage("file://" + FileUtils.cacheDir + File.separator + advertising.getUrl(), img);
-				isad = true;
-				long time = (new Date()).getTime();
-				GFVersionAndAds.saveAdstime(this, time);
-				sleep();
-			} 
-		} catch (Exception e) {
-			// TODO: handle exception
-			displaydeafult();
-			sleep();
-		}
-	}
 	
 	public Advertising chanceSelect(List<Advertising> ads){
 		Integer sum = 0;
@@ -268,58 +213,6 @@ public class WelcomeActivity extends Activity implements HandMessage {
 		return advertisings.get(rand);
 	}
 	
-	
-	@Override
-	public void handleMessage(Message msg, Object object) {
-		// TODO Auto-generated method stub
-		switch (msg.what) {
-		case 0:
-			if (msg.obj != null) {
-				Gson gson = new Gson();
-				CityDto areadto = gson.fromJson(msg.obj.toString(),
-						new TypeToken<CityDto>() {
-						}.getType());
-				if(areadto!=null && areadto.isResult()){
-					City city = new City();
-					city.setId((int)areadto.getZone().getCode());
-					city.setName(areadto.getZone().getName());
-					GFAreaUtil.saveAreaInfo(this, city);
-				}
-				else{
-					GFAreaUtil.saveAreaInfo(this, new City());
-				}
-				
-			} else {
-				GFAreaUtil.saveAreaInfo(this, new City());
-			}
-			break;
-		case 1:
-			if(msg.obj!=null){
-				Gson gson = new Gson();
-				List<Advertising> advertisings = gson.fromJson(msg.obj.toString(), 
-						new TypeToken<List<Advertising>>() {}.getType());
-				if(advertisings!=null && advertisings.size()>0){
-					displayAdvertisings(advertisings);
-				}
-				else{
-					displaydeafult();
-					sleep();
-				}
-			}
-			else{
-				displaydeafult();
-				sleep();
-			}
-			break;
-		case -1:
-			String errString = msg.obj.toString();
-			GFToast.show(getApplicationContext(),errString);
-			tomain();
-			break;
-		default:
-			break;
-		}
-	}
 	
 	TimerTask task = new TimerTask() {  
         @Override  
@@ -339,5 +232,60 @@ public class WelcomeActivity extends Activity implements HandMessage {
             });  
         }  
     };
+	@Override
+	public void saveCity(City city) {
+		// TODO Auto-generated method stub
+		GFAreaUtil.saveAreaInfo(this, city);
+	}
+
+	@Override
+	public void displayAdvertisings(List<Advertising> advertisings) {
+		// TODO Auto-generated method stub
+		Advertising advertising = chanceSelect(advertisings);
+		
+        try {
+			FileUtils.cacheDir = new File(Environment.getExternalStorageDirectory().getPath() + "/goodfarming/ads/");
+			if (!FileUtils.cacheDir.exists()) {
+				FileUtils.cacheDir.mkdirs();
+			}
+			File imagefile = new File(FileUtils.cacheDir + File.separator + advertising.getUrl());
+			if (!imagefile.exists()) {
+				displaydeafult();
+				sleep();
+				UILApplication application = (UILApplication) getApplication();
+				application.downloadAds(advertisings);
+			} else {
+				ImageLoader.getInstance()
+						.displayImage("file://" + FileUtils.cacheDir + File.separator + advertising.getUrl(), img);
+				isad = true;
+				long time = (new Date()).getTime();
+				GFVersionAndAds.saveAdstime(this, time);
+				sleep();
+			} 
+		} catch (Exception e) {
+			// TODO: handle exception
+			displaydeafult();
+			sleep();
+		}
+	}
+
+	@Override
+	public void showMessage(String mess) {
+		// TODO Auto-generated method stub
+		GFToast.show(getApplicationContext(), mess);
+	}
+
+	@Override
+	public void displayWelcome() {
+		// TODO Auto-generated method stub
+		displaydeafult();
+		sleep();
+	}
+
+	@Override
+	public void goTomain() {
+		// TODO Auto-generated method stub
+		tomain();
+	}
 
 }

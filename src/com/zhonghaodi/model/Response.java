@@ -2,6 +2,7 @@ package com.zhonghaodi.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.zhonghaodi.networking.GFDate;
 
@@ -17,6 +18,7 @@ public class Response implements Serializable {
 	private ArrayList<Zan> items;
 	private ArrayList<RComment> comments;
 	private int commentCount;
+	private List<NetImage> attachments;
 	public int getId() {
 		return id;
 	}
@@ -86,6 +88,13 @@ public class Response implements Serializable {
 	}
 	public void setCommentCount(int commentCount) {
 		this.commentCount = commentCount;
+	}
+	
+	public List<NetImage> getAttachments() {
+		return attachments;
+	}
+	public void setAttachments(List<NetImage> attachments) {
+		this.attachments = attachments;
 	}
 	/**是否有用户点过赞
 	 * @param uid 用户id

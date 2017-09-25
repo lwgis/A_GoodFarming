@@ -21,11 +21,14 @@ public class Question implements Serializable {
 	private String address;
 	private Response myResponse;
 	private Crop cate;
+	private String phase;
 	private int agree;
 	private int forwards;
 	private Integer zone;
 	private boolean fine;
 	private long lastTime;
+	private String deal;
+	private boolean finished;
 	public List<Response> getResponses() {
 		return responses;
 	}
@@ -187,6 +190,30 @@ public class Question implements Serializable {
 
 	public void setLastTime(long lastTime) {
 		this.lastTime = lastTime;
+	}
+
+	public String getPhase() {
+		return phase;
+	}
+
+	public void setPhase(String phase) {
+		this.phase = phase;
+	}
+
+	public String getDeal() {
+		return deal;
+	}
+
+	public void setDeal(String deal) {
+		this.deal = deal;
+	}
+
+	public boolean isFinished() {
+		return finished;
+	}
+
+	public void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 	
 }

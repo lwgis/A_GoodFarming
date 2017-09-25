@@ -127,6 +127,42 @@
 			   android:background="#cccccc"  
 			   android:focusable="false"
 			/> 
+			
+	      <RelativeLayout
+	            android:id="@+id/img_layout"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	             >
+	
+	            <LinearLayout
+	                android:layout_width="320dp"
+	                android:layout_height="wrap_content"
+	                android:layout_centerInParent="true" >
+	
+	                <com.zhonghaodi.customui.GFImageView
+	                    android:id="@+id/image1"
+	                    android:layout_width="100dp"
+	                    android:layout_height="100dp"
+	                    android:scaleType="centerCrop"
+	                    android:src="@drawable/placeholder" />
+	
+	                <com.zhonghaodi.customui.GFImageView
+	                    android:id="@+id/image2"
+	                    android:layout_width="100dp"
+	                    android:layout_height="100dp"
+	                    android:layout_marginLeft="10dp"
+	                    android:layout_marginRight="10dp"
+	                    android:scaleType="centerCrop"
+	                    android:src="@drawable/placeholder" />
+	
+	                <com.zhonghaodi.customui.GFImageView
+	                    android:id="@+id/image3"
+	                    android:layout_width="100dp"
+	                    android:layout_height="100dp"
+	                    android:scaleType="centerCrop"
+	                    android:src="@drawable/placeholder" />
+	            </LinearLayout>
+	        </RelativeLayout>
 	
 	        <com.zhonghaodi.customui.UrlTextView
 	            android:id="@+id/content_text"

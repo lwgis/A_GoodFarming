@@ -3,6 +3,7 @@ package com.zhonghaodi.goodfarming;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.Function;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.MySectionIndexer;
+import com.zhonghaodi.model.Phase;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFHandler;
@@ -76,6 +78,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 	private View popView;
 	private File currentfile;
 	private GFImageButton currentGFimageButton;
+	private Spinner spJieduan;
 	private Spinner spFenbu;
 	private Spinner spQingkuang;
 	private Spinner spSudu;
@@ -168,7 +171,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		jubuBtn = (GFImageButton) view.findViewById(R.id.jubu_image);
 		zhengmianBtn = (GFImageButton) view.findViewById(R.id.zhengmian_image);
 		fanmianBtn = (GFImageButton) view.findViewById(R.id.fanmian_image);
-		
+		spJieduan = (Spinner)view.findViewById(R.id.spJieduan);
 		spFenbu = (Spinner)view.findViewById(R.id.spFenbu);
 		spQingkuang = (Spinner)view.findViewById(R.id.spQingkuang);
 		spSudu = (Spinner)view.findViewById(R.id.spSudu);
@@ -249,6 +252,25 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 				popupWindow.dismiss();
 			}
 		});
+		
+		//设置阶段下拉列表数据源
+		List<String> phasestr = new ArrayList<String>();
+		phasestr.add("不确定");
+		CreateQuestionActivity activity = (CreateQuestionActivity)getActivity(); 
+		if(activity.getCrop()!=null && activity.getCrop().getPhases()!=null && activity.getCrop().getPhases().size()>0){			
+			for (Iterator iterator = activity.getCrop().getPhases().iterator(); iterator.hasNext();) {
+				Phase phase = (Phase) iterator.next();
+				phasestr.add(phase.getName());
+			}			
+			
+		}
+		String[] toBeStored = phasestr.toArray(new String[phasestr.size()]);
+		//绑定要显示的texts 
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_spinner_item, toBeStored );            
+        //设置下拉列表的风格         
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);            
+        spJieduan.setAdapter(adapter);
 		return view;
 	}
 	
@@ -280,7 +302,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getPlantInfoCropsString();
+				String jsonString = HttpUtil.getFairCatesString();
 				if(jsonString!=null){
 					if (!jsonString.equals("")) {
 						Message msg = handler.obtainMessage();
@@ -342,11 +364,11 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		if (jubuBtn.isHasImage()) {
 			arrayList.add(jubuBtn.getBitmap());
 		}
-		if (yuanzhaoBtn.isHasImage()) {
-			arrayList.add(yuanzhaoBtn.getBitmap());
-		}
 		if (zhengmianBtn.isHasImage()) {
 			arrayList.add(zhengmianBtn.getBitmap());
+		}
+		if (yuanzhaoBtn.isHasImage()) {
+			arrayList.add(yuanzhaoBtn.getBitmap());
 		}
 		if (zhengtiBtn.isHasImage()) {
 			arrayList.add(zhengtiBtn.getBitmap());
@@ -374,6 +396,9 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 	}
 	public String getContentString() {
 		return contentEt.getText().toString();
+	}
+	public String getPhase(){
+		return spJieduan.getSelectedItem().toString();
 	}
 	public String getBhzdContent(){
 		String content = "";
@@ -433,20 +458,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		// TODO Auto-generated method stub
 		switch (msg.what) {
 		case 1:
-//			if (msg.obj == null) {
-//				GFToast.show(getActivity(), "获取失败,请稍后再试");
-//				return;
-//			}
-//			User user = (User) GsonUtil
-//					.fromJson(msg.obj.toString(), User.class);
-//			crops.clear();
-//			if(user.getCrops()!=null && user.getCrops().size()>0){
-//				cropTextView.setText(user.getCrops().get(0).getCrop().getName());
-//				cropTextView.setTag(user.getCrops().get(0).getCrop());
-//				for(UserCrop userCrop:user.getCrops()){
-//					crops.add(userCrop.getCrop());
-//				}
-//			}
+
 			if (msg.obj != null) {
 				Gson gson = new Gson();
 				List<Crop> cps = gson.fromJson(msg.obj.toString(),

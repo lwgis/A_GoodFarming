@@ -11,10 +11,10 @@ import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +28,7 @@ public class DiscoverFragment extends Fragment implements OnClickListener,HandMe
 	private View nyqView;
 	private View rubblerView;
 	private View bchView;
-	private View btcpView;
+//	private View btcpView;
 	private View cnzView;
 	private View jfscView;
 	private TextView cnzText;
@@ -52,8 +52,8 @@ public class DiscoverFragment extends Fragment implements OnClickListener,HandMe
 		cnzView.setOnClickListener(this);
 		bchView = view.findViewById(R.id.layout9);
 		bchView.setOnClickListener(this);
-		btcpView = view.findViewById(R.id.layout7);
-		btcpView.setOnClickListener(this);
+//		btcpView = view.findViewById(R.id.layout7);
+//		btcpView.setOnClickListener(this);
 		rubblerView = view.findViewById(R.id.layout8);
 		rubblerView.setOnClickListener(this);
 		cnzText = (TextView)view.findViewById(R.id.ncnz_text);
@@ -137,10 +137,10 @@ public class DiscoverFragment extends Fragment implements OnClickListener,HandMe
 			Intent intent5 = new Intent(getActivity(), CommoditiesActivity.class);
 			startActivity(intent5);
 			break;
-		case R.id.layout7:
-			Intent intent9 = new Intent(getActivity(), ZfbtActivity.class);
-			startActivity(intent9);
-			break;
+//		case R.id.layout7:
+//			Intent intent9 = new Intent(getActivity(), ZfbtActivity.class);
+//			startActivity(intent9);
+//			break;
 		case R.id.layout9:
 			Intent intent8 = new Intent(getActivity(), FarmCropsActivity.class);
 			startActivity(intent8);

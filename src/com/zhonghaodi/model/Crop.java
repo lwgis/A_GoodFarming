@@ -1,6 +1,7 @@
 package com.zhonghaodi.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,6 +16,7 @@ public class Crop implements Parcelable,Serializable {
 	private String name;
 	private String pname;
 	private String image;
+	private List<Phase> phases;
 	public static final Parcelable.Creator<Crop> CREATOR = new Parcelable.Creator<Crop>(){  
         @Override  
         public Crop createFromParcel(Parcel source) {//从Parcel中读取数据，返回person对象  
@@ -79,6 +81,15 @@ public class Crop implements Parcelable,Serializable {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+	
+
+	public List<Phase> getPhases() {
+		return phases;
+	}
+
+	public void setPhases(List<Phase> phases) {
+		this.phases = phases;
 	}
 
 	@Override

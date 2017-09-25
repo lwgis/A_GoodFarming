@@ -63,17 +63,17 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
-	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
-	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
+//	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
+//	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
+//	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
 	
-//	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-//	public static String ImageUrl = "http://121.40.62.120/appimage8/";
-//	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
+	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+	public static String ImageUrl = "http://121.40.62.120/appimage/";
+	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 	
-//	public static String RootURL = "http://115.28.154.159:8088/dfyy/rest/";
-//	public static String ImageUrl = "http://121.40.62.120/appimage8/";
-//	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
+//	public static String RootURL = "http://115.28.154.159/dfyy/rest/";
+//	public static String ImageUrl = "http://115.28.154.159/appimage/";
+//	public static String ViewUrl = "http://115.28.154.159/dfyy/view/";
 
 	public static String executeHttpGet(String urlString) {
 		StringBuffer sb = new StringBuffer();
@@ -607,8 +607,19 @@ public class HttpUtil {
         }
     }
     
-    public static String getPointdicsString() {
-		String jsonString = HttpUtil.executeHttpGet(RootURL + "dics/all");
+    public static String searchFairsString(int qid,int cate,String key,String zone) {
+		String url = RootURL + "plantinfo";
+		url=url+"?fromid=";
+		if(qid!=0){
+			url+=qid;
+		}
+		url=url+"&cate=";
+		if(cate!=0){
+			url+=cate;
+		}
+		url=url+="&keyword="+key;
+		url=url+="&zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
 	
@@ -653,6 +664,7 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/gossips");
 		return jsonString;
 	}
+	
 	
 	public static String getMyPlantinfoString(String uid) {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "users/"+uid+"/plantinfo");
@@ -714,14 +726,6 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getPlant(String zone) {
-		String url = RootURL + "plantinfo";
-		if(!TextUtils.isEmpty(zone)){
-			url=url+"?zone="+zone;
-		}
-		String jsonString = HttpUtil.executeHttpGet(url);
-		return jsonString;
-	}
 	public static String getPlantfines(String zone) {
 		String url = RootURL + "plantinfo/fines";
 		if(!TextUtils.isEmpty(zone)){
@@ -731,14 +735,7 @@ public class HttpUtil {
 		return jsonString;
 	}
 
-	public static String getMorePlant(int qid,String zone) {
-		String url = RootURL+ "plantinfo?fromid=" + qid;
-		if(!TextUtils.isEmpty(zone)){
-			url=url+"&zone="+zone;
-		}
-		String jsonString = HttpUtil.executeHttpGet(url);
-		return jsonString;
-	}
+
 	public static String getMorePlantfines(int qid,String zone) {
 		String url = RootURL+ "plantinfo/fines?fromid=" + qid;
 		if(!TextUtils.isEmpty(zone)){
@@ -850,13 +847,18 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "gossips/cate");
 		return jsonString;
 	}
-	public static String getPlantInfoCropsString() {
+	public static String getFairCatesString() {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "plantinfo/cate");
 		return jsonString;
 	}
 	
 	public static String getAllCropsHasDisease() {
 		String jsonString = HttpUtil.executeHttpGet(RootURL + "crops/hasDisease");
+		return jsonString;
+	}
+	
+	public static String getZfbtCatesString() {
+		String jsonString = HttpUtil.executeHttpGet(RootURL + "zfbt/cate");
 		return jsonString;
 	}
 
@@ -1422,6 +1424,41 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 完成赶大集
+	 * @return
+	 */
+	public static NetResponse finishQue(int qid,final String uid) {
+		String jsonString = null;
+		String urlString = RootURL + "plantinfo/"+qid+"/finish";
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		NameValuePair uidValuePair1 = new NameValuePair() {
+
+			@Override
+			public String getValue() {
+				// TODO Auto-generated method stub
+				return uid;
+			}
+
+			@Override
+			public String getName() {
+				// TODO Auto-generated method stub
+				return "uid";
+			}
+		};
+		
+		nameValuePairs.add(uidValuePair1);
+		try {
+			return HttpUtil.executeHttpPost(urlString, nameValuePairs);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			NetResponse netResponse = new NetResponse();
+			netResponse.setStatus(0);
+			netResponse.setMessage(e.getMessage());
+			return netResponse;
+		}
+	}
+	
+	/**
 	 * 采纳回复
 	 * @param qid
 	 * @param rid
@@ -1822,19 +1859,19 @@ public class HttpUtil {
 		}
 	}
 	
-	public static String getAreaString(double x,double y) {
-		
-		String url = RootURL + "zone/my?x="+x+"&y="+y;
-		String jsonString = HttpUtil.executeHttpGetNotToken(url);
-		return jsonString;
-	}
+//	public static String getAreaString(double x,double y) {
+//		
+//		String url = RootURL + "zone/my?x="+x+"&y="+y;
+//		String jsonString = HttpUtil.executeHttpGetNotToken(url);
+//		return jsonString;
+//	}
 	
-	public static String getAdvertising() {
-		
-		String url = RootURL + "launch/online";
-		String jsonString = HttpUtil.executeHttpGetNotToken(url);
-		return jsonString;
-	}
+//	public static String getAdvertising() {
+//		
+//		String url = RootURL + "launch/online";
+//		String jsonString = HttpUtil.executeHttpGetNotToken(url);
+//		return jsonString;
+//	}
 	
 	public static String getStoresString(double x,double y) {
 		
@@ -2189,28 +2226,19 @@ public class HttpUtil {
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
-	public static String getNewZfbtOrders(int zone){
-		String url = RootURL + "zfbt/recentOrder?size=10";
-		if(zone!=0){
-			url = url+"&zone="+zone;
-		}
-		String jsonString = HttpUtil.executeHttpGet(url);
-		return jsonString;
-	}
+//	public static String getNewZfbtOrders(int zone){
+//		String url = RootURL + "zfbt/recentOrder?size=10";
+//		if(zone!=0){
+//			url = url+"&zone="+zone;
+//		}
+//		String jsonString = HttpUtil.executeHttpGet(url);
+//		return jsonString;
+//	}
 	
 	public static String getSeconds(double x,double y,int zone){
 		String url = RootURL + "seconds?x="+x+"&y="+y;
 		if(zone!=0){
 			url = url+"&zone="+zone;
-		}
-		String jsonString = HttpUtil.executeHttpGet(url);
-		return jsonString;
-	}
-	
-	public static String getZfbt(double x,double y,int page,int zone){
-		String url = RootURL + "zfbt?x="+x+"&y="+y+"&page="+page;
-		if(zone!=0){
-			url = url +"&zone="+zone;
 		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
@@ -2535,11 +2563,11 @@ public class HttpUtil {
 		return jsonString;
 	}
 	
-	public static String getAppVersion(){
-		String url = RootURL + "apps/android";
-		String jsonString = HttpUtil.executeHttpGetNotToken(url);
-		return jsonString;
-	}
+//	public static String getAppVersion(){
+//		String url = RootURL + "apps/android";
+//		String jsonString = HttpUtil.executeHttpGetNotToken(url);
+//		return jsonString;
+//	}
 	
 	public static String signIn(String uid){
 		String url = RootURL + "users/"+uid+"/signin";

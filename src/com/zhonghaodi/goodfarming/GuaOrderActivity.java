@@ -126,7 +126,7 @@ public class GuaOrderActivity extends Activity implements OnClickListener,HandMe
 			bottomLayout.setVisibility(View.GONE);
 		}
 		
-		if(guaOrder.getStatus()>1){
+		if(guaOrder.getStatus()>1 && guaOrder.getExpress()!=null){
 			kdLayout.setVisibility(View.VISIBLE);
 			gongsiTextView.setText("快递公司："+guaOrder.getExpress().getExpname());
 			codeTextView.setText("运单编号："+guaOrder.getExpress().getCode());

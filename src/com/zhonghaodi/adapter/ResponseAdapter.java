@@ -20,6 +20,7 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.utils.PublicHelper;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -521,21 +522,6 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant1.nameTv.setText(question.getWriter().getAlias());
 			holderPlant1.timeTv.setText(question.getTime());
 			holderPlant1.contentTv.setText(content);
-			
-//			if(question.getCrop()!=null){
-//				holderPlant1.cropTv.setVisibility(View.VISIBLE);
-//				holderPlant1.cropTv.setText(question.getCrop().getName());
-//			}
-//			else{
-//				holderPlant1.cropTv.setVisibility(View.GONE);
-//			}
-//			if(question.getCate()!=null){
-//				holderPlant1.cateTv.setVisibility(View.VISIBLE);
-//				holderPlant1.cateTv.setText(question.getCate().getName());
-//			}
-//			else{
-//				holderPlant1.cateTv.setVisibility(View.GONE);
-//			}
 			holderPlant1.headIv.setTag(question.getWriter());
 			holderPlant1.headIv.setOnClickListener(mClickListener);
 			holderPlant1.countTv.setText("评论（"+question.getResponsecount()+"）");
@@ -543,6 +529,20 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant1.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant1.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant1.forwardLayout.setOnClickListener(mClickListener);
+			if(question.getCate()!=null){
+				holderPlant1.cropTv.setVisibility(View.VISIBLE);
+				holderPlant1.cropTv.setText(question.getCate().getName());
+			}
+			else{
+				holderPlant1.cropTv.setVisibility(View.GONE);
+			}
+			if(!TextUtils.isEmpty(question.getDeal())){
+				holderPlant1.cateTv.setVisibility(View.VISIBLE);
+				holderPlant1.cateTv.setText(question.getDeal());
+			}
+			else{
+				holderPlant1.cateTv.setVisibility(View.GONE);
+			}
 			if(question.isFine()){
 				holderPlant1.jpLayout.setVisibility(View.VISIBLE);
 			}
@@ -621,21 +621,7 @@ public class ResponseAdapter extends BaseAdapter {
 				holderPlant2.imageView3.setImages(question.getAttachments(),
 						"plant");
 			}
-			
-//			if(question.getCrop()!=null){
-//				holderPlant2.cropTv.setVisibility(View.VISIBLE);
-//				holderPlant2.cropTv.setText(question.getCrop().getName());
-//			}
-//			else{
-//				holderPlant2.cropTv.setVisibility(View.GONE);
-//			}
-//			if(question.getCate()!=null){
-//				holderPlant2.cateTv.setVisibility(View.VISIBLE);
-//				holderPlant2.cateTv.setText(question.getCate().getName());
-//			}
-//			else{
-//				holderPlant2.cateTv.setVisibility(View.GONE);
-//			}
+
 			holderPlant2.headIv.setTag(question.getWriter());
 			holderPlant2.headIv.setOnClickListener(mClickListener);
 			holderPlant2.countTv.setText("评论（"+question.getResponsecount()+"）");
@@ -643,6 +629,20 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant2.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant2.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant2.forwardLayout.setOnClickListener(mClickListener);
+			if(question.getCate()!=null){
+				holderPlant2.cropTv.setVisibility(View.VISIBLE);
+				holderPlant2.cropTv.setText(question.getCate().getName());
+			}
+			else{
+				holderPlant2.cropTv.setVisibility(View.GONE);
+			}
+			if(!TextUtils.isEmpty(question.getDeal())){
+				holderPlant2.cateTv.setVisibility(View.VISIBLE);
+				holderPlant2.cateTv.setText(question.getDeal());
+			}
+			else{
+				holderPlant2.cateTv.setVisibility(View.GONE);
+			}
 			if(question.isFine()){
 				holderPlant2.jpLayout.setVisibility(View.VISIBLE);
 			}
@@ -745,21 +745,7 @@ public class ResponseAdapter extends BaseAdapter {
 				holderPlant3.imageView6.setImages(question.getAttachments(),
 						"plant");
 			}
-//			if(question.getCrop()!=null){
-//				holderPlant3.cropTv.setVisibility(View.VISIBLE);
-//				holderPlant3.cropTv.setText(question.getCrop().getName());
-//			}
-//			else{
-//				holderPlant3.cropTv.setVisibility(View.GONE);
-//			}
-//			if(question.getCate()!=null){
-//				holderPlant3.cateTv.setVisibility(View.VISIBLE);
-//				holderPlant3.cateTv.setText(question.getCate().getName());
-//			}
-//			else{
-//				holderPlant3.cateTv.setVisibility(View.GONE);
-//			}
-//			holderPlant3.cropTv.setText(question.getCrop().getName());
+
 			holderPlant3.headIv.setTag(question.getWriter());
 			holderPlant3.headIv.setOnClickListener(mClickListener);
 			holderPlant3.countTv.setText("评论（"+question.getResponsecount()+"）");
@@ -767,6 +753,20 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant3.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant3.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant3.forwardLayout.setOnClickListener(mClickListener);
+			if(question.getCate()!=null){
+				holderPlant3.cropTv.setVisibility(View.VISIBLE);
+				holderPlant3.cropTv.setText(question.getCate().getName());
+			}
+			else{
+				holderPlant3.cropTv.setVisibility(View.GONE);
+			}
+			if(!TextUtils.isEmpty(question.getDeal())){
+				holderPlant3.cateTv.setVisibility(View.VISIBLE);
+				holderPlant3.cateTv.setText(question.getDeal());
+			}
+			else{
+				holderPlant3.cateTv.setVisibility(View.GONE);
+			}
 			if(question.isFine()){
 				holderPlant3.jpLayout.setVisibility(View.VISIBLE);
 			}
@@ -893,21 +893,7 @@ public class ResponseAdapter extends BaseAdapter {
 				holderPlant4.imageView9.setImages(question.getAttachments(),
 						"plant");
 			}
-//			if(question.getCrop()!=null){
-//				holderPlant4.cropTv.setVisibility(View.VISIBLE);
-//				holderPlant4.cropTv.setText(question.getCrop().getName());
-//			}
-//			else{
-//				holderPlant4.cropTv.setVisibility(View.GONE);
-//			}
-//			if(question.getCate()!=null){
-//				holderPlant4.cateTv.setVisibility(View.VISIBLE);
-//				holderPlant4.cateTv.setText(question.getCate().getName());
-//			}
-//			else{
-//				holderPlant4.cateTv.setVisibility(View.GONE);
-//			}
-//			holderPlant4.cropTv.setText(question.getCrop().getName());
+
 			holderPlant4.headIv.setTag(question.getWriter());
 			holderPlant4.headIv.setOnClickListener(mClickListener);
 			holderPlant4.countTv.setText("评论（"+question.getResponsecount()+"）");
@@ -915,6 +901,20 @@ public class ResponseAdapter extends BaseAdapter {
 			holderPlant4.agreeLayout.setOnClickListener(mClickListener);
 			holderPlant4.forwardTextView.setText("转发("+question.getForwards()+")");
 			holderPlant4.forwardLayout.setOnClickListener(mClickListener);
+			if(question.getCate()!=null){
+				holderPlant4.cropTv.setVisibility(View.VISIBLE);
+				holderPlant4.cropTv.setText(question.getCate().getName());
+			}
+			else{
+				holderPlant4.cropTv.setVisibility(View.GONE);
+			}
+			if(!TextUtils.isEmpty(question.getDeal())){
+				holderPlant4.cateTv.setVisibility(View.VISIBLE);
+				holderPlant4.cateTv.setText(question.getDeal());
+			}
+			else{
+				holderPlant4.cateTv.setVisibility(View.GONE);
+			}
 			if(question.isFine()){
 				holderPlant4.jpLayout.setVisibility(View.VISIBLE);
 			}
@@ -955,7 +955,6 @@ public class ResponseAdapter extends BaseAdapter {
 			holderResponse = (HolderResponse) convertView.getTag();
 			final Response response = question.getResponses().get(
 					position - 1);
-			final HolderResponse holder = holderResponse;
 			ImageLoader.getInstance().displayImage(
 					HttpUtil.ImageUrl+"users/small/"
 							+ response.getWriter().getThumbnail(),
@@ -966,6 +965,51 @@ public class ResponseAdapter extends BaseAdapter {
 			holderResponse.nameTv.setText(response.getWriter().getAlias());
 			holderResponse.timeTv.setText(response.getTime());
 			String rcontent = PublicHelper.TrimRight(response.getContent());
+			
+			if(response.getAttachments()!=null && response.getAttachments().size()>0){
+				holderResponse.displayImg();
+				holderResponse.imageView1.setVisibility(View.VISIBLE);
+				ImageLoader.getInstance()
+				.displayImage(
+						HttpUtil.ImageUrl+"plant/small/"
+								+ response.getAttachments().get(0)
+										.getUrl(),
+										holderResponse.imageView1, ImageOptions.options);
+				holderResponse.imageView1.setVisibility(View.VISIBLE);
+				holderResponse.imageView1.setIndex(0);
+				holderResponse.imageView1.setImages(response.getAttachments(),
+						"plant");
+				if (response.getAttachments().size() > 1) {
+					holderResponse.imageView2.setVisibility(View.VISIBLE);
+					ImageLoader.getInstance()
+					.displayImage(
+							HttpUtil.ImageUrl+"plant/small/"
+									+ response.getAttachments().get(1)
+											.getUrl(),
+											holderResponse.imageView2, ImageOptions.options);
+					holderResponse.imageView2.setVisibility(View.VISIBLE);
+					holderResponse.imageView2.setIndex(1);
+					holderResponse.imageView2.setImages(response.getAttachments(),
+							"plant");
+				}
+				if (response.getAttachments().size() > 2) {
+					holderResponse.imageView3.setVisibility(View.VISIBLE);
+					ImageLoader.getInstance()
+					.displayImage(
+							HttpUtil.ImageUrl+"plant/small/"
+									+ response.getAttachments().get(2)
+											.getUrl(),
+											holderResponse.imageView3, ImageOptions.options);
+					holderResponse.imageView3.setVisibility(View.VISIBLE);
+					holderResponse.imageView3.setIndex(2);
+					holderResponse.imageView3.setImages(response.getAttachments(),
+							"plant");
+				}
+			}
+			else{
+				holderResponse.reSetImageViews();
+			}
+			
 			holderResponse.contentTv.setHtmlText(rcontent);
 			holderResponse.contentTv.setTag(response);
 			holderResponse.contentTv.setUrlOnClick(mUrlOnClick);

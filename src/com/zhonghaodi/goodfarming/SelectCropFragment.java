@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
+import com.baidu.a.a.a.c;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.MySectionIndexer;
+import com.zhonghaodi.model.Phase;
 import com.zhonghaodi.model.SortComparator;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
@@ -37,6 +40,7 @@ import android.widget.TextView;
 public class SelectCropFragment extends Fragment implements HandMessage,OnItemClickListener {
 	private PinnedHeaderListView cropListView = null;
 	private ArrayList<Crop> childCrops;
+	private List<Crop> allcrops;
 	private GFHandler<SelectCropFragment> handler;
 	private HashMap<Integer, String> keyMap = new HashMap<Integer,String>();
 	private CropListAdapter adapter;
@@ -252,7 +256,9 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		if(status==0){
 			CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
 					.getActivity();
-			activity.setCropId(crop.getId());
+			List<Phase> phases = getPhases(crop.getCategory());
+			crop.setPhases(phases);
+			activity.setCrop(crop);
 			activity.showFragment(3);
 			activity.setTitle(crop.getName()
 					+ "问题");
@@ -260,7 +266,7 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		else if(status==1){
 			CreateQuestionActivity activity = (CreateQuestionActivity) SelectCropFragment.this
 					.getActivity();
-			activity.setCropId(crop.getId());
+			activity.setCrop(crop);
 			activity.showFragment(3);
 			activity.setTitle(crop.getName()
 					+ "话题");
@@ -271,8 +277,19 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 			activity.setCropId(crop.getId());
 			activity.showFragment(1);
 			activity.setTitle(crop.getName()
-					+ "分享");
+					+ "话题");
 		}
+	}
+	
+	public List<Phase> getPhases(int id){
+		List<Phase> phases=null;
+		for (Iterator iterator = allcrops.iterator(); iterator.hasNext();) {
+			Crop crop = (Crop) iterator.next();
+			if(crop.getId()==id){
+				phases = crop.getPhases();
+			}
+		}
+		return phases;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -283,19 +300,19 @@ public class SelectCropFragment extends Fragment implements HandMessage,OnItemCl
 		case 1:
 			if (msg.obj != null) {
 				Gson gson = new Gson();
-				List<Crop> crops = gson.fromJson(msg.obj.toString(),
+				allcrops = gson.fromJson(msg.obj.toString(),
 						new TypeToken<List<Crop>>() {
 						}.getType());
 				childCrops.clear();
 				List<String> secList = new ArrayList<String>();
 				List<Integer> intList = new ArrayList<Integer>();
-				if(crops!=null && crops.size()>0){
+				if(allcrops!=null && allcrops.size()>0){
 					@SuppressWarnings("rawtypes")
 					Comparator comp = new SortComparator();  
-			        Collections.sort(crops,comp);
+			        Collections.sort(allcrops,comp);
 			        int k = 0;
 			        int index = -1;
-					for (Crop crop : crops) {
+					for (Crop crop : allcrops) {
 						if (crop.getCategory() == 0) {
 							keyMap.put(crop.getId(), crop.getName());
 							secList.add(crop.getName());

@@ -91,6 +91,7 @@ public class UILApplication extends Application {
 	
 	public static int displayStatus;//0病害1拉拉呱2赶大集
 	public static int diseaseStatus;//0病害问题1我的作物
+	public static int fairStatus;//0全部
 //	public static int contenStatus;//0查看全部1只看精选
 	
 	public static int fineStatus;

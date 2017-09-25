@@ -112,11 +112,24 @@ public class ProvinceReq implements HandMessage {
 	}
 	
 	public void loadArea(){
-		new Thread(new Runnable() {
-			
+//		new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				String url = HttpUtil.RootURL + "launch/online";
+//				String jsonString = HttpUtil.executeHttpGetNotToken(url);
+//				Message msg = handler.obtainMessage();
+//				msg.what = 3;
+//				msg.obj = jsonString;
+//				msg.sendToTarget();
+//				
+//			}
+//		}).start();
+		new Thread(new Runnable() {			
 			@Override
 			public void run() {
-				String jsonString = HttpUtil.getAreaString(x, y);
+				String url = HttpUtil.RootURL + "zone/my?x="+x+"&y="+y;
+				String jsonString = HttpUtil.executeHttpGetNotToken(url);
 				Message msg = handler.obtainMessage();
 				msg.what = 3;
 				msg.obj = jsonString;

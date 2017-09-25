@@ -7,11 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
 import org.json.JSONObject;
-
 import com.easemob.EMCallBack;
 import com.easemob.EMConnectionListener;
 import com.easemob.EMError;
@@ -24,10 +21,7 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.Type;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.util.NetUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzoneShare;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -42,28 +36,21 @@ import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
-import com.zhonghaodi.goodfarming.AppShareActivity.BaseUiListener;
 import com.zhonghaodi.model.AppVersion;
-import com.zhonghaodi.model.City;
-import com.zhonghaodi.model.Contact;
 import com.zhonghaodi.model.Crop;
-import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFPointDictionary;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.GFVersionAndAds;
-import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PointDic;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
-import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.req.MainReq;
 import com.zhonghaodi.utils.PublicHelper;
 import com.zhonghaodi.utils.UmengConstants;
-
-import android.app.Activity;
+import com.zhonghaodi.view.MainView;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -82,26 +69,24 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener,
+public class MainActivity extends FragmentActivity implements MainView, OnClickListener,
 		EMEventListener,ShareContainer {
 	private HomeFragment homeFragment;
-	private FineFragment fineFragment;
+	private SaveFragment saveFragment;
 	private ForumFragment forumFragment;
 	private DiscoverFragment discoverFragment;
 	private MeFragment meFragment;
@@ -122,7 +107,6 @@ public class MainActivity extends Activity implements OnClickListener,
 	private View meView;
 	private int pageIndex;	
 	private boolean isLogin = false;
-	private MainHandler handler = new MainHandler(this);
 	private EMMessage currenEmMsg;
 	private final static String lancherActivityClassName = WelcomeActivity.class.getName();
 	private boolean bUpdate;
@@ -131,21 +115,24 @@ public class MainActivity extends Activity implements OnClickListener,
 	private TextView proTextView1;
 	private TextView proTextView2;
 	private long lastClick;
-	public IWXAPI wxApi;
-	public Tencent mTencent;
+	public  IWXAPI wxApi;
+	public  Tencent mTencent;
 	private Question shareQue;
-	public SharePopupwindow sharePopupwindow;
+	public  SharePopupwindow sharePopupwindow;
 	private BroadcastReceiver receiver;
 	private IntentFilter filter;
 	private TextView ndsText;
-	
+	private Dialog pd;	
 	public ArrayList<Question> allQuestions;
-	public ArrayList<Question> fineQuestions;
+	public ArrayList<Question> fineQuestions;	
+	private MainReq req;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
+		req = new MainReq(this);
 		allQuestions = new ArrayList<Question>();
 		fineQuestions = new ArrayList<Question>();
 		homeView = findViewById(R.id.home_layout);
@@ -224,7 +211,7 @@ public class MainActivity extends Activity implements OnClickListener,
         wxApi=WXAPIFactory.createWXAPI(this,HttpUtil.WX_APP_ID, true);
 		wxApi.registerApp(HttpUtil.WX_APP_ID);
 		mTencent = Tencent.createInstance(HttpUtil.QQ_APP_ID, this.getApplicationContext());
-		loadPointdics();
+		req.loadPointdics();
 		String auth = GFUserDictionary.getAuth(this);
 		if(TextUtils.isEmpty(auth)){
 			String phone = GFUserDictionary.getPhone(this);
@@ -238,22 +225,8 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 		String userid = GFUserDictionary.getUserId(this);
 		if(!TextUtils.isEmpty(userid)){
-			loadUser(userid);
+			req.loadUser(userid);
 		}
-	}
-	
-	public void loadUser(final String uid) {
-		
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String jsonString = HttpUtil.getUser(uid);
-				Message msg = handler.obtainMessage();
-				msg.what=8;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
 	}
 
 	
@@ -321,7 +294,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	
 	public void tryUpdate(){
 		markString = getVersion();
-		requestVersion();
+		req.requestVersion();
 	}
 
 	/**
@@ -340,59 +313,6 @@ public class MainActivity extends Activity implements OnClickListener,
 			versionString = 0;
 		}
 		return versionString;
-	}
-
-	public void requestVersion(){
-		
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					String jsonString = HttpUtil.getAppVersion();
-					Message msg = handler.obtainMessage();
-					msg.what = 4;
-					msg.obj = jsonString;
-					msg.sendToTarget();
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					Message msg = handler.obtainMessage();
-					msg.what = -1;
-					msg.obj = "";
-					msg.sendToTarget();
-				}
-				
-			}
-		}).start();
-		
-	}
-	
-	private void sharePoint(){
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					HttpUtil.sharePoint(GFUserDictionary.getUserId(MainActivity.this), UILApplication.shareUrl);
-					if(UILApplication.sharestatus==1){
-						if(UILApplication.sharefolder.contains("question")){
-							HttpUtil.addForwardcount("question", shareQue.getId());
-						}
-						else if(UILApplication.sharefolder.contains("gossip")){
-							HttpUtil.addForwardcount("gossip", shareQue.getId());
-						}
-						else{
-							HttpUtil.addForwardcount("plantinfo", shareQue.getId());
-						}
-					}
-					
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					
-				}
-			}
-		}).start();
 	}
 	
 	/**
@@ -445,7 +365,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	* 从服务器中下载APK 
 	*/  
 	public void downLoadApk(final AppVersion appVersion) {  
-	   final Dialog pd;    //进度条对话框   
+	   //进度条对话框   
 	   pd = new  Dialog(this,R.style.MyDialog);  
 	   LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	   View layout = inflater.inflate(R.layout.progressdialog, null);
@@ -457,25 +377,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	   proTextView1 = (TextView)layout.findViewById(R.id.pro_bfb);
 	   proTextView2 = (TextView)layout.findViewById(R.id.pro_value);
 	   
-	   new Thread(){  
-	       @Override  
-	       public void run() {  
-	           try {  
-	               File file = HttpUtil.getFileFromServer(appVersion.getUrl(), progressBar,handler);  
-	               sleep(3000);  
-	               Message msg = handler.obtainMessage();
-					msg.what = 6;
-					msg.obj = file;
-					msg.sendToTarget(); 
-	               pd.dismiss(); //结束掉进度条对话框   
-	           } catch (Exception e) {  
-	           	Message msg = handler.obtainMessage();
-					msg.what = -1;
-					msg.obj = "下载错误";
-					msg.sendToTarget(); 
-	               e.printStackTrace();  
-	           }  
-	       }}.start();  
+	   req.downLoad(appVersion, progressBar);
 	}  
 	
 	/**
@@ -491,37 +393,21 @@ public class MainActivity extends Activity implements OnClickListener,
 	   intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");//编者按：此处Android应为android，否则造成安装不了    
 	   this.startActivity(intent);  
 	}
-	
-	/**
-	 * 获取积分字典
-	 */
-	public void loadPointdics(){
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				String jsonString = HttpUtil.getPointdicsString();
-				Message msg = handler.obtainMessage();
-				msg.what = 3;
-				msg.obj = jsonString;
-				msg.sendToTarget();
-			}
-		}).start();
-	}
 
 	/**
 	* 切换tab
 	* @param i
 	*/
 	public void seletFragmentIndex(int i) {
-		FragmentTransaction transction = getFragmentManager().beginTransaction();
+		
+		FragmentTransaction transction = getSupportFragmentManager().beginTransaction();
 		if (homeFragment == null) {
 			homeFragment = new HomeFragment();
 			homeFragment.setShareContainer(this);
 		}
-		if (fineFragment == null) {
-			fineFragment = new FineFragment();
-			fineFragment.setShareContainer(this);
+
+		if(saveFragment == null){
+			saveFragment = new SaveFragment();
 		}
 		if (forumFragment == null) {
 			forumFragment = new ForumFragment();
@@ -534,10 +420,6 @@ public class MainActivity extends Activity implements OnClickListener,
 			meFragment.setShareContainer(this);
 		}
 		
-//		 transction.hide(homeFragment);
-//		 transction.hide(forumFragment);
-//		 transction.hide(discoverFragment);
-//		 transction.hide(meFragment);
 		homeIv.setImageResource(R.drawable.home);
 		fineIv.setImageResource(R.drawable.fine);
 		forumIv.setImageResource(R.drawable.tian);
@@ -560,11 +442,10 @@ public class MainActivity extends Activity implements OnClickListener,
 			homeTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
 		case 1:
-			if (fineFragment == null) {
-				fineFragment = new FineFragment();
-				fineFragment.setShareContainer(this);
+			if(saveFragment == null){
+				saveFragment = new SaveFragment();
 			}
-			transction.replace(R.id.content, fineFragment);
+			transction.replace(R.id.content, saveFragment);
 			fineIv.setImageResource(R.drawable.fine_s);
 			fineTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
@@ -743,23 +624,23 @@ public class MainActivity extends Activity implements OnClickListener,
 			
 		}
 		if (v == fineView && pageIndex != 1) {
-			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
-				Intent it = new Intent();
-				it.setClass(this, LoginActivity.class);
-				startActivityForResult(it, 0);
-				return;
-			}
+//			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
+//				Intent it = new Intent();
+//				it.setClass(this, LoginActivity.class);
+//				startActivityForResult(it, 0);
+//				return;
+//			}
 			seletFragmentIndex(1);
 			
 		}
 		if (v == forumView && pageIndex != 2) {
 			
-			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
-				Intent it = new Intent();
-				it.setClass(this, LoginActivity.class);
-				startActivityForResult(it, 0);
-				return;
-			}
+//			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
+//				Intent it = new Intent();
+//				it.setClass(this, LoginActivity.class);
+//				startActivityForResult(it, 0);
+//				return;
+//			}
 			seletFragmentIndex(2);
 		}
 		if (v == discoverView && pageIndex != 3) {
@@ -863,7 +744,7 @@ public class MainActivity extends Activity implements OnClickListener,
 				shareQQ(HttpUtil.ViewUrl+"appshare?code="+UILApplication.user.getTjCode(),
 			    		"种好地APP:让种地不再难", 
 			    		"下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。", 
-			    		"http://121.40.62.120/appimage/apps/appicon.png");
+			    		HttpUtil.ImageUrl+"apps/appicon.png");
 			}else{
 				String url = HttpUtil.ViewUrl+UILApplication.sharefolder+"/detail?id="+shareQue.getId();
 				String title ="种好地APP：让种地不再难";
@@ -884,7 +765,7 @@ public class MainActivity extends Activity implements OnClickListener,
 					}
 				}
 				else{
-					img = "http://121.40.62.120/appimage/apps/appicon.png";
+					img = HttpUtil.ImageUrl+"apps/appicon.png";
 				}
 				
 				shareQQ(url, title, content2, img);
@@ -941,8 +822,8 @@ public class MainActivity extends Activity implements OnClickListener,
 			    	}
 			    }
 			    else{
-			    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
-			    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+			    	imgurl1 = HttpUtil.ImageUrl+"apps/appicon.png";
+			    	urlsList.add(HttpUtil.ImageUrl+"apps/appicon.png");
 			    }
 			    shareQZone(url,title,content2,urlsList,imgurl1);
 			}
@@ -964,11 +845,8 @@ public class MainActivity extends Activity implements OnClickListener,
 		if (!isLogin) {
 			initEm();
 		} else {		
-//			if(pageIndex==3){
-//				meFragment.loadData();
-//			}
+
 		}
-//		homeFragment.setUnreadMessageCount();
 		
 		if(bUpdate){
 			tryUpdate();
@@ -1032,7 +910,7 @@ public class MainActivity extends Activity implements OnClickListener,
 					}
 					UILApplication.user.setCrops(userCrops);
 				}
-				updateCrops(UILApplication.user);
+				req.updateCrops(UILApplication.user);
 			}
 			else if(requestCode==PublicHelper.CITY_REQUEST_CODE){
 				//切换区域后设置标题，重新读取问题
@@ -1083,39 +961,6 @@ public class MainActivity extends Activity implements OnClickListener,
         dialog.show();
 		
 	}
-	
-	/**
-	 * 更新我的作物
-	 * @param user
-	 */
-	private void updateCrops(final User user){
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				
-				try {
-					NetResponse netResponse = HttpUtil.modifyUser(user);
-					Message msgUser = handler.obtainMessage();
-					if(netResponse.getStatus()==1){
-						msgUser.what = 2;
-						msgUser.obj = netResponse.getResult();
-					}
-					else{
-						msgUser.what = -1;
-						msgUser.obj = netResponse.getMessage();
-					}
-					msgUser.sendToTarget();
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					Message msgUser = handler.obtainMessage();
-					msgUser.what = -1;
-					msgUser.obj = e.getMessage();
-					msgUser.sendToTarget();
-				}
-			}
-		}).start();
-	}
 
 	/**
 	 * 监听事件
@@ -1127,46 +972,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		{
 			final EMMessage message = (EMMessage) event.getData();
 			currenEmMsg = message;
-			if (UILApplication.isBackground(getApplicationContext())) {
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						String jsonString;
-						if(message.getFrom().equals("种好地")){
-							User user = new User();
-							user.setAlias(message.getFrom());
-							List<User> users = new ArrayList<User>();
-							users.add(user);
-							Gson sGson=new Gson();
-							jsonString=sGson.toJson(users);
-						}
-						else{
-							NetResponse netResponse= HttpUtil.getUserByPhone(message
-									.getFrom());
-							jsonString = netResponse.getResult();
-						}
-						
-						Message msg = handler.obtainMessage();
-						msg.what =5;
-						msg.obj = jsonString;
-						msg.sendToTarget();
-					}
-				}).start();
-			} else {
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						
-						Message msg = handler.obtainMessage();
-						msg.what =7;
-						msg.sendToTarget();
-					}
-				}).start();
-			}
-
-			
+			req.customEmFunction(MainActivity.this, message);
 			break;
 		}
 		case EventOfflineMessage: {
@@ -1183,17 +989,18 @@ public class MainActivity extends Activity implements OnClickListener,
 	 * 
 	 * @param message
 	 */
-	private void notificationTextMessage(EMMessage message, String nick) {
+	@Override
+	public void notificationTextMessage(String nick) {
 		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		String content = "";
-		if (message.getType() == Type.TXT) {
-			TextMessageBody body = (TextMessageBody) message.getBody();
+		if (currenEmMsg.getType() == Type.TXT) {
+			TextMessageBody body = (TextMessageBody) currenEmMsg.getBody();
 			content = body.getMessage();
 		}
-		if (message.getType() == Type.VOICE) {
+		if (currenEmMsg.getType() == Type.VOICE) {
 			content = "[语音]";
 		}
-		if (message.getType() == Type.IMAGE) {
+		if (currenEmMsg.getType() == Type.IMAGE) {
 			content = "[图片]";
 		}
 		Intent intent = new Intent(this, MessagesActivity.class);
@@ -1358,114 +1165,63 @@ public class MainActivity extends Activity implements OnClickListener,
 		public void onComplete(Object arg0) {
 			// TODO Auto-generated method stub
 			MobclickAgent.onEvent(MainActivity.this, UmengConstants.APP_SHARE_ID);
-			sharePoint();
+			req.sharePoint(getApplicationContext(), shareQue);
 			
 		}
 		
 	}
 
-	static class MainHandler extends Handler {
-		MainActivity activity;
 
-		public MainHandler(MainActivity may) {
-			activity = may;
+	@Override
+	public void compareVersion(AppVersion version) {
+		// TODO Auto-generated method stub
+		if(markString<version.getVersion()){
+			showUpdataDialog(version);
 		}
+	}
 
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case 5:
-				if (msg.obj != null) {
-					Gson gson = new Gson();
-					List<User> users = gson.fromJson(msg.obj.toString(),
-							new TypeToken<List<User>>() {
-							}.getType());
-					if (users != null) {
-						activity.notificationTextMessage(activity.currenEmMsg,
-								users.get(0).getAlias());
-					}
-				}
-				break;
-			case 2:
-				try {
-					User user1 = (User) GsonUtil.fromJson(msg.obj.toString(),
-							User.class);
-					if(user1!=null){
-						GFToast.show(activity,"更新成功");
-						GFUserDictionary.saveLoginInfo(activity,user1, GFUserDictionary.getPassword(activity),
-								activity,GFUserDictionary.getAuth(activity));
-					}
-					else{
-						GFToast.show(activity,"更新失败");
-					}
-				} catch (Exception e) {
-					// TODO: handle exception
-					GFToast.show(activity,"更新失败");
-				}
-				break;
-				
-			case 3:
-				if (msg.obj != null) {
-					Gson gson = new Gson();
-					List<PointDic> pointdics = gson.fromJson(msg.obj.toString(),
-							new TypeToken<List<PointDic>>() {
-							}.getType());
-					if (pointdics != null && pointdics.size()>0) {
-						GFPointDictionary.savePointDics(activity,pointdics);
-					}
-				}
-				break;
-			case 4:
-				if(msg.obj==null){
-					return;
-				}
-				Gson gson = new Gson();
-				AppVersion appVersion = gson.fromJson(msg.obj.toString(),
-						new TypeToken<AppVersion>() {
-						}.getType());
-				if(activity.markString<appVersion.getVersion()){
-					activity.showUpdataDialog(appVersion);
-				}
-				else{
-				}
-				break;
-			case 1:
-				int[] values = (int[])msg.obj;
-				float bf = (values[0]*100*1.000f/values[1]);
-				bf = (float)(Math.round(bf*100))/100;
-				activity.proTextView1.setText(bf+"%");
-				float pf = (values[0]*1.000f/(1024*1024));
-				pf = (float)(Math.round(pf*100))/100;
-				float cf = (values[1]*1.000f/(1024*1024));
-				cf = (float)(Math.round(cf*100))/100;
-				activity.proTextView2.setText(pf+"M/"+cf+"M");
-				break;
-			case 6:
-				File file = (File)msg.obj;
-				activity.installApk(file);
-				break;
-			case -1:
-				if(msg.obj!=null){
-					String errString = msg.obj.toString();
-					GFToast.show(activity,errString);
-				}
-				
-				break;
-			case 7:
-				activity.homeFragment.setUnreadMessageCount();
-				break;
-			case 8:
-				if(msg.obj!=null){
-					UILApplication.user = (User) GsonUtil.fromJson(msg.obj.toString(), User.class);
-				}
-				
-				break;
-			default:
-				break;
-			}
-			
-		}
+
+	@Override
+	public void downComplete(File file) {
+		// TODO Auto-generated method stub
+		pd.dismiss();
+		installApk(file);
+	}
+
+
+	@Override
+	public void showMessage(String mess) {
+		// TODO Auto-generated method stub
+		GFToast.show(this, mess);
+	}
+
+	@Override
+	public void savePointDics(List<PointDic> dics) {
+		// TODO Auto-generated method stub
+		GFPointDictionary.savePointDics(this,dics);
+	}
+
+
+	@Override
+	public void saveUserInfo(User user) {
+		// TODO Auto-generated method stub
+		GFUserDictionary.saveLoginInfo(this,user, GFUserDictionary.getPassword(this),
+				this,GFUserDictionary.getAuth(this));
+	}
+
+
+	@Override
+	public void setUnredMessageCount() {
+		// TODO Auto-generated method stub
+		homeFragment.setUnreadMessageCount();
+	}
+
+
+	@Override
+	public void displayProgress(float bf, float pf, float cf) {
+		// TODO Auto-generated method stub
+		
+		proTextView1.setText(bf+"%");
+		proTextView2.setText(pf+"M/"+cf+"M");
 	}
 }

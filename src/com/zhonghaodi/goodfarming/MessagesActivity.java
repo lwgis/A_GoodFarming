@@ -74,6 +74,9 @@ public class MessagesActivity extends Activity implements OnClickListener {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				GFMessage message = messages.get(position - 1);
+				if(message==null){
+					return;
+				}
 				if(message.getType()==null || message.getType()==""){
 					Intent it = new Intent();
 					it.setClass(MessagesActivity.this, ChatActivity.class);
@@ -81,8 +84,11 @@ public class MessagesActivity extends Activity implements OnClickListener {
 					it.putExtra("title", message.getUser()==null?message.getTitle():message.getUser().getAlias());
 					it.putExtra("thumbnail", message.getUser()==null?"":message.getUser().getThumbnail());
 					MessagesActivity.this.startActivity(it);
-					EMConversation emConversation1 = EMChatManager.getInstance().getConversation(message.getUser().getPhone());
-					emConversation1.resetUnreadMsgCount();
+					if(message.getUser()!=null && !message.getUser().getPhone().isEmpty()){
+						EMConversation emConversation1 = EMChatManager.getInstance().getConversation(message.getUser().getPhone());
+						if(emConversation1!=null)
+							emConversation1.resetUnreadMsgCount();
+					}					
 				}
 				else{
 					if(message.getType().equals("question") 
@@ -122,7 +128,8 @@ public class MessagesActivity extends Activity implements OnClickListener {
 							
 						}
 						EMConversation emConversation1 = EMChatManager.getInstance().getConversation("种好地");
-						emConversation1.resetUnreadMsgCount();
+						if(emConversation1!=null)
+							emConversation1.resetUnreadMsgCount();
 						Intent intent = new Intent(MessagesActivity.this, SysMessageActivity.class);
 						intent.putExtra("messages", (Serializable)gfMessages);
 						intent.putExtra("userName", "种好地");
@@ -131,7 +138,8 @@ public class MessagesActivity extends Activity implements OnClickListener {
 					}
 					else if(message.getType().equals("user")){
 						EMConversation emConversation1 = EMChatManager.getInstance().getConversation("种好地");
-						emConversation1.resetUnreadMsgCount();
+						if(emConversation1!=null)
+							emConversation1.resetUnreadMsgCount();
 						Intent intent = new Intent(MessagesActivity.this, MainActivity.class);
 						MessagesActivity.this.startActivity(intent);
 					}

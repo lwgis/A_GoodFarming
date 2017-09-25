@@ -25,12 +25,11 @@ import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.utils.PublicHelper;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -68,6 +67,8 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 				false);
 		tabLayout = (LinearLayout)view.findViewById(R.id.tabhost);
 		progressDialog = new CustomProgressDialog(getActivity(), "请稍后...");
+		Button sgbcBtn = (Button)view.findViewById(R.id.sgbc_button);
+		sgbcBtn.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
 		
 		pullToRefreshListView.setOnItemClickListener(new OnItemClickListener() {
@@ -327,9 +328,16 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		selectTextView(v);
-		progressDialog.show();
-		loadData();
+		if(v.getId()==R.id.sgbc_button){
+			Intent start = new Intent(getActivity(),SGBCActivity.class); 
+			startActivity(start);
+		}
+		else{
+			selectTextView(v);
+			progressDialog.show();
+			loadData();
+		}
+		
 	}
 
 	@Override

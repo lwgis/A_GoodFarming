@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zhonghaodi.goodfarming"
     android:versionCode="21"
-    android:versionName="1.7.2.1" >
+    android:versionName="1.7.2.2" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -255,11 +255,11 @@
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        <activity
+        <!-- <activity
             android:name=".ZfbtActivity"
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateHidden" >
-        </activity>
+        </activity> -->
         <activity
             android:name=".ModifyInfoActivity"
             android:screenOrientation="portrait" 
@@ -495,16 +495,32 @@
             android:name=".ProvinceActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".wxapi.WXEntryActivity"  
-            android:launchMode="singleInstance"  
-            android:exported="true"  
-            android:windowSoftInputMode="stateHidden"  
-            android:screenOrientation="portrait"/>  
-                <!-- 显示下载大图页面 -->
+        <activity
+            android:name=".SGBCActivity"
+            android:screenOrientation="portrait" 
+            >
+        </activity> 
+        <activity
+            android:name=".SearchFairActivity"
+            android:screenOrientation="portrait" 
+            >
+        </activity> 
+        <activity
+            android:name=".PlantResponseActivity"
+            android:screenOrientation="portrait" 
+            >
+        </activity> 
+        <!-- 显示下载大图页面 -->
         <activity
             android:name="com.zhonghaodi.easemob.ShowBigImage"
             android:screenOrientation="portrait">
         </activity>
+        <!-- 微信sdk -->
+        <activity android:name=".wxapi.WXEntryActivity"  
+            android:launchMode="singleInstance"  
+            android:exported="true"  
+            android:windowSoftInputMode="stateHidden"  
+            android:screenOrientation="portrait"/> 
         <!-- 腾讯sdk -->
         <activity
 			android:name="com.tencent.tauth.AuthActivity" 
@@ -552,13 +568,13 @@
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="lwgis#nyim" />
+            android:value="lwgis#goodfarming" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService" />        
-        <meta-data android:value="57295cd9e0f55aa51a001212" android:name="UMENG_APPKEY"></meta-data>
-        <!-- <meta-data android:value="572bef3167e58eeefe002485" android:name="UMENG_APPKEY"></meta-data> -->
-        <meta-data android:value="channel_value" android:name="UMENG_CHANNEL"/>
-        <!-- <meta-data android:value="Zhonghaodi" android:name="UMENG_CHANNEL"/> -->
+        <!-- <meta-data android:value="57295cd9e0f55aa51a001212" android:name="UMENG_APPKEY"></meta-data> -->
+        <meta-data android:value="572bef3167e58eeefe002485" android:name="UMENG_APPKEY"></meta-data>
+        <!-- <meta-data android:value="channel_value" android:name="UMENG_CHANNEL"/> -->
+        <meta-data android:value="Zhonghaodi" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>

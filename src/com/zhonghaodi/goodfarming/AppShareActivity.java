@@ -188,7 +188,7 @@ public class AppShareActivity extends Activity implements OnClickListener{
 		    params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  "下载APP，享受优惠农资产品，众多专家，农技达人为您解决病虫害问题，让您种地更科学，丰收更简单。");
 		    UILApplication.shareUrl= HttpUtil.ViewUrl+"appshare?code="+user.getTjCode();
 		    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, UILApplication.shareUrl );
-		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://121.40.62.120/appimage/apps/appicon.png");
+		    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,HttpUtil.ImageUrl+"apps/appicon.png");
 		    params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "种好地");
 		    mTencent.shareToQQ(this, params, new BaseUiListener());
 		    sharePopupwindow.dismiss();

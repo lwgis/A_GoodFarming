@@ -1,6 +1,6 @@
 package com.zhonghaodi.goodfarming;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -8,12 +8,9 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.google.zxing.common.StringUtils;
 import com.umeng.analytics.MobclickAgent;
-import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.MyTextButton;
-import com.zhonghaodi.goodfarming.RecipesActivity.RecipeLocationListenner;
 import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFAreaUtil;
@@ -30,17 +27,13 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageUtil;
 import com.zhonghaodi.utils.PublicHelper;
 import com.zhonghaodi.utils.UmengConstants;
-
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.wifi.WifiConfiguration.Status;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -48,7 +41,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -62,7 +54,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	private CreateQuestionFragment createQuestionFragment = null;
 	private TextView titleTv = null;
 	private MyTextButton sendBtn;
-	private ArrayList<NetImage> netImages;
+	private NetImage[] netImages;
 	private GFHandler<CreateQuestionActivity> handler = new GFHandler<CreateQuestionActivity>(
 			this);
 	private ExecutorService executorService = Executors.newFixedThreadPool(4);
@@ -70,7 +62,15 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 	private boolean isSending;
 	private boolean isshare;
 	private City area;
-
+	private Crop crop;
+	private double x;
+	private double y;
+	// 定位相关
+	private LocationClient mLocClient;
+	public QuestionLocationListenner myListener = new QuestionLocationListenner();
+	private int status;
+	private Question question;
+	
 	public MyTextButton getSendBtn() {
 		return sendBtn;
 	}
@@ -79,14 +79,13 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		this.sendBtn = sendBtn;
 	}
 
-	private int cropId;
-	private double x;
-	private double y;
-	// 定位相关
-	LocationClient mLocClient;
-	public QuestionLocationListenner myListener = new QuestionLocationListenner();
-	private int status;
-	private Question question;
+	public Crop getCrop() {
+		return crop;
+	}
+
+	public void setCrop(Crop crop) {
+		this.crop = crop;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +93,6 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.activity_create_question);
 		isSending = false;
-		netImages = new ArrayList<NetImage>();
 		titleTv = (TextView) findViewById(R.id.title_text);
 		Button cancelButton = (Button) findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(new OnClickListener() {
@@ -110,7 +108,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			public void onClick(View v) {
 				isSending = true;
 				sendBtn.setEnabled(false);
-				netImages = new ArrayList<NetImage>();
+				netImages = new NetImage[createQuestionFragment.getImages().size()];
 				if (createQuestionFragment.getImages().size() > 0) {
 					imageCount = 0;
 					for (int i = 0; i < createQuestionFragment.getImages()
@@ -138,8 +136,9 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 										return;
 									}
 									NetImage netImage = new NetImage();
+									netImage.setId(index);
 									netImage.setUrl(imageName.trim());
-									netImages.add(netImage);
+									netImages[index] = netImage;
 									Message msg = handler.obtainMessage();
 									msg.what = TypeImage;
 									msg.obj = imageName.trim();
@@ -173,7 +172,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		}
 		else if(status==1){
 			//不选择分类直接进入提问页,话题分类强行设置为其他
-			cropId=99;
+			crop = new Crop();
+			crop.setId(99);
 			int aid = GFAreaUtil.getCity(this);
 			if(aid!=0){
 				area = new City();
@@ -208,11 +208,9 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				.beginTransaction();
 		if (selectCropFragment == null) {
 			selectCropFragment = new SelectCropFragment();
-//			transation.add(R.id.content_view, selectCropFragment);
 		}
 		if (createQuestionFragment == null) {
 			createQuestionFragment = new CreateQuestionFragment();
-//			transation.add(R.id.content_view, createQuestionFragment);
 		}
 		switch (index) {
 		case 0:
@@ -251,14 +249,6 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 
 	public void setTitle(String title) {
 		titleTv.setText(title);
-	}
-
-	public int getCropId() {
-		return cropId;
-	}
-
-	public void setCropId(int cropId) {
-		this.cropId = cropId;
 	}
 	
 	private void location() {
@@ -369,18 +359,20 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 						.getContentString());
 				String zdContent = activity.createQuestionFragment
 						.getBhzdContent();
+				String phase = activity.createQuestionFragment.getPhase();
 				if(!zdContent.isEmpty()){
 					content = content+zdContent;
 				}
 				question.setContent(content);
+				question.setPhase(phase);
 				User writer = new User();
 				writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 				question.setWriter(writer);
 				if(area!=null){
 					question.setZone(area.getId());
 				}
-				Crop crop = new Crop();
-				crop.setId(activity.cropId);
+//				Crop crop = new Crop();
+//				crop.setId(activity.cropId);
 				if(status==0||status==1){
 					question.setCrop(crop);
 				}
@@ -394,7 +386,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				
 				question.setInform("0");
 				question.setTime("2015-04-08 00:00:00");
-				question.setAttachments(activity.netImages);
+				question.setAttachments(Arrays.asList(netImages));
 				if(x>=73&&x<=136){
 					question.setX(x);
 				}
@@ -448,8 +440,8 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			if(area!=null){
 				question.setZone(area.getId());
 			}
-			Crop crop = new Crop();
-			crop.setId(activity.cropId);
+//			Crop crop = new Crop();
+//			crop.setId(activity.cropId);
 			if(status==0||status==1){
 				question.setCrop(crop);
 			}

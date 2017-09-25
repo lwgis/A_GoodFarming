@@ -172,7 +172,23 @@
 	            android:layout_height="20dp"
 	            android:gravity="left"
 	            android:layout_marginLeft="6dip"
-	            android:text="1、病害分布规律"
+	            android:text="1、阶段"
+	            android:textColor="#808080"
+	            android:textSize="17dip" />
+            <Spinner 
+			    android:layout_width="200dip"
+			    android:layout_height="wrap_content"
+			    android:layout_margin="5dip"
+			    android:paddingLeft="5dip"
+			    android:id="@+id/spJieduan"
+			    android:background="@drawable/spinner_back"
+			    />
+            <TextView
+	            android:layout_width="200dip"
+	            android:layout_height="20dp"
+	            android:gravity="left"
+	            android:layout_marginLeft="6dip"
+	            android:text="2、病害分布规律"
 	            android:textColor="#808080"
 	            android:textSize="17dip" />
             <Spinner 
@@ -189,7 +205,7 @@
 	            android:layout_height="20dp"
 	            android:gravity="left"
 	            android:layout_marginLeft="6dip"
-	            android:text="2、病害发展程度"
+	            android:text="3、病害发展程度"
 	            android:textColor="#808080"
 	            android:textSize="17dip" />
 			<Spinner 
@@ -206,7 +222,7 @@
 	            android:layout_height="20dp"
 	            android:gravity="left"
 	            android:layout_marginLeft="6dip"
-	            android:text="3、病害发生时间及速度"
+	            android:text="4、病害发生时间及速度"
 	            android:textColor="#808080"
 	            android:textSize="17dip" />
 			<Spinner 
@@ -224,7 +240,7 @@
 	            android:layout_height="20dp"
 	            android:gravity="left"
 	            android:layout_marginLeft="6dip"
-	            android:text="4、植株根系情况"
+	            android:text="5、植株根系情况"
 	            android:textColor="#808080"
 	            android:textSize="17dip" />
             <Spinner 

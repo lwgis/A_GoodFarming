@@ -423,7 +423,7 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 				}
 			}
 			else{
-				img2 = "http://121.40.62.120/appimage/apps/appicon.png";
+				img2 = HttpUtil.ImageUrl+"apps/appicon.png";
 			}
 			shareQQ(url2, title2, content2, img2);		    
 		    sharePopupwindow.dismiss();			
@@ -465,8 +465,8 @@ public class MyQuestionsActivity extends Activity implements OnClickListener,Han
 		    	}
 		    }
 		    else{
-		    	imgurl1 = "http://121.40.62.120/appimage/apps/appicon.png";
-		    	urlsList.add("http://121.40.62.120/appimage/apps/appicon.png");
+		    	imgurl1 = HttpUtil.ImageUrl+"apps/appicon.png";
+		    	urlsList.add(HttpUtil.ImageUrl+"apps/appicon.png");
 		    }
 		    shareQZone(url3,title3,content3,urlsList,imgurl1);
 		    sharePopupwindow.dismiss();

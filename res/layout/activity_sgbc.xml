@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:id="@+id/main_content" 
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:orientation="vertical">
+        <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="45dp"
+	        android:background="#38be99" >
+	
+	        <com.zhonghaodi.customui.MyTextButton
+	            android:id="@+id/cancel_button"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+	            android:layout_alignParentLeft="true"
+	            android:background="@null"
+	            android:text="&lt;返回"
+	            android:textColor="#ffffff"
+	            android:textSize="20dip" 
+	            android:layout_marginLeft="5dp"/>
+	
+	        <TextView
+	            android:id="@+id/title_text"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:gravity="center"
+	            android:text="寿光广播电台"
+	            android:textColor="#FFFFFF"
+	            android:layout_marginLeft="50dip"
+	            android:layout_marginRight="50dip"
+	            android:maxLines="1"
+	            android:ellipsize="end"
+	            android:textSize="18dip" />
+	        <Button
+	            android:id="@+id/close_button"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:layout_centerVertical="true"
+	            android:layout_marginRight="5dip"
+	            android:background="#00000000"
+	            android:gravity="center"
+	            android:text="关闭"
+	            android:textColor="#ffffff"
+	            android:textSize="18dip" />
+	    </RelativeLayout>
+	    <FrameLayout 
+	        android:layout_width="match_parent"
+		    android:layout_height="0dip"
+		    android:layout_weight="1"
+	        >
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical"
+	            >
+	            <ProgressBar
+		      	style="?android:attr/progressBarStyleHorizontal"
+		        android:id="@+id/myProgressBar"
+		        android:layout_width="match_parent"
+		        android:layout_height="5px"
+		        />
+	            <WebView 
+				    android:layout_width="match_parent"
+				    android:layout_height="0dip"
+				    android:layout_weight="1"
+				    android:id="@+id/webView"
+				    />
+	        </LinearLayout>
+	    </FrameLayout>
+    </LinearLayout>
+</LinearLayout>
