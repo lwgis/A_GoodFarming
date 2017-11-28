@@ -29,6 +29,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.adapter.RecipeAdapter;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
@@ -80,7 +81,7 @@ public class RecipesActivity extends Activity implements HandMessage,OnClickList
 			}			
 		});
 		recipes = new ArrayList<Recipe>();
-		adapter = new RecipeAdapter();
+		adapter = new RecipeAdapter(recipes,this);
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
 		location();
 	}
@@ -174,50 +175,7 @@ public class RecipesActivity extends Activity implements HandMessage,OnClickList
 		public void onReceivePoi(BDLocation poiLocation) {
 		}
 	}
-	
-	class RecipeAdapter extends BaseAdapter{
 
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return recipes.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return recipes.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub 
-			HolderRecipe holderRecipe;
-			Recipe recipe = null;
-			recipe = recipes.get(position);
-			convertView = LayoutInflater.from(RecipesActivity.this)
-					.inflate(R.layout.cell_recipe, parent, false);
-			holderRecipe = new HolderRecipe(convertView);
-			convertView.setTag(holderRecipe);
-			holderRecipe=(HolderRecipe)convertView.getTag();
-			if (recipe.getThumbnail()!=null) {
-				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"recipes/small/"+recipe.getThumbnail(), holderRecipe.recipeIv, ImageOptions.optionsNoPlaceholder);
-			}
-			holderRecipe.titleTv.setText(recipe.getTitle());
-			holderRecipe.oldPriceTv.setText(String.valueOf(recipe.getPrice()));
-			holderRecipe.newPriceTv.setText(String.valueOf(recipe.getNewprice()));
-			
-			return convertView;
-		}
-		
-	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,

@@ -35,7 +35,7 @@ public class SearchFairReq implements HandMessage {
 
 			@Override
 			public void run() {
-				String jsonString =HttpUtil.searchFairsString(fromid,cate,key,cityid+"");
+				String jsonString =HttpUtil.searchFairsString(fromid,cate,key,cityid+"","");
 				Message msg = handler.obtainMessage();
 				if(fromid==0){
 					msg.what = 0;

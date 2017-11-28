@@ -2,7 +2,6 @@ package com.zhonghaodi.adapter;
 
 import java.util.List;
 
-import com.google.zxing.common.StringUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhonghaodi.customui.Holder1;
 import com.zhonghaodi.customui.Holder2;
@@ -188,6 +187,7 @@ public class QuestionAdpter extends BaseAdapter {
 		switch (type) {
 		case 0:
 			holder1 = (Holder1) convertView.getTag();
+			holder1.hideHot();
 			ImageLoader.getInstance().displayImage(
 					HttpUtil.ImageUrl+"users/small/"
 							+ question.getWriter().getThumbnail(),
@@ -215,8 +215,14 @@ public class QuestionAdpter extends BaseAdapter {
 			holder1.forwardTextView.setText("转发");
 			holder1.forwardLayout.setTag(question);
 			holder1.forwardLayout.setOnClickListener(mClickListener);
-			if(question.getAddress()!=null){
-				holder1.addressTextView.setText(question.getAddress());
+			if((status==0 || status==3)&&!TextUtils.isEmpty(question.getPhase())){
+				holder1.addressTextView.setText(question.getPhase().toString());
+			}
+			else if(status==1){
+				holder1.addressTextView.setText("");
+			}
+			else{
+				holder1.addressTextView.setText("");
 			}
 			if(question.isFine()){
 				holder1.jpLayout.setVisibility(View.VISIBLE);
@@ -256,6 +262,7 @@ public class QuestionAdpter extends BaseAdapter {
 			break;
 		case 1:
 			holder2 = (Holder2) convertView.getTag();
+			holder2.hideHot();
 			holder2.reSetImageViews();
 			ImageLoader.getInstance().displayImage(
 					HttpUtil.ImageUrl+"users/small/"
@@ -313,8 +320,14 @@ public class QuestionAdpter extends BaseAdapter {
 			holder2.forwardTextView.setText("转发");
 			holder2.forwardLayout.setTag(question);
 			holder2.forwardLayout.setOnClickListener(mClickListener);
-			if(question.getAddress()!=null){
-				holder2.addressTextView.setText(question.getAddress());
+			if((status==0 || status==3)&&!TextUtils.isEmpty(question.getPhase())){
+				holder2.addressTextView.setText(question.getPhase().toString());
+			}
+			else if(status==1){
+				holder2.addressTextView.setText("");
+			}
+			else{
+				holder2.addressTextView.setText("");
 			}
 			if(question.isFine()){
 				holder2.jpLayout.setVisibility(View.VISIBLE);
@@ -355,6 +368,7 @@ public class QuestionAdpter extends BaseAdapter {
 			break;
 		case 2:
 			holder3 = (Holder3) convertView.getTag();
+			holder3.hideHot();
 			holder3.reSetImageViews();
 			ImageLoader.getInstance().displayImage(
 					HttpUtil.ImageUrl+"users/small/"
@@ -432,8 +446,14 @@ public class QuestionAdpter extends BaseAdapter {
 			holder3.forwardTextView.setText("转发");
 			holder3.forwardLayout.setTag(question);
 			holder3.forwardLayout.setOnClickListener(mClickListener);
-			if(question.getAddress()!=null){
-				holder3.addressTextView.setText(question.getAddress());
+			if((status==0 || status==3)&&!TextUtils.isEmpty(question.getPhase())){
+				holder3.addressTextView.setText(question.getPhase().toString());
+			}
+			else if(status==1){
+				holder3.addressTextView.setText("");
+			}
+			else{
+				holder3.addressTextView.setText("");
 			}
 			if(question.isFine()){
 				holder3.jpLayout.setVisibility(View.VISIBLE);
@@ -480,10 +500,16 @@ public class QuestionAdpter extends BaseAdapter {
 				holderPlant1.nameTv.setText(question.getWriter().getAlias());
 				holderPlant1.timeTv.setText(question.getTime());
 				holderPlant1.contentTv.setText(content);
-				
-				if(question.getCate()!=null){
+				int km = (int)question.getDistance();
+				if(km>0){
 					holderPlant1.cropTv.setVisibility(View.VISIBLE);
-					holderPlant1.cropTv.setText(question.getCate().getName());
+					if(km>500){
+						holderPlant1.cropTv.setText("大于500公里");
+					}
+					else{
+						holderPlant1.cropTv.setText("约"+km+"公里");
+					}
+					
 				}
 				else{
 					holderPlant1.cropTv.setVisibility(View.GONE);
@@ -503,11 +529,25 @@ public class QuestionAdpter extends BaseAdapter {
 				holderPlant1.forwardTextView.setText("转发");
 				holderPlant1.forwardLayout.setTag(question);
 				holderPlant1.forwardLayout.setOnClickListener(mClickListener);
-				if(question.isFine()){
+				if(question.isFine() || question.isFinished()){
 					holderPlant1.jpLayout.setVisibility(View.VISIBLE);
+					if(question.isFine()){
+						holderPlant1.jpIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant1.jpIv.setVisibility(View.GONE);
+					}
+					if(question.isFinished()){
+						holderPlant1.jyIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant1.jyIv.setVisibility(View.GONE);
+					}
 				}
 				else{
 					holderPlant1.jpLayout.setVisibility(View.GONE);
+					holderPlant1.jpIv.setVisibility(View.GONE);
+					holderPlant1.jyIv.setVisibility(View.GONE);
 				}
 				switch (question.getWriter().getLevelID()) {
 				case 1:
@@ -582,9 +622,15 @@ public class QuestionAdpter extends BaseAdapter {
 							"plant");
 				}
 				
-				if(question.getCate()!=null){
+				int km1 = (int)question.getDistance();
+				if(km1>0){
 					holderPlant2.cropTv.setVisibility(View.VISIBLE);
-					holderPlant2.cropTv.setText(question.getCate().getName());
+					if(km1>500){
+						holderPlant2.cropTv.setText("大于500公里");
+					}
+					else{
+						holderPlant2.cropTv.setText("约"+km1+"公里");
+					}
 				}
 				else{
 					holderPlant2.cropTv.setVisibility(View.GONE);
@@ -604,11 +650,25 @@ public class QuestionAdpter extends BaseAdapter {
 				holderPlant2.forwardTextView.setText("转发");
 				holderPlant2.forwardLayout.setTag(question);
 				holderPlant2.forwardLayout.setOnClickListener(mClickListener);
-				if(question.isFine()){
+				if(question.isFine() || question.isFinished()){
 					holderPlant2.jpLayout.setVisibility(View.VISIBLE);
+					if(question.isFine()){
+						holderPlant2.jpIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant2.jpIv.setVisibility(View.GONE);
+					}
+					if(question.isFinished()){
+						holderPlant2.jyIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant2.jyIv.setVisibility(View.GONE);
+					}
 				}
 				else{
 					holderPlant2.jpLayout.setVisibility(View.GONE);
+					holderPlant2.jpIv.setVisibility(View.GONE);
+					holderPlant2.jyIv.setVisibility(View.GONE);
 				}
 				switch (question.getWriter().getLevelID()) {
 				case 1:
@@ -706,9 +766,15 @@ public class QuestionAdpter extends BaseAdapter {
 					holderPlant3.imageView6.setImages(question.getAttachments(),
 							"plant");
 				}
-				if(question.getCate()!=null){
+				int km2 = (int)question.getDistance();
+				if(km2>0){
 					holderPlant3.cropTv.setVisibility(View.VISIBLE);
-					holderPlant3.cropTv.setText(question.getCate().getName());
+					if(km2>500){
+						holderPlant3.cropTv.setText("大于500公里");
+					}
+					else{
+						holderPlant3.cropTv.setText("约"+km2+"公里");
+					}
 				}
 				else{
 					holderPlant3.cropTv.setVisibility(View.GONE);
@@ -728,11 +794,25 @@ public class QuestionAdpter extends BaseAdapter {
 				holderPlant3.forwardTextView.setText("转发");
 				holderPlant3.forwardLayout.setTag(question);
 				holderPlant3.forwardLayout.setOnClickListener(mClickListener);
-				if(question.isFine()){
+				if(question.isFine() || question.isFinished()){
 					holderPlant3.jpLayout.setVisibility(View.VISIBLE);
+					if(question.isFine()){
+						holderPlant3.jpIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant3.jpIv.setVisibility(View.GONE);
+					}
+					if(question.isFinished()){
+						holderPlant3.jyIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant3.jyIv.setVisibility(View.GONE);
+					}
 				}
 				else{
 					holderPlant3.jpLayout.setVisibility(View.GONE);
+					holderPlant3.jpIv.setVisibility(View.GONE);
+					holderPlant3.jyIv.setVisibility(View.GONE);
 				}
 				switch (question.getWriter().getLevelID()) {
 				case 1:
@@ -854,9 +934,15 @@ public class QuestionAdpter extends BaseAdapter {
 					holderPlant4.imageView9.setImages(question.getAttachments(),
 							"plant");
 				}
-				if(question.getCate()!=null){
+				int km3 = (int)question.getDistance();
+				if(km3>0){
 					holderPlant4.cropTv.setVisibility(View.VISIBLE);
-					holderPlant4.cropTv.setText(question.getCate().getName());
+					if(km3>500){
+						holderPlant4.cropTv.setText("大于500公里");
+					}
+					else{
+						holderPlant4.cropTv.setText("约"+km3+"公里");
+					}
 				}
 				else{
 					holderPlant4.cropTv.setVisibility(View.GONE);
@@ -876,11 +962,25 @@ public class QuestionAdpter extends BaseAdapter {
 				holderPlant4.forwardTextView.setText("转发");
 				holderPlant4.forwardLayout.setTag(question);
 				holderPlant4.forwardLayout.setOnClickListener(mClickListener);
-				if(question.isFine()){
+				if(question.isFine() || question.isFinished()){
 					holderPlant4.jpLayout.setVisibility(View.VISIBLE);
+					if(question.isFine()){
+						holderPlant4.jpIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant4.jpIv.setVisibility(View.GONE);
+					}
+					if(question.isFinished()){
+						holderPlant4.jyIv.setVisibility(View.VISIBLE);
+					}
+					else{
+						holderPlant4.jyIv.setVisibility(View.GONE);
+					}
 				}
 				else{
 					holderPlant4.jpLayout.setVisibility(View.GONE);
+					holderPlant4.jpIv.setVisibility(View.GONE);
+					holderPlant4.jyIv.setVisibility(View.GONE);
 				}
 				switch (question.getWriter().getLevelID()) {
 				case 1:

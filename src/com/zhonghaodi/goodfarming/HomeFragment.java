@@ -17,6 +17,9 @@ import com.zhonghaodi.customui.DiseasePopupWindow;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.FairPopupWindow;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.customui.MyTextButton;
+import com.zhonghaodi.customui.SaleHeaderView;
+import com.zhonghaodi.customui.SaleHeaderView.MyHeaderView;
 import com.zhonghaodi.model.GFAreaUtil;
 import com.zhonghaodi.model.GFUserDictionary;
 import com.zhonghaodi.model.Question;
@@ -25,6 +28,8 @@ import com.zhonghaodi.model.User;
 import com.zhonghaodi.req.FrmHomeReq;
 import com.zhonghaodi.utils.PublicHelper;
 import com.zhonghaodi.view.FrmHomeView;
+
+import android.app.ActionBar.LayoutParams;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +38,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -42,16 +48,18 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 public class HomeFragment extends Fragment implements FrmHomeView,
-			OnClickListener,OnCreateContextMenuListener,DiseaseListView,FairListView {
+			OnClickListener,OnCreateContextMenuListener,DiseaseListView,MyHeaderView {
 	private PullToRefreshListView pullToRefreshListView;
 	
 	private QuestionAdpter adapter;
@@ -59,15 +67,25 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 	private TextView diseaseTextView;
 	private TextView plantTextView;
 	private TextView gossipTextView;
+	private TextView forumTextView;
+	private FrameLayout fragmentContainer;
+	private ForumFragment forumFragment;
+	private MyTextButton exAreaBtn;
 	private View messageView;
 	private TextView countTv;
 	private Question selectQuestion;
 	private PopupWindow popupWindow;
 	private View popView;
 	private DiseasePopupWindow diseasePopupWindow;
-	private FairPopupWindow fairPopupWindow;
+	private SaleHeaderView saleHeaderView;
 	private ShareContainer shareContainer;
 	private FrmHomeReq req;
+	private String key="";
+	private String deal = "";
+	public View curView;
+	public int page=0;
+	public double distance = 50000;
+	
 	
 
 	public ShareContainer getShareContainer() {
@@ -110,9 +128,14 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 		plantTextView.setOnClickListener(this);
 		gossipTextView = (TextView)view.findViewById(R.id.gossip_text);
 		gossipTextView.setOnClickListener(this);
+		forumTextView = (TextView)view.findViewById(R.id.forum_text);
+		forumTextView.setOnClickListener(this);
+		fragmentContainer = (FrameLayout)view.findViewById(R.id.fragment_container);
 		messageView = view.findViewById(R.id.message_layout);
 		messageView.setOnClickListener(this);
 		countTv = (TextView) view.findViewById(R.id.count_text);
+		exAreaBtn = (MyTextButton)view.findViewById(R.id.exarea_button);
+		exAreaBtn.setOnClickListener(this);
 		pullToRefreshListView = (PullToRefreshListView) view
 				.findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
@@ -128,7 +151,12 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 							req.loadNewGossips();
 						}
 						else if(UILApplication.displayStatus==2){
-							req.loadNewPlant(UILApplication.fairStatus);
+//							req.loadNewPlant(UILApplication.fairStatus,key,deal);
+							if(UILApplication.x==118.798632 && UILApplication.y==36.858719){
+								GFToast.show(getActivity(), "定位失败，将使用寿光默认位置获取数据！");
+							}
+							page=0;
+							req.searchNewPlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
 						}
 					}
 
@@ -145,16 +173,23 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 							req.loadMoreGossips(question.getId());
 						}
 						else if(UILApplication.displayStatus==2){
-							req.loadMorePlant(question.getId(),UILApplication.fairStatus);
+//							req.loadMorePlant(question.getId(),UILApplication.fairStatus,key,deal);
+							int k =getAllQuestions().size()%20;
+							if(k==0){
+								page = getAllQuestions().size()/20;
+								req.searchMorePlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
+							}
+							else{
+								req.threadSleep();
+							}
+							
 						}
 					}
 
 				});
 		adapter = new QuestionAdpter(getAllQuestions(),getActivity(),HomeFragment.this,UILApplication.displayStatus);
 		HomeFragment.this.pullToRefreshListView.getRefreshableView()
-				.setAdapter(adapter);
-		
-		initArea();		
+				.setAdapter(adapter);	
 		this.pullToRefreshListView
 				.setOnItemClickListener(new OnItemClickListener() {
 
@@ -164,7 +199,14 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 						// TODO Auto-generated method stub
 						Intent it = new Intent(getActivity(),
 								QuestionActivity.class);
-						it.putExtra("questionId", getAllQuestions().get(position - 1).getId());
+						int qid;
+						if(UILApplication.displayStatus==2){
+							qid = getAllQuestions().get(position - 2).getId();
+						}
+						else{
+							qid = getAllQuestions().get(position - 1).getId();
+						}
+						it.putExtra("questionId", qid);
 						if(UILApplication.displayStatus==1 || UILApplication.displayStatus==2){
 							it.putExtra("status", UILApplication.displayStatus);
 						}
@@ -172,8 +214,9 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 					}
 				});
 		this.pullToRefreshListView.getRefreshableView().setOnCreateContextMenuListener(this);
+		saleHeaderView = new SaleHeaderView(getActivity(), this);
 		diseasePopupWindow = new DiseasePopupWindow(this, UILApplication.diseaseStatus, getActivity());
-		fairPopupWindow = new FairPopupWindow(this, UILApplication.fairStatus, getActivity(),1);
+		initArea();	
 		return view;
 	}
 	
@@ -183,7 +226,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 		super.onResume();
 		MobclickAgent.onPageStart("主页Fragment");
 		setUnreadMessageCount();
-		
+		displayBack();
 	}
 
 	@Override
@@ -255,7 +298,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 			if(uid==null){
 				diseasePopupWindow.reset();
-				Intent intent = new Intent(getActivity(),LoginActivity.class);
+				Intent intent = new Intent(getActivity(),SignActivity.class);
 				getActivity().startActivity(intent);
 				return;
 			}
@@ -275,31 +318,6 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 		UILApplication.diseaseStatus = spinnerDto.getId();
 		diseaseTextView.setText(spinnerDto.getName());		
 		req.loadNewQuestion();		
-	}
-	
-	@Override
-	public void changePlantStatus(SpinnerDto spinnerDto) {
-		// TODO Auto-generated method stub
-		if(spinnerDto.getId()==-1){
-			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				Intent intent2 = new Intent();
-				intent2.setClass(getActivity(), LoginActivity.class);
-				getActivity().startActivity(intent2);
-				
-			}
-			else{
-				Intent sfIntent = new Intent(getActivity(),SearchFairActivity.class);
-				getActivity().startActivity(sfIntent);
-			}
-			return;
-		}
-		if(spinnerDto.getId()==0){
-			UILApplication.fairStatus = 0;
-		}
-		else{
-			UILApplication.fairStatus=spinnerDto.getId();
-		}
-		req.loadNewPlant(UILApplication.fairStatus);
 	}
 	
 	
@@ -335,7 +353,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			}
 			selectTextView(diseaseTextView);
 			if(UILApplication.diseaseStatus==0){
-				diseaseTextView.setText("病害问题");
+				diseaseTextView.setText("问答");
 			}
 			else{
 				diseaseTextView.setText("我的作物");
@@ -350,7 +368,9 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 		}
 		else if(UILApplication.displayStatus==2){
 			if(getAllQuestions().size()==0){
-				req.loadNewPlant(UILApplication.fairStatus);
+//				req.loadNewPlant(UILApplication.fairStatus,this.key,deal);
+				distance=50000;
+				req.searchNewPlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
 			}
 			
 			selectTextView(plantTextView);
@@ -418,7 +438,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 		case R.id.message_layout:
 			Intent it1 = new Intent();
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				it1.setClass(getActivity(), LoginActivity.class);
+				it1.setClass(getActivity(), SignActivity.class);
 				
 			}
 			else {
@@ -428,6 +448,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			break;
 			
 		case R.id.disease_text:
+			fragmentContainer.setVisibility(View.GONE);
 			if(UILApplication.displayStatus!=0){
 				selectTextView(v);
 				req.loadNewQuestion();
@@ -444,6 +465,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			}
 			break;
 		case R.id.gossip_text:
+			fragmentContainer.setVisibility(View.GONE);
 			if(UILApplication.displayStatus!=1){
 				String uid = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 				selectTextView(v);
@@ -452,21 +474,33 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			}
 			break;
 		case R.id.plant_text:
+			fragmentContainer.setVisibility(View.GONE);
 			if(UILApplication.displayStatus!=2){
-				String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
 				selectTextView(v);
-				req.loadNewPlant(UILApplication.fairStatus);
+//				req.loadNewPlant(UILApplication.fairStatus,this.key,deal);
+				if(UILApplication.x==118.798632 && UILApplication.y==36.858719){
+					GFToast.show(getActivity(), "定位失败，将使用寿光默认位置获取数据！");
+				}
+				distance=50000;
+				page=0;
+				req.searchNewPlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
 				UILApplication.displayStatus = 2;
 			}
-			else{
-				if(fairPopupWindow.isShowing()){
-					fairPopupWindow.dismiss();
+			break;
+		case R.id.forum_text:
+			if(UILApplication.displayStatus != 3){
+				UILApplication.displayStatus = 3;
+				selectTextView(v);
+				fragmentContainer.setVisibility(View.VISIBLE);
+				FragmentTransaction transction = getChildFragmentManager().beginTransaction();
+				if (forumFragment == null) {
+					forumFragment = new ForumFragment();				
+					transction.add(R.id.fragment_container, forumFragment);
 				}
 				else{
-
-					fairPopupWindow.showAsDropDown((View)v.getParent(), 
-							0, 0);
+					transction.replace(R.id.fragment_container, forumFragment);
 				}
+				transction.commit();
 			}
 			break;
 
@@ -474,7 +508,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			popupWindow.dismiss();
 			Intent it = new Intent();
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				it.setClass(getActivity(), LoginActivity.class);
+				it.setClass(getActivity(), SignActivity.class);
 			}
 			else {
 				it.setClass(getActivity(), CreateQuestionActivity.class);
@@ -485,7 +519,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			popupWindow.dismiss();
 			Intent intent = new Intent();
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				intent.setClass(getActivity(), LoginActivity.class);
+				intent.setClass(getActivity(), SignActivity.class);
 			}
 			else {
 				intent.setClass(getActivity(), CreateQuestionActivity.class);
@@ -494,15 +528,17 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			getActivity().startActivity(intent);
 			break;
 		case R.id.btn_plant:
-			popupWindow.dismiss();
-			Intent intent1 = new Intent();
+			popupWindow.dismiss();			
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				intent1.setClass(getActivity(), LoginActivity.class);
+				Intent intent1 = new Intent();
+				intent1.setClass(getActivity(), SignActivity.class);
+				getActivity().startActivity(intent1);
 			}
 			else {
-				intent1.setClass(getActivity(), CreatePlantActivity.class);
+				String uid1 = GFUserDictionary.getUserId(getActivity().getApplicationContext());
+				req.checkPublish(uid1);				
 			}
-			getActivity().startActivity(intent1);
+			
 			break;
 		case R.id.plantzan_layout:
 			selectQuestion = (Question)v.getTag();
@@ -517,7 +553,7 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
 				Intent intent2 = new Intent();
-				intent2.setClass(getActivity(), LoginActivity.class);
+				intent2.setClass(getActivity(), SignActivity.class);
 				getActivity().startActivity(intent2);
 				
 			}
@@ -535,30 +571,66 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 			}
 			
 			break;
+		case R.id.exarea_button:
+			if(distance==50000){
+				distance=100000;
+				GFToast.show(getActivity(), "100公里");
+				page=0;
+				req.searchNewPlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
+			}else if(distance==100000){
+				distance=2000000;
+				GFToast.show(getActivity(), "2000公里啦");
+				page=0;
+				req.searchNewPlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
+			}
+			else{
+				GFToast.show(getActivity(), "不能再加啦，再加快出国了");
+			}
+			break;
 		default:
 			break;
 		}
 	}
 	
+	public void displayBack(){
+		if(curView!=null && curView.getId()==R.id.forum_text){
+			UILApplication.displayStatus = 3;
+			selectTextView(forumTextView);
+			fragmentContainer.setVisibility(View.VISIBLE);
+			FragmentTransaction transction = getChildFragmentManager().beginTransaction();
+			transction.replace(R.id.fragment_container, forumFragment);
+			transction.commit();
+		}
+	}
+	
 	public void selectTextView(View view){
 		Drawable drawable = getResources().getDrawable(R.drawable.dropdown);
-		drawable.setBounds(0, 0, PublicHelper.dip2px(getActivity(), 15), PublicHelper.dip2px(getActivity(), 15)); 
+		drawable.setBounds(0, 0, PublicHelper.dip2px(getActivity(), 13), PublicHelper.dip2px(getActivity(), 13)); 
 		diseaseTextView.setTextColor(Color.rgb(128, 128, 128));
 		diseaseTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
 		diseaseTextView.setCompoundDrawables(null, null, drawable, null);
 		plantTextView.setTextColor(Color.rgb(128, 128, 128));
 		plantTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
-		plantTextView.setCompoundDrawables(null, null, drawable, null);
 		gossipTextView.setTextColor(Color.rgb(128, 128, 128));
 		gossipTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
+		forumTextView.setTextColor(Color.rgb(128, 128, 128));
+		forumTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.topbar_null));
 		
 		TextView selectTextView = (TextView)view;
 		selectTextView.setTextColor(Color.rgb(56, 190, 153));
-		if(selectTextView.getId()==R.id.disease_text || selectTextView.getId()==R.id.plant_text){
+		if(selectTextView.getId()==R.id.disease_text){
 			Drawable drawable1 = getResources().getDrawable(R.drawable.dropdown_s);
-			drawable1.setBounds(0, 0, PublicHelper.dip2px(getActivity(), 15), PublicHelper.dip2px(getActivity(), 15)); 
+			drawable1.setBounds(0, 0, PublicHelper.dip2px(getActivity(), 13), PublicHelper.dip2px(getActivity(), 13)); 
 			selectTextView.setCompoundDrawables(null, null, drawable1, null);
 		}	
+		
+		if(selectTextView.getId()==R.id.plant_text){
+			pullToRefreshListView.getRefreshableView().addHeaderView(saleHeaderView.mainView);
+		}
+		else{
+			pullToRefreshListView.getRefreshableView().removeHeaderView(saleHeaderView.mainView);
+		}
+		curView = view;
 	}
 	
 	private List<Question> getAllQuestions(){
@@ -581,27 +653,36 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 	public void onLoaded(int what, List<Question> questions) {
 		// TODO Auto-generated method stub
 		if(questions!=null){
-			if (what == 0) {
-				getAllQuestions().clear();
-			}
-
-			for (Question question : questions) {
-				if(question.getWriter()!=null){
-					getAllQuestions().add(question);
-				}						
-			}
-			if(UILApplication.displayStatus==0 || UILApplication.displayStatus==3){
-				adapter.setStatus(0);
-			}
-			else{
-				adapter.setStatus(UILApplication.displayStatus);
-			}
-			adapter.notifyDataSetChanged();
-			if (what == 0) {
-				pullToRefreshListView.getRefreshableView().setSelection(0);
+			try {
+				if (what == 0) {
+					getAllQuestions().clear();
+				}
+				for (Question question : questions) {
+					if (question.getWriter() != null) {
+						getAllQuestions().add(question);
+					}
+				}
+				if (UILApplication.displayStatus == 0 || UILApplication.displayStatus == 3) {
+					adapter.setStatus(0);
+				} else {
+					adapter.setStatus(UILApplication.displayStatus);
+				}
+				adapter.notifyDataSetChanged();
+				if (what == 0) {
+					pullToRefreshListView.getRefreshableView().setSelection(0);
+				} 
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 		}
 		pullToRefreshListView.onRefreshComplete();
+//		if(getAllQuestions().size()<5 && UILApplication.displayStatus==2 
+//				&& distance<2000000){
+//			exAreaBtn.setVisibility(View.VISIBLE);
+//		}
+//		else{
+//			exAreaBtn.setVisibility(View.GONE);
+//		}
 	}
 
 	@Override
@@ -618,5 +699,43 @@ public class HomeFragment extends Fragment implements FrmHomeView,
 		adapter.notifyDataSetChanged();
 	}
 
-	
+	@Override
+	public void switchButton(String type) {
+		// TODO Auto-generated method stub
+		deal = type;
+//		req.loadNewPlant(UILApplication.fairStatus, key, deal);
+		distance=50000;
+		page=0;
+		req.searchNewPlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
+	}
+
+	@Override
+	public void search(String key) {
+		// TODO Auto-generated method stub
+		
+//		req.loadNewPlant(UILApplication.fairStatus,key,deal);
+		distance=50000;
+		page=0;
+		req.searchNewPlant(UILApplication.x, UILApplication.y, distance, key, page,deal);
+	}
+
+	@Override
+	public void textChange(String key) {
+		// TODO Auto-generated method stub
+		this.key = key;
+	}
+
+	@Override
+	public void popNewPlant() {
+		// TODO Auto-generated method stub
+		Intent intent1 = new Intent();
+		intent1.setClass(getActivity(), CreatePlantActivity.class);
+		getActivity().startActivity(intent1);
+	}
+
+	@Override
+	public void onlistpullstop() {
+		// TODO Auto-generated method stub
+		pullToRefreshListView.onRefreshComplete();
+	}
 }

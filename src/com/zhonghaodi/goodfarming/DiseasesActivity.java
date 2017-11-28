@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.adapter.DiseaseAdapter;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.goodfarming.ShoppingCartActivity.MyOrderAdapter;
 import com.zhonghaodi.model.Agrotechnical;
@@ -79,7 +80,7 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 		pullToRefreshListView.setOnItemClickListener(this);
 		allDiseases = new ArrayList<Disease>();
 		diseases = new ArrayList<Disease>();
-		adapter = new DiseaseAdapter();
+		adapter = new DiseaseAdapter(diseases,this);
 		pullToRefreshListView.setAdapter(adapter);	
 		cropid = getIntent().getIntExtra("id", 0);
 		cropname = getIntent().getStringExtra("name");
@@ -194,60 +195,7 @@ public class DiseasesActivity extends Activity implements HandMessage,OnItemClic
 		selectTextView.setTextColor(Color.rgb(56, 190, 153));
 		categoryid = Integer.parseInt(view.getTag().toString());
 	}
-	
-	class DiseaseHolder{
-		public RoundedImageView agroIv;
-		public TextView titleTv;
-		public TextView timeTv;
-		 public DiseaseHolder(View view){
-			 agroIv=(RoundedImageView)view.findViewById(R.id.head_image);
-			 titleTv=(TextView)view.findViewById(R.id.title_text);
-			 timeTv=(TextView)view.findViewById(R.id.time_text);
-		 }
-	}
-	
-	class DiseaseAdapter extends BaseAdapter{
 
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return diseases.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return diseases.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			DiseaseHolder diseaseholder;;
-			if(convertView==null){
-				convertView = LayoutInflater.from(DiseasesActivity.this)
-						.inflate(R.layout.cell_diseases, parent, false);
-				diseaseholder = new DiseaseHolder(convertView);
-				convertView.setTag(diseaseholder);
-			}
-			
-			diseaseholder=(DiseaseHolder)convertView.getTag();
-			Disease disease = diseases.get(position);
-			if (disease.getThumbnail()!=null) {
-				ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"diseases/small/"+disease.getThumbnail(), diseaseholder.agroIv, ImageOptions.optionsNoPlaceholder);
-			}
-			diseaseholder.titleTv.setText(disease.getName());
-			diseaseholder.timeTv.setText(disease.getDescription());
-			return convertView;
-		}
-		
-	}
 	
 	@Override
 	public void onClick(View v) {

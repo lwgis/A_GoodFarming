@@ -161,11 +161,11 @@ public class ZfbtBuyActivity extends Activity implements HandMessage,OnClickList
 	public void displayContact(Contact contact){
 		TextView nameTextView = (TextView)findViewById(R.id.name_text);
 		TextView phoneTextView = (TextView)findViewById(R.id.phone_text);
-		TextView postTextView = (TextView)findViewById(R.id.post_text);
+//		TextView postTextView = (TextView)findViewById(R.id.post_text);
 		TextView addressTextView = (TextView)findViewById(R.id.address_text);
 		nameTextView.setText("姓名："+contact.getName());
 		phoneTextView.setText("电话："+contact.getPhone());
-		postTextView.setText("邮编："+contact.getPostnumber());
+//		postTextView.setText("邮编："+contact.getPostnumber());
 		addressTextView.setText("地址："+contact.getAddress());
 		mContact = contact;
 	}

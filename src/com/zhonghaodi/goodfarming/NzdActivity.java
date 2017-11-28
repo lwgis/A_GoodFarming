@@ -12,6 +12,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.adapter.BannerAdapter;
+import com.zhonghaodi.customui.GFImageView;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.HolderRecipe;
 import com.zhonghaodi.customui.Holder_r1;
@@ -20,6 +22,7 @@ import com.zhonghaodi.customui.Holder_r3;
 import com.zhonghaodi.customui.WaitingPopupWindow;
 import com.zhonghaodi.model.Follow;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetImage;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.Nys;
 import com.zhonghaodi.model.Question;
@@ -40,6 +43,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,10 +53,12 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView.ScaleType;
 
 public class NzdActivity extends Activity implements HandMessage,OnClickListener {
 
@@ -67,6 +74,12 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 	private int page = 0;
 	private GFHandler<NzdActivity> handler = new GFHandler<NzdActivity>(this);
 	private WaitingPopupWindow waitingPopupWindow;
+	private View headerView;
+	private NzdInfoHolder nzdInfoHolder;
+	private List<GFImageView> imageViews;
+	private List<View> dots;
+	private BannerAdapter bAdapter;
+	private int currentItem = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -89,6 +102,9 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 			}
 		});
 		waitingPopupWindow = new WaitingPopupWindow(this);
+		headerView = LayoutInflater.from(NzdActivity.this)
+				.inflate(R.layout.cell_nzd_info, null);
+		nzdInfoHolder = new NzdInfoHolder(headerView);
 		pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
 		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView
@@ -142,7 +158,9 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		loadFollowids();
 		allQuestions = new ArrayList<Question>();
 		adapter = new NzdQAdapter();
+		pullToRefreshListView.getRefreshableView().addHeaderView(headerView);
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
+		dispalyHeader();
 		loadUser();
 	}
 	
@@ -232,6 +250,76 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		}).start();
 	}
 	
+	public void loadAtts(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				String jsString = HttpUtil.getNzdAtts(store.getId());
+				Message msg1 = handler.obtainMessage();
+				msg1.what = 5;
+				msg1.obj = jsString;
+				msg1.sendToTarget();
+				
+			}
+		}).start();
+	}
+	
+	public void dispalyHeader(){
+		if(store.getThumbnail()!=null){
+			ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"users/small/"+store.getThumbnail(), nzdInfoHolder.headIv, ImageOptions.optionsNoPlaceholder);
+		}
+		nzdInfoHolder.titleTv.setText(store.getAlias());
+		nzdInfoHolder.desTv.setText(store.getDescription());
+		nzdInfoHolder.chatButton.setOnClickListener(NzdActivity.this);
+		if(bfollow){
+			nzdInfoHolder.followButton.setText("取消关注");
+		}
+		else{
+			nzdInfoHolder.followButton.setText("关注");
+		}
+		nzdInfoHolder.followButton.setOnClickListener(NzdActivity.this);
+		loadAtts();
+	}
+	
+	public void displayImages(List<NetImage> images){
+		if(images==null || images.size()==0){
+			nzdInfoHolder.imagesLayout.setVisibility(View.GONE);
+		}
+		else{
+			nzdInfoHolder.imagesLayout.setVisibility(View.VISIBLE);
+			imageViews = new ArrayList<GFImageView>();
+			dots = new ArrayList<View>();
+			for (int i=0;i<images.size();i++) {
+				NetImage netImage = images.get(i);
+				
+				GFImageView imageView = new GFImageView(this);
+				ImageLoader.getInstance().displayImage(
+						HttpUtil.ImageUrl+"nzd/small/"
+								+ netImage.getUrl(),
+						imageView, ImageOptions.options);
+				imageView.setIndex(i);
+				imageView.setImages(images,"nzd");
+				imageView.setScaleType(ScaleType.FIT_CENTER);
+				imageViews.add(imageView);
+				
+				View dot = new View(this);
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(PublicHelper.dip2px(this, 5),PublicHelper.dip2px(this, 5));
+				layoutParams.setMargins(PublicHelper.dip2px(this, 2), 0, PublicHelper.dip2px(this, 2), 0);
+				dot.setLayoutParams(layoutParams);
+				dot.setBackgroundResource(R.drawable.dot_normal);
+				dot.setVisibility(View.VISIBLE);
+				nzdInfoHolder.dotLayout.addView(dot);
+				dots.add(dot);
+			}
+			
+			bAdapter = new BannerAdapter(imageViews);
+			nzdInfoHolder.adViewPager.setAdapter(bAdapter);
+			nzdInfoHolder.adViewPager.setOnPageChangeListener(new NzdPageChangeListener());
+		}
+	}
+	
 	/**
 	 * 关注
 	 */
@@ -282,12 +370,18 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		public TextView desTv;
 		public Button chatButton;
 		public Button followButton;
+		public LinearLayout dotLayout;
+		public ViewPager adViewPager;
+		public LinearLayout imagesLayout;
 		public NzdInfoHolder(View view){
 			headIv=(RoundedImageView)view.findViewById(R.id.head_image);
 			titleTv=(TextView)view.findViewById(R.id.nzdname);
 			desTv=(TextView)view.findViewById(R.id.nzddes);
 			chatButton = (Button)view.findViewById(R.id.chat_btn);
 			followButton = (Button)view.findViewById(R.id.follow_btn);
+			dotLayout = (LinearLayout)view.findViewById(R.id.dot_layout);
+			adViewPager = (ViewPager)view.findViewById(R.id.vp);
+			imagesLayout = (LinearLayout)view.findViewById(R.id.imagesLayout);
 		}
 	}
 	
@@ -299,13 +393,13 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 			if(store==null){
 				return 0;
 			}
-			return allQuestions.size()+1;
+			return allQuestions.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
-			return allQuestions.get(position-1);
+			return allQuestions.get(position);
 		}
 
 		@Override
@@ -317,27 +411,22 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		@Override
 		public int getViewTypeCount() {
 			// TODO Auto-generated method stub
-			return 4;
+			return 3;
 		}
 
 		@Override
 		public int getItemViewType(int position) {
-			if (position == 0) {
-				return 3;
+			Question question = allQuestions.get(position);
+			if (question.getAttachments().size() == 0) {
+				return 0;
 			}
-			else{
-				Question question = allQuestions.get(position-1);
-				if (question.getAttachments().size() == 0) {
-					return 0;
-				}
-				if (question.getAttachments().size() > 0
-						&& question.getAttachments().size() < 4) {
-					return 1;
-				}
-				if (question.getAttachments().size() > 3
-						&& question.getAttachments().size() < 7) {
-					return 2;
-				}
+			if (question.getAttachments().size() > 0
+					&& question.getAttachments().size() < 4) {
+				return 1;
+			}
+			if (question.getAttachments().size() > 3
+					&& question.getAttachments().size() < 7) {
+				return 2;
 			}
 			return super.getItemViewType(position);
 		}
@@ -346,17 +435,14 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub 
 			boolean bzan = false;
-			NzdInfoHolder nzdInfoHolder;
 			Holder_r1 holder1 = null;
 			Holder_r2 holder2 = null;
 			Holder_r3 holder3 = null;
 			int cellType = getItemViewType(position);
 			Question question = null;
 			Response response = null;
-			if(position>0){
-				question = allQuestions.get(position-1);
-				response = question.getMyResponse();
-			}
+			question = allQuestions.get(position);
+			response = question.getMyResponse();
 			if(convertView==null){
 				switch (cellType) {
 				case 0:
@@ -378,12 +464,6 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 							R.layout.cell_question_r_6_image, parent, false);
 					holder3 = new Holder_r3(convertView);
 					convertView.setTag(holder3);
-					break;
-				case 3:
-					convertView = LayoutInflater.from(NzdActivity.this)
-						.inflate(R.layout.cell_nzd_info, parent,false);
-					nzdInfoHolder = new NzdInfoHolder(convertView);
-					convertView.setTag(nzdInfoHolder);
 					break;
 
 				default:
@@ -775,22 +855,6 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 					holder3.cainaView.setVisibility(View.GONE);
 				}
 				break;
-			case 3:
-				nzdInfoHolder = (NzdInfoHolder)convertView.getTag();
-				if(store.getThumbnail()!=null){
-					ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"users/small/"+store.getThumbnail(), nzdInfoHolder.headIv, ImageOptions.optionsNoPlaceholder);
-				}
-				nzdInfoHolder.titleTv.setText(store.getAlias());
-				nzdInfoHolder.desTv.setText(store.getDescription());
-				nzdInfoHolder.chatButton.setOnClickListener(NzdActivity.this);
-				if(bfollow){
-					nzdInfoHolder.followButton.setText("取消关注");
-				}
-				else{
-					nzdInfoHolder.followButton.setText("关注");
-				}
-				nzdInfoHolder.followButton.setOnClickListener(NzdActivity.this);
-				break;
 
 			default:
 				break;
@@ -970,9 +1034,44 @@ public class NzdActivity extends Activity implements HandMessage,OnClickListener
 			loadData();
 			
 			break;
+		case 5:
+			if (msg.obj != null) {
+				Gson gson = new Gson();
+				List<NetImage> images = gson.fromJson(msg.obj.toString(),
+						new TypeToken<List<NetImage>>() {
+						}.getType());
+				displayImages(images);
+			} else {
+				displayImages(null);
+			}
+			break;
 		default:
 			break;
 		}
 	}
 
+	private class NzdPageChangeListener implements OnPageChangeListener {
+
+		private int oldPosition = 0;
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+
+		}
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+		}
+
+		@Override
+		public void onPageSelected(int position) {
+			currentItem = position;
+			dots.get(oldPosition).setBackgroundResource(R.drawable.dot_normal);
+			dots.get(position).setBackgroundResource(R.drawable.dot_focused);
+			oldPosition = position;
+		}
+	}
+	
+	
 }

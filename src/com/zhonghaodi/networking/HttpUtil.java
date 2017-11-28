@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -63,13 +65,13 @@ import com.zhonghaodi.model.User;
 public class HttpUtil {
 	public static String WX_APP_ID="wx8fd908378b8ab3e5";
 	public static String QQ_APP_ID="1104653579";
-//	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
-//	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
-//	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
+	public static String RootURL = "http://zhd.zhonghaodi.com/dfyy/rest/";
+	public static String ImageUrl = "http://zhd.zhonghaodi.com/appimage/";
+	public static String ViewUrl = "http://zhd.zhonghaodi.com/dfyy/view/";
 	
-	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
-	public static String ImageUrl = "http://121.40.62.120/appimage/";
-	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
+//	public static String RootURL = "http://121.40.62.120:8088/dfyy/rest/";
+//	public static String ImageUrl = "http://121.40.62.120/appimage/";
+//	public static String ViewUrl = "http://121.40.62.120:8088/dfyy/view/";
 	
 //	public static String RootURL = "http://115.28.154.159/dfyy/rest/";
 //	public static String ImageUrl = "http://115.28.154.159/appimage/";
@@ -78,6 +80,15 @@ public class HttpUtil {
 	public static String executeHttpGet(String urlString) {
 		StringBuffer sb = new StringBuffer();
 		DefaultHttpClient client = new DefaultHttpClient();
+//		URI uri=null;
+//		URL url=null;
+//		try {
+//			url = new URL(urlString);
+//			uri = new URI(url.getProtocol(), url.getHost()+":"+url.getPort(), url.getPath(), url.getQuery(), null);
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		HttpGet get = new HttpGet(urlString);
 		get.addHeader("Content-type", "application/json;charset=UTF-8");
 		get.addHeader("Accept-Charset", "utf-8");
@@ -607,7 +618,7 @@ public class HttpUtil {
         }
     }
     
-    public static String searchFairsString(int qid,int cate,String key,String zone) {
+    public static String searchFairsString(int qid,int cate,String key,String zone,String deal) {
 		String url = RootURL + "plantinfo";
 		url=url+"?fromid=";
 		if(qid!=0){
@@ -617,8 +628,25 @@ public class HttpUtil {
 		if(cate!=0){
 			url+=cate;
 		}
+		if(!TextUtils.isEmpty(deal)){
+			url+="&deal="+deal;
+		}
 		url=url+="&keyword="+key;
 		url=url+="&zone="+zone;
+		String jsonString = HttpUtil.executeHttpGet(url);
+		return jsonString;
+	}
+    
+    public static String searchFairs(double x,double y,double distance,String key,String zone,int page,String deal) {
+		String url = RootURL + "plantinfo/near";
+		url=url+"?page="+page+"&x="+x+"&y="+y+"&zone="+zone;
+		
+		if(!TextUtils.isEmpty(key)){
+			url+="&keyword="+key;
+		}
+		if(!TextUtils.isEmpty(deal)){
+			url+="&deal="+deal;
+		}
 		String jsonString = HttpUtil.executeHttpGet(url);
 		return jsonString;
 	}
@@ -1974,6 +2002,12 @@ public class HttpUtil {
 		
 	}
 	
+	public static String getNzdAtts(String uid){
+		String urlString = RootURL + "users/"+uid+"/nzdAtts";
+		String result =HttpUtil.executeHttpGet(urlString);
+		return result;
+	}
+	
 	public static String getFollows(String uid){
 		
 		String urlString = RootURL + "users/"+uid+"/follows";
@@ -2939,7 +2973,6 @@ public class HttpUtil {
 	public static NetResponse addContact(final String uid,
 			final String name,
 			final String phone,
-			final String post,
 			final String address) {
 		String jsonString = null;
 		String urlString = RootURL + "contacts";
@@ -3016,7 +3049,7 @@ public class HttpUtil {
 			@Override
 			public String getValue() {
 				// TODO Auto-generated method stub
-				return post;
+				return "100000";
 			}
 
 			@Override
@@ -3047,7 +3080,6 @@ public class HttpUtil {
 	public static NetResponse updateContact(final int cid,
 			final String name,
 			final String phone,
-			final String post,
 			final String address) {
 		String jsonString = null;
 		String urlString = RootURL + "contacts/"+cid;
@@ -3108,7 +3140,7 @@ public class HttpUtil {
 			@Override
 			public String getValue() {
 				// TODO Auto-generated method stub
-				return post;
+				return "100000";
 			}
 
 			@Override

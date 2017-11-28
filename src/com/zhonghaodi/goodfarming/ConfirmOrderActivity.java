@@ -32,7 +32,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 	
 	private TextView nameTextView;
 	private TextView phoneTextView;
-	private TextView postTextView;
+//	private TextView postTextView;
 	private TextView addressTextView;
 	private ImageView cImageView;
 	private TextView cTextView;
@@ -54,7 +54,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 		okButton.setOnClickListener(this);
 		nameTextView = (TextView)findViewById(R.id.name_text);
 		phoneTextView = (TextView)findViewById(R.id.phone_text);
-		postTextView = (TextView)findViewById(R.id.post_text);
+//		postTextView = (TextView)findViewById(R.id.post_text);
 		addressTextView = (TextView)findViewById(R.id.address_text);
 		cImageView = (ImageView)findViewById(R.id.head_image);
 		cTextView = (TextView)findViewById(R.id.commodity_text);
@@ -124,7 +124,7 @@ public class ConfirmOrderActivity extends Activity implements OnClickListener,Ha
 		
 		nameTextView.setText("姓名："+contact.getName());
 		phoneTextView.setText("电话："+contact.getPhone());
-		postTextView.setText("邮编："+contact.getPostnumber());
+//		postTextView.setText("邮编："+contact.getPostnumber());
 		addressTextView.setText("地址："+contact.getAddress());
 		mContact = contact;
 	}

@@ -33,35 +33,7 @@
 	          android:orientation="vertical"
 	          android:background="#e6e7eb"
 	          >
-		    <!-- <RelativeLayout 
-	            android:id="@+id/layout3"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="8dip"
-		        android:background="@drawable/background_with_shadow"
-		        android:padding="5dip"
-		        android:clickable="true"
-		        >
-		        <ImageView 
-		            android:id="@+id/avimg3"
-		            android:layout_width="40dip"
-		            android:layout_height="40dip"
-		            android:scaleType="fitXY"
-		            android:src="@drawable/quan"
-		            />
-		        <TextView 
-		            android:id="@+id/avname3"
-		            android:layout_width="wrap_content"
-		            android:layout_height="40dip"
-		            android:gravity="center_vertical"
-		            android:layout_toRightOf="@+id/avimg3"
-		            android:paddingLeft="10dip"
-		            android:textColor="#444444"
-		            android:textSize="18dip"
-		            android:text="农艺圈"
-		            />
-		        
-		    </RelativeLayout> -->
+		    
 		    <!-- <RelativeLayout 
 	            android:id="@+id/layout7"
 		        android:layout_width="match_parent"
@@ -360,6 +332,84 @@
 		           android:layout_centerVertical="true"
 		           />
 		        
+		    </RelativeLayout>
+		    <RelativeLayout 
+	            android:id="@+id/layout3"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="0dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg3"
+		            android:layout_width="20dip"
+		            android:layout_height="20dip"
+		            android:layout_marginLeft="10dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/sggb"
+		            android:layout_centerVertical="true"
+		            />
+		        <TextView 
+		            android:id="@+id/avname3"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg3"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="寿光蔬菜电台"
+		            />
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
+		    </RelativeLayout>
+		    <RelativeLayout 
+	            android:id="@+id/layout10"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="0dip"
+		        android:background="@drawable/background_with_shadow"
+		        android:padding="5dip"
+		        android:clickable="true"
+		        >
+		        <ImageView 
+		            android:id="@+id/avimg10"
+		            android:layout_width="20dip"
+		            android:layout_height="20dip"
+		            android:layout_marginLeft="10dip"
+		            android:scaleType="fitXY"
+		            android:src="@drawable/appshare1"
+		            android:layout_centerVertical="true"
+		            />
+		        <TextView 
+		            android:id="@+id/avname10"
+		            android:layout_width="wrap_content"
+		            android:layout_height="40dip"
+		            android:gravity="center_vertical"
+		            android:layout_toRightOf="@+id/avimg10"
+		            android:paddingLeft="10dip"
+		            android:textColor="#444444"
+		            android:textSize="18dip"
+		            android:text="邀请好友抢红包"
+		            />
+		        <ImageView 
+		           android:layout_width="15dp"
+		           android:layout_height="15dp" 
+		           android:layout_marginRight="10dp"
+		           android:src="@drawable/rightarrow"
+		           android:scaleType="centerCrop"
+		           android:layout_alignParentRight="true"
+		           android:layout_centerVertical="true"
+		           />
 		    </RelativeLayout>
 	       </LinearLayout>
     </ScrollView>

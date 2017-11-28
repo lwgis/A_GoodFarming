@@ -1,18 +1,21 @@
 package com.zhonghaodi.req;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.NameValuePair;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.goodfarming.UILApplication;
 import com.zhonghaodi.model.City;
 import com.zhonghaodi.model.GFUserDictionary;
+import com.zhonghaodi.model.NetMessage;
 import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.model.Question;
-import com.zhonghaodi.model.Zan;
 import com.zhonghaodi.networking.GFHandler;
+import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 import com.zhonghaodi.view.FrmHomeView;
@@ -141,13 +144,41 @@ public class FrmHomeReq implements HandMessage {
 		}).start();
 	}
 	
-	public void loadNewPlant(final int cid) {
+//	public void loadNewPlant(final int cid,final String key,final String deal) {
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				int zone=0;
+//				String jsonString = HttpUtil.searchFairsString(0,cid,key,zonestr,deal);
+//				Message msg = handler.obtainMessage();
+//				msg.what = 0;
+//				msg.obj = jsonString;
+//				msg.sendToTarget();
+//			}
+//		}).start();
+//	}
+//
+//	public void loadMorePlant(final int qid,final int cid,final String key,final String deal) {
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				int zone=0;
+//				String jsonString = HttpUtil.searchFairsString(qid,cid,key,zonestr,deal);
+//				Message msg = handler.obtainMessage();
+//				msg.what = 1;
+//				msg.obj = jsonString;
+//				msg.sendToTarget();
+//			}
+//		}).start();
+//	}
+	
+	public void searchNewPlant(final double x,final double y,final double distance,final String key,final int page,final String deal){
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				int zone=0;
-				String jsonString = HttpUtil.searchFairsString(0,cid,"",zonestr);
+				String jsonString = HttpUtil.searchFairs(x,y,distance,key,zonestr,page,deal);
 				Message msg = handler.obtainMessage();
 				msg.what = 0;
 				msg.obj = jsonString;
@@ -155,13 +186,13 @@ public class FrmHomeReq implements HandMessage {
 			}
 		}).start();
 	}
-
-	public void loadMorePlant(final int qid,final int cid) {
+	
+	public void searchMorePlant(final double x,final double y,final double distance,final String key,final int page,final String deal){
 		new Thread(new Runnable() {
+
 			@Override
 			public void run() {
-				int zone=0;
-				String jsonString = HttpUtil.searchFairsString(qid,cid,"",zonestr);
+				String jsonString = HttpUtil.searchFairs(x,y,distance,key,zonestr,page,deal);
 				Message msg = handler.obtainMessage();
 				msg.what = 1;
 				msg.obj = jsonString;
@@ -213,6 +244,70 @@ public class FrmHomeReq implements HandMessage {
 			}
 		}).start();
 	}
+	
+	public void checkPublish(final String uid){
+		
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				NetResponse netResponse;
+				String urlString = HttpUtil.RootURL + "plantinfo/hasPublish";
+				ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+				NameValuePair uidValuePair1 = new NameValuePair() {
+
+					@Override
+					public String getValue() {
+						// TODO Auto-generated method stub
+						return uid;
+					}
+
+					@Override
+					public String getName() {
+						// TODO Auto-generated method stub
+						return "uid";
+					}
+				};
+				
+				nameValuePairs.add(uidValuePair1);
+				
+				try {
+					netResponse = HttpUtil.executeHttpPost(urlString, nameValuePairs);
+					Message msg = handler.obtainMessage();
+					msg.what = 4;
+					msg.obj = netResponse;
+					msg.sendToTarget();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					Message msg = handler.obtainMessage();
+					msg.what = 0;
+					msg.obj = e.getMessage();
+					msg.sendToTarget();
+				}
+			}
+		}).start();
+	}
+	public void threadSleep(){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(1000);
+					Message msg = handler.obtainMessage();
+					msg.what = 10;
+					msg.sendToTarget();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
+		
+	}
 
 	@Override
 	public void handleMessage(Message msg,Object object) {
@@ -226,7 +321,10 @@ public class FrmHomeReq implements HandMessage {
 							}.getType());
 					
 				} 
-				view.onLoaded(msg.what, questions);
+				if(view!=null && msg!=null && questions!=null){
+					view.onLoaded(msg.what, questions);
+				}
+				
 			}
 			else if(msg.what==3){
 				
@@ -239,6 +337,27 @@ public class FrmHomeReq implements HandMessage {
 					
 				}
 				
+			}
+			else if(msg.what==4){
+				NetResponse netResponse = (NetResponse)msg.obj;
+				if(netResponse!=null&&netResponse.getStatus()==1){
+					NetMessage netMessage= (NetMessage) GsonUtil
+							.fromJson(netResponse.getResult(), NetMessage.class);
+					if(netMessage!=null){
+						if(netMessage.isResult()){
+							view.showMessage("亲，每天只能发一条赶大集哟");
+						}
+						else{
+							view.popNewPlant();
+						}
+					}
+					else{
+						view.showMessage("操作失败！");
+					}
+				}
+				else{
+					view.showMessage("操作失败！");
+				}
 			}
 			else if(msg.what==9){
 				if(msg.obj!=null){
@@ -260,6 +379,9 @@ public class FrmHomeReq implements HandMessage {
 				else{
 					view.showMessage("点赞操作错误");
 				}
+			}
+			else if(msg.what==10){
+				view.onlistpullstop();
 			}
 			else if(msg.what==-1){
 				if(msg.obj!=null){

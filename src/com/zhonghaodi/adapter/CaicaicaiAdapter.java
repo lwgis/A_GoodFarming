@@ -12,6 +12,7 @@ import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,7 +72,11 @@ public class CaicaicaiAdapter extends BaseAdapter {
 			holder.answerView.setVisibility(View.GONE);
 			holder.splitLine.setVisibility(View.GONE);
 			holder.commentView.setVisibility(View.GONE);
-			holder.contentView.setText(caicaicai.getContent());
+			String content = caicaicai.getContent();
+			if(!TextUtils.isEmpty(caicaicai.getEndTime())){
+				content+="(答案公开时间："+caicaicai.getEndTime()+")";
+			}
+			holder.contentView.setText(content);
 			holder.responseView.setText("答案（"+caicaicai.getResponseCount()+"）");
 			if(caicaicai.getAttachments1()!=null && caicaicai.getAttachments1().size()>0){
 				for (int i = 0; i < caicaicai.getAttachments1().size(); i++) {

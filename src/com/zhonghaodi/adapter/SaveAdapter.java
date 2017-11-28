@@ -62,7 +62,7 @@ public class SaveAdapter extends BaseAdapter {
 		holderzfbt=(HolderZfbt)convertView.getTag();
 		Zfbt second = zfbts.get(position);
 		if (second.getImage()!=null) {
-			ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/big/"+second.getImage(), holderzfbt.secondIv, ImageOptions.optionsNoPlaceholder);
+			ImageLoader.getInstance().displayImage(HttpUtil.ImageUrl+"seconds/small/"+second.getImage(), holderzfbt.secondIv, ImageOptions.optionsNoPlaceholder);
 		}
 		if(!second.isUseCoupon()){
 			holderzfbt.couponTv.setVisibility(View.GONE);

@@ -25,11 +25,10 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
-public class FairPopupWindow extends PopupWindow implements PopupFairView {
-	private View mainview;
+public class FairPopupWindow implements PopupFairView {
+	public View mainview;
 	private GridView listView;
 	private ImageView searchButton;
-	private TextView allText;
 	private List<SpinnerDto> datas;
 	private FairListView plantListView;
 	private int displayid;
@@ -52,7 +51,6 @@ public class FairPopupWindow extends PopupWindow implements PopupFairView {
 				adapter.setSelectId(spinnerDto.getId());
 				adapter.notifyDataSetChanged();
 				plantListView.changePlantStatus(spinnerDto);
-				dismiss();
 			}
 		});
 		searchButton = (ImageView)mainview.findViewById(R.id.search_button);
@@ -66,43 +64,19 @@ public class FairPopupWindow extends PopupWindow implements PopupFairView {
 				adapter.setSelectId(spinnerDto.getId());
 				adapter.notifyDataSetChanged();
 				plantListView.changePlantStatus(spinnerDto);
-				dismiss();
-			}
-		});
-		
-		allText = (TextView)mainview.findViewById(R.id.all_text);
-		allText.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				SpinnerDto spinnerDto = new SpinnerDto();
-				spinnerDto.setId(0);
-				adapter.setSelectId(spinnerDto.getId());
-				adapter.notifyDataSetChanged();
-				plantListView.changePlantStatus(spinnerDto);
-				dismiss();
 			}
 		});
 		
 		plantListView = gView;
 		displayid = id;
 		datas = new ArrayList<SpinnerDto>();
+		SpinnerDto spinnerDto = new SpinnerDto();
+		spinnerDto.setId(0);
+		spinnerDto.setName("全部");
+		datas.add(spinnerDto);
 		adapter = new CateGridAdapter(datas, context, displayid);
 		listView.setAdapter(adapter);
 		
-		//设置SelectPicPopupWindow的View  
-        this.setContentView(mainview);  
-        //设置SelectPicPopupWindow弹出窗体的宽  
-        this.setWidth(DpTransform.dip2px(context, 260));  
-        //设置SelectPicPopupWindow弹出窗体的高  
-        this.setHeight(DpTransform.dip2px(context, 120));  
-        //设置SelectPicPopupWindow弹出窗体可点击  
-        this.setFocusable(true);   
-        //实例化一个ColorDrawable颜色为半透明  
-        ColorDrawable dw = new ColorDrawable(0xff000000);  
-        //设置SelectPicPopupWindow弹出窗体的背景  
-        this.setBackgroundDrawable(dw);
         PopupFairReq req = new PopupFairReq(this);
         if(type==1)
         {

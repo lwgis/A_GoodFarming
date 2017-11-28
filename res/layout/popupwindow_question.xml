@@ -13,7 +13,7 @@
         android:shadowColor="#222222"
         android:shadowDy="-2"
         android:shadowRadius="2"
-        android:text="病虫害问题"
+        android:text="问答"
         android:textColor="#ffffff"
         android:textSize="20dip" />
     <Button
@@ -24,7 +24,7 @@
         android:shadowColor="#222222"
         android:shadowDy="-2"
         android:shadowRadius="2"
-        android:text="拉拉呱"
+        android:text="拉呱"
         android:textColor="#ffffff"
         android:textSize="20dip" />
     <Button

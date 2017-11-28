@@ -47,6 +47,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -486,7 +487,11 @@ public class CaiActivity extends Activity implements OnClickListener,CaiView {
 			headHolder.answerView.setVisibility(View.GONE);
 			headHolder.splitLine.setVisibility(View.GONE);
 			headHolder.commentView.setVisibility(View.GONE);
-			headHolder.contentView.setText(caicaicai.getContent());
+			String content = caicaicai.getContent();
+			if(!TextUtils.isEmpty(caicaicai.getEndTime())){
+				content+="(答案公开时间："+caicaicai.getEndTime()+")";
+			}
+			headHolder.contentView.setText(content);
 			headHolder.responseView.setText("答案（"+caicaicai.getResponseCount()+"）");
 			headHolder.responseView.setOnClickListener(this);
 			if(caicaicai.getAttachments1()!=null && caicaicai.getAttachments1().size()>0){

@@ -44,7 +44,8 @@ public class SGBCActivity extends Activity  {
 
 			@Override
 			public void onClick(View v) {
-				finish();
+				SGBCActivity.this.finish();
+//				moveTaskToBack(true);
 			}
 		});
 		Button closeButton = (Button)findViewById(R.id.close_button);
@@ -70,11 +71,6 @@ public class SGBCActivity extends Activity  {
 		
 	}
 	
-	@Override
-	public void finish() {
-		// TODO Auto-generated method stub
-		moveTaskToBack(true);
-	}
 
 	@Override
 	protected void onResume() {

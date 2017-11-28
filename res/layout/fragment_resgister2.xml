@@ -78,9 +78,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:hint="推荐人的推荐码（选填）"
+            android:hint="推荐码或手机号（选填）"
             android:singleLine="true"
-        	android:maxLength="4"
+        	android:maxLength="11"
             android:textColor="#333333" />
 
         <com.zhonghaodi.customui.MyTextButton

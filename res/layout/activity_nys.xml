@@ -16,7 +16,7 @@
             android:layout_height="match_parent" 
             android:textColor="#FFFFFF"
             android:textSize="18dip"
-            android:text="&lt;返回"
+            android:text="返回"
             android:background="#00000000" 
             android:onClick="loginOut"/>
 

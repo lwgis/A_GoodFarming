@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.mapapi.map.Text;
 import com.makeramen.RoundedImageView;
 import com.zhonghaodi.goodfarming.R;
 
@@ -21,6 +22,8 @@ public TextView levelTextView;
 public TextView forwardTextView;
 public LinearLayout forwardLayout;
 public RelativeLayout jpLayout;
+public View hotsplit;
+public TextView hotText;
 
 	public Holder1(View view) {
 		nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -34,5 +37,15 @@ public RelativeLayout jpLayout;
 		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
 		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
 		jpLayout = (RelativeLayout)view.findViewById(R.id.cainalayout);
+		hotsplit = view.findViewById(R.id.hot_view);
+		hotText = (TextView)view.findViewById(R.id.hot_text);
+	}
+	public void hideHot(){
+		hotsplit.setVisibility(View.GONE);
+		hotText.setVisibility(View.GONE);
+	}
+	public void displayHot(){
+		hotsplit.setVisibility(View.VISIBLE);
+		hotText.setVisibility(View.VISIBLE);
 	}
 }

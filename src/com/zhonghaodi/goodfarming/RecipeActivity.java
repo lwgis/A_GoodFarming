@@ -195,7 +195,7 @@ public class RecipeActivity extends Activity implements HandMessage,OnClickListe
 		case R.id.order_button:
 			if (GFUserDictionary.getUserId(getApplicationContext())==null) {
 				Intent it=new Intent();
-				it.setClass(RecipeActivity.this, LoginActivity.class);
+				it.setClass(RecipeActivity.this, SignActivity.class);
 				startActivity(it);
 				return;
 			}

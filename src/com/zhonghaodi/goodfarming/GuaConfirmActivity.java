@@ -36,7 +36,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 
 	private TextView nameTextView;
 	private TextView phoneTextView;
-	private TextView postTextView;
+//	private TextView postTextView;
 	private TextView addressTextView;
 	private ImageView cImageView;
 	private TextView cTextView;
@@ -54,7 +54,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 		okButton.setOnClickListener(this);
 		nameTextView = (TextView)findViewById(R.id.name_text);
 		phoneTextView = (TextView)findViewById(R.id.phone_text);
-		postTextView = (TextView)findViewById(R.id.post_text);
+//		postTextView = (TextView)findViewById(R.id.post_text);
 		addressTextView = (TextView)findViewById(R.id.address_text);
 		cImageView = (ImageView)findViewById(R.id.head_image);
 		cTextView = (TextView)findViewById(R.id.commodity_text);
@@ -110,7 +110,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 		
 		nameTextView.setText("姓名："+contact.getName());
 		phoneTextView.setText("电话："+contact.getPhone());
-		postTextView.setText("邮编："+contact.getPostnumber());
+//		postTextView.setText("邮编："+contact.getPostnumber());
 		addressTextView.setText("地址："+contact.getAddress());
 		mContact = contact;
 	}
@@ -270,7 +270,7 @@ public class GuaConfirmActivity extends Activity implements OnClickListener,Hand
 			break;
 		case 1:
 			MobclickAgent.onEvent(this, UmengConstants.WINNING_RUBBER_ID);
-			GFToast.show(getApplicationContext(),"订单提交成功。可在我的订单里查看。");
+			GFToast.show(getApplicationContext(),"成功，可在我的订单里查看。");
 			this.finish();
 			break;
 		default:

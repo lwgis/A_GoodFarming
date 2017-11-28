@@ -54,6 +54,7 @@ import com.zhonghaodi.model.PostResponse;
 import com.zhonghaodi.model.Prescription;
 import com.zhonghaodi.model.Question;
 import com.zhonghaodi.model.Response;
+import com.zhonghaodi.model.Store;
 import com.zhonghaodi.model.User;
 import com.zhonghaodi.model.UserCrop;
 import com.zhonghaodi.networking.GFDate;
@@ -184,7 +185,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 				    inputManager.showSoftInput(mzEditText, 0); 
 				} else {
 					Intent it = new Intent(QuestionActivity.this,
-							LoginActivity.class);
+							SignActivity.class);
 					QuestionActivity.this.startActivity(it);
 				}
 			}
@@ -202,17 +203,19 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		status = getIntent().getIntExtra("status", 0);
 		TextView titleTextView = (TextView)findViewById(R.id.title_text);
 		if(status==0){
+			finishButton.setVisibility(View.GONE);
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
 			favoriteButton.setVisibility(View.VISIBLE);
-			finishButton.setVisibility(View.GONE);
+			
 			
 		}
 		else if(status==1){
+			finishButton.setVisibility(View.GONE);
 			titleTextView.setText("问题详细信息");
 			sendBtn.setText("回答");
 			favoriteButton.setVisibility(View.GONE);
-			finishButton.setVisibility(View.GONE);
+			
 		}
 		else{
 			titleTextView.setText("赶大集详细信息");
@@ -621,7 +624,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			UILApplication.sharestatus=0;
 		}
 		else{
-			morePopupWindow.hideReport();
+			morePopupWindow.hideReport();			
 			UILApplication.sharestatus=1;
 		}
 		morePopupWindow.setFocusable(true);
@@ -667,7 +670,7 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if(uid==null){
-			Intent intent = new Intent(this, LoginActivity.class);
+			Intent intent = new Intent(this, SignActivity.class);
 			startActivity(intent);
 			return;
 		}
@@ -828,6 +831,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 			it1.putExtra("rid", rid);
 			startActivity(it1);
 			morePopupWindow.dismiss();
+			break;
+		case R.id.hot_text:
+			Intent hotIntent = new Intent(this,HotQuestionsActivity.class);
+			hotIntent.putExtra("cid", question.getCrop().getId());
+			hotIntent.putExtra("zone", question.getZone()+"");
+			hotIntent.putExtra("phrase", question.getPhase());
+			startActivity(hotIntent);
 			break;
 		case R.id.img_share_weixin:
 			if(!wxApi.isWXAppInstalled()){
@@ -1053,6 +1063,50 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 		case R.id.finish_button:
 			finishQuestion();
 			break;
+		case R.id.head_image:
+			Object object = v.getTag();
+		    if(object!=null){
+		    	User nzd = (User)object;
+		    	Intent intentnzd = new Intent(this, NzdActivity.class);
+				Bundle bundle1 = new Bundle();
+				bundle1.putSerializable("store", nzd);
+				intentnzd.putExtras(bundle1);
+				startActivity(intentnzd);
+		    }
+		    break;
+		case R.id.name_text:
+		    Object object1 = v.getTag();
+		    if(object1!=null){
+		    	User nzd = (User)object1;
+		    	Intent intentnzd = new Intent(this, NzdActivity.class);
+				Bundle bundle1 = new Bundle();
+				bundle1.putSerializable("store", nzd);
+				intentnzd.putExtras(bundle1);
+				startActivity(intentnzd);
+		    }
+		    break;
+		case R.id.head_image_r:
+			Object object2 = v.getTag();
+		    if(object2!=null){
+		    	User nzd = (User)object2;
+		    	Intent intentnzd = new Intent(this, NzdActivity.class);
+				Bundle bundle1 = new Bundle();
+				bundle1.putSerializable("store", nzd);
+				intentnzd.putExtras(bundle1);
+				startActivity(intentnzd);
+		    }
+		    break;
+		case R.id.name_text_r:
+		    Object object3 = v.getTag();
+		    if(object3!=null){
+		    	User nzd = (User)object3;
+		    	Intent intentnzd = new Intent(this, NzdActivity.class);
+				Bundle bundle1 = new Bundle();
+				bundle1.putSerializable("store", nzd);
+				intentnzd.putExtras(bundle1);
+				startActivity(intentnzd);
+		    }
+		    break;
 		default:
 			break;
 		}
@@ -1100,7 +1154,13 @@ public class QuestionActivity extends Activity implements UrlOnClick,
 						bottomLayout.setVisibility(View.GONE);
 					}
 					else{
-						finishButton.setVisibility(View.VISIBLE);
+						if(status==2){
+							finishButton.setVisibility(View.VISIBLE);
+						}
+						else{
+							finishButton.setVisibility(View.GONE);
+						}
+						
 						bottomLayout.setVisibility(View.VISIBLE);
 					}
 				}

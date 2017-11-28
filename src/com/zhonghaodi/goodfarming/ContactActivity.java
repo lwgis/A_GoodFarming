@@ -27,7 +27,7 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 	
 	private EditText nameEditText;
 	private EditText phoneEditText;
-	private EditText postEditText;
+//	private EditText postEditText;
 	private EditText addressEditText;
 	private Contact eContact;
 	private GFHandler<ContactActivity> handler = new GFHandler<ContactActivity>(this);
@@ -44,14 +44,14 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 		okButton.setOnClickListener(this);
 		nameEditText = (EditText)findViewById(R.id.name_edit);
 		phoneEditText = (EditText)findViewById(R.id.phone_edit);
-		postEditText = (EditText)findViewById(R.id.post_edit);
+//		postEditText = (EditText)findViewById(R.id.post_edit);
 		addressEditText = (EditText)findViewById(R.id.address_edit);
 		eContact = (Contact)getIntent().getSerializableExtra("contact");
 		if(eContact!=null){
 			status=1;
 			nameEditText.setText(eContact.getName());
 			phoneEditText.setText(eContact.getPhone());
-			postEditText.setText(eContact.getPostnumber());
+//			postEditText.setText(eContact.getPostnumber());
 			addressEditText.setText(eContact.getAddress());
 		}
 	}
@@ -80,7 +80,7 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		final String name = nameEditText.getText().toString();
 		final String phone = phoneEditText.getText().toString();
-		final String post = postEditText.getText().toString();
+//		final String post = postEditText.getText().toString();
 		final String address = addressEditText.getText().toString();
 		if(name.isEmpty()){
 			GFToast.show(getApplicationContext(),"请输入收货人姓名");
@@ -90,10 +90,10 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 			GFToast.show(getApplicationContext(),"请输入收货人电话");
 			return;
 		}
-		if(post.isEmpty()){
-			GFToast.show(getApplicationContext(),"请输入邮编");
-			return;
-		}
+//		if(post.isEmpty()){
+//			GFToast.show(getApplicationContext(),"请输入邮编");
+//			return;
+//		}
 		if(address.isEmpty()){
 			GFToast.show(getApplicationContext(),"请输入详细地址");
 			return;
@@ -105,7 +105,7 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 				@Override
 				public void run() {
 					try {
-						NetResponse netResponse = HttpUtil.addContact(uid,name,phone,post,address);
+						NetResponse netResponse = HttpUtil.addContact(uid,name,phone,address);
 						Message msg = handler.obtainMessage();
 						if(netResponse.getStatus()==1){
 							msg.what = 1;
@@ -129,7 +129,7 @@ public class ContactActivity extends Activity implements OnClickListener,HandMes
 				@Override
 				public void run() {
 					try {
-						NetResponse netResponse = HttpUtil.updateContact(eContact.getId(),name,phone,post,address);
+						NetResponse netResponse = HttpUtil.updateContact(eContact.getId(),name,phone,address);
 						Message msg = handler.obtainMessage();
 						if(netResponse.getStatus()==1){
 							msg.what = 2;

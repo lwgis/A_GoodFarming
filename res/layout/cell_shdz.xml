@@ -28,13 +28,14 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:maxLines="2"
+	        android:padding="3dip"
 	        android:ellipsize="end"
 	        android:text="电话"
 	        android:textColor="#808080"
 	        android:textSize="14dip" 
 	        android:focusable="false"/>
 	    
-	    <TextView
+	   <!--  <TextView
 	        android:id="@+id/post_text"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -43,13 +44,14 @@
 	        android:text="邮编"
 	        android:textColor="#808080"
 	        android:textSize="14dip" 
-	        android:focusable="false"/>
+	        android:focusable="false"/> -->
 	    
 	    <TextView
 	        android:id="@+id/address_text"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:maxLines="2"
+	        android:padding="3dip"
 	        android:ellipsize="end"
 	        android:text="地址"
 	        android:textColor="#808080"

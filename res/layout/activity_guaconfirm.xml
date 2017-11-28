@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="订单确认"
+            android:text="刮出奖品辣"
             android:textColor="#FFFFFF"
             android:layout_marginLeft="50dip"
             android:layout_marginRight="50dip"
@@ -87,7 +87,7 @@
 		        android:textColor="#808080"
 		        android:textSize="14dip" />
 		    
-		    <TextView
+		    <!-- <TextView
 		        android:id="@+id/post_text"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
 		        android:ellipsize="end"
 		        android:text="邮编："
 		        android:textColor="#808080"
-		        android:textSize="14dip" />
+		        android:textSize="14dip" /> -->
 		    
 		    <TextView
 		        android:id="@+id/address_text"

@@ -48,7 +48,7 @@ public class DiseasePopupWindow extends PopupWindow {
 		datas = new ArrayList<SpinnerDto>();
 		SpinnerDto spinnerDto = new SpinnerDto();
 		spinnerDto.setId(0);
-		spinnerDto.setName("病害问题");
+		spinnerDto.setName("问答");
 		datas.add(spinnerDto);
 		spinnerDto = new SpinnerDto();
 		spinnerDto.setId(1);

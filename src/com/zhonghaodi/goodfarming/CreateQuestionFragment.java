@@ -10,6 +10,7 @@ import java.util.UUID;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
+import com.zhonghaodi.adapter.SectionAdapter;
 import com.zhonghaodi.customui.DpTransform;
 import com.zhonghaodi.customui.GFImageButton;
 import com.zhonghaodi.customui.GFToast;
@@ -31,6 +32,7 @@ import com.zhonghaodi.networking.GsonUtil;
 import com.zhonghaodi.networking.HttpUtil;
 import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
+import com.zhonghaodi.utils.PublicHelper;
 
 import android.R.integer;
 import android.app.Fragment;
@@ -45,6 +47,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
@@ -53,11 +56,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -78,20 +85,18 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 	private View popView;
 	private File currentfile;
 	private GFImageButton currentGFimageButton;
-	private Spinner spJieduan;
-	private Spinner spFenbu;
-	private Spinner spQingkuang;
-	private Spinner spSudu;
-	private Spinner spGenxi;
+	private ListView sectionListView;
 	private TextView cropTextView;
 	private TextView tv1;
 	private TextView tv2;
+	private TextView tv3;
 	private LinearLayout spinnerLayout;
 	private LinearLayout myCropsLayout;
 	private int status;
 	private GFHandler<CreateQuestionFragment> handler = new GFHandler<CreateQuestionFragment>(this);
 	private List<Object> crops = new ArrayList<Object>();
 	private CheckBox sharecheck;
+	private String selectSections;
 	public void setStatus(int status) {
 		
 		if(status==0){
@@ -103,19 +108,21 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 			fanmianBtn.setTitle("反面照");
 			tv1.setVisibility(View.VISIBLE);
 			tv2.setVisibility(View.VISIBLE);
+			tv3.setVisibility(View.GONE);
 			spinnerLayout.setVisibility(View.VISIBLE);
 			myCropsLayout.setVisibility(View.GONE);
 			contentEt.setHint("病虫害的详细描述...(200字以内)");
 		}
 		else if(status==1){
 			jinzhaoBtn.setTitle("照片1");
-			yuanzhaoBtn.setTitle("照片2");
-			zhengtiBtn.setTitle("照片3");
-			jubuBtn.setTitle("照片4");
-			zhengmianBtn.setTitle("照片5");
+			yuanzhaoBtn.setTitle("照片4");
+			zhengtiBtn.setTitle("照片5");
+			jubuBtn.setTitle("照片2");
+			zhengmianBtn.setTitle("照片3");
 			fanmianBtn.setTitle("照片6");
 			tv1.setVisibility(View.GONE);
 			tv2.setVisibility(View.GONE);
+			tv3.setVisibility(View.VISIBLE);
 			spinnerLayout.setVisibility(View.GONE);
 			myCropsLayout.setVisibility(View.GONE);
 			contentEt.setHint("说点啥吧...(200字以内)");
@@ -129,6 +136,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 			fanmianBtn.setTitle("照片6");
 			tv1.setVisibility(View.GONE);
 			tv2.setVisibility(View.GONE);
+			tv3.setVisibility(View.GONE);
 			spinnerLayout.setVisibility(View.GONE);
 			myCropsLayout.setVisibility(View.VISIBLE);
 			contentEt.setHint("说点啥吧...(200字以内)");
@@ -171,11 +179,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		jubuBtn = (GFImageButton) view.findViewById(R.id.jubu_image);
 		zhengmianBtn = (GFImageButton) view.findViewById(R.id.zhengmian_image);
 		fanmianBtn = (GFImageButton) view.findViewById(R.id.fanmian_image);
-		spJieduan = (Spinner)view.findViewById(R.id.spJieduan);
-		spFenbu = (Spinner)view.findViewById(R.id.spFenbu);
-		spQingkuang = (Spinner)view.findViewById(R.id.spQingkuang);
-		spSudu = (Spinner)view.findViewById(R.id.spSudu);
-		spGenxi = (Spinner)view.findViewById(R.id.spGenxi);
+		sectionListView = (ListView)view.findViewById(R.id.section_list);
 		cropTextView = (TextView)view.findViewById(R.id.mycrop_select);
 		cropTextView.setOnClickListener(this);
 		jinzhaoBtn.setOnClickListener(this);
@@ -186,6 +190,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		fanmianBtn.setOnClickListener(this);
 		tv1 = (TextView)view.findViewById(R.id.label1);
 		tv2 = (TextView)view.findViewById(R.id.label2);
+		tv3 = (TextView)view.findViewById(R.id.label3);
 		spinnerLayout = (LinearLayout)view.findViewById(R.id.spinnerLayout);
 		myCropsLayout = (LinearLayout)view.findViewById(R.id.myCropsLayout);
 		sharecheck = (CheckBox)view.findViewById(R.id.sharecheck);
@@ -254,8 +259,7 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		});
 		
 		//设置阶段下拉列表数据源
-		List<String> phasestr = new ArrayList<String>();
-		phasestr.add("不确定");
+		final List<String> phasestr = new ArrayList<String>();
 		CreateQuestionActivity activity = (CreateQuestionActivity)getActivity(); 
 		if(activity.getCrop()!=null && activity.getCrop().getPhases()!=null && activity.getCrop().getPhases().size()>0){			
 			for (Iterator iterator = activity.getCrop().getPhases().iterator(); iterator.hasNext();) {
@@ -264,13 +268,29 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 			}			
 			
 		}
-		String[] toBeStored = phasestr.toArray(new String[phasestr.size()]);
-		//绑定要显示的texts 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, toBeStored );            
-        //设置下拉列表的风格         
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);            
-        spJieduan.setAdapter(adapter);
+		final SectionAdapter adapter = new SectionAdapter(getActivity(), phasestr); 
+		selectSections="";
+		adapter.setSelectIndex(-1);
+        sectionListView.setAdapter(adapter);
+        int width = PublicHelper.dip2px(getActivity(), 302);
+        int height = PublicHelper.dip2px(getActivity(), (float)44.5*phasestr.size()+(float)0.5*(phasestr.size()-1));
+        sectionListView.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+        sectionListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				selectSections = phasestr.get(position).toString();
+				adapter.setSelectIndex(position);
+				adapter.notifyDataSetChanged();
+			}
+		});
+        if(phasestr!=null && phasestr.size()>0){
+//        	selectSections=phasestr.get(0).toString();
+        }
+        else{
+        	tv2.setVisibility(View.GONE);
+        }
 		return view;
 	}
 	
@@ -398,59 +418,24 @@ public class CreateQuestionFragment extends Fragment implements OnClickListener,
 		return contentEt.getText().toString();
 	}
 	public String getPhase(){
-		return spJieduan.getSelectedItem().toString();
+		return selectSections;
 	}
 	public String getBhzdContent(){
-		String content = "";
-		
-		if(spFenbu.getSelectedItemPosition()!=0){
-			content += "\n病害呈"+spFenbu.getSelectedItem().toString()+"分布";
-		}
-		if(spQingkuang.getSelectedItemPosition()!=0){
-			String ss = "";
-			if(content.length()>0){
-				ss="、";
-			}
-			else{
-				ss="\n";
-			}
-			if(spQingkuang.getSelectedItemPosition()==1||spQingkuang.getSelectedItemPosition()==2){
-				content += ss+"已有"+spQingkuang.getSelectedItem().toString()+"发生";
-			}
-			else{
-				content += ss+spQingkuang.getSelectedItem().toString();
-			}
-			
-		}
-		
-		if(spSudu.getSelectedItemPosition()!=0){
-			String ss = "";
-			if(content.length()>0){
-				ss="、";
-			}
-			else{
-				ss="\n";
-			}
-			content += ss+spSudu.getSelectedItem().toString();
-		}
-		
-		if(spGenxi.getSelectedItemPosition()!=0){
-			String ss = "";
-			if(content.length()>0){
-				ss="、";
-			}
-			else{
-				ss="\n";
-			}
-			content += ss+"植株"+spGenxi.getSelectedItem().toString();
-		}	
-		
-		if(!content.isEmpty())
-		{
-			content +="。";
-		}
-		
-		return content;
+//		if(status!=0)
+//			return "";
+//		if(TextUtils.isEmpty(selectSections)){
+//			return "";
+//		}
+//		String content = "";
+//		content += "（作物生长阶段："+selectSections+"）";
+//		
+//		if(!content.isEmpty())
+//		{
+//			content +="。";
+//		}
+//		
+//		return content;
+		return "";
 	}
 
 	@Override

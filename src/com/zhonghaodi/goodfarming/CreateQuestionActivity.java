@@ -106,6 +106,13 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 		sendBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
+				String phase = createQuestionFragment.getPhase();
+				if(phase.isEmpty()&&status==0){
+					GFToast.show(CreateQuestionActivity.this, "请选择作物生长阶段");
+					return;
+				}
+				
 				isSending = true;
 				sendBtn.setEnabled(false);
 				netImages = new NetImage[createQuestionFragment.getImages().size()];
@@ -363,6 +370,7 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 				if(!zdContent.isEmpty()){
 					content = content+zdContent;
 				}
+				
 				question.setContent(content);
 				question.setPhase(phase);
 				User writer = new User();
@@ -433,7 +441,10 @@ public class CreateQuestionActivity extends Activity implements HandMessage {
 			if(!zdContent.isEmpty()){
 				content = content+zdContent;
 			}
+			
+			String phase = activity.createQuestionFragment.getPhase();
 			question.setContent(content);
+			question.setPhase(phase);
 			User writer = new User();
 			writer.setId(GFUserDictionary.getUserId(getApplicationContext()));
 			question.setWriter(writer);

@@ -9,6 +9,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.json.JSONObject;
+
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.easemob.EMCallBack;
 import com.easemob.EMConnectionListener;
 import com.easemob.EMError;
@@ -36,6 +41,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.api.ShareContainer;
 import com.zhonghaodi.customui.GFToast;
 import com.zhonghaodi.customui.SharePopupwindow;
+import com.zhonghaodi.goodfarming.WelcomeActivity.WelcomeLocationListenner;
 import com.zhonghaodi.model.AppVersion;
 import com.zhonghaodi.model.Crop;
 import com.zhonghaodi.model.GFPointDictionary;
@@ -87,22 +93,18 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 		EMEventListener,ShareContainer {
 	private HomeFragment homeFragment;
 	private SaveFragment saveFragment;
-	private ForumFragment forumFragment;
 	private DiscoverFragment discoverFragment;
 	private MeFragment meFragment;
 	private ImageView homeIv;	
 	private ImageView fineIv;
-	private ImageView forumIv;
 	private ImageView discoverIv;
 	private ImageView meIv;
 	private TextView homeTv;
 	private TextView fineTv;
-	private TextView forumTv;
 	private TextView discoverTv;
 	private TextView meTv;
 	private View homeView;	
 	private View fineView;
-	private View forumView;
 	private View discoverView;
 	private View meView;
 	private int pageIndex;	
@@ -123,6 +125,10 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 	private IntentFilter filter;
 	private TextView ndsText;
 	private Dialog pd;	
+	// 定位相关
+	private LocationClient mLocClient;
+	public MainLocationListenner myListener = new MainLocationListenner();
+	
 	public ArrayList<Question> allQuestions;
 	public ArrayList<Question> fineQuestions;	
 	private MainReq req;
@@ -137,27 +143,25 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 		fineQuestions = new ArrayList<Question>();
 		homeView = findViewById(R.id.home_layout);
 		fineView = findViewById(R.id.fine_layout);
-		forumView = findViewById(R.id.forum_layout);
 		discoverView = findViewById(R.id.discover_layout);
 		meView = findViewById(R.id.me_layout);
 		homeIv = (ImageView) findViewById(R.id.home_image);
 		fineIv = (ImageView)findViewById(R.id.fine_image);
-		forumIv = (ImageView)findViewById(R.id.forum_image);
 		discoverIv = (ImageView) findViewById(R.id.discover_image);
 		meIv = (ImageView) findViewById(R.id.me_image);
 		homeTv = (TextView) findViewById(R.id.home_text);
 		fineTv = (TextView)findViewById(R.id.fine_text);
-		forumTv = (TextView)findViewById(R.id.forum_text);
 		discoverTv = (TextView) findViewById(R.id.discover_text);
 		meTv = (TextView) findViewById(R.id.me_text);
 		ndsText = (TextView)findViewById(R.id.ndes_text);
 		homeView.setOnClickListener(this);
 		fineView.setOnClickListener(this);
-		forumView.setOnClickListener(this);
 		discoverView.setOnClickListener(this);
 		meView.setOnClickListener(this);
 		seletFragmentIndex(0);
 		pageIndex = 0;
+		//定位
+		location();
 		
 		//检查该不该请求更新
 		SharedPreferences deviceInfo = getSharedPreferences("StartInfo", 0);
@@ -409,25 +413,21 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 		if(saveFragment == null){
 			saveFragment = new SaveFragment();
 		}
-		if (forumFragment == null) {
-			forumFragment = new ForumFragment();
-		}
 		if (discoverFragment == null) {
 			discoverFragment = new DiscoverFragment();
+			discoverFragment.setShareContainer(this);
 		}
 		if (meFragment == null) {
 			meFragment = new MeFragment();
-			meFragment.setShareContainer(this);
+//			meFragment.setShareContainer(this);
 		}
 		
 		homeIv.setImageResource(R.drawable.home);
-		fineIv.setImageResource(R.drawable.fine);
-		forumIv.setImageResource(R.drawable.tian);
+		fineIv.setImageResource(R.drawable.fine1);
 		discoverIv.setImageResource(R.drawable.discover);
 		meIv.setImageResource(R.drawable.me);
 		homeTv.setTextColor(Color.rgb(128, 128, 128));
 		fineTv.setTextColor(Color.rgb(128, 128, 128));
-		forumTv.setTextColor(Color.rgb(128, 128, 128));
 		discoverTv.setTextColor(Color.rgb(128, 128, 128));
 		meTv.setTextColor(Color.rgb(128, 128, 128));
 	
@@ -436,8 +436,11 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 			if (homeFragment == null) {
 				homeFragment = new HomeFragment();
 				homeFragment.setShareContainer(this);
+				transction.replace(R.id.content, homeFragment);
 			}
-			transction.replace(R.id.content, homeFragment);
+			else{
+				transction.replace(R.id.content, homeFragment);
+			}
 			homeIv.setImageResource(R.drawable.home_s);
 			homeTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
@@ -446,20 +449,14 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 				saveFragment = new SaveFragment();
 			}
 			transction.replace(R.id.content, saveFragment);
-			fineIv.setImageResource(R.drawable.fine_s);
+			fineIv.setImageResource(R.drawable.fine1_s);
 			fineTv.setTextColor(Color.rgb(12, 179, 136));
 			break;
-		case 2:
-			if (forumFragment == null) {
-				forumFragment = new ForumFragment();
-			}
-			transction.replace(R.id.content, forumFragment);
-			forumIv.setImageResource(R.drawable.tian_s);
-			forumTv.setTextColor(Color.rgb(12, 179, 136));
-			break;
+
 		case 3:
 			if (discoverFragment == null) {
 				discoverFragment = new DiscoverFragment();
+				discoverFragment.setShareContainer(this);
 			}
 			transction.replace(R.id.content, discoverFragment);
 			discoverIv.setImageResource(R.drawable.discover_s);
@@ -468,7 +465,7 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 		case 4:
 			if (meFragment == null) {
 				meFragment = new MeFragment();
-				meFragment.setShareContainer(this);
+//				meFragment.setShareContainer(this);
 			}
 			transction.replace(R.id.content, meFragment);
 			meIv.setImageResource(R.drawable.me_s);
@@ -624,25 +621,11 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 			
 		}
 		if (v == fineView && pageIndex != 1) {
-//			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
-//				Intent it = new Intent();
-//				it.setClass(this, LoginActivity.class);
-//				startActivityForResult(it, 0);
-//				return;
-//			}
+
 			seletFragmentIndex(1);
 			
 		}
-		if (v == forumView && pageIndex != 2) {
-			
-//			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
-//				Intent it = new Intent();
-//				it.setClass(this, LoginActivity.class);
-//				startActivityForResult(it, 0);
-//				return;
-//			}
-			seletFragmentIndex(2);
-		}
+
 		if (v == discoverView && pageIndex != 3) {
 
 			seletFragmentIndex(3);
@@ -651,7 +634,7 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 		if (v == meView && pageIndex != 4) {
 			if (GFUserDictionary.getUserId(getApplicationContext()) == null) {
 				Intent it = new Intent();
-				it.setClass(this, LoginActivity.class);
+				it.setClass(this, SignActivity.class);
 				startActivityForResult(it, 0);
 				return;
 			}
@@ -872,6 +855,18 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 	protected void onStop() {
 		super.onStop();
 	}
+	
+	private void location() {
+		
+		mLocClient = new LocationClient(getApplicationContext());
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(5000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -892,9 +887,9 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 			
 			this.startActivityForResult(it1, 100);
 		}
-		if (resultCode == 2) {
-			forumFragment.loadData();
-		}
+//		if (resultCode == 2) {
+//			forumFragment.loadData();
+//		}
 		if(resultCode == RESULT_OK){
 			if(requestCode==100){
 				ArrayList<Crop> selectCrops = data.getParcelableArrayListExtra("crops");
@@ -1223,5 +1218,29 @@ public class MainActivity extends FragmentActivity implements MainView, OnClickL
 		
 		proTextView1.setText(bf+"%");
 		proTextView2.setText(pf+"M/"+cf+"M");
+	}
+	
+	/**
+	 * 定位SDK监听函数
+	 */
+	public class MainLocationListenner implements BDLocationListener {
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			if (location == null){
+				return;
+			}				
+			UILApplication.x=location.getLongitude();
+			UILApplication.y=location.getLatitude();
+//			x=118.798632;
+//			y=36.858719;
+//			UILApplication.x = 118.40;
+//			UILApplication.y = 36.40;
+			mLocClient.stop();
+			
+		}
+		
+		public void onReceivePoi(BDLocation poiLocation) {
+		}
 	}
 }

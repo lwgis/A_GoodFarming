@@ -27,7 +27,7 @@
 	            >
 	
 	            <com.makeramen.RoundedImageView
-	                android:id="@+id/head_image"
+	                android:id="@+id/head_image_r"
 	                android:layout_width="40dp"
 	                android:layout_height="40dp"
 	                android:layout_marginLeft="5dp"
@@ -51,7 +51,7 @@
 	                >
 	
 	                <TextView
-	                    android:id="@+id/name_text"
+	                    android:id="@+id/name_text_r"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:layout_marginTop="2dp"

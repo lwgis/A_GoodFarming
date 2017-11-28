@@ -34,6 +34,11 @@
 	    <item name="android:background">@drawable/alert_back</item>
 	    <item name="android:gravity">center_vertical|center_horizontal</item>
 	</style>
+	<style name="Widget.Layout.Dialog_NoPadding" parent="@style/Widget.VLayout">
+	    <item name="android:padding">0dip</item>
+	    <item name="android:background">@drawable/alert_back</item>
+	    <item name="android:gravity">center_vertical|center_horizontal</item>
+	</style>
     
     <style name="MyDialog" parent="@android:Theme.Dialog">
         <item name="android:windowFrame">@null</item>

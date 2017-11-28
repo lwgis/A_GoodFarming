@@ -26,7 +26,7 @@
 		        android:layout_margin="10dip"
 		        android:text="同时分享到朋友圈获取更多积分"
 		        android:button="@drawable/radiobg"
-		        android:checked="false"
+		        android:checked="true"
 		        android:textColor="#404040" />
         </LinearLayout>
         <LinearLayout 
@@ -38,6 +38,7 @@
             android:layout_marginBottom="10dip"
             android:orientation="vertical"
             android:gravity="center_horizontal"
+            android:visibility="gone"
 	            >
             <TextView
 	            android:layout_width="match_parent"
@@ -73,7 +74,6 @@
 		         android:button="@drawable/radiobg"
 		         android:text="求购" 
 		         android:textColor="#404040"
-		         android:checked="true"
 		         android:layout_marginRight="10dp"
 		         >
 		         
@@ -109,7 +109,16 @@
             android:padding="1dp"
             android:maxLength="200"
             android:textColor="#333333" />
-	
+		<TextView
+            android:id="@+id/label3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dip"
+            android:layout_marginRight="30dip"
+            android:gravity="center"
+            android:text="每天限发一次"
+            android:textColor="#808080"
+            android:textSize="14dip" />
 	    <GridView
 	        android:id="@+id/imageGridView"
 	        android:layout_width="fill_parent"
@@ -117,7 +126,7 @@
 	        android:background="#ffffff"
 	        android:numColumns="4" 
 	        android:listSelector="@null"/>
-	
+		
 		</LinearLayout>
     </LinearLayout>
 </ScrollView>

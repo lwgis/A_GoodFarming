@@ -549,7 +549,7 @@ public class FineFragment extends Fragment implements HandMessage,
 			popupWindow.dismiss();
 			Intent it = new Intent();
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				it.setClass(getActivity(), LoginActivity.class);
+				it.setClass(getActivity(), SignActivity.class);
 			}
 			else {
 				it.setClass(getActivity(), CreateQuestionActivity.class);
@@ -560,7 +560,7 @@ public class FineFragment extends Fragment implements HandMessage,
 			popupWindow.dismiss();
 			Intent intent = new Intent();
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				intent.setClass(getActivity(), LoginActivity.class);
+				intent.setClass(getActivity(), SignActivity.class);
 			}
 			else {
 				intent.setClass(getActivity(), CreateQuestionActivity.class);
@@ -572,7 +572,7 @@ public class FineFragment extends Fragment implements HandMessage,
 			popupWindow.dismiss();
 			Intent intent1 = new Intent();
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
-				intent1.setClass(getActivity(), LoginActivity.class);
+				intent1.setClass(getActivity(), SignActivity.class);
 			}
 			else {
 				intent1.setClass(getActivity(), CreatePlantActivity.class);
@@ -609,7 +609,7 @@ public class FineFragment extends Fragment implements HandMessage,
 			
 			if (GFUserDictionary.getUserId(getActivity().getApplicationContext())==null) {
 				Intent intent2 = new Intent();
-				intent2.setClass(getActivity(), LoginActivity.class);
+				intent2.setClass(getActivity(), SignActivity.class);
 				getActivity().startActivity(intent2);
 				
 			}

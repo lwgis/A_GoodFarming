@@ -46,7 +46,7 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 	private Button settingBtn;
 	private MeAdapter adapter;
 	private GFHandler<MeFragment> handler = new GFHandler<MeFragment>(this);
-	private ShareContainer shareContainer;
+//	private ShareContainer shareContainer;
 
 	public MeFragment(){
 		
@@ -99,11 +99,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 					it.putExtra("status", 3);
 					getActivity().startActivity(it);
 				}
-				else if(function.getName().equals("邀请好友赚积分")){
-					if(shareContainer!=null){
-						shareContainer.popupShareWindow(getUser());
-					}					
-				}
+//				else if(function.getName().equals("邀请好友抢红包")){
+//					if(shareContainer!=null){
+//						shareContainer.popupShareWindow(getUser());
+//					}					
+//				}
 				else if(function.getName().equals("我的订单")){
 					it.putExtra("level", getUser().getLevel().getId());
 					getActivity().startActivity(it);
@@ -355,8 +355,8 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 			functions.add(ordersFunction);
 			Function cartFunction = new Function("优惠币使用", MyTransactionActivity.class,R.drawable.yhbsh1);
 			functions.add(cartFunction);
-			Function shareFunction = new Function("邀请好友赚积分",AppShareActivity.class,R.drawable.appshare1);
-			functions.add(shareFunction);			
+//			Function shareFunction = new Function("邀请好友抢红包",AppShareActivity.class,R.drawable.appshare1);
+//			functions.add(shareFunction);			
 			Function feedbackFunction = new Function("意见反馈", FeedBackActivity.class,R.drawable.report1);
 			functions.add(feedbackFunction);
 			functions.add(null);
@@ -381,11 +381,11 @@ public class MeFragment extends Fragment implements HandMessage,OnClickListener{
 		
 	}
 
-	public ShareContainer getShareContainer() {
-		return shareContainer;
-	}
-
-	public void setShareContainer(ShareContainer shareContainer) {
-		this.shareContainer = shareContainer;
-	}
+//	public ShareContainer getShareContainer() {
+//		return shareContainer;
+//	}
+//
+//	public void setShareContainer(ShareContainer shareContainer) {
+//		this.shareContainer = shareContainer;
+//	}
 }

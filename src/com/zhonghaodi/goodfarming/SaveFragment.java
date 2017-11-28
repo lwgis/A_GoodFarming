@@ -15,6 +15,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.adapter.SaveAdapter;
 import com.zhonghaodi.customui.CustomProgressDialog;
 import com.zhonghaodi.customui.GFToast;
+import com.zhonghaodi.customui.RollTextView;
 import com.zhonghaodi.model.SecondOrder;
 import com.zhonghaodi.model.SpinnerDto;
 import com.zhonghaodi.model.Zfbt;
@@ -46,24 +47,27 @@ public class SaveFragment extends Fragment implements OnItemClickListener,FrmSav
 	// 定位相关
 	LocationClient mLocClient;
 	public MiaoLocationListenner myListener = new MiaoLocationListenner();
+	//顶部轮播相关
+	private RollTextView ordersTv;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view=inflater.inflate(R.layout.fragment_save, container, false);
+		ordersTv = (RollTextView) view.findViewById(R.id.orders_tv);
 		req = new FrmSaveReq(this, getActivity());
 		containerLayout = (LinearLayout)view.findViewById(R.id.container_layout);
 		req.loadSaveCates();
 		pullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);		
 		pullToRefreshListView.setOnItemClickListener(this);	
-		pullToRefreshListView.setMode(Mode.PULL_FROM_END);
+		pullToRefreshListView.setMode(Mode.BOTH);
 		pullToRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 
 			@Override
 			public void onPullDownToRefresh(
 					PullToRefreshBase<ListView> refreshView) {
 				// TODO Auto-generated method stub
-				
+				req.loadData(x,y);
 			}
 
 			@Override
@@ -80,8 +84,9 @@ public class SaveFragment extends Fragment implements OnItemClickListener,FrmSav
 					req.loadMoreData(x,y,page);
 				}
 				else{
-					page = req.zfbts.size()/20+1;
-					req.loadMoreData(x,y,page);
+//					page = req.zfbts.size()/20+1;
+//					req.loadMoreData(x,y,page);
+					req.threadSleep();
 				}
 			}
 
@@ -89,6 +94,8 @@ public class SaveFragment extends Fragment implements OnItemClickListener,FrmSav
 		});	
 		adapter = new SaveAdapter(req.zfbts, getActivity());
 		pullToRefreshListView.getRefreshableView().setAdapter(adapter);	
+		location();
+		req.loadNewOrders();
 		return view;
 	}
 	
@@ -97,7 +104,6 @@ public class SaveFragment extends Fragment implements OnItemClickListener,FrmSav
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onPageStart("超实惠Fragment");
-		location();
 	}
 
 	@Override
@@ -145,6 +151,11 @@ public class SaveFragment extends Fragment implements OnItemClickListener,FrmSav
 	@Override
 	public void showOrders(List<SecondOrder> orders) {
 		// TODO Auto-generated method stub
+		String strOrders = "";
+		for (int i = 0; i < orders.size(); i++) {
+			strOrders+="            "+orders.get(i).getUser().getAlias()+"抢购到了："+orders.get(i).getSecond().getTitle();
+		}
+		ordersTv.setText(strOrders);
 	}
 
 	/**
@@ -156,10 +167,10 @@ public class SaveFragment extends Fragment implements OnItemClickListener,FrmSav
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return;
-//			x=location.getLongitude();
-//			y=location.getLatitude();
-			x=118.798632;
-			y=36.858719;
+			x=location.getLongitude();
+			y=location.getLatitude();
+//			x=118.798632;
+//			y=36.858719;
 			if(progressDialog!=null){
 				progressDialog.dismiss();
 			}

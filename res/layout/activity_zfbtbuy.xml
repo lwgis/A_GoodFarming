@@ -101,7 +101,7 @@
 		        android:textColor="#808080"
 		        android:textSize="14dip" />
 		    
-		    <TextView
+		    <!-- <TextView
 		        android:id="@+id/post_text"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
 		        android:ellipsize="end"
 		        android:text="邮编："
 		        android:textColor="#808080"
-		        android:textSize="14dip" />
+		        android:textSize="14dip" /> -->
 		    
 		    <TextView
 		        android:id="@+id/address_text"

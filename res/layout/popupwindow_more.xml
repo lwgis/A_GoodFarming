@@ -109,7 +109,6 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/repostlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" 
@@ -117,6 +116,7 @@
         android:paddingRight="32dip"
         >
         <LinearLayout 
+            android:id="@+id/repostlayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dip"

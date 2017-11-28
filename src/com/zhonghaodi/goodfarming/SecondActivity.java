@@ -150,7 +150,7 @@ public class SecondActivity extends Activity implements HandMessage,OnClickListe
 	public void buy(){
 		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null){
-			Intent intent = new Intent(this, LoginActivity.class);
+			Intent intent = new Intent(this, SignActivity.class);
 			startActivity(intent);
 			return;
 		}

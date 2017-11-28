@@ -103,6 +103,10 @@ public class CreatePlantActivity extends Activity implements HandMessage{
 			@Override
 			public void onClick(View v) {
 				isSending = true;
+				if(createPlantFragment.getDeal()==null){
+					GFToast.show(CreatePlantActivity.this, "请选择出售或求购！");
+					return;
+				}
 				sendBtn.setEnabled(false);
 				netImages = new NetImage[createPlantFragment.getProjectImages().size()];
 				if (createPlantFragment.getProjectImages()!=null&&createPlantFragment.getProjectImages().size()>0) {

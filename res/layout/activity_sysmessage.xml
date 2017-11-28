@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:background="@null"
-            android:text="&lt;返回"
+            android:text="返回"
             android:textColor="#ffffff"
             android:textSize="20dip" 
             android:layout_marginLeft="5dp"/>

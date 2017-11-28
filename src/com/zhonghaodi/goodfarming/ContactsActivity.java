@@ -215,13 +215,13 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 	class ShdzHolder{
 		public TextView nameTextView;
 		public TextView phoneTextView;
-		public TextView postTextView;
+//		public TextView postTextView;
 		public TextView addressTextView;
 		public RadioButton radioButton;
 		public ShdzHolder(View view){
 			nameTextView = (TextView)view.findViewById(R.id.name_text);
 			phoneTextView = (TextView)view.findViewById(R.id.phone_text);
-			postTextView = (TextView)view.findViewById(R.id.post_text);
+//			postTextView = (TextView)view.findViewById(R.id.post_text);
 			addressTextView = (TextView)view.findViewById(R.id.address_text);
 			radioButton = (RadioButton)view.findViewById(R.id.rd_shdz);
 		}
@@ -261,7 +261,7 @@ public class ContactsActivity extends Activity implements OnClickListener,HandMe
 			Contact contact = contacts.get(position);
 			shdzHolder.nameTextView.setText("姓名："+contact.getName());
 			shdzHolder.phoneTextView.setText("电话："+contact.getPhone());
-			shdzHolder.postTextView.setText("邮编："+contact.getPostnumber());
+//			shdzHolder.postTextView.setText("邮编："+contact.getPostnumber());
 			shdzHolder.addressTextView.setText("详细地址："+contact.getAddress());
 			if(bSelect){
 				shdzHolder.radioButton.setVisibility(View.VISIBLE);

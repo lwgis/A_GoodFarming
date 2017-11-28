@@ -10,5 +10,6 @@ public interface FrmHomeView {
 	public void onLoaded(int what,List<Question> questions);
 	public void onDeleted();
 	public void onZan();
-
+    public void popNewPlant();
+    public void onlistpullstop();
 }

@@ -28,6 +28,8 @@ public class Holder3  {
 	public TextView forwardTextView;
 	public LinearLayout forwardLayout;
 	public RelativeLayout jpLayout;
+	public View hotsplit;
+	public TextView hotText;
 	public	Holder3(View view) {
 		nameTv = (TextView) view.findViewById(R.id.name_text);
 		timeTv = (TextView) view.findViewById(R.id.time_text);
@@ -46,6 +48,8 @@ public class Holder3  {
 		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
 		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
 		jpLayout = (RelativeLayout)view.findViewById(R.id.cainalayout);
+		hotsplit = view.findViewById(R.id.hot_view);
+		hotText = (TextView)view.findViewById(R.id.hot_text);
 		reSetImageViews();
 	}
 
@@ -56,5 +60,13 @@ public class Holder3  {
 		imageView4.setVisibility(View.INVISIBLE);
 		imageView5.setVisibility(View.INVISIBLE);
 		imageView6.setVisibility(View.INVISIBLE);
+	}
+	public void hideHot(){
+		hotsplit.setVisibility(View.GONE);
+		hotText.setVisibility(View.GONE);
+	}
+	public void displayHot(){
+		hotsplit.setVisibility(View.VISIBLE);
+		hotText.setVisibility(View.VISIBLE);
 	}
 }

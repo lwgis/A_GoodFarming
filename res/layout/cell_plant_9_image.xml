@@ -101,8 +101,10 @@
 	                android:layout_height="wrap_content"
 	                android:text=""
 	                android:gravity="center_vertical"
-	                android:textColor="#38be99"
-	                android:textSize="12dip" />
+	                android:textColor="#808080"
+	                android:textSize="12dip" 
+	                android:visibility="gone"
+	                />
                 <TextView
                     android:id="@+id/cate_text"
                     android:layout_width="wrap_content"
@@ -371,24 +373,36 @@
               </LinearLayout>
         </LinearLayout>
     </LinearLayout>	
-    <RelativeLayout 
+    <LinearLayout
 	    android:id="@+id/cainalayout"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:layout_marginRight="60dp"
+        android:layout_marginTop="1dp"
+	    android:focusable="false" 
+	    android:orientation="horizontal"
 	    android:visibility="gone"
-	    android:focusable="false"
+	    android:gravity="right"
 	    >
-	     <ImageView
+	    <ImageView
               android:id="@+id/caina_image"
               android:layout_width="50dp"
-              android:layout_height="50dp"
-              android:layout_marginRight="90dp"
-              android:layout_marginTop="1dp"
-              android:layout_alignParentRight="true"
+              android:layout_height="50dp"             
               android:padding="2dip"
               android:scaleType="centerCrop"
               android:src="@drawable/jingpin" 
               android:focusable="false"
+              android:visibility="gone"
               />
-	</RelativeLayout>
+	    <ImageView
+              android:id="@+id/jywc_image"
+              android:layout_width="50dp"
+              android:layout_height="50dp"
+              android:padding="2dip"
+              android:scaleType="centerCrop"
+              android:src="@drawable/jywc" 
+              android:focusable="false"
+              android:visibility="gone"
+              />
+	</LinearLayout>
 </FrameLayout>

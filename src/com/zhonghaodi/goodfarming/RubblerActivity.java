@@ -20,12 +20,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.duguang.baseanimation.ui.customview.serchfly.KeywordsFlow;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 import com.zhonghaodi.api.NoDoubleClickListener;
 import com.zhonghaodi.customui.GFToast;
@@ -43,6 +45,7 @@ import com.zhonghaodi.model.NetResponse;
 import com.zhonghaodi.model.onWipeListener;
 import com.zhonghaodi.networking.GFHandler;
 import com.zhonghaodi.networking.HttpUtil;
+import com.zhonghaodi.networking.ImageOptions;
 import com.zhonghaodi.networking.GFHandler.HandMessage;
 
 public class RubblerActivity extends Activity implements OnClickListener,onWipeListener,HandMessage {
@@ -325,11 +328,36 @@ public class RubblerActivity extends Activity implements OnClickListener,onWipeL
 		// TODO Auto-generated method stub
 		isOpen = true;
 		if(guaResult.isSuccess()){
-			GFToast.show(getApplicationContext(),"恭喜您刮中"+guaResult.getGuagua().getName()+"，请您填写收货地址。");
+//			GFToast.show(getApplicationContext(),"恭喜您刮中"+guaResult.getGuagua().getName()+"，请您填写收货地址。");
 			Intent intent = new Intent(RubblerActivity.this, GuaConfirmActivity.class);
 			intent.putExtra("commodity", guaResult);
 			RubblerActivity.this.startActivity(intent);
 			RubblerActivity.this.finish();
+//			final Dialog dialog = new Dialog(this, R.style.MyDialog);
+//	        //设置它的ContentView
+//			LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//	        View layout = inflater.inflate(R.layout.dialog_winner, null);
+//	        dialog.setContentView(layout);
+//	        ImageView contentView = (ImageView)layout.findViewById(R.id.gua_image);
+//	        ImageLoader.getInstance().displayImage(
+//					HttpUtil.ImageUrl+"guagua/small/"
+//							+ guaResult.getGuagua().getImage(),
+//							contentView, ImageOptions.options);
+//
+//	        contentView.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					dialog.dismiss();
+//					Intent intent = new Intent(RubblerActivity.this, GuaConfirmActivity.class);
+//					intent.putExtra("commodity", guaResult);
+//					RubblerActivity.this.startActivity(intent);
+//					RubblerActivity.this.finish();
+//				}
+//			});
+//	        dialog.setCancelable(false);
+//	        dialog.show();
 
 		}
 	}

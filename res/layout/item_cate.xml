@@ -3,16 +3,16 @@
     android:layout_width="100dip"
    	android:layout_height="34dip"
    	android:gravity="center"
-   	android:background="@drawable/topbar"
+   	
      >
      <TextView
 	     android:id="@+id/cate_text"
-	     android:layout_width="100dp"
+	     android:layout_width="80dp"
 	     android:layout_height="34dp"
 	     android:layout_gravity="center_horizontal"
 	     android:text=""
 	     android:textColor="#38be99"
 	     android:gravity="center"
-	     android:textSize="18dip" />
+	     android:textSize="16dip" />
    
 </LinearLayout>

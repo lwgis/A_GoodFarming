@@ -4,52 +4,18 @@
     android:layout_height="match_parent"
     android:background="#eaeaea"
     android:orientation="vertical" >
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="#38be99" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="田间地头"
-            android:textColor="#FFFFFF"
-            android:textSize="20dip" />
-        
-        <Button
-	            android:id="@+id/sgbc_button"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignParentRight="true"
-	            android:layout_centerVertical="true"
-	            android:layout_marginRight="5dip"
-	            android:background="#00000000"
-	            android:gravity="center"
-	            android:text="听广播"
-	            android:textColor="#ffffff"
-	            android:visibility="gone"
-	            android:textSize="18dip" />
-        
-    </RelativeLayout>
-    <HorizontalScrollView 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        >
-        <LinearLayout
-	        android:id="@+id/tabhost"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:baselineAligned="false" 
-	        android:orientation="horizontal"
-	        >
-	        
-	    </LinearLayout>
-    </HorizontalScrollView>
+	<LinearLayout 
+	    android:id="@+id/headercontainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:layout_marginTop="4dp"
+	    android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+	    >
+	    
+	</LinearLayout>
+    
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pull_refresh_list"
@@ -60,7 +26,7 @@
         android:layout_marginRight="5dip"
         android:cacheColorHint="#000000"
         android:divider="#eaeaea"
-        android:dividerHeight="5dp"
+        android:dividerHeight="4dp"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"

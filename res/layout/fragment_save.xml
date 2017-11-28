@@ -24,6 +24,22 @@
             android:ellipsize="end"
             android:textSize="18dip" />
     </RelativeLayout>
+    <com.zhonghaodi.customui.RollTextView 
+        android:id="@+id/orders_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:layout_marginTop="0.1dip"
+        android:textColor="#ffffff" 
+        android:ellipsize="marquee" 
+        android:focusable="true" 
+        android:marqueeRepeatLimit="marquee_forever" 
+        android:scrollHorizontally="true"
+        android:singleLine="true" 
+        android:background="#38be99"
+        android:textSize="16dip"
+        android:gravity="center_vertical"
+        android:text=""
+        />
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="34dip"

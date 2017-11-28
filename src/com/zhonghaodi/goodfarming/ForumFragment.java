@@ -51,6 +51,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	
 	private PullToRefreshListView pullToRefreshListView;
 	private LinearLayout tabLayout;
+	private LinearLayout headerContainer;
 	private List<Agrotechnical> agrotechnicals;
 	private List<Category_disease> categorys;
 	private AgroAdapter adapter;
@@ -65,12 +66,13 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_forum, container,
 				false);
-		tabLayout = (LinearLayout)view.findViewById(R.id.tabhost);
 		progressDialog = new CustomProgressDialog(getActivity(), "请稍后...");
-		Button sgbcBtn = (Button)view.findViewById(R.id.sgbc_button);
-		sgbcBtn.setOnClickListener(this);
+		View headerView  = LayoutInflater.from(getActivity()).inflate(R.layout.header_list, null);
+		tabLayout = (LinearLayout)headerView.findViewById(R.id.tabhost);
+		headerContainer = (LinearLayout)view.findViewById(R.id.headercontainer);
+		headerContainer.addView(headerView);
 		pullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
-		
+//		pullToRefreshListView.getRefreshableView().addHeaderView(headerView);
 		pullToRefreshListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -195,10 +197,10 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 			TextView tabView = new TextView(getActivity());
 			tabView.setGravity(Gravity.CENTER);
 			tabView.setText(categorys.get(i).getName());
-			tabView.setBackgroundResource(R.drawable.topbar);
+//			tabView.setBackgroundResource(R.drawable.topbar);
 			int pix = PublicHelper.dip2px(getActivity(), 8);
 			tabView.setPadding(pix, pix, pix, pix);
-			tabView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
+			tabView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
 			tabView.setTag(categorys.get(i).getId());
 			tabLayout.addView(tabView, layoutParams);
 			tabView.setOnClickListener(this);
@@ -211,7 +213,7 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 		for (int i = 0; i < tabLayout.getChildCount(); i++) {
 			TextView textView = (TextView)tabLayout.getChildAt(i);
 			textView.setTextColor(Color.rgb(128, 128, 128));
-			textView.setBackgroundResource(R.drawable.topbar);
+//			textView.setBackgroundResource(R.drawable.topbar);
 		}
 		
 		TextView selectTextView = (TextView)view;
@@ -328,15 +330,9 @@ public class ForumFragment extends Fragment implements OnClickListener,HandMessa
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if(v.getId()==R.id.sgbc_button){
-			Intent start = new Intent(getActivity(),SGBCActivity.class); 
-			startActivity(start);
-		}
-		else{
-			selectTextView(v);
-			progressDialog.show();
-			loadData();
-		}
+		selectTextView(v);
+		progressDialog.show();
+		loadData();
 		
 	}
 

@@ -4,6 +4,7 @@ import com.makeramen.RoundedImageView;
 import com.zhonghaodi.goodfarming.R;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +26,9 @@ public class HolderPlant2 {
 	public	GFImageView imageView3;
 	public TextView forwardTextView;
 	public LinearLayout forwardLayout;
-	public RelativeLayout jpLayout;
+	public LinearLayout jpLayout;
+	public ImageView jpIv;
+	public ImageView jyIv;
 	
 	public HolderPlant2(View view){
 		nameTv = (TextView) view.findViewById(R.id.name_text);
@@ -44,7 +47,9 @@ public class HolderPlant2 {
 		imageView3 = (GFImageView) view.findViewById(R.id.image3);
 		forwardTextView = (TextView)view.findViewById(R.id.forwardcount_tv);
 		forwardLayout = (LinearLayout)view.findViewById(R.id.forward_layout);
-		jpLayout = (RelativeLayout)view.findViewById(R.id.cainalayout);
+		jpLayout = (LinearLayout)view.findViewById(R.id.cainalayout);
+		jpIv = (ImageView)view.findViewById(R.id.caina_image);
+		jyIv = (ImageView)view.findViewById(R.id.jywc_image);
 		reSetImageViews();
 	}
 	

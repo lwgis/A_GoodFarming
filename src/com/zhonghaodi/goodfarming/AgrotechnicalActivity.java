@@ -123,7 +123,7 @@ public class AgrotechnicalActivity extends Activity implements OnClickListener,H
 				    inputManager.showSoftInput(mzEditText, 0); 
 				} else {
 					Intent it = new Intent(AgrotechnicalActivity.this,
-							LoginActivity.class);
+							SignActivity.class);
 					AgrotechnicalActivity.this.startActivity(it);
 				}
 				

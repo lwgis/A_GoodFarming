@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -302,8 +303,6 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 
 		Matcher m = p.matcher(mobiles);
 
-		System.out.println(m.matches() + "---");
-
 		return m.matches();
 	}
 
@@ -344,7 +343,13 @@ public class RegisterFragment2 extends Fragment implements TextWatcher,
 					user.setPhone(activity.getPhone());
 //					user.setAddress(addressEt.getText().toString());
 					user.setAlias(aliasEt.getText().toString());
-					user.setTjCode(tjphoneEt.getText().toString());
+					String tjstr =tjphoneEt.getText().toString();
+					if(!TextUtils.isEmpty(tjstr)&&tjstr.length()==11){
+						user.setTjPhone(tjstr);
+					}
+					else{
+						user.setTjCode(tjstr);
+					}
 					user.setThumbnail(registerFragment2.headImageName.trim());
 					try {
 						NetResponse netResponse = HttpUtil.registerUser(user);

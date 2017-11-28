@@ -329,7 +329,7 @@ public class ZfbtInfoActivity extends Activity implements HandMessage,OnClickLis
 	public void buy(){
 		final String uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null){
-			Intent intent = new Intent(this, LoginActivity.class);
+			Intent intent = new Intent(this, SignActivity.class);
 			startActivity(intent);
 			return;
 		}

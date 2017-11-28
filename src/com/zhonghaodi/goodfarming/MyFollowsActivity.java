@@ -137,7 +137,7 @@ public class MyFollowsActivity extends Activity implements HandMessage,OnClickLi
 		MobclickAgent.onResume(this);
 		uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null || uid.isEmpty()){
-			Intent intent = new Intent(this, LoginActivity.class);
+			Intent intent = new Intent(this, SignActivity.class);
 			startActivity(intent);
 			return;
 		}

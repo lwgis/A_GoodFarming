@@ -122,8 +122,29 @@ public class FrmSaveReq implements HandMessage {
 		
 	}
 	
+	public void threadSleep(){
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(1000);
+					Message msg = handler.obtainMessage();
+					msg.what = 4;
+					msg.sendToTarget();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
+		
+	}
+	
 	public String getZfbt(double x,double y,int page,int zone){
-		String url = HttpUtil.RootURL + "zfbt?x="+x+"&y="+y+"&page="+page;
+		String url = HttpUtil.RootURL + "zfbt/new?x="+x+"&y="+y+"&page="+page;
 		if(cate!=0){
 			url = url +"&cate="+cate;
 		}
@@ -214,6 +235,9 @@ public class FrmSaveReq implements HandMessage {
 			else{
 				return;
 			}
+			break;
+		case 4:
+			view.refreshData();
 			break;
 		default:
 			break;

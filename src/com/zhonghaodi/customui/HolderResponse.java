@@ -32,10 +32,10 @@ public class HolderResponse {
 	public View bottomLine;
 	
 	public HolderResponse(View view) {
-		nameTv = (TextView) view.findViewById(R.id.name_text);
+		nameTv = (TextView) view.findViewById(R.id.name_text_r);
 		timeTv = (TextView) view.findViewById(R.id.time_text);
 		contentTv = (UrlTextView) view.findViewById(R.id.content_text);
-		headIv = (RoundedImageView) view.findViewById(R.id.head_image);
+		headIv = (RoundedImageView) view.findViewById(R.id.head_image_r);
 		agreeTextView = (TextView)view.findViewById(R.id.zancount_tv);
 		agreeLayout = (LinearLayout)view.findViewById(R.id.zan_layout);
 		cainaView = view.findViewById(R.id.cainalayout);

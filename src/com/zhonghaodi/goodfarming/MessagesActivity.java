@@ -409,7 +409,7 @@ public class MessagesActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		String uid = GFUserDictionary.getUserId(getApplicationContext());
 		if(uid==null){
-			Intent intent = new Intent(MessagesActivity.this, LoginActivity.class);
+			Intent intent = new Intent(MessagesActivity.this, SignActivity.class);
 			this.startActivity(intent);
 		}
 		else{

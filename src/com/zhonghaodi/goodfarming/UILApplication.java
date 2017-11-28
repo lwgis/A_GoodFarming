@@ -96,6 +96,8 @@ public class UILApplication extends Application {
 	
 	public static int fineStatus;
 	public static int finediseaseStatus;
+	public static double x=118.798632;
+	public static double y=36.858719;
 
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -105,7 +107,7 @@ public class UILApplication extends Application {
 		applicationContext=this;
 		super.onCreate();
 //		MobclickAgent.setDebugMode(true);
-		MobclickAgent.openActivityDurationTrack(false); 
+//		MobclickAgent.openActivityDurationTrack(false); 
 		ErrorReport catchExcep = new ErrorReport(this);  
         Thread.setDefaultUncaughtExceptionHandler(catchExcep);
 		initImageLoader(getApplicationContext());

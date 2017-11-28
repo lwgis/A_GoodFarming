@@ -113,7 +113,7 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (reportAdapter.getItem(position)==null) {
-					if(projectImages.size()<9){
+					if(projectImages.size()<3){
 						if (mPopupWindow==null) {
 							mPopupWindow=new PopupWindow(popView,DpTransform.dip2px(getActivity(), 180),DpTransform.dip2px(getActivity(), 100));
 						}
@@ -125,7 +125,7 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 						}
 					}
 					else{
-						GFToast.show(getActivity(),"最多添加9张图片！");
+						GFToast.show(getActivity(),"最多添加3张图片！");
 					}
 					
 				}
@@ -300,6 +300,9 @@ public class CreadPlantFragment extends Fragment implements OnClickListener,Hand
 	public String getDeal(){
 		int id = radioGroup.getCheckedRadioButtonId();
 		RadioButton radioButton = (RadioButton)view.findViewById(id);
+		if(radioButton==null){
+			return null;
+		}
 		
 		return radioButton.getText().toString();
 	}

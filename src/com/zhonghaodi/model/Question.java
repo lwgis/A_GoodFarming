@@ -29,6 +29,7 @@ public class Question implements Serializable {
 	private long lastTime;
 	private String deal;
 	private boolean finished;
+	private double distance;
 	public List<Response> getResponses() {
 		return responses;
 	}
@@ -83,6 +84,15 @@ public class Question implements Serializable {
 
 	public void setTime(String time) {
 		this.time = time;
+	}
+	
+
+	public String getPhase() {
+		return phase;
+	}
+
+	public void setPhase(String phase) {
+		this.phase = phase;
 	}
 
 	public int getResponsecount() {
@@ -192,14 +202,6 @@ public class Question implements Serializable {
 		this.lastTime = lastTime;
 	}
 
-	public String getPhase() {
-		return phase;
-	}
-
-	public void setPhase(String phase) {
-		this.phase = phase;
-	}
-
 	public String getDeal() {
 		return deal;
 	}
@@ -214,6 +216,14 @@ public class Question implements Serializable {
 
 	public void setFinished(boolean finished) {
 		this.finished = finished;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 	
 }
